@@ -108,9 +108,9 @@ Each cycle: `/test` (Red) then `/implement` (Green). 6 sub-phases, 18 cycles.
 - [x] `/implement` -- `src/Conjecture.Core/Strategies/WhereStrategy.cs` + `src/Conjecture.Core/UnsatisfiedAssumptionException.cs`
 
 #### Cycle 0.4.3 -- SelectMany (bind)
-- [ ] `/test` -- `src/Conjecture.Tests/Strategies/SelectManyStrategyTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Strategies/SelectManyStrategyTests.cs`
   - Dependent generation, C# query syntax works
-- [ ] `/implement` -- `src/Conjecture.Core/Strategies/SelectManyStrategy.cs` (two-arg for query syntax)
+- [x] `/implement` -- `src/Conjecture.Core/Strategies/SelectManyStrategy.cs` (two-arg for query syntax)
 
 #### Cycle 0.4.4 -- Zip
 - [ ] `/test` -- `src/Conjecture.Tests/Strategies/ZipStrategyTests.cs`
