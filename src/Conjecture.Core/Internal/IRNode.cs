@@ -6,13 +6,15 @@ internal readonly struct IRNode
     internal ulong Value { get; }
     internal ulong Min { get; }
     internal ulong Max { get; }
+    internal byte[]? RawBytes { get; }
 
-    private IRNode(IRNodeKind kind, ulong value, ulong min, ulong max)
+    private IRNode(IRNodeKind kind, ulong value, ulong min, ulong max, byte[]? rawBytes = null)
     {
         Kind = kind;
         Value = value;
         Min = min;
         Max = max;
+        RawBytes = rawBytes;
     }
 
     internal static IRNode ForInteger(ulong value, ulong min, ulong max) =>
@@ -21,6 +23,6 @@ internal readonly struct IRNode
     internal static IRNode ForBoolean(bool value) =>
         new(IRNodeKind.Boolean, value ? 1UL : 0UL, 0UL, 1UL);
 
-    internal static IRNode ForBytes(int length) =>
-        new(IRNodeKind.Bytes, (ulong)length, 0UL, 0UL);
+    internal static IRNode ForBytes(int length, byte[]? data = null) =>
+        new(IRNodeKind.Bytes, (ulong)length, 0UL, 0UL, data);
 }

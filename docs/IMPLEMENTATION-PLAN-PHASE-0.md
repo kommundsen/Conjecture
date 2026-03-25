@@ -67,9 +67,9 @@ Each cycle: `/test` (Red) then `/implement` (Green). 6 sub-phases, 18 cycles.
   - ArrayPool<byte> backed buffer (ADR-0009)
 
 #### Cycle 0.2.3 -- ConjectureData replay
-- [ ] `/test` -- `src/Conjecture.Tests/Internal/ConjectureDataReplayTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Internal/ConjectureDataReplayTests.cs`
   - Replay produces same nodes, overrun on short buffer, ForRecord factory
-- [ ] `/implement` -- Add `ConjectureData.ForRecord(IReadOnlyList<IRNode>)` static factory
+- [x] `/implement` -- Add `ConjectureData.ForRecord(IReadOnlyList<IRNode>)` static factory
 
 ---
 
