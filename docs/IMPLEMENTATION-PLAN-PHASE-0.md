@@ -76,8 +76,8 @@ Each cycle: `/test` (Red) then `/implement` (Green). 6 sub-phases, 18 cycles.
 ### 0.3 Strategy<T> Base & Built-in Strategies
 
 #### Cycle 0.3.1 -- Strategy<T> base
-- [ ] `/test` -- `src/Conjecture.Tests/Strategies/StrategyBaseTests.cs`
-- [ ] `/implement` -- `src/Conjecture.Core/Strategies/Strategy.cs` -- `abstract class Strategy<T>` with `abstract T Generate(ConjectureData)`
+- [x] `/test` -- `src/Conjecture.Tests/Strategies/StrategyBaseTests.cs`
+- [x] `/implement` -- `src/Conjecture.Core/Strategies/Strategy.cs` -- `abstract class Strategy<T>` with `abstract T Next(ConjectureData)`
 
 #### Cycle 0.3.2 -- BooleanStrategy
 - [ ] `/test` -- `src/Conjecture.Tests/Strategies/BooleanStrategyTests.cs`
