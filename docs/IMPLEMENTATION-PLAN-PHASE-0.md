@@ -59,9 +59,9 @@ Each cycle: `/test` (Red) then `/implement` (Green). 6 sub-phases, 18 cycles.
 - [x] `/implement` -- `src/Conjecture.Core/Internal/IRNodeKind.cs` (enum), `src/Conjecture.Core/Internal/IRNode.cs` (readonly struct)
 
 #### Cycle 0.2.2 -- ConjectureData core draws
-- [ ] `/test` -- `src/Conjecture.Tests/Internal/ConjectureDataTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Internal/ConjectureDataTests.cs`
   - DrawInteger in range, DrawBoolean both values, DrawBytes length, Status transitions, Freeze prevents draws, node recording order
-- [ ] `/implement` -- `src/Conjecture.Core/Internal/ConjectureData.cs`
+- [x] `/implement` -- `src/Conjecture.Core/Internal/ConjectureData.cs`
   - `enum Status { Valid, Invalid, Interesting, Overrun }`
   - DrawInteger, DrawBoolean, DrawBytes, MarkInvalid, MarkInteresting, Freeze
   - ArrayPool<byte> backed buffer (ADR-0009)
