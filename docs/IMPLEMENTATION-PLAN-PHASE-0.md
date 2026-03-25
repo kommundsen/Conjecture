@@ -54,9 +54,9 @@ Each cycle: `/test` (Red) then `/implement` (Green). 6 sub-phases, 18 cycles.
 ### 0.2 ConjectureData (The Heart)
 
 #### Cycle 0.2.1 -- IRNode and data types
-- [ ] `/test` -- `src/Conjecture.Tests/Internal/IRNodeTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Internal/IRNodeTests.cs`
   - IRNodeKind enum values, round-trip storage, integer constraints
-- [ ] `/implement` -- `src/Conjecture.Core/Internal/IRNodeKind.cs` (enum), `src/Conjecture.Core/Internal/IRNode.cs` (readonly struct)
+- [x] `/implement` -- `src/Conjecture.Core/Internal/IRNodeKind.cs` (enum), `src/Conjecture.Core/Internal/IRNode.cs` (readonly struct)
 
 #### Cycle 0.2.2 -- ConjectureData core draws
 - [ ] `/test` -- `src/Conjecture.Tests/Internal/ConjectureDataTests.cs`
