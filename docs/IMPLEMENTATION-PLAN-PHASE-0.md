@@ -91,8 +91,8 @@ Each cycle: `/test` (Red) then `/implement` (Green). 6 sub-phases, 18 cycles.
   - `Gen.Integers<T>(T? min, T? max)` + convenience overloads
 
 #### Cycle 0.3.4 -- BytesStrategy
-- [ ] `/test` -- `src/Conjecture.Tests/Strategies/BytesStrategyTests.cs`
-- [ ] `/implement` -- `src/Conjecture.Core/Strategies/BytesStrategy.cs` + `Gen.Bytes(int size)`
+- [x] `/test` -- `src/Conjecture.Tests/Strategies/BytesStrategyTests.cs`
+- [x] `/implement` -- `src/Conjecture.Core/Strategies/BytesStrategy.cs` + `Gen.Bytes(int size)`
 
 ---
 

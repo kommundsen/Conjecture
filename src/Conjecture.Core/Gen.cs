@@ -1,5 +1,5 @@
 using System.Numerics;
-using Conjecture.Core.Strategies;
+using Conjecture.Core.Generation;
 
 namespace Conjecture.Core;
 
@@ -16,4 +16,7 @@ public static class Gen
     /// <summary>Returns a strategy that generates random <typeparamref name="T"/> values in [<paramref name="min"/>, <paramref name="max"/>].</summary>
     public static Strategy<T> Integers<T>(T min, T max) where T : IBinaryInteger<T>
         => new IntegerStrategy<T>(min, max);
+
+    /// <summary>Returns a strategy that generates random byte arrays of length <paramref name="size"/>.</summary>
+    public static Strategy<byte[]> Bytes(int size) => new BytesStrategy(size);
 }
