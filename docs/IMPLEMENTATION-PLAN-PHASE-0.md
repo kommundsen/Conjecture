@@ -44,9 +44,9 @@ Each cycle: `/test` (Red) then `/implement` (Green). 6 sub-phases, 18 cycles.
   - `sealed class SplittableRandom : IRandom` (SplitMix64-based)
 
 #### Cycle 0.1.2 -- PrngAdapter (bounded integers)
-- [ ] `/test` -- `src/Conjecture.Tests/Internal/PrngAdapterTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Internal/PrngAdapterTests.cs`
   - Bounded ulong in range, uniform distribution (chi-squared), zero-range returns bound
-- [ ] `/implement` -- `src/Conjecture.Core/Internal/PrngAdapter.cs`
+- [x] `/implement` -- `src/Conjecture.Core/Internal/PrngAdapter.cs`
   - Static rejection-sampling helpers for bounded integers from raw bytes
 
 ---
