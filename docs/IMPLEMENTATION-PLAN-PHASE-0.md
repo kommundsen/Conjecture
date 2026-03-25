@@ -80,8 +80,8 @@ Each cycle: `/test` (Red) then `/implement` (Green). 6 sub-phases, 18 cycles.
 - [x] `/implement` -- `src/Conjecture.Core/Strategies/Strategy.cs` -- `abstract class Strategy<T>` with `abstract T Next(ConjectureData)`
 
 #### Cycle 0.3.2 -- BooleanStrategy
-- [ ] `/test` -- `src/Conjecture.Tests/Strategies/BooleanStrategyTests.cs`
-- [ ] `/implement` -- `src/Conjecture.Core/Strategies/BooleanStrategy.cs` + `src/Conjecture.Core/Gen.cs` (`Gen.Booleans()`)
+- [x] `/test` -- `src/Conjecture.Tests/Strategies/BooleanStrategyTests.cs`
+- [x] `/implement` -- `src/Conjecture.Core/Strategies/BooleanStrategy.cs` + `src/Conjecture.Core/Gen.cs` (`Gen.Booleans()`)
 
 #### Cycle 0.3.3 -- IntegerStrategy (INumber<T>)
 - [ ] `/test` -- `src/Conjecture.Tests/Strategies/IntegerStrategyTests.cs`
