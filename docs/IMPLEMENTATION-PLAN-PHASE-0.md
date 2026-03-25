@@ -103,9 +103,9 @@ Each cycle: `/test` (Red) then `/implement` (Green). 6 sub-phases, 18 cycles.
 - [x] `/implement` -- `src/Conjecture.Core/Strategies/SelectStrategy.cs` + `src/Conjecture.Core/Strategies/StrategyExtensions.cs`
 
 #### Cycle 0.4.2 -- Where (filter)
-- [ ] `/test` -- `src/Conjecture.Tests/Strategies/WhereStrategyTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Strategies/WhereStrategyTests.cs`
   - Filters output, exhausted budget marks invalid
-- [ ] `/implement` -- `src/Conjecture.Core/Strategies/WhereStrategy.cs` + `src/Conjecture.Core/UnsatisfiedAssumptionException.cs`
+- [x] `/implement` -- `src/Conjecture.Core/Strategies/WhereStrategy.cs` + `src/Conjecture.Core/UnsatisfiedAssumptionException.cs`
 
 #### Cycle 0.4.3 -- SelectMany (bind)
 - [ ] `/test` -- `src/Conjecture.Tests/Strategies/SelectManyStrategyTests.cs`
