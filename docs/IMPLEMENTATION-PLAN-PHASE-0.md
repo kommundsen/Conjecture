@@ -84,9 +84,9 @@ Each cycle: `/test` (Red) then `/implement` (Green). 6 sub-phases, 18 cycles.
 - [x] `/implement` -- `src/Conjecture.Core/Strategies/BooleanStrategy.cs` + `src/Conjecture.Core/Gen.cs` (`Gen.Booleans()`)
 
 #### Cycle 0.3.3 -- IntegerStrategy (INumber<T>)
-- [ ] `/test` -- `src/Conjecture.Tests/Strategies/IntegerStrategyTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Strategies/IntegerStrategyTests.cs`
   - Default range, bounded, min==max, negative, long, byte via IBinaryInteger<T>
-- [ ] `/implement` -- `src/Conjecture.Core/Strategies/IntegerStrategy.cs`
+- [x] `/implement` -- `src/Conjecture.Core/Strategies/IntegerStrategy.cs`
   - `class IntegerStrategy<T> : Strategy<T> where T : IBinaryInteger<T>`
   - `Gen.Integers<T>(T? min, T? max)` + convenience overloads
 
