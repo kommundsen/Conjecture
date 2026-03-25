@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Conjecture.Core/Conjecture.Core.csproj" />
+  <Project Path="Conjecture.Tests/Conjecture.Tests.csproj" />
+</Solution>

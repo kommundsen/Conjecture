@@ -1,0 +1,15 @@
+<Project>
+  <PropertyGroup>
+    <!-- Docs & warnings -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>$(NoWarn);CS1573</NoWarn> <!-- Allow undocumented params on overrides -->
+
+    <!-- Nullability -->
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <!-- Versioning via MinVer (tag-based) -->
+    <MinVerDefaultPreReleaseIdentifiers>alpha.0</MinVerDefaultPreReleaseIdentifiers>
+  </PropertyGroup>
+</Project>
