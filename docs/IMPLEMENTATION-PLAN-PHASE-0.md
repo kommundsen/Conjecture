@@ -25,8 +25,8 @@ SplittableRandom -> PrngAdapter -> ConjectureData -> Strategy<T> -> Combinators
 
 ## Pre-requisites
 
-- [ ] `/scaffold module Conjecture.Core Internal` -- Create Internal directory structure
-- [ ] `/scaffold module Conjecture.Core Strategies` -- Create Strategies directory structure
+- [x] `/scaffold module Conjecture.Core Internal` -- Create Internal directory structure
+- [x] `/scaffold module Conjecture.Core Strategies` -- Create Strategies directory structure
 
 ## TDD Execution Plan
 
@@ -37,9 +37,9 @@ Each cycle: `/test` (Red) then `/implement` (Green). 6 sub-phases, 18 cycles.
 ### 0.1 Random Source & Primitives
 
 #### Cycle 0.1.1 -- IRandom + SplittableRandom
-- [ ] `/test` -- `src/Conjecture.Tests/Internal/SplittableRandomTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Internal/SplittableRandomTests.cs`
   - Deterministic output from seed, different seeds diverge, NextBytes fills buffer, Split produces independent streams
-- [ ] `/implement` -- `src/Conjecture.Core/Internal/SplittableRandom.cs`
+- [x] `/implement` -- `src/Conjecture.Core/Internal/SplittableRandom.cs`
   - `interface IRandom` (`NextBytes(Span<byte>)`, `NextUInt64()`, `Split()`)
   - `sealed class SplittableRandom : IRandom` (SplitMix64-based)
 
