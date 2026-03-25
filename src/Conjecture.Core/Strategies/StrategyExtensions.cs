@@ -1,4 +1,4 @@
-namespace Conjecture.Core.Strategies;
+namespace Conjecture.Core.Generation;
 
 /// <summary>LINQ-style extension methods for composing strategies.</summary>
 public static class StrategyExtensions
@@ -24,4 +24,14 @@ public static class StrategyExtensions
         Func<TSource, Strategy<TCollection>> collectionSelector,
         Func<TSource, TCollection, TResult> resultSelector) =>
         new SelectManyStrategy<TSource, TCollection, TResult>(source, collectionSelector, resultSelector);
+
+    /// <summary>Combines two strategies into a strategy of tuples.</summary>
+    public static Strategy<(TFirst, TSecond)> Zip<TFirst, TSecond>(
+        this Strategy<TFirst> first, Strategy<TSecond> second) =>
+        new ZipStrategy<TFirst, TSecond, (TFirst, TSecond)>(first, second, (a, b) => (a, b));
+
+    /// <summary>Combines two strategies using a result selector.</summary>
+    public static Strategy<TResult> Zip<TFirst, TSecond, TResult>(
+        this Strategy<TFirst> first, Strategy<TSecond> second, Func<TFirst, TSecond, TResult> resultSelector) =>
+        new ZipStrategy<TFirst, TSecond, TResult>(first, second, resultSelector);
 }

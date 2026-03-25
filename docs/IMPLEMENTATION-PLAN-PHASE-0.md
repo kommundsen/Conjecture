@@ -113,13 +113,13 @@ Each cycle: `/test` (Red) then `/implement` (Green). 6 sub-phases, 18 cycles.
 - [x] `/implement` -- `src/Conjecture.Core/Strategies/SelectManyStrategy.cs` (two-arg for query syntax)
 
 #### Cycle 0.4.4 -- Zip
-- [ ] `/test` -- `src/Conjecture.Tests/Strategies/ZipStrategyTests.cs`
-- [ ] `/implement` -- `src/Conjecture.Core/Strategies/ZipStrategy.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Strategies/ZipStrategyTests.cs`
+- [x] `/implement` -- `src/Conjecture.Core/Strategies/ZipStrategy.cs`
 
 #### Cycle 0.4.5 -- Compose (imperative, ADR-0019)
-- [ ] `/test` -- `src/Conjecture.Tests/Strategies/ComposeTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Strategies/ComposeTests.cs`
   - Imperative generation, dependent draws, Assume rejects
-- [ ] `/implement` -- `src/Conjecture.Core/IGeneratorContext.cs` + `src/Conjecture.Core/Strategies/ComposeStrategy.cs` + `src/Conjecture.Core/Strategies/Strategies.cs`
+- [x] `/implement` -- `src/Conjecture.Core/IGeneratorContext.cs` + `src/Conjecture.Core/Strategies/ComposeStrategy.cs` + `src/Conjecture.Core/Strategies/Strategies.cs`
 
 ---
 
