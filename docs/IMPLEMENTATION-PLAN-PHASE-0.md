@@ -99,8 +99,8 @@ Each cycle: `/test` (Red) then `/implement` (Green). 6 sub-phases, 18 cycles.
 ### 0.4 LINQ Combinators
 
 #### Cycle 0.4.1 -- Select (map)
-- [ ] `/test` -- `src/Conjecture.Tests/Strategies/CombinatorTests.cs`
-- [ ] `/implement` -- `src/Conjecture.Core/Strategies/SelectStrategy.cs` + `src/Conjecture.Core/Strategies/StrategyExtensions.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Strategies/CombinatorTests.cs`
+- [x] `/implement` -- `src/Conjecture.Core/Strategies/SelectStrategy.cs` + `src/Conjecture.Core/Strategies/StrategyExtensions.cs`
 
 #### Cycle 0.4.2 -- Where (filter)
 - [ ] `/test` -- `src/Conjecture.Tests/Strategies/WhereStrategyTests.cs`
