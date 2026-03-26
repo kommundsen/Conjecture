@@ -130,9 +130,9 @@ Each cycle: `/test` (Red) then `/implement` (Green). 6 sub-phases, 18 cycles.
 - [x] `/implement` -- `src/Conjecture.Core/ConjectureSettings.cs` -- `record ConjectureSettings` (MaxExamples=100, Seed, etc.)
 
 #### Cycle 0.5.2 -- TestRunner (engine loop)
-- [ ] `/test` -- `src/Conjecture.Tests/Internal/TestRunnerTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Internal/TestRunnerTests.cs`
   - Runs MaxExamples times, stops on failure, tracks unsatisfied, deterministic with seed
-- [ ] `/implement` -- `src/Conjecture.Core/Internal/TestRunner.cs`
+- [x] `/implement` -- `src/Conjecture.Core/Internal/TestRunner.cs`
 
 #### Cycle 0.5.3 -- PropertyAttribute (xUnit integration)
 - [ ] `/test` -- `src/Conjecture.Tests/PropertyAttributeTests.cs`
