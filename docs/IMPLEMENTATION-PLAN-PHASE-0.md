@@ -140,8 +140,8 @@ Each cycle: `/test` (Red) then `/implement` (Green). 6 sub-phases, 18 cycles.
 - [x] `/implement` -- `src/Conjecture.Core/PropertyAttribute.cs` + `Internal/ParameterStrategyResolver.cs` + `Internal/PropertyTestCaseRunner.cs`
 
 #### Cycle 0.5.4 -- Assume.That
-- [ ] `/test` -- `src/Conjecture.Tests/AssumeTests.cs`
-- [ ] `/implement` -- `src/Conjecture.Core/Assume.cs`
+- [x] `/test` -- `src/Conjecture.Tests/AssumeTests.cs`
+- [x] `/implement` -- `src/Conjecture.Core/Assume.cs`
 
 ---
 
