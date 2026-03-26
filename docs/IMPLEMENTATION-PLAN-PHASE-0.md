@@ -153,8 +153,8 @@ Each cycle: `/test` (Red) then `/implement` (Green). 6 sub-phases, 18 cycles.
 - [x] `/implement` -- `src/Conjecture.Core/Internal/Shrinker/Shrinker.cs` + `IShrinkPass.cs` + `ShrinkState.cs`
 
 #### Cycle 0.6.2 -- ZeroBlocks pass (priority 0)
-- [ ] `/test` -- `src/Conjecture.Tests/Internal/Shrinker/ZeroBlocksPassTests.cs`
-- [ ] `/implement` -- `src/Conjecture.Core/Internal/Shrinker/ZeroBlocksPass.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Internal/Shrinker/ZeroBlocksPassTests.cs`
+- [x] `/implement` -- `src/Conjecture.Core/Internal/Shrinker/ZeroBlocksPass.cs`
 
 #### Cycle 0.6.3 -- DeleteBlocks pass (priority 0)
 - [ ] `/test` -- `src/Conjecture.Tests/Internal/Shrinker/DeleteBlocksPassTests.cs`
