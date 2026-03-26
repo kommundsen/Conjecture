@@ -29,7 +29,7 @@ internal static class TestRunner
             {
                 data.MarkInteresting();
                 var shrunk = ShrinkEngine.Shrink(data.IRNodes, nodes => Replay(nodes, test));
-                return TestRunResult.Fail(shrunk);
+                return TestRunResult.Fail(shrunk, seed);
             }
             finally
             {
@@ -37,7 +37,7 @@ internal static class TestRunner
             }
         }
 
-        return TestRunResult.Pass();
+        return TestRunResult.Pass(seed);
     }
 
     private static Status Replay(IReadOnlyList<IRNode> nodes, Action<ConjectureData> test)

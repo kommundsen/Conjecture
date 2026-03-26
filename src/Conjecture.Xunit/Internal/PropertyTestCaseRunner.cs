@@ -74,8 +74,7 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
         {
             summary.Failed = 1;
             var failure = setupFailure
-                ?? new Exception(
-                    $"Property falsified. Counterexample recorded {result!.Counterexample?.Count ?? 0} IR node(s).");
+                ?? new Exception(BuildFailureMessage(result!, TestMethod.GetParameters()));
             if (!MessageBus.QueueMessage(new TestFailed(test, elapsed, null, failure)))
                 CancellationTokenSource.Cancel();
         }
@@ -84,5 +83,13 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
             CancellationTokenSource.Cancel();
 
         return summary;
+    }
+
+    internal static string BuildFailureMessage(TestRunResult result, ParameterInfo[] parameters)
+    {
+        var replay = ConjectureData.ForRecord(result.Counterexample!);
+        var values = ParameterStrategyResolver.Resolve(parameters, replay);
+        var pairs = parameters.Zip(values, (p, v) => (p.Name!, (object)v));
+        return CounterexampleFormatter.Format(pairs, result.Seed!.Value);
     }
 }

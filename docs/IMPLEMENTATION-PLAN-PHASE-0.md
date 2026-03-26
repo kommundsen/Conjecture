@@ -189,11 +189,11 @@ Phase 0 scope: format built-in primitive types (int, bool, byte[]) and report th
 - [x] `/implement` -- `src/Conjecture.Core/Internal/CounterexampleFormatter.cs`
 
 #### Cycle 0.7.2 -- Wire formatter into PropertyTestCaseRunner
-- [ ] `/test` -- `src/Conjecture.Tests/PropertyAttributeFailureMessageTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/PropertyAttributeFailureMessageTests.cs`
   - Failing `[Property]` test failure message contains param names and shrunk values
   - Failure message contains seed for reproduction
   - Passing test produces no failure message
-- [ ] `/implement` -- Modify `PropertyTestCaseRunner` to use `CounterexampleFormatter`
+- [x] `/implement` -- Modify `PropertyTestCaseRunner` to use `CounterexampleFormatter`
   - `TestRunResult` extended to carry seed + parameter metadata
 
 ---
