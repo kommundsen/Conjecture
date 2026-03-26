@@ -165,8 +165,8 @@ Each cycle: `/test` (Red) then `/implement` (Green). 6 sub-phases, 18 cycles.
 - [x] `/implement` -- `src/Conjecture.Core/Internal/Shrinker/LexMinimizePass.cs`
 
 #### Cycle 0.6.5 -- IntegerReduction pass (priority 1)
-- [ ] `/test` -- `src/Conjecture.Tests/Internal/Shrinker/IntegerReductionPassTests.cs`
-- [ ] `/implement` -- `src/Conjecture.Core/Internal/Shrinker/IntegerReductionPass.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Internal/Shrinker/IntegerReductionPassTests.cs`
+- [x] `/implement` -- `src/Conjecture.Core/Internal/Shrinker/IntegerReductionPass.cs`
 
 #### Cycle 0.6.6 -- Wire shrinker into TestRunner
 - [ ] `/test` -- `src/Conjecture.Tests/Internal/TestRunnerShrinkingTests.cs`
