@@ -135,9 +135,9 @@ Each cycle: `/test` (Red) then `/implement` (Green). 6 sub-phases, 18 cycles.
 - [x] `/implement` -- `src/Conjecture.Core/Internal/TestRunner.cs`
 
 #### Cycle 0.5.3 -- PropertyAttribute (xUnit integration)
-- [ ] `/test` -- `src/Conjecture.Tests/PropertyAttributeTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/PropertyAttributeTests.cs`
   - Simple test passes, failing reports counterexample, bool params, seed determinism
-- [ ] `/implement` -- `src/Conjecture.Core/PropertyAttribute.cs` + `Internal/ParameterStrategyResolver.cs` + `Internal/PropertyTestInvoker.cs`
+- [x] `/implement` -- `src/Conjecture.Core/PropertyAttribute.cs` + `Internal/ParameterStrategyResolver.cs` + `Internal/PropertyTestCaseRunner.cs`
 
 #### Cycle 0.5.4 -- Assume.That
 - [ ] `/test` -- `src/Conjecture.Tests/AssumeTests.cs`
