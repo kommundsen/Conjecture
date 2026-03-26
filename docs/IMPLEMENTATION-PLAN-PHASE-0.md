@@ -157,8 +157,8 @@ Each cycle: `/test` (Red) then `/implement` (Green). 6 sub-phases, 18 cycles.
 - [x] `/implement` -- `src/Conjecture.Core/Internal/Shrinker/ZeroBlocksPass.cs`
 
 #### Cycle 0.6.3 -- DeleteBlocks pass (priority 0)
-- [ ] `/test` -- `src/Conjecture.Tests/Internal/Shrinker/DeleteBlocksPassTests.cs`
-- [ ] `/implement` -- `src/Conjecture.Core/Internal/Shrinker/DeleteBlocksPass.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Internal/Shrinker/DeleteBlocksPassTests.cs`
+- [x] `/implement` -- `src/Conjecture.Core/Internal/Shrinker/DeleteBlocksPass.cs`
 
 #### Cycle 0.6.4 -- LexicographicMinimize pass (priority 1)
 - [ ] `/test` -- `src/Conjecture.Tests/Internal/Shrinker/LexMinimizePassTests.cs`
