@@ -201,21 +201,21 @@ Phase 0 scope: format built-in primitive types (int, bool, byte[]) and report th
 ### 0.8 End-to-End Self Tests
 
 #### Cycle 0.8.1 -- Property attribute with shrinking end-to-end
-- [ ] `/test` -- `src/Conjecture.Tests/EndToEnd/PropertyShrinkingE2ETests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/EndToEnd/PropertyShrinkingE2ETests.cs`
   - `[Property]` test with int params that fails produces shrunk minimal counterexample in failure message
   - `[Property]` test with multiple params shrinks each independently
   - `[Property]` test that always passes runs full MaxExamples without error
   - `[Property]` test using `Assume.That` discards invalid inputs and still shrinks on failure
 
 #### Cycle 0.8.2 -- Combinator integration end-to-end
-- [ ] `/test` -- `src/Conjecture.Tests/EndToEnd/CombinatorE2ETests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/EndToEnd/CombinatorE2ETests.cs`
   - `Select` (map) strategy generates transformed values end-to-end via TestRunner
   - `Where` (filter) strategy rejects invalid values and shrinks result
   - `SelectMany` (bind) with dependent generation shrinks both stages
   - `Compose` (imperative) with multiple draws shrinks to minimal failing input
 
 #### Cycle 0.8.3 -- Shrink quality smoke tests
-- [ ] `/test` -- `src/Conjecture.Tests/EndToEnd/ShrinkQualityTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/EndToEnd/ShrinkQualityTests.cs`
   - Integer >= threshold shrinks to exactly threshold (not threshold+1, not 0)
   - Two integers whose sum exceeds threshold shrinks to minimal sum
   - Boolean param that must be true shrinks to true (not false)
