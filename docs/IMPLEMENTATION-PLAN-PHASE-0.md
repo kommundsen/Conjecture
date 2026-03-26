@@ -169,9 +169,9 @@ Each cycle: `/test` (Red) then `/implement` (Green). 6 sub-phases, 18 cycles.
 - [x] `/implement` -- `src/Conjecture.Core/Internal/Shrinker/IntegerReductionPass.cs`
 
 #### Cycle 0.6.6 -- Wire shrinker into TestRunner
-- [ ] `/test` -- `src/Conjecture.Tests/Internal/TestRunnerShrinkingTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Internal/TestRunnerShrinkingTests.cs`
   - Shrinking reports minimal counterexample, preserves failure, no shrink when passing
-- [ ] `/implement` -- Modify TestRunner + PropertyAttribute to invoke Shrinker on Interesting status
+- [x] `/implement` -- Modify TestRunner + PropertyAttribute to invoke Shrinker on Interesting status
 
 ---
 

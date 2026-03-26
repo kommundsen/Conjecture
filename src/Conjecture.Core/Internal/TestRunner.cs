@@ -1,3 +1,5 @@
+using ShrinkEngine = Conjecture.Core.Internal.Shrinker.Shrinker;
+
 namespace Conjecture.Core.Internal;
 
 internal static class TestRunner
@@ -26,7 +28,8 @@ internal static class TestRunner
             catch
             {
                 data.MarkInteresting();
-                return TestRunResult.Fail(data.IRNodes);
+                var shrunk = ShrinkEngine.Shrink(data.IRNodes, nodes => Replay(nodes, test));
+                return TestRunResult.Fail(shrunk);
             }
             finally
             {
@@ -35,5 +38,27 @@ internal static class TestRunner
         }
 
         return TestRunResult.Pass();
+    }
+
+    private static Status Replay(IReadOnlyList<IRNode> nodes, Action<ConjectureData> test)
+    {
+        var data = ConjectureData.ForRecord(nodes);
+        try
+        {
+            test(data);
+            return Status.Valid;
+        }
+        catch (UnsatisfiedAssumptionException)
+        {
+            return Status.Invalid;
+        }
+        catch (InvalidOperationException) when (data.Status == Status.Overrun)
+        {
+            return Status.Overrun;
+        }
+        catch
+        {
+            return Status.Interesting;
+        }
     }
 }

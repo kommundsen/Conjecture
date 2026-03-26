@@ -31,9 +31,14 @@ public class ShrinkerTests
         // A buffer whose single integer node is already at the minimum (0)
         // is already as small as it can get; shrinking should leave it unchanged.
         var nodes = SingleIntegerNodes(0, 0, 100);
-        // Predicate: always interesting (so we're sure it doesn't shrink further).
-        Func<IReadOnlyList<IRNode>, Status> isInteresting =
-            _ => Status.Interesting;
+        // Predicate requires a draw — empty replay overruns and is not interesting,
+        // so DeleteBlocksPass cannot remove the node.
+        Func<IReadOnlyList<IRNode>, Status> isInteresting = ns =>
+        {
+            var data = ConjectureData.ForRecord(ns);
+            try { data.DrawInteger(0, 100); return Status.Interesting; }
+            catch { return Status.Overrun; }
+        };
 
         var result = Core.Internal.Shrinker.Shrinker.Shrink(nodes, isInteresting);
 
