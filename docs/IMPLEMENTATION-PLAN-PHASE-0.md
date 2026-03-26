@@ -177,8 +177,8 @@ Each cycle: `/test` (Red) then `/implement` (Green). 6 sub-phases, 18 cycles.
 
 ## Post-implementation
 
-- [ ] `/benchmark` -- Baseline perf numbers for ConjectureData + strategies
-- [ ] Full verification: `dotnet test src/`
+- [x] `/benchmark` -- Baseline perf numbers for ConjectureData + strategies
+- [x] Full verification: `dotnet test src/`
 
 ## Key Constraints
 
