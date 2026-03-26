@@ -148,9 +148,9 @@ Each cycle: `/test` (Red) then `/implement` (Green). 6 sub-phases, 18 cycles.
 ### 0.6 Basic Shrinking
 
 #### Cycle 0.6.1 -- Shrinker infrastructure
-- [ ] `/test` -- `src/Conjecture.Tests/Internal/Shrinker/ShrinkerTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Internal/Shrinker/ShrinkerTests.cs`
   - Trivial case unchanged, reduces buffer, preserves failure
-- [ ] `/implement` -- `src/Conjecture.Core/Internal/Shrinker/Shrinker.cs` + `IShrinkPass.cs` + `ShrinkState.cs`
+- [x] `/implement` -- `src/Conjecture.Core/Internal/Shrinker/Shrinker.cs` + `IShrinkPass.cs` + `ShrinkState.cs`
 
 #### Cycle 0.6.2 -- ZeroBlocks pass (priority 0)
 - [ ] `/test` -- `src/Conjecture.Tests/Internal/Shrinker/ZeroBlocksPassTests.cs`
