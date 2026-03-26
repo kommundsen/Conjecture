@@ -126,8 +126,8 @@ Each cycle: `/test` (Red) then `/implement` (Green). 6 sub-phases, 18 cycles.
 ### 0.5 Minimal Test Runner Integration
 
 #### Cycle 0.5.1 -- ConjectureSettings
-- [ ] `/test` -- `src/Conjecture.Tests/ConjectureSettingsTests.cs`
-- [ ] `/implement` -- `src/Conjecture.Core/ConjectureSettings.cs` -- `record ConjectureSettings` (MaxExamples=100, Seed, etc.)
+- [x] `/test` -- `src/Conjecture.Tests/ConjectureSettingsTests.cs`
+- [x] `/implement` -- `src/Conjecture.Core/ConjectureSettings.cs` -- `record ConjectureSettings` (MaxExamples=100, Seed, etc.)
 
 #### Cycle 0.5.2 -- TestRunner (engine loop)
 - [ ] `/test` -- `src/Conjecture.Tests/Internal/TestRunnerTests.cs`
