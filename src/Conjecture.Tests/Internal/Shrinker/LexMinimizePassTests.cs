@@ -1,0 +1,112 @@
+using Conjecture.Core.Internal;
+using Conjecture.Core.Internal.Shrinker;
+
+namespace Conjecture.Tests.Internal.Shrinker;
+
+public class LexMinimizePassTests
+{
+    private static ShrinkState MakeState(
+        IReadOnlyList<IRNode> nodes,
+        Func<IReadOnlyList<IRNode>, Status> isInteresting)
+        => new(nodes, isInteresting);
+
+    private static Status AlwaysInteresting(IReadOnlyList<IRNode> _) => Status.Interesting;
+
+    [Fact]
+    public void TryReduce_NodeAboveMin_ReducesValueAndReturnsTrue()
+    {
+        // Node with value 10 — pass should reduce it toward min (0).
+        var nodes = new[] { IRNode.ForInteger(10, 0, 100) };
+        var state = MakeState(nodes, AlwaysInteresting);
+        var pass = new LexMinimizePass();
+
+        var progress = pass.TryReduce(state);
+
+        Assert.True(progress);
+        Assert.True(state.Nodes[0].Value < 10, $"Expected value < 10, got {state.Nodes[0].Value}");
+    }
+
+    [Fact]
+    public void TryReduce_NodeAtMin_SkipsAndReturnsFalse()
+    {
+        // Node already at minimum — nothing to reduce.
+        var nodes = new[] { IRNode.ForInteger(0, 0, 100) };
+        var state = MakeState(nodes, AlwaysInteresting);
+        var pass = new LexMinimizePass();
+
+        var progress = pass.TryReduce(state);
+
+        Assert.False(progress);
+        Assert.Equal(0UL, state.Nodes[0].Value);
+    }
+
+    [Fact]
+    public void TryReduce_ReductionNotInteresting_ReturnsFalse()
+    {
+        // Predicate requires the exact original value — any reduction breaks it.
+        var nodes = new[] { IRNode.ForInteger(5, 0, 10) };
+        Func<IReadOnlyList<IRNode>, Status> onlyFive =
+            ns => ns[0].Value == 5 ? Status.Interesting : Status.Valid;
+        var state = MakeState(nodes, onlyFive);
+        var pass = new LexMinimizePass();
+
+        var progress = pass.TryReduce(state);
+
+        Assert.False(progress);
+        Assert.Equal(5UL, state.Nodes[0].Value); // unchanged
+    }
+
+    [Fact]
+    public void TryReduce_NodeWithNonZeroMin_ReducesTowardMin()
+    {
+        // Min is 3, value is 8 — reduction must stay >= min.
+        var nodes = new[] { IRNode.ForInteger(8, 3, 20) };
+        var state = MakeState(nodes, AlwaysInteresting);
+        var pass = new LexMinimizePass();
+
+        var progress = pass.TryReduce(state);
+
+        Assert.True(progress);
+        var v = state.Nodes[0].Value;
+        Assert.True(v >= 3 && v < 8, $"Expected value in [3,8), got {v}");
+    }
+
+    [Fact]
+    public void TryReduce_MultipleNodes_AllReducibleNodesAreDecremented()
+    {
+        // Two nodes both above min with always-interesting predicate.
+        // Both should be reduced in a single pass.
+        var nodes = new[]
+        {
+            IRNode.ForInteger(6, 0, 10),
+            IRNode.ForInteger(9, 0, 10),
+        };
+        var state = MakeState(nodes, AlwaysInteresting);
+        var pass = new LexMinimizePass();
+
+        var progress = pass.TryReduce(state);
+
+        Assert.True(progress);
+        Assert.True(state.Nodes[0].Value < 6);
+        Assert.True(state.Nodes[1].Value < 9);
+    }
+
+    [Fact]
+    public void TryReduce_AllNodesAtMin_ReturnsFalse()
+    {
+        // Every node is already at its minimum value.
+        var nodes = new[]
+        {
+            IRNode.ForInteger(2, 2, 10),
+            IRNode.ForInteger(5, 5, 10),
+        };
+        var state = MakeState(nodes, AlwaysInteresting);
+        var pass = new LexMinimizePass();
+
+        var progress = pass.TryReduce(state);
+
+        Assert.False(progress);
+        Assert.Equal(2UL, state.Nodes[0].Value);
+        Assert.Equal(5UL, state.Nodes[1].Value);
+    }
+}
