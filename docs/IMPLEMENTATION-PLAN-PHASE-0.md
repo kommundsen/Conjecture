@@ -30,7 +30,7 @@ SplittableRandom -> PrngAdapter -> ConjectureData -> Strategy<T> -> Combinators
 
 ## TDD Execution Plan
 
-Each cycle: `/test` (Red) then `/implement` (Green). 6 sub-phases, 18 cycles.
+Each cycle: `/test` (Red) then `/implement` (Green). 8 sub-phases.
 
 ---
 
@@ -172,6 +172,54 @@ Each cycle: `/test` (Red) then `/implement` (Green). 6 sub-phases, 18 cycles.
 - [x] `/test` -- `src/Conjecture.Tests/Internal/TestRunnerShrinkingTests.cs`
   - Shrinking reports minimal counterexample, preserves failure, no shrink when passing
 - [x] `/implement` -- Modify TestRunner + PropertyAttribute to invoke Shrinker on Interesting status
+
+---
+
+### 0.7 Failure Reporting (ADR-0022, Phase 0 scope)
+
+Phase 0 scope: format built-in primitive types (int, bool, byte[]) and report the seed. Full `IStrategyFormatter<T>` / `FormatterRegistry` deferred to Phase 1.
+
+#### Cycle 0.7.1 -- CounterexampleFormatter
+- [x] `/test` -- `src/Conjecture.Tests/Internal/CounterexampleFormatterTests.cs`
+  - Formats int param as `x = 6`
+  - Formats multiple params as `x = 6, y = -3` (one per line)
+  - Formats bool param as `flag = True`
+  - Includes seed in output: `Reproduce with: [Property(Seed = 0xDEADBEEF)]`
+  - Falls back to `ToString()` for unknown types
+- [x] `/implement` -- `src/Conjecture.Core/Internal/CounterexampleFormatter.cs`
+
+#### Cycle 0.7.2 -- Wire formatter into PropertyTestCaseRunner
+- [ ] `/test` -- `src/Conjecture.Tests/PropertyAttributeFailureMessageTests.cs`
+  - Failing `[Property]` test failure message contains param names and shrunk values
+  - Failure message contains seed for reproduction
+  - Passing test produces no failure message
+- [ ] `/implement` -- Modify `PropertyTestCaseRunner` to use `CounterexampleFormatter`
+  - `TestRunResult` extended to carry seed + parameter metadata
+
+---
+
+### 0.8 End-to-End Self Tests
+
+#### Cycle 0.8.1 -- Property attribute with shrinking end-to-end
+- [ ] `/test` -- `src/Conjecture.Tests/EndToEnd/PropertyShrinkingE2ETests.cs`
+  - `[Property]` test with int params that fails produces shrunk minimal counterexample in failure message
+  - `[Property]` test with multiple params shrinks each independently
+  - `[Property]` test that always passes runs full MaxExamples without error
+  - `[Property]` test using `Assume.That` discards invalid inputs and still shrinks on failure
+
+#### Cycle 0.8.2 -- Combinator integration end-to-end
+- [ ] `/test` -- `src/Conjecture.Tests/EndToEnd/CombinatorE2ETests.cs`
+  - `Select` (map) strategy generates transformed values end-to-end via TestRunner
+  - `Where` (filter) strategy rejects invalid values and shrinks result
+  - `SelectMany` (bind) with dependent generation shrinks both stages
+  - `Compose` (imperative) with multiple draws shrinks to minimal failing input
+
+#### Cycle 0.8.3 -- Shrink quality smoke tests
+- [ ] `/test` -- `src/Conjecture.Tests/EndToEnd/ShrinkQualityTests.cs`
+  - Integer >= threshold shrinks to exactly threshold (not threshold+1, not 0)
+  - Two integers whose sum exceeds threshold shrinks to minimal sum
+  - Boolean param that must be true shrinks to true (not false)
+  - Large bounded integer shrinks to smallest failing value within bounds
 
 ---
 
