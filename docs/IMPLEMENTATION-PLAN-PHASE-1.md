@@ -61,9 +61,9 @@ Each cycle: `/test` (Red) then `/implement` (Green). 10 sub-phases.
   - Update `PublicAPI.Unshipped.txt` (ADR-0002)
 
 #### Cycle 1.1.2 -- Gen.OneOf (union/choice strategy, ADR-0018)
-- [ ] `/test` -- `src/Conjecture.Tests/Strategies/OneOfStrategyTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Strategies/OneOfStrategyTests.cs`
   - `Gen.OneOf(Gen.Just(1), Gen.Just(2))` returns 1 or 2, distribution covers all branches over many draws, single-strategy OneOf delegates directly, empty array throws `ArgumentException`
-- [ ] `/implement` -- `src/Conjecture.Core/Strategies/OneOfStrategy.cs` + add `Gen.OneOf<T>(params Strategy<T>[])` to `Gen.cs`
+- [x] `/implement` -- `src/Conjecture.Core/Strategies/OneOfStrategy.cs` + add `Gen.OneOf<T>(params Strategy<T>[])` to `Gen.cs`
   - Uses `DrawInteger(0, n-1)` to pick index, then delegates to chosen strategy
   - Update `PublicAPI.Unshipped.txt`
 
