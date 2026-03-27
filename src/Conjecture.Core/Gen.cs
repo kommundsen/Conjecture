@@ -28,4 +28,7 @@ public static class Gen
 
     /// <summary>Returns a strategy that picks uniformly from <paramref name="values"/>.</summary>
     public static Strategy<T> SampledFrom<T>(IReadOnlyList<T> values) => new SampledFromStrategy<T>(values);
+
+    /// <summary>Returns a strategy that generates random <typeparamref name="T"/> enum values.</summary>
+    public static Strategy<T> Enums<T>() where T : struct, Enum => SampledFrom(Enum.GetValues<T>());
 }

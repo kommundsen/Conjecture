@@ -14,6 +14,7 @@ static Conjecture.Core.Gen.OneOf<T>(params Conjecture.Core.Generation.Strategy<T
 static Conjecture.Core.Gen.SampledFrom<T>(System.Collections.Generic.IReadOnlyList<T>! values) -> Conjecture.Core.Generation.Strategy<T>!
 static Conjecture.Core.Gen.Integers<T>() -> Conjecture.Core.Generation.Strategy<T>!
 static Conjecture.Core.Gen.Integers<T>(T min, T max) -> Conjecture.Core.Generation.Strategy<T>!
+static Conjecture.Core.Gen.Enums<T>() -> Conjecture.Core.Generation.Strategy<T>!
 Conjecture.Core.IGeneratorContext
 Conjecture.Core.IGeneratorContext.Assume(bool condition) -> void
 Conjecture.Core.IGeneratorContext.Next<T>(Conjecture.Core.Generation.Strategy<T>! strategy) -> T

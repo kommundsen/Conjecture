@@ -74,9 +74,9 @@ Each cycle: `/test` (Red) then `/implement` (Green). 10 sub-phases.
   - Update `PublicAPI.Unshipped.txt`
 
 #### Cycle 1.1.4 -- Gen.Enums (enum strategy)
-- [ ] `/test` -- `src/Conjecture.Tests/Strategies/EnumStrategyTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Strategies/EnumStrategyTests.cs`
   - `Gen.Enums<DayOfWeek>()` returns valid DayOfWeek values, covers all members over many draws, works with custom enums
-- [ ] `/implement` -- `src/Conjecture.Core/Strategies/EnumStrategy.cs` + add `Gen.Enums<T>() where T : struct, Enum` to `Gen.cs`
+- [x] `/implement` -- `src/Conjecture.Core/Strategies/EnumStrategy.cs` + add `Gen.Enums<T>() where T : struct, Enum` to `Gen.cs`
   - Pre-computes `Enum.GetValues<T>()` at construction (values cached, no per-draw reflection)
   - Update `PublicAPI.Unshipped.txt`
 
