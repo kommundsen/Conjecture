@@ -85,9 +85,9 @@ Each cycle: `/test` (Red) then `/implement` (Green). 10 sub-phases.
 ### 1.2 Floating Point Strategy (ADR-0011 extension)
 
 #### Cycle 1.2.1 -- FloatingPointStrategy core
-- [ ] `/test` -- `src/Conjecture.Tests/Strategies/FloatingPointStrategyTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Strategies/FloatingPointStrategyTests.cs`
   - `Gen.Doubles()` generates values in full double range, `Gen.Floats()` generates float values, deterministic with seed, includes both positive and negative values
-- [ ] `/implement` -- `src/Conjecture.Core/Strategies/FloatingPointStrategy.cs`
+- [x] `/implement` -- `src/Conjecture.Core/Strategies/FloatingPointStrategy.cs`
   - `class FloatingPointStrategy<T> : Strategy<T> where T : IBinaryFloatingPointIeee754<T>`
   - Draws raw bits via `DrawInteger` (64-bit for double, 32-bit for float), reinterprets as floating point
   - Add `Gen.Doubles()`, `Gen.Floats()` to `Gen.cs`

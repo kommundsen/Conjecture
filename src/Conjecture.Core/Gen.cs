@@ -31,4 +31,10 @@ public static class Gen
 
     /// <summary>Returns a strategy that generates random <typeparamref name="T"/> enum values.</summary>
     public static Strategy<T> Enums<T>() where T : struct, Enum => SampledFrom(Enum.GetValues<T>());
+
+    /// <summary>Returns a strategy that generates random <see cref="double"/> values across the full range.</summary>
+    public static Strategy<double> Doubles() => new FloatingPointStrategy<double>();
+
+    /// <summary>Returns a strategy that generates random <see cref="float"/> values across the full range.</summary>
+    public static Strategy<float> Floats() => new FloatingPointStrategy<float>();
 }
