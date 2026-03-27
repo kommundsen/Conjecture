@@ -100,9 +100,9 @@ Each cycle: `/test` (Red) then `/implement` (Green). 10 sub-phases.
   - Update `PublicAPI.Unshipped.txt`
 
 #### Cycle 1.2.3 -- Floating point special values (NaN, Infinity, subnormals)
-- [ ] `/test` -- `src/Conjecture.Tests/Strategies/FloatingPointSpecialValuesTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Strategies/FloatingPointSpecialValuesTests.cs`
   - Unbounded `Gen.Doubles()` can produce NaN, +Infinity, -Infinity over sufficient draws; `Gen.Doubles(0.0, 1.0)` never produces NaN/Infinity; subnormals are representable
-- [ ] `/implement` -- Modify `FloatingPointStrategy<T>` to bias toward special IEEE 754 values for unbounded; range-bounded excludes non-finite
+- [x] `/implement` -- Modify `FloatingPointStrategy<T>` to bias toward special IEEE 754 values for unbounded; range-bounded excludes non-finite
 
 ---
 

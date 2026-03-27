@@ -10,6 +10,30 @@ internal sealed class FloatingPointStrategy<T> : Strategy<T>
     // Cached once per T instantiation; avoids recomputing on every bounded draw.
     private static readonly T MaxUlong = T.CreateSaturating(ulong.MaxValue);
 
+    private static readonly ulong[] DoubleSpecialBits =
+    [
+        Unsafe.BitCast<double, ulong>(double.NaN),
+        Unsafe.BitCast<double, ulong>(double.PositiveInfinity),
+        Unsafe.BitCast<double, ulong>(double.NegativeInfinity),
+        Unsafe.BitCast<double, ulong>(0.0),
+        Unsafe.BitCast<double, ulong>(-0.0),
+        Unsafe.BitCast<double, ulong>(double.MaxValue),
+        Unsafe.BitCast<double, ulong>(double.MinValue),
+        Unsafe.BitCast<double, ulong>(double.Epsilon),
+    ];
+
+    private static readonly uint[] FloatSpecialBits =
+    [
+        Unsafe.BitCast<float, uint>(float.NaN),
+        Unsafe.BitCast<float, uint>(float.PositiveInfinity),
+        Unsafe.BitCast<float, uint>(float.NegativeInfinity),
+        Unsafe.BitCast<float, uint>(0f),
+        Unsafe.BitCast<float, uint>(-0f),
+        Unsafe.BitCast<float, uint>(float.MaxValue),
+        Unsafe.BitCast<float, uint>(float.MinValue),
+        Unsafe.BitCast<float, uint>(float.Epsilon),
+    ];
+
     private readonly bool bounded;
     private readonly T min;
     private readonly T range;
@@ -34,19 +58,26 @@ internal sealed class FloatingPointStrategy<T> : Strategy<T>
             return min + range * t;
         }
 
+        var bias = data.DrawInteger(0UL, 63UL);
+        return DrawUnbounded(data, useSpecial: bias == 0);
+    }
+
+    private T DrawUnbounded(ConjectureData data, bool useSpecial)
+    {
         if (Unsafe.SizeOf<T>() == sizeof(double))
         {
-            var bits = data.DrawInteger(0UL, ulong.MaxValue);
+            var bits = useSpecial
+                ? DoubleSpecialBits[(int)data.DrawInteger(0UL, (ulong)(DoubleSpecialBits.Length - 1))]
+                : data.DrawInteger(0UL, ulong.MaxValue);
             return Unsafe.BitCast<ulong, T>(bits);
         }
-        else if (Unsafe.SizeOf<T>() == sizeof(float))
+        if (Unsafe.SizeOf<T>() == sizeof(float))
         {
-            var bits = (uint)data.DrawInteger(0UL, uint.MaxValue);
+            var bits = useSpecial
+                ? FloatSpecialBits[(int)data.DrawInteger(0UL, (ulong)(FloatSpecialBits.Length - 1))]
+                : (uint)data.DrawInteger(0UL, uint.MaxValue);
             return Unsafe.BitCast<uint, T>(bits);
         }
-        else
-        {
-            throw new NotSupportedException($"FloatingPointStrategy does not support {typeof(T).Name} (size={Unsafe.SizeOf<T>()}).");
-        }
+        throw new NotSupportedException($"FloatingPointStrategy does not support {typeof(T).Name} (size={Unsafe.SizeOf<T>()}).");
     }
 }
