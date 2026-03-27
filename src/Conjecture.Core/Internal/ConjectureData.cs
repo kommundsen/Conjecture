@@ -4,17 +4,17 @@ namespace Conjecture.Core.Internal;
 
 internal sealed class ConjectureData
 {
-    private readonly IRandom? _rng;
-    private readonly IReadOnlyList<IRNode>? _replayNodes;
-    private int _cursor;
-    private readonly List<IRNode> _nodes = [];
-    private bool _frozen;
+    private readonly IRandom? rng;
+    private readonly IReadOnlyList<IRNode>? replayNodes;
+    private int cursor;
+    private readonly List<IRNode> nodes = [];
+    private bool frozen;
 
     internal Status Status { get; private set; } = Status.Valid;
-    internal IReadOnlyList<IRNode> IRNodes => _nodes;
+    internal IReadOnlyList<IRNode> IRNodes => nodes;
 
-    private ConjectureData(IRandom rng) => _rng = rng;
-    private ConjectureData(IReadOnlyList<IRNode> nodes) => _replayNodes = nodes;
+    private ConjectureData(IRandom rng) => this.rng = rng;
+    private ConjectureData(IReadOnlyList<IRNode> nodes) => replayNodes = nodes;
 
     internal static ConjectureData ForGeneration(IRandom rng) => new(rng);
     internal static ConjectureData ForRecord(IReadOnlyList<IRNode> nodes) => new(nodes);
@@ -22,46 +22,46 @@ internal sealed class ConjectureData
     internal ulong DrawInteger(ulong min, ulong max)
     {
         CheckCanDraw();
-        if (_replayNodes is not null)
+        if (replayNodes is not null)
         {
             var node = ConsumeReplayNode();
-            _nodes.Add(node);
+            nodes.Add(node);
             return node.Value;
         }
-        var value = PrngAdapter.NextUInt64(_rng!, max - min) + min;
-        _nodes.Add(IRNode.ForInteger(value, min, max));
+        var value = PrngAdapter.NextUInt64(rng!, max - min) + min;
+        nodes.Add(IRNode.ForInteger(value, min, max));
         return value;
     }
 
     internal bool DrawBoolean()
     {
         CheckCanDraw();
-        if (_replayNodes is not null)
+        if (replayNodes is not null)
         {
             var node = ConsumeReplayNode();
-            _nodes.Add(node);
+            nodes.Add(node);
             return node.Value == 1UL;
         }
-        var value = (_rng!.NextUInt64() & 1UL) == 1UL;
-        _nodes.Add(IRNode.ForBoolean(value));
+        var value = (rng!.NextUInt64() & 1UL) == 1UL;
+        nodes.Add(IRNode.ForBoolean(value));
         return value;
     }
 
     internal byte[] DrawBytes(int length)
     {
         CheckCanDraw();
-        if (_replayNodes is not null)
+        if (replayNodes is not null)
         {
             var node = ConsumeReplayNode();
-            _nodes.Add(node);
+            nodes.Add(node);
             return node.RawBytes ?? new byte[(int)node.Value];
         }
         var rented = ArrayPool<byte>.Shared.Rent(length);
         try
         {
-            _rng!.NextBytes(rented.AsSpan(0, length));
+            rng!.NextBytes(rented.AsSpan(0, length));
             var result = rented[..length];
-            _nodes.Add(IRNode.ForBytes(length, result));
+            nodes.Add(IRNode.ForBytes(length, result));
             return result;
         }
         finally
@@ -72,21 +72,21 @@ internal sealed class ConjectureData
 
     internal void MarkInvalid() => Status = Status.Invalid;
     internal void MarkInteresting() => Status = Status.Interesting;
-    internal void Freeze() => _frozen = true;
+    internal void Freeze() => frozen = true;
 
     private IRNode ConsumeReplayNode()
     {
-        if (_cursor >= _replayNodes!.Count)
+        if (cursor >= replayNodes!.Count)
         {
             Status = Status.Overrun;
             throw new InvalidOperationException("Replay buffer exhausted.");
         }
-        return _replayNodes[_cursor++];
+        return replayNodes[cursor++];
     }
 
     private void CheckCanDraw()
     {
-        if (_frozen || Status != Status.Valid)
+        if (frozen || Status != Status.Valid)
             throw new InvalidOperationException("Cannot draw from a frozen or non-valid ConjectureData.");
     }
 }

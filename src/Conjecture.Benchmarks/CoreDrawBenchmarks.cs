@@ -12,16 +12,16 @@ namespace Conjecture.Benchmarks;
 [SimpleJob]
 public class CoreDrawBenchmarks
 {
-    private SplittableRandom _rng = null!;
-    private Strategy<int> _integers = null!;
-    private Strategy<bool> _booleans = null!;
+    private SplittableRandom rng = null!;
+    private Strategy<int> integers = null!;
+    private Strategy<bool> booleans = null!;
 
     [GlobalSetup]
     public void Setup()
     {
-        _rng = new SplittableRandom(42UL);
-        _integers = Gen.Integers<int>();
-        _booleans = Gen.Booleans();
+        rng = new SplittableRandom(42UL);
+        integers = Gen.Integers<int>();
+        booleans = Gen.Booleans();
     }
 
     // --- ConjectureData raw draws ---
@@ -29,14 +29,14 @@ public class CoreDrawBenchmarks
     [Benchmark]
     public ulong DrawInteger()
     {
-        var data = ConjectureData.ForGeneration(_rng.Split());
+        var data = ConjectureData.ForGeneration(rng.Split());
         return data.DrawInteger(0, ulong.MaxValue);
     }
 
     [Benchmark]
     public bool DrawBoolean()
     {
-        var data = ConjectureData.ForGeneration(_rng.Split());
+        var data = ConjectureData.ForGeneration(rng.Split());
         return data.DrawBoolean();
     }
 
@@ -46,7 +46,7 @@ public class CoreDrawBenchmarks
     [Benchmark]
     public byte[] DrawBytes()
     {
-        var data = ConjectureData.ForGeneration(_rng.Split());
+        var data = ConjectureData.ForGeneration(rng.Split());
         return data.DrawBytes(ByteLength);
     }
 
@@ -55,14 +55,14 @@ public class CoreDrawBenchmarks
     [Benchmark]
     public int IntegerStrategyNext()
     {
-        var data = ConjectureData.ForGeneration(_rng.Split());
-        return _integers.Next(data);
+        var data = ConjectureData.ForGeneration(rng.Split());
+        return integers.Next(data);
     }
 
     [Benchmark]
     public bool BooleanStrategyNext()
     {
-        var data = ConjectureData.ForGeneration(_rng.Split());
-        return _booleans.Next(data);
+        var data = ConjectureData.ForGeneration(rng.Split());
+        return booleans.Next(data);
     }
 }

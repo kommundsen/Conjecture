@@ -4,9 +4,9 @@ namespace Conjecture.Core.Generation;
 
 internal sealed class JustStrategy<T> : Strategy<T>
 {
-    private readonly T _value;
+    private readonly T value;
 
-    internal JustStrategy(T value) => _value = value;
+    internal JustStrategy(T value) => this.value = value;
 
-    internal override T Next(ConjectureData data) => _value;
+    internal override T Next(ConjectureData data) => value;
 }

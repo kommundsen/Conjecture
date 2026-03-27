@@ -10,9 +10,9 @@ internal sealed class FloatingPointStrategy<T> : Strategy<T>
     // Cached once per T instantiation; avoids recomputing on every bounded draw.
     private static readonly T MaxUlong = T.CreateSaturating(ulong.MaxValue);
 
-    private readonly bool _bounded;
-    private readonly T _min;
-    private readonly T _range;
+    private readonly bool bounded;
+    private readonly T min;
+    private readonly T range;
 
     internal FloatingPointStrategy() { }
 
@@ -20,18 +20,18 @@ internal sealed class FloatingPointStrategy<T> : Strategy<T>
     {
         if (max < min)
             throw new ArgumentException($"max ({max}) must be >= min ({min}).", nameof(max));
-        _bounded = true;
-        _min = min;
-        _range = max - min;
+        bounded = true;
+        this.min = min;
+        range = max - min;
     }
 
     internal override T Next(ConjectureData data)
     {
-        if (_bounded)
+        if (bounded)
         {
             var raw = data.DrawInteger(0UL, ulong.MaxValue);
             var t = T.CreateSaturating(raw) / MaxUlong;
-            return _min + _range * t;
+            return min + range * t;
         }
 
         if (Unsafe.SizeOf<T>() == sizeof(double))

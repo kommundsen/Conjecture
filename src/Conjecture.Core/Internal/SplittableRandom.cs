@@ -11,14 +11,14 @@ internal interface IRandom
 
 internal sealed class SplittableRandom : IRandom
 {
-    private ulong _state;
+    private ulong state;
 
-    internal SplittableRandom(ulong seed) => _state = seed;
+    internal SplittableRandom(ulong seed) => state = seed;
 
     public ulong NextUInt64()
     {
-        _state += 0x9e3779b97f4a7c15UL;
-        var z = _state;
+        state += 0x9e3779b97f4a7c15UL;
+        var z = state;
         z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9UL;
         z = (z ^ (z >> 27)) * 0x94d049bb133111ebUL;
         return z ^ (z >> 31);

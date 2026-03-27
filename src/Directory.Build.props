@@ -3,6 +3,7 @@
     <!-- Docs & warnings -->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <NoWarn>$(NoWarn);CS1573</NoWarn> <!-- Allow undocumented params on overrides -->
 
     <!-- Nullability -->

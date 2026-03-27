@@ -8,8 +8,8 @@ namespace Conjecture.Xunit.Internal;
 
 internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
 {
-    private readonly int _maxExamples;
-    private readonly ulong? _seed;
+    private readonly int maxExamples;
+    private readonly ulong? seed;
 
     internal PropertyTestCaseRunner(
         PropertyTestCase testCase,
@@ -22,8 +22,8 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
         : base(testCase, displayName, skipReason, constructorArguments,
                Array.Empty<object>(), messageBus, aggregator, cancellationTokenSource)
     {
-        _maxExamples = testCase.MaxExamples;
-        _seed = testCase.Seed;
+        maxExamples = testCase.MaxExamples;
+        seed = testCase.Seed;
     }
 
     protected override async Task<RunSummary> RunTestAsync()
@@ -42,7 +42,7 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
         {
             var testInstance = Activator.CreateInstance(TestClass);
             var methodInfo = TestMethod;
-            var settings = new ConjectureSettings { MaxExamples = _maxExamples, Seed = _seed };
+            var settings = new ConjectureSettings { MaxExamples = maxExamples, Seed = seed };
 
             result = TestRunner.Run(settings, data =>
             {

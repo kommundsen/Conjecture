@@ -5,10 +5,10 @@ namespace Conjecture.Xunit.Internal;
 
 internal sealed class PropertyTestCaseDiscoverer : IXunitTestCaseDiscoverer
 {
-    private readonly IMessageSink _diagnosticMessageSink;
+    private readonly IMessageSink diagnosticMessageSink;
 
     public PropertyTestCaseDiscoverer(IMessageSink diagnosticMessageSink)
-        => _diagnosticMessageSink = diagnosticMessageSink;
+        => this.diagnosticMessageSink = diagnosticMessageSink;
 
     public IEnumerable<IXunitTestCase> Discover(
         ITestFrameworkDiscoveryOptions discoveryOptions,
@@ -22,7 +22,7 @@ internal sealed class PropertyTestCaseDiscoverer : IXunitTestCaseDiscoverer
         var seed = rawSeed == 0UL ? (ulong?)null : rawSeed;
 
         yield return new PropertyTestCase(
-            _diagnosticMessageSink,
+            diagnosticMessageSink,
             discoveryOptions.MethodDisplayOrDefault(),
             discoveryOptions.MethodDisplayOptionsOrDefault(),
             testMethod,
