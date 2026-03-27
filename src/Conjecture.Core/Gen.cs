@@ -35,6 +35,12 @@ public static class Gen
     /// <summary>Returns a strategy that generates random <see cref="double"/> values across the full range.</summary>
     public static Strategy<double> Doubles() => new FloatingPointStrategy<double>();
 
+    /// <summary>Returns a strategy that generates random <see cref="double"/> values in [<paramref name="min"/>, <paramref name="max"/>].</summary>
+    public static Strategy<double> Doubles(double min, double max) => new FloatingPointStrategy<double>(min, max);
+
     /// <summary>Returns a strategy that generates random <see cref="float"/> values across the full range.</summary>
     public static Strategy<float> Floats() => new FloatingPointStrategy<float>();
+
+    /// <summary>Returns a strategy that generates random <see cref="float"/> values in [<paramref name="min"/>, <paramref name="max"/>].</summary>
+    public static Strategy<float> Floats(float min, float max) => new FloatingPointStrategy<float>(min, max);
 }

@@ -94,9 +94,9 @@ Each cycle: `/test` (Red) then `/implement` (Green). 10 sub-phases.
   - Update `PublicAPI.Unshipped.txt`
 
 #### Cycle 1.2.2 -- Floating point range constraints
-- [ ] `/test` -- `src/Conjecture.Tests/Strategies/FloatingPointRangeTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Strategies/FloatingPointRangeTests.cs`
   - `Gen.Doubles(0.0, 1.0)` stays in [0,1], `Gen.Floats(-1f, 1f)` stays in [-1,1], min==max returns constant, min>max throws `ArgumentException`
-- [ ] `/implement` -- Add range overloads `Gen.Doubles(min, max)`, `Gen.Floats(min, max)` to `Gen.cs`; extend `FloatingPointStrategy<T>` with range support
+- [x] `/implement` -- Add range overloads `Gen.Doubles(min, max)`, `Gen.Floats(min, max)` to `Gen.cs`; extend `FloatingPointStrategy<T>` with range support
   - Update `PublicAPI.Unshipped.txt`
 
 #### Cycle 1.2.3 -- Floating point special values (NaN, Infinity, subnormals)
