@@ -1,0 +1,7 @@
+#nullable enable
+Conjecture.Xunit.PropertyAttribute
+Conjecture.Xunit.PropertyAttribute.MaxExamples.get -> int
+Conjecture.Xunit.PropertyAttribute.MaxExamples.set -> void
+Conjecture.Xunit.PropertyAttribute.PropertyAttribute() -> void
+Conjecture.Xunit.PropertyAttribute.Seed.get -> ulong
+Conjecture.Xunit.PropertyAttribute.Seed.set -> void

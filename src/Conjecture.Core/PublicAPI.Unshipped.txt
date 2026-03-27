@@ -1,0 +1,31 @@
+#nullable enable
+Conjecture.Core.Assume
+static Conjecture.Core.Assume.That(bool condition) -> void
+Conjecture.Core.ConjectureSettings
+Conjecture.Core.ConjectureSettings.MaxExamples.get -> int
+Conjecture.Core.ConjectureSettings.MaxExamples.init -> void
+Conjecture.Core.ConjectureSettings.Seed.get -> ulong?
+Conjecture.Core.ConjectureSettings.Seed.init -> void
+Conjecture.Core.Gen
+static Conjecture.Core.Gen.Booleans() -> Conjecture.Core.Generation.Strategy<bool>!
+static Conjecture.Core.Gen.Bytes(int size) -> Conjecture.Core.Generation.Strategy<byte[]!>!
+static Conjecture.Core.Gen.Integers<T>() -> Conjecture.Core.Generation.Strategy<T>!
+static Conjecture.Core.Gen.Integers<T>(T min, T max) -> Conjecture.Core.Generation.Strategy<T>!
+Conjecture.Core.IGeneratorContext
+Conjecture.Core.IGeneratorContext.Assume(bool condition) -> void
+Conjecture.Core.IGeneratorContext.Next<T>(Conjecture.Core.Generation.Strategy<T>! strategy) -> T
+Conjecture.Core.Strategies
+static Conjecture.Core.Strategies.Compose<T>(System.Func<Conjecture.Core.IGeneratorContext!, T>! factory) -> Conjecture.Core.Generation.Strategy<T>!
+Conjecture.Core.UnsatisfiedAssumptionException
+Conjecture.Core.UnsatisfiedAssumptionException.UnsatisfiedAssumptionException() -> void
+Conjecture.Core.Formatting.IStrategyFormatter<T>
+Conjecture.Core.Formatting.IStrategyFormatter<T>.Format(T value) -> string!
+Conjecture.Core.Generation.Strategy<T>
+Conjecture.Core.Generation.Strategy<T>.Strategy() -> void
+Conjecture.Core.Generation.StrategyExtensions
+static Conjecture.Core.Generation.StrategyExtensions.Select<TSource, TResult>(this Conjecture.Core.Generation.Strategy<TSource>! source, System.Func<TSource, TResult>! selector) -> Conjecture.Core.Generation.Strategy<TResult>!
+static Conjecture.Core.Generation.StrategyExtensions.SelectMany<TSource, TResult>(this Conjecture.Core.Generation.Strategy<TSource>! source, System.Func<TSource, Conjecture.Core.Generation.Strategy<TResult>!>! selector) -> Conjecture.Core.Generation.Strategy<TResult>!
+static Conjecture.Core.Generation.StrategyExtensions.SelectMany<TSource, TCollection, TResult>(this Conjecture.Core.Generation.Strategy<TSource>! source, System.Func<TSource, Conjecture.Core.Generation.Strategy<TCollection>!>! collectionSelector, System.Func<TSource, TCollection, TResult>! resultSelector) -> Conjecture.Core.Generation.Strategy<TResult>!
+static Conjecture.Core.Generation.StrategyExtensions.Where<T>(this Conjecture.Core.Generation.Strategy<T>! source, System.Func<T, bool>! predicate) -> Conjecture.Core.Generation.Strategy<T>!
+static Conjecture.Core.Generation.StrategyExtensions.Zip<TFirst, TSecond>(this Conjecture.Core.Generation.Strategy<TFirst>! first, Conjecture.Core.Generation.Strategy<TSecond>! second) -> Conjecture.Core.Generation.Strategy<(TFirst, TSecond)>!
+static Conjecture.Core.Generation.StrategyExtensions.Zip<TFirst, TSecond, TResult>(this Conjecture.Core.Generation.Strategy<TFirst>! first, Conjecture.Core.Generation.Strategy<TSecond>! second, System.Func<TFirst, TSecond, TResult>! resultSelector) -> Conjecture.Core.Generation.Strategy<TResult>!
