@@ -25,4 +25,7 @@ public static class Gen
 
     /// <summary>Returns a strategy that picks uniformly among <paramref name="strategies"/>.</summary>
     public static Strategy<T> OneOf<T>(params Strategy<T>[] strategies) => new OneOfStrategy<T>(strategies);
+
+    /// <summary>Returns a strategy that picks uniformly from <paramref name="values"/>.</summary>
+    public static Strategy<T> SampledFrom<T>(IReadOnlyList<T> values) => new SampledFromStrategy<T>(values);
 }

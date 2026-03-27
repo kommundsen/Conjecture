@@ -68,9 +68,9 @@ Each cycle: `/test` (Red) then `/implement` (Green). 10 sub-phases.
   - Update `PublicAPI.Unshipped.txt`
 
 #### Cycle 1.1.3 -- Gen.SampledFrom (pick from fixed set)
-- [ ] `/test` -- `src/Conjecture.Tests/Strategies/SampledFromStrategyTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Strategies/SampledFromStrategyTests.cs`
   - `Gen.SampledFrom([1, 2, 3])` returns only values from set, empty throws `ArgumentException`, single-element always returns that element, deterministic with seed
-- [ ] `/implement` -- `src/Conjecture.Core/Strategies/SampledFromStrategy.cs` + add `Gen.SampledFrom<T>(IReadOnlyList<T>)` to `Gen.cs`
+- [x] `/implement` -- `src/Conjecture.Core/Strategies/SampledFromStrategy.cs` + add `Gen.SampledFrom<T>(IReadOnlyList<T>)` to `Gen.cs`
   - Update `PublicAPI.Unshipped.txt`
 
 #### Cycle 1.1.4 -- Gen.Enums (enum strategy)

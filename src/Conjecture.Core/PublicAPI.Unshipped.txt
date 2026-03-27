@@ -11,6 +11,7 @@ static Conjecture.Core.Gen.Booleans() -> Conjecture.Core.Generation.Strategy<boo
 static Conjecture.Core.Gen.Bytes(int size) -> Conjecture.Core.Generation.Strategy<byte[]!>!
 static Conjecture.Core.Gen.Just<T>(T value) -> Conjecture.Core.Generation.Strategy<T>!
 static Conjecture.Core.Gen.OneOf<T>(params Conjecture.Core.Generation.Strategy<T>![]! strategies) -> Conjecture.Core.Generation.Strategy<T>!
+static Conjecture.Core.Gen.SampledFrom<T>(System.Collections.Generic.IReadOnlyList<T>! values) -> Conjecture.Core.Generation.Strategy<T>!
 static Conjecture.Core.Gen.Integers<T>() -> Conjecture.Core.Generation.Strategy<T>!
 static Conjecture.Core.Gen.Integers<T>(T min, T max) -> Conjecture.Core.Generation.Strategy<T>!
 Conjecture.Core.IGeneratorContext
