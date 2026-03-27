@@ -55,9 +55,9 @@ Each cycle: `/test` (Red) then `/implement` (Green). 10 sub-phases.
 ### 1.1 Simple Choice Strategies
 
 #### Cycle 1.1.1 -- Gen.Just (constant strategy)
-- [ ] `/test` -- `src/Conjecture.Tests/Strategies/JustStrategyTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Strategies/JustStrategyTests.cs`
   - `Gen.Just(42)` always returns 42, `Gen.Just("hello")` always returns `"hello"`, draws zero IR nodes from ConjectureData, works with Select combinator
-- [ ] `/implement` -- `src/Conjecture.Core/Strategies/JustStrategy.cs` + add `Gen.Just<T>(T value)` to `Gen.cs`
+- [x] `/implement` -- `src/Conjecture.Core/Strategies/JustStrategy.cs` + add `Gen.Just<T>(T value)` to `Gen.cs`
   - Update `PublicAPI.Unshipped.txt` (ADR-0002)
 
 #### Cycle 1.1.2 -- Gen.OneOf (union/choice strategy, ADR-0018)

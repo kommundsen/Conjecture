@@ -19,4 +19,7 @@ public static class Gen
 
     /// <summary>Returns a strategy that generates random byte arrays of length <paramref name="size"/>.</summary>
     public static Strategy<byte[]> Bytes(int size) => new BytesStrategy(size);
+
+    /// <summary>Returns a strategy that always produces <paramref name="value"/>.</summary>
+    public static Strategy<T> Just<T>(T value) => new JustStrategy<T>(value);
 }
