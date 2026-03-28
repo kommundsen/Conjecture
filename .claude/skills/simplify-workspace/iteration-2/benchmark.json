@@ -1,0 +1,167 @@
+{
+  "metadata": {
+    "skill_name": "simplify",
+    "skill_path": ".claude/skills/simplify",
+    "executor_model": "claude-sonnet-4-6",
+    "analyzer_model": "claude-sonnet-4-6",
+    "timestamp": "2026-03-28T19:00:00Z",
+    "evals_run": ["comment-cleanup", "hot-path-efficiency", "duplicate-alphabet"],
+    "runs_per_configuration": 1
+  },
+
+  "runs": [
+    {
+      "eval_id": 1,
+      "eval_name": "comment-cleanup",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.75,
+        "passed": 3,
+        "failed": 1,
+        "total": 4,
+        "time_seconds": 284.3,
+        "tokens": 33009
+      },
+      "expectations": [
+        {"text": "All obvious what-comments are removed", "passed": true, "evidence": "All 12 what-comments removed."},
+        {"text": "No structural changes beyond comment removal", "passed": true, "evidence": "Only comment removal. Agent 3 found no efficiency issues — DefaultAlphabet extraction NOT attempted. Scope guidance worked."},
+        {"text": "dotnet test src/ passes after changes", "passed": true, "evidence": "197/197 total tests passed."},
+        {"text": "No files outside StringStrategy.cs were modified", "passed": false, "evidence": "StringStrategy.cs didn't exist in worktree; agent created it plus supporting files. Worktree state issue, not skill behavior."}
+      ],
+      "notes": ["Key improvement vs iteration-1: with_skill no longer over-reaches on narrow asks. Up from 0.50 → 0.75."]
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "comment-cleanup",
+      "configuration": "old_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.50,
+        "passed": 2,
+        "failed": 2,
+        "total": 4,
+        "time_seconds": 320.4,
+        "tokens": 48199
+      },
+      "expectations": [
+        {"text": "All obvious what-comments are removed", "passed": true, "evidence": "10 what-comments removed."},
+        {"text": "No structural changes beyond comment removal", "passed": true, "evidence": "No structural changes in this run."},
+        {"text": "dotnet test src/ passes after changes", "passed": false, "evidence": "Agent only ran 4 filtered tests. Full suite not executed."},
+        {"text": "No files outside StringStrategy.cs were modified", "passed": false, "evidence": "Created StringStrategy.cs, StringStrategyTests.cs, modified Gen.cs and PublicAPI.Unshipped.txt. Same worktree state issue."}
+      ],
+      "notes": ["Old skill: same score as iteration-1 baseline (0.50). Full suite check absent."]
+    },
+
+    {
+      "eval_id": 2,
+      "eval_name": "hot-path-efficiency",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 171.2,
+        "tokens": 29207
+      },
+      "expectations": [
+        {"text": "List<T> is constructed with capacity hint (new List<T>(length)) rather than default constructor", "passed": true, "evidence": "new List<T>(length) applied."},
+        {"text": "dotnet test src/ passes after changes", "passed": true, "evidence": "193 tests passed (full suite for this worktree state)."},
+        {"text": "No files outside ListStrategy.cs were modified", "passed": true, "evidence": "Only ListStrategy.cs created/modified."}
+      ],
+      "notes": ["Consistent with iteration-1: 1.0 on broad simplify ask."]
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "hot-path-efficiency",
+      "configuration": "old_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 165.4,
+        "tokens": 34204
+      },
+      "expectations": [
+        {"text": "List<T> is constructed with capacity hint (new List<T>(length)) rather than default constructor", "passed": true, "evidence": "new List<T>() → new List<T>(length)."},
+        {"text": "dotnet test src/ passes after changes", "passed": true, "evidence": "197/197 total tests passed."},
+        {"text": "No files outside ListStrategy.cs were modified", "passed": true, "evidence": "Only ListStrategy.cs modified."}
+      ],
+      "notes": ["Old skill also scored 1.0 here — both versions perform equally on broad simplify asks."]
+    },
+
+    {
+      "eval_id": 3,
+      "eval_name": "duplicate-alphabet",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.75,
+        "passed": 3,
+        "failed": 1,
+        "total": 4,
+        "time_seconds": 228.1,
+        "tokens": 49348
+      },
+      "expectations": [
+        {"text": "A single private static readonly field replaces the two duplicate inline Enumerable.Range expressions", "passed": true, "evidence": "'private static readonly char[] PrintableAscii' extracted in Gen.cs."},
+        {"text": "Both Gen.Chars() and Gen.Strings() reference that shared field rather than computing inline", "passed": true, "evidence": "Chars() uses SampledFrom(PrintableAscii); Strings() uses 'alphabet ?? PrintableAscii'."},
+        {"text": "dotnet test src/ passes after changes", "passed": true, "evidence": "199/199 tests passed."},
+        {"text": "No files outside Gen.cs were modified", "passed": false, "evidence": "PublicAPI.Unshipped.txt updated — build enforcer required it since Chars/Strings weren't yet declared. Worktree state issue."}
+      ],
+      "notes": ["Down from 1.0 (iteration-1) to 0.75 due to worktree state difference (PublicAPI.Unshipped.txt). Core skill behavior unchanged."]
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "duplicate-alphabet",
+      "configuration": "old_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.25,
+        "passed": 1,
+        "failed": 3,
+        "total": 4,
+        "time_seconds": 159.2,
+        "tokens": 35235
+      },
+      "expectations": [
+        {"text": "A single private static readonly field replaces the two duplicate inline Enumerable.Range expressions", "passed": false, "evidence": "Agent used 'private const char PrintableAsciiMin/Max' for range bounds — different approach, not a shared char[] array."},
+        {"text": "Both Gen.Chars() and Gen.Strings() reference that shared field rather than computing inline", "passed": false, "evidence": "Agent created a CharStrategy class and rewrote the architecture; methods don't reference a common char[] field."},
+        {"text": "dotnet test src/ passes after changes", "passed": true, "evidence": "193/193 tests passed."},
+        {"text": "No files outside Gen.cs were modified", "passed": false, "evidence": "Created CharStrategy.cs, StringStrategy.cs, modified PublicAPI.Unshipped.txt — wholesale reimplementation rather than targeted simplification."}
+      ],
+      "notes": ["Old skill went off-rails on this eval — reimplemented the whole architecture instead of making a targeted extraction. Major scope violation."]
+    }
+  ],
+
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {"mean": 0.833, "stddev": 0.118, "min": 0.75, "max": 1.0},
+      "time_seconds": {"mean": 227.9, "stddev": 46.2, "min": 171.2, "max": 284.3},
+      "tokens": {"mean": 37188, "stddev": 8738, "min": 29207, "max": 49348}
+    },
+    "old_skill": {
+      "pass_rate": {"mean": 0.583, "stddev": 0.312, "min": 0.25, "max": 1.0},
+      "time_seconds": {"mean": 215.0, "stddev": 74.6, "min": 159.2, "max": 320.4},
+      "tokens": {"mean": 39213, "stddev": 6368, "min": 35235, "max": 48199}
+    },
+    "delta": {
+      "pass_rate": "+0.25",
+      "time_seconds": "+12.9",
+      "tokens": "-2025"
+    }
+  },
+
+  "notes": [
+    "Primary improvement: comment-cleanup 0.50 → 0.75. New scope guidance correctly suppressed DefaultAlphabet extraction on narrow ask.",
+    "hot-path-efficiency: both versions score 1.0 — broad 'simplify' asks work well with either skill version.",
+    "duplicate-alphabet: with_skill 0.75 (down from 1.0 due to worktree state); old_skill collapsed to 0.25 (reimplemented architecture instead of targeted extraction).",
+    "Assertion 'No files outside X modified' is affected by worktree state — files not committed to main appear absent, causing agents to create rather than simplify. This inflates the file-scope failure rate for both configurations.",
+    "with_skill variance dropped dramatically vs old_skill (stddev 0.118 vs 0.312) — the new skill is more consistent.",
+    "with_skill uses slightly fewer tokens on average (-2025) despite same architecture. Old skill's off-rails duplicate-alphabet run consumed extra tokens."
+  ]
+}

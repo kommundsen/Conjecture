@@ -1,0 +1,10 @@
+{
+  "eval_id": 2,
+  "eval_name": "hot-path-efficiency",
+  "prompt": "ListStrategy.cs looks a bit rough from the implement phase — simplify it.",
+  "assertions": [
+    "List<T> is constructed with capacity hint (new List<T>(length)) rather than default constructor",
+    "dotnet test src/ passes after changes",
+    "No files outside ListStrategy.cs were modified"
+  ]
+}

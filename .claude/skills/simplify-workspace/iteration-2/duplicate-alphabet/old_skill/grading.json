@@ -1,0 +1,24 @@
+{
+  "expectations": [
+    {
+      "text": "A single private static readonly field replaces the two duplicate inline Enumerable.Range expressions",
+      "passed": false,
+      "evidence": "Agent used 'private const char PrintableAsciiMin/Max' (range bounds) instead of a shared 'char[]' array — a different deduplication approach that doesn't match the specified pattern."
+    },
+    {
+      "text": "Both Gen.Chars() and Gen.Strings() reference that shared field rather than computing inline",
+      "passed": false,
+      "evidence": "Agent created a separate CharStrategy class and rewrote the architecture rather than extracting a shared array. The two methods don't reference a common char[] field."
+    },
+    {
+      "text": "dotnet test src/ passes after changes",
+      "passed": true,
+      "evidence": "193/193 tests passed."
+    },
+    {
+      "text": "No files outside Gen.cs were modified",
+      "passed": false,
+      "evidence": "Agent created CharStrategy.cs, StringStrategy.cs, and modified PublicAPI.Unshipped.txt — a wholesale reimplementation, not a targeted simplification."
+    }
+  ]
+}

@@ -1,0 +1,166 @@
+{
+  "metadata": {
+    "skill_name": "simplify",
+    "skill_path": ".claude/skills/simplify",
+    "executor_model": "claude-sonnet-4-6",
+    "analyzer_model": "claude-sonnet-4-6",
+    "timestamp": "2026-03-28T17:30:00Z",
+    "evals_run": ["comment-cleanup", "hot-path-efficiency", "duplicate-alphabet"],
+    "runs_per_configuration": 1
+  },
+
+  "runs": [
+    {
+      "eval_id": 1,
+      "eval_name": "comment-cleanup",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.50,
+        "passed": 2,
+        "failed": 2,
+        "total": 4,
+        "time_seconds": 161.7,
+        "tokens": 25823
+      },
+      "expectations": [
+        {"text": "All obvious what-comments are removed", "passed": true, "evidence": "All 11 what-comments removed: class-level, field-level, constructor body, and method body comments."},
+        {"text": "No structural changes beyond comment removal", "passed": false, "evidence": "Agent also extracted default alphabet to 'private static readonly char[] DefaultAlphabet' — structural refactor beyond comment cleanup scope."},
+        {"text": "dotnet test src/ passes after changes", "passed": false, "evidence": "Agent only ran filtered StringStrategy tests (4/4). Full suite 'dotnet test src/' was not executed."},
+        {"text": "No files outside StringStrategy.cs were modified", "passed": true, "evidence": "Only StringStrategy.cs was modified."}
+      ],
+      "notes": ["Skill's 3-agent structure caused Agent 3 (Efficiency) to flag the DefaultAlphabet extraction as an improvement, going beyond the comment-only scope."]
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "comment-cleanup",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.75,
+        "passed": 3,
+        "failed": 1,
+        "total": 4,
+        "time_seconds": 110.7,
+        "tokens": 20737
+      },
+      "expectations": [
+        {"text": "All obvious what-comments are removed", "passed": true, "evidence": "All inline comments removed (class-level, field-level, constructor body, method body)."},
+        {"text": "No structural changes beyond comment removal", "passed": true, "evidence": "Only comment removal done. Braces added to for-loop body was forced by IDE0011 — not a voluntary structural change."},
+        {"text": "dotnet test src/ passes after changes", "passed": false, "evidence": "Agent only ran filtered StringStrategy tests (4/4). Full suite 'dotnet test src/' was not executed."},
+        {"text": "No files outside StringStrategy.cs were modified", "passed": true, "evidence": "Only StringStrategy.cs was modified."}
+      ],
+      "notes": ["Ironically scored higher than with_skill on this eval — the skill over-reached by having Agent 3 find efficiency improvements beyond the comment-only task."]
+    },
+
+    {
+      "eval_id": 2,
+      "eval_name": "hot-path-efficiency",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 149.8,
+        "tokens": 26842
+      },
+      "expectations": [
+        {"text": "List<T> is constructed with capacity hint (new List<T>(length)) rather than default constructor", "passed": true, "evidence": "Agent changed 'new List<T>()' to 'new List<T>(length)'."},
+        {"text": "dotnet test src/ passes after changes", "passed": true, "evidence": "197/197 total tests passed after fix."},
+        {"text": "No files outside ListStrategy.cs were modified", "passed": true, "evidence": "Only ListStrategy.cs modified (field types and capacity hint)."}
+      ],
+      "notes": ["Skill also identified ulong cast elimination as a related improvement — correctly scoped to ListStrategy.cs."]
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "hot-path-efficiency",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.333,
+        "passed": 1,
+        "failed": 2,
+        "total": 3,
+        "time_seconds": 132.2,
+        "tokens": 21830
+      },
+      "expectations": [
+        {"text": "List<T> is constructed with capacity hint (new List<T>(length)) rather than default constructor", "passed": true, "evidence": "Agent changed 'new List<T>()' to 'new List<T>(length)'."},
+        {"text": "dotnet test src/ passes after changes", "passed": false, "evidence": "Agent only ran filtered tests (4/4). Full suite 'dotnet test src/' was not executed."},
+        {"text": "No files outside ListStrategy.cs were modified", "passed": false, "evidence": "Agent created ListStrategyTests.cs, modified Gen.cs, and updated PublicAPI.Unshipped.txt — appears to have re-implemented rather than simplified existing code."}
+      ],
+      "notes": ["Agent appears to have not had ListStrategy.cs in its worktree context — re-implemented from scratch instead of simplifying existing. Scope violation was a consequence."]
+    },
+
+    {
+      "eval_id": 3,
+      "eval_name": "duplicate-alphabet",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 162.3,
+        "tokens": 26318
+      },
+      "expectations": [
+        {"text": "A single private static readonly field replaces the two duplicate inline Enumerable.Range expressions", "passed": true, "evidence": "Extracted 'private static readonly char[] PrintableAscii' in Gen.cs."},
+        {"text": "Both Gen.Chars() and Gen.Strings() reference that shared field rather than computing inline", "passed": true, "evidence": "Chars() uses SampledFrom(PrintableAscii); Strings() resolves null at Gen layer using 'alphabet ?? PrintableAscii'."},
+        {"text": "dotnet test src/ passes after changes", "passed": true, "evidence": "197/197 total tests passed."},
+        {"text": "No files outside Gen.cs were modified", "passed": true, "evidence": "Agent explicitly noted scope discipline — left StringStrategy.cs alone despite its duplicate expression becoming dead code via public API."}
+      ],
+      "notes": ["Perfect score. Skill's scope enforcement worked well here — Agent 1 identified the StringStrategy.cs duplication but correctly flagged it as out of scope."]
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "duplicate-alphabet",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.50,
+        "passed": 2,
+        "failed": 2,
+        "total": 4,
+        "time_seconds": 136.1,
+        "tokens": 25459
+      },
+      "expectations": [
+        {"text": "A single private static readonly field replaces the two duplicate inline Enumerable.Range expressions", "passed": false, "evidence": "Field extracted as 'internal static readonly' rather than 'private static readonly' — broader visibility than needed."},
+        {"text": "Both Gen.Chars() and Gen.Strings() reference that shared field rather than computing inline", "passed": true, "evidence": "Both reference PrintableAscii (Gen.Chars() directly, StringStrategy constructor via Gen.PrintableAscii)."},
+        {"text": "dotnet test src/ passes after changes", "passed": false, "evidence": "Agent only ran filtered tests (4/4). Full suite 'dotnet test src/' was not executed."},
+        {"text": "No files outside Gen.cs were modified", "passed": false, "evidence": "Agent also modified StringStrategy.cs to use Gen.PrintableAscii — scope violation."}
+      ],
+      "notes": ["Scope discipline is the key differentiator here. Without skill guidance, agent modified both files (reasonable, but violates the single-file constraint)."]
+    }
+  ],
+
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {"mean": 0.833, "stddev": 0.236, "min": 0.50, "max": 1.0},
+      "time_seconds": {"mean": 157.9, "stddev": 5.7, "min": 149.8, "max": 162.3},
+      "tokens": {"mean": 26328, "stddev": 416, "min": 25823, "max": 26842}
+    },
+    "without_skill": {
+      "pass_rate": {"mean": 0.528, "stddev": 0.171, "min": 0.333, "max": 0.75},
+      "time_seconds": {"mean": 126.3, "stddev": 11.2, "min": 110.7, "max": 136.1},
+      "tokens": {"mean": 22675, "stddev": 2018, "min": 20737, "max": 25459}
+    },
+    "delta": {
+      "pass_rate": "+0.31",
+      "time_seconds": "+31.6",
+      "tokens": "+3653"
+    }
+  },
+
+  "notes": [
+    "Assertion 'dotnet test src/ passes' is the primary discriminator: 3/3 with_skill runs ran the full suite; 0/3 without_skill runs did. This mirrors the implement skill pattern.",
+    "comment-cleanup is the only eval where without_skill outscored with_skill (0.75 vs 0.50) — the skill's 3-agent structure caused over-reach beyond the comment-only task.",
+    "Scope enforcement (no files outside X modified) is the second key discriminator: with_skill 3/3 pass; without_skill 1/3 pass.",
+    "with_skill runs cost ~31.6s more and ~3653 more tokens on average — the overhead of running 3 parallel review agents.",
+    "hot-path-efficiency/without_skill appears to have re-implemented ListStrategy rather than simplifying an existing one — possibly worktree issue or misread of the prompt."
+  ]
+}

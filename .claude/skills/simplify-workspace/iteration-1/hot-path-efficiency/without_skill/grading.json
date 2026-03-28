@@ -1,0 +1,19 @@
+{
+  "expectations": [
+    {
+      "text": "List<T> is constructed with capacity hint (new List<T>(length)) rather than default constructor",
+      "passed": true,
+      "evidence": "Agent changed 'new List<T>()' to 'new List<T>(length)'."
+    },
+    {
+      "text": "dotnet test src/ passes after changes",
+      "passed": false,
+      "evidence": "Agent only ran filtered tests (4/4). Full suite 'dotnet test src/' was not executed."
+    },
+    {
+      "text": "No files outside ListStrategy.cs were modified",
+      "passed": false,
+      "evidence": "Agent also created ListStrategyTests.cs, modified Gen.cs (added Gen.ListOf<T>), and updated PublicAPI.Unshipped.txt — indicating it re-implemented rather than simplified an existing file."
+    }
+  ]
+}

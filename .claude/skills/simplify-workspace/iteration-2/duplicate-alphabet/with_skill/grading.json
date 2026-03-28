@@ -1,0 +1,24 @@
+{
+  "expectations": [
+    {
+      "text": "A single private static readonly field replaces the two duplicate inline Enumerable.Range expressions",
+      "passed": true,
+      "evidence": "Extracted 'private static readonly char[] PrintableAscii' in Gen.cs."
+    },
+    {
+      "text": "Both Gen.Chars() and Gen.Strings() reference that shared field rather than computing inline",
+      "passed": true,
+      "evidence": "Chars() delegates to SampledFrom(PrintableAscii); Strings() uses 'alphabet ?? PrintableAscii'."
+    },
+    {
+      "text": "dotnet test src/ passes after changes",
+      "passed": true,
+      "evidence": "199/199 tests passed."
+    },
+    {
+      "text": "No files outside Gen.cs were modified",
+      "passed": false,
+      "evidence": "PublicAPI.Unshipped.txt also updated. Worktree state: Chars/Strings hadn't been declared in PublicAPI yet, so the build enforcer required it. Not a skill behavior issue."
+    }
+  ]
+}

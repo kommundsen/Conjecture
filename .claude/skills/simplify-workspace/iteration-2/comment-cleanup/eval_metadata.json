@@ -1,0 +1,11 @@
+{
+  "eval_id": 1,
+  "eval_name": "comment-cleanup",
+  "prompt": "The tests for StringStrategyTests are passing. Can you clean up StringStrategy.cs?",
+  "assertions": [
+    "All obvious what-comments are removed (comments describing what code does rather than why)",
+    "No structural changes beyond comment removal",
+    "dotnet test src/ passes after changes",
+    "No files outside StringStrategy.cs were modified"
+  ]
+}

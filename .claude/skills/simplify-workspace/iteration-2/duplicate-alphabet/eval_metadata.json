@@ -1,0 +1,11 @@
+{
+  "eval_id": 3,
+  "eval_name": "duplicate-alphabet",
+  "prompt": "I implemented Gen.Chars() and Gen.Strings() separately and now Gen.cs has the printable ASCII range computed twice inline. Can you simplify?",
+  "assertions": [
+    "A single private static readonly field replaces the two duplicate inline Enumerable.Range expressions",
+    "Both Gen.Chars() and Gen.Strings() reference that shared field rather than computing inline",
+    "dotnet test src/ passes after changes",
+    "No files outside Gen.cs were modified"
+  ]
+}
