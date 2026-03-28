@@ -1,8 +1,16 @@
+---
+name: scaffold
+description: >
+  Scaffold a new .NET project or module with correct structure for the Conjecture.NET solution.
+  Use this skill whenever the user wants to add a new project, test project, module, or set up the solution from scratch — even if they don't say "scaffold" explicitly.
+  Triggers on phrases like "add a new project", "create a module for", "set up a test project for", "add X to the solution", or any request to create new .NET structural components in the repo.
+---
+
 Scaffold a new .NET project or module with correct structure.
 
 ## Input
 
-$ARGUMENTS — one of:
+One of:
 - `solution` — create the solution file and core projects
 - `project <name>` — add a new class library project
 - `test <name>` — add a test project for an existing project
@@ -11,7 +19,7 @@ $ARGUMENTS — one of:
 ## Steps
 
 ### `solution`
-1. Create `src/Hypothesis.slnx`
+1. Create `src/Conjecture.slnx`
 2. Create `src/Conjecture.Core/Conjecture.Core.csproj` (class library, net10.0)
 3. Create `src/Conjecture.Tests/Conjecture.Tests.csproj` (xunit, net10.0)
 4. Add project references and ensure `Directory.Packages.props` is used (no version attrs in csproj)
@@ -19,7 +27,7 @@ $ARGUMENTS — one of:
 
 ### `project <name>`
 1. Create `src/<name>/<name>.csproj` targeting net10.0
-2. Add to `Hypothesis.slnx`
+2. Add to `Conjecture.slnx`
 3. Verify build
 
 ### `test <name>`
@@ -35,7 +43,7 @@ $ARGUMENTS — one of:
 
 ## Guidelines
 
-- Always use central package management (`Directory.Packages.props`)
-- Follow `.editorconfig` conventions
-- Target version compatible with global.json
-- Use file-scoped namespaces
+- Always use central package management (`Directory.Packages.props`) — never add version attributes directly in csproj files.
+- Follow `.editorconfig` conventions.
+- Target the version specified in `global.json`.
+- Use file-scoped namespaces throughout.

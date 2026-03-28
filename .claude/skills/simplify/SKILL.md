@@ -1,8 +1,16 @@
+---
+name: simplify
+description: >
+  Review changed code for reuse, quality, and efficiency, then fix any issues found — the TDD Refactor phase for the Conjecture .NET project.
+  Use this skill whenever the user wants to clean up code after making tests pass, refactor a file, review for code smells, or is in the refactor phase of a TDD cycle — even if they don't say "refactor" or "simplify" explicitly.
+  Triggers on phrases like "clean this up", "refactor", "simplify", "review for issues", "any code smells?", or automatically after the implement skill completes a green phase.
+---
+
 Review changed code for reuse, quality, and efficiency, then fix any issues found.
 
 ## Input
 
-$ARGUMENTS — one or more production file paths to review (e.g., `src/Conjecture.Core/Strategies/FooStrategy.cs`). If omitted, runs `git diff` to find changed files automatically.
+One or more production file paths to review (e.g., `src/Conjecture.Core/Strategies/FooStrategy.cs`). If omitted, runs `git diff` to find changed files automatically.
 
 ## Steps
 
@@ -40,6 +48,6 @@ $ARGUMENTS — one or more production file paths to review (e.g., `src/Conjectur
 
 ## Guidelines
 
-- Only fix issues in the files under review — do not refactor surrounding code
-- Do not add features or anticipate future requirements
-- If a finding conflicts with an ADR in `docs/decisions/`, the ADR wins — note it and skip the fix
+- Only fix issues in the files under review — do not refactor surrounding code.
+- Do not add features or anticipate future requirements.
+- If a finding conflicts with an ADR in `docs/decisions/`, the ADR wins — note it and skip the fix.

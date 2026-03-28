@@ -1,15 +1,23 @@
+---
+name: test
+description: >
+  Write failing xUnit tests for a behavior before implementation exists (TDD Red phase) in the Conjecture .NET project.
+  Use this skill whenever the user asks to write tests, add test coverage, start a TDD cycle, or describes a behavior that needs verifying — even if they don't say "TDD" or "red phase" explicitly.
+  Triggers on phrases like "write tests for", "add tests", "test that X does Y", "cover this behavior", or when implementing a new cycle step requires a failing test first.
+---
+
 Write failing xUnit tests for a behavior before implementation exists (TDD Red phase).
 
 ## Input
 
-$ARGUMENTS — description of the behavior to test (e.g., `IntegerStrategy generates values within [min, max]`)
+The behavior to test, e.g. `IntegerStrategy generates values within [min, max]`.
 
 ## Steps
 
 1. Identify the target class/component from the description. Check `src/Conjecture.Core/` for existing types; check `docs/decisions/` for relevant ADRs.
 2. Determine the test file location:
-   - For a new class `Foo` → `src/Conjecture.Tests/FooTests.cs`
-   - For a module `Bar/Baz` → `src/Conjecture.Tests/Bar/BazTests.cs`
+   - New class `Foo` → `src/Conjecture.Tests/FooTests.cs`
+   - Module `Bar/Baz` → `src/Conjecture.Tests/Bar/BazTests.cs`
    - Add to existing file if tests for that class already exist.
 3. Write tests that:
    - Cover the happy path, boundary values, and at least one failure/edge case

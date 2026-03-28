@@ -1,8 +1,16 @@
+---
+name: implement
+description: >
+  Write the minimal production code to make failing tests pass (TDD Green phase) in the Conjecture .NET project.
+  Use this skill whenever the user asks to implement a feature, make tests pass, write production code, or is in the green phase of a TDD cycle — even if they don't say "TDD" or "green phase" explicitly.
+  Triggers on phrases like "implement X", "make the tests pass", "write the code for", "make it compile", or after failing tests have been written and production code is needed.
+---
+
 Write the minimal production code to make failing tests pass (TDD Green phase).
 
 ## Input
 
-$ARGUMENTS — test class or file to target (e.g., `IntegerStrategyTests` or `src/Conjecture.Tests/IntegerStrategyTests.cs`). If omitted, run all failing tests and address them all.
+Test class or file to target (e.g., `IntegerStrategyTests` or `src/Conjecture.Tests/IntegerStrategyTests.cs`). If omitted, run all failing tests and address them all.
 
 ## Steps
 
