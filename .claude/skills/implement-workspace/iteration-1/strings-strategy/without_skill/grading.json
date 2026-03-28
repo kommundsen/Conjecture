@@ -1,0 +1,53 @@
+{
+  "expectations": [
+    {
+      "text": "All 4 tests in StringStrategyTests pass (dotnet test output shows 0 failures for StringStrategyTests)",
+      "passed": true,
+      "evidence": "Transcript: 'Ran tests — 4/4 passed'"
+    },
+    {
+      "text": "No previously passing tests are broken (full dotnet test src/ exits 0)",
+      "passed": false,
+      "evidence": "Transcript shows only filtered test run. No full dotnet test src/ run performed. Step 8 shows '--filter ListStrategyTests' not a full suite run."
+    },
+    {
+      "text": "Gen.cs is updated with at least one new Strings() factory method",
+      "passed": true,
+      "evidence": "outputs/Gen.cs contains Gen.Strings() factory method"
+    },
+    {
+      "text": "New source files use file-scoped namespace declarations (not block-scoped)",
+      "passed": true,
+      "evidence": "outputs/StringStrategy.cs begins with 'namespace Conjecture.Core.Generation;' — file-scoped."
+    },
+    {
+      "text": "Implementation does not add extra public API beyond what the tests reference",
+      "passed": true,
+      "evidence": "Single Gen.Strings() overload. No extra public API observed in outputs."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 1,
+    "total": 5,
+    "pass_rate": 0.80
+  },
+  "execution_metrics": {
+    "tool_calls": {"Read": 5, "Write": 4, "Edit": 3, "Bash": 5, "Glob": 0, "Grep": 0},
+    "total_tool_calls": 17,
+    "files_created": 2,
+    "files_modified": 2,
+    "errors_encountered": 1,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "executor_duration_seconds": 129.6,
+    "total_duration_seconds": 129.6
+  },
+  "claims": [],
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "Assertion 2 is the differentiator: baseline skipped full regression check."
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "tool_calls": {
+    "Bash": 4,
+    "Read": 4,
+    "Glob": 1,
+    "Write": 3,
+    "Edit": 3,
+    "Grep": 0
+  },
+  "total_tool_calls": 15,
+  "build_attempts": 2,
+  "build_failures": 1,
+  "test_runs": 1,
+  "tests_passed": 3,
+  "tests_failed": 0,
+  "files_created": 2,
+  "files_modified": 2
+}

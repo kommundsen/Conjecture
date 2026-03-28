@@ -1,0 +1,186 @@
+{
+  "metadata": {
+    "skill_name": "implement",
+    "skill_path": ".claude/skills/implement",
+    "executor_model": "claude-sonnet-4-6",
+    "analyzer_model": "claude-sonnet-4-6",
+    "timestamp": "2026-03-28T15:11:30Z",
+    "evals_run": ["chars-strategy", "strings-strategy", "list-strategy"],
+    "runs_per_configuration": 1
+  },
+
+  "runs": [
+    {
+      "eval_id": 1,
+      "eval_name": "chars-strategy",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.80,
+        "passed": 4,
+        "failed": 1,
+        "total": 5,
+        "time_seconds": 124.3,
+        "tokens": 24566,
+        "tool_calls": 18,
+        "errors": 2
+      },
+      "expectations": [
+        {"text": "All 3 tests in CharStrategyTests pass", "passed": true, "evidence": "Transcript: Passed! - Failed: 0, Passed: 3"},
+        {"text": "No previously passing tests are broken", "passed": true, "evidence": "Transcript: dotnet test src/ → 196/196 passing"},
+        {"text": "A new strategy class for chars exists", "passed": false, "evidence": "No new class; both overloads delegate to SampledFrom"},
+        {"text": "Gen.cs updated with Chars() factory method", "passed": true, "evidence": "Gen.Chars() and Gen.Chars(char[]) present in output"},
+        {"text": "New source files use file-scoped namespaces", "passed": true, "evidence": "No new files created; N/A"}
+      ],
+      "notes": ["Agent correctly chose minimal implementation (delegate to SampledFrom). Assertion 3 is a false negative."]
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "chars-strategy",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.60,
+        "passed": 3,
+        "failed": 2,
+        "total": 5,
+        "time_seconds": 154.5,
+        "tokens": 28255,
+        "tool_calls": 15,
+        "errors": 1
+      },
+      "expectations": [
+        {"text": "All 3 tests in CharStrategyTests pass", "passed": true, "evidence": "Transcript: Passed! - Failed: 0, Passed: 3"},
+        {"text": "No previously passing tests are broken", "passed": false, "evidence": "Only filtered test run performed; no full dotnet test src/ run in transcript"},
+        {"text": "A new strategy class for chars exists", "passed": false, "evidence": "Same design: delegates to SampledFrom, no new class"},
+        {"text": "Gen.cs updated with Chars() factory method", "passed": true, "evidence": "Gen.Chars() and Gen.Chars(char[]) present in output"},
+        {"text": "New source files use file-scoped namespaces", "passed": true, "evidence": "No new files created; N/A"}
+      ],
+      "notes": ["Skipped full regression check — only ran filtered tests."]
+    },
+
+    {
+      "eval_id": 2,
+      "eval_name": "strings-strategy",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 155.4,
+        "tokens": 25873,
+        "tool_calls": 30,
+        "errors": 1
+      },
+      "expectations": [
+        {"text": "All 4 tests in StringStrategyTests pass", "passed": true, "evidence": "Transcript: Passed! - Failed: 0, Passed: 4"},
+        {"text": "No previously passing tests are broken", "passed": true, "evidence": "Transcript: Full suite → 197/197 passing"},
+        {"text": "Gen.cs updated with Strings() factory method", "passed": true, "evidence": "Gen.Strings() present in output"},
+        {"text": "New source files use file-scoped namespaces", "passed": true, "evidence": "StringStrategy.cs: 'namespace Conjecture.Core.Generation;'"},
+        {"text": "No extra public API beyond what tests reference", "passed": true, "evidence": "Single Gen.Strings() overload with optional params covers all tests"}
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "strings-strategy",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.80,
+        "passed": 4,
+        "failed": 1,
+        "total": 5,
+        "time_seconds": 129.6,
+        "tokens": 25097,
+        "tool_calls": 17,
+        "errors": 1
+      },
+      "expectations": [
+        {"text": "All 4 tests in StringStrategyTests pass", "passed": true, "evidence": "Transcript: 4/4 passed"},
+        {"text": "No previously passing tests are broken", "passed": false, "evidence": "Only filtered test run; no full suite run in transcript"},
+        {"text": "Gen.cs updated with Strings() factory method", "passed": true, "evidence": "Gen.Strings() present in output"},
+        {"text": "New source files use file-scoped namespaces", "passed": true, "evidence": "StringStrategy.cs: 'namespace Conjecture.Core.Generation;'"},
+        {"text": "No extra public API beyond what tests reference", "passed": true, "evidence": "Single Gen.Strings() overload"}
+      ],
+      "notes": ["Skipped full regression check."]
+    },
+
+    {
+      "eval_id": 3,
+      "eval_name": "list-strategy",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 165.2,
+        "tokens": 26437,
+        "tool_calls": 30,
+        "errors": 2
+      },
+      "expectations": [
+        {"text": "All 4 tests in ListStrategyTests pass", "passed": true, "evidence": "Transcript: Passed! - Failed: 0, Passed: 4"},
+        {"text": "No previously passing tests are broken", "passed": true, "evidence": "Transcript: dotnet test src/ → 197/197 passing"},
+        {"text": "A new strategy class for list generation exists", "passed": true, "evidence": "ListStrategy.cs: 'internal sealed class ListStrategy<T> : Strategy<List<T>>'"},
+        {"text": "Gen.cs updated with ListOf() factory method", "passed": true, "evidence": "Gen.ListOf<T>() present in output"},
+        {"text": "New source files use file-scoped namespaces", "passed": true, "evidence": "ListStrategy.cs: 'namespace Conjecture.Core.Generation;'"}
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "list-strategy",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.80,
+        "passed": 4,
+        "failed": 1,
+        "total": 5,
+        "time_seconds": 134.6,
+        "tokens": 25007,
+        "tool_calls": 17,
+        "errors": 1
+      },
+      "expectations": [
+        {"text": "All 4 tests in ListStrategyTests pass", "passed": true, "evidence": "Transcript: 4/4 passed"},
+        {"text": "No previously passing tests are broken", "passed": false, "evidence": "Only filtered test run ('--filter ListStrategyTests'); no full suite run in transcript"},
+        {"text": "A new strategy class for list generation exists", "passed": true, "evidence": "ListStrategy.cs: 'internal sealed class ListStrategy<T>'"},
+        {"text": "Gen.cs updated with ListOf() factory method", "passed": true, "evidence": "Gen.ListOf<T>() present in output"},
+        {"text": "New source files use file-scoped namespaces", "passed": true, "evidence": "ListStrategy.cs: 'namespace Conjecture.Core.Generation;'"}
+      ],
+      "notes": ["Skipped full regression check."]
+    }
+  ],
+
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {"mean": 0.933, "stddev": 0.115, "min": 0.80, "max": 1.0},
+      "time_seconds": {"mean": 148.3, "stddev": 21.0, "min": 124.3, "max": 165.2},
+      "tokens": {"mean": 25625, "stddev": 954, "min": 24566, "max": 26437}
+    },
+    "without_skill": {
+      "pass_rate": {"mean": 0.733, "stddev": 0.115, "min": 0.60, "max": 0.80},
+      "time_seconds": {"mean": 139.6, "stddev": 13.0, "min": 129.6, "max": 154.5},
+      "tokens": {"mean": 26120, "stddev": 1850, "min": 25007, "max": 28255}
+    },
+    "delta": {
+      "pass_rate": "+0.20",
+      "time_seconds": "+8.7",
+      "tokens": "-495"
+    }
+  },
+
+  "notes": [
+    "Assertion 'A new strategy class exists' fails for chars-strategy in BOTH configurations — both agents correctly delegated to SampledFrom. This is a false negative; the assertion should be revised.",
+    "Assertion 'No regressions' (full test suite) is the key discriminator: all 3 with_skill runs ran dotnet test src/ explicitly; 0 of 3 without_skill runs did.",
+    "Both configurations handled PublicAPI.Unshipped.txt correctly (no pre-existing knowledge advantage here — the RS0016 error message is self-explaining).",
+    "All 6 runs required exactly 1-2 build fix iterations (IDE style errors: IDE1006 naming, IDE0011 braces). The skill doesn't mention these analyzers — a potential improvement.",
+    "without_skill runs were marginally faster (+8.7s less time) and used slightly more tokens (+495) — no meaningful difference."
+  ]
+}

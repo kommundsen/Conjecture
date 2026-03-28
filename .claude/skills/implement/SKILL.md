@@ -21,6 +21,7 @@ Test class or file to target (e.g., `IntegerStrategyTests` or `src/Conjecture.Te
    - No speculative features, no extra overloads
    - Hardcode constants only if a single test demands it; generalise only when a second test forces you to
    - Follow existing patterns in the codebase (file-scoped namespaces, `readonly struct` where appropriate, etc.)
+   - Any new or changed `public` API surface in non-test projects must be declared in that project's `PublicAPI.Unshipped.txt` (e.g. `src/Conjecture.Core/PublicAPI.Unshipped.txt`, `src/Conjecture.Xunit/PublicAPI.Unshipped.txt`). The project enforces this via RS0016 at build time — the compiler error includes the exact signature string to copy in.
 5. Run `dotnet test src/ --filter "FullyQualifiedName~<target>"` again — all targeted tests must be green.
 6. Run `dotnet test src/` — no previously passing tests may be broken.
 7. Report: files changed, tests now passing, and any design choices made.

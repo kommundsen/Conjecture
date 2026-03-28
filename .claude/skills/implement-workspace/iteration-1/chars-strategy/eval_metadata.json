@@ -1,0 +1,12 @@
+{
+  "eval_id": 1,
+  "eval_name": "chars-strategy",
+  "prompt": "I've added CharStrategyTests.cs to src/Conjecture.Tests/Strategies/ with tests for a new Gen.Chars() method. Make the failing tests pass.",
+  "assertions": [
+    "All 3 tests in CharStrategyTests pass (dotnet test output shows 0 failures for CharStrategyTests)",
+    "No previously passing tests are broken (full dotnet test src/ exits 0)",
+    "A new strategy class for chars exists in src/Conjecture.Core/Generation/",
+    "Gen.cs is updated with at least one new Chars() factory method",
+    "New source files use file-scoped namespace declarations (not block-scoped)"
+  ]
+}

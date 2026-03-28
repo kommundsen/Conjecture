@@ -1,0 +1,53 @@
+{
+  "expectations": [
+    {
+      "text": "All 4 tests in ListStrategyTests pass (dotnet test output shows 0 failures for ListStrategyTests)",
+      "passed": true,
+      "evidence": "Transcript: 'dotnet test --filter ListStrategyTests — 4/4 passed'"
+    },
+    {
+      "text": "No previously passing tests are broken (full dotnet test src/ exits 0)",
+      "passed": false,
+      "evidence": "Transcript shows only filtered test run ('dotnet test --filter ListStrategyTests'). No full dotnet test src/ run performed. Regression check skipped."
+    },
+    {
+      "text": "A new strategy class for list generation exists in src/Conjecture.Core/Generation/",
+      "passed": true,
+      "evidence": "outputs/ListStrategy.cs exists: 'internal sealed class ListStrategy<T> : Strategy<List<T>>'"
+    },
+    {
+      "text": "Gen.cs is updated with a new ListOf() factory method",
+      "passed": true,
+      "evidence": "outputs/Gen.cs contains Gen.ListOf<T>() factory method"
+    },
+    {
+      "text": "New source files use file-scoped namespace declarations (not block-scoped)",
+      "passed": true,
+      "evidence": "outputs/ListStrategy.cs begins with 'namespace Conjecture.Core.Generation;' — file-scoped."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 1,
+    "total": 5,
+    "pass_rate": 0.80
+  },
+  "execution_metrics": {
+    "tool_calls": {"Read": 5, "Write": 4, "Edit": 3, "Bash": 5, "Glob": 0, "Grep": 0},
+    "total_tool_calls": 17,
+    "files_created": 2,
+    "files_modified": 2,
+    "errors_encountered": 1,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "executor_duration_seconds": 134.6,
+    "total_duration_seconds": 134.6
+  },
+  "claims": [],
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "Assertion 2 is the differentiator: baseline skipped full regression check."
+  }
+}

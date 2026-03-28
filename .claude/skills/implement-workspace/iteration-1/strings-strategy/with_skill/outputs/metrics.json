@@ -1,0 +1,12 @@
+{
+  "test_runs": 2,
+  "initial_failures": 4,
+  "final_failures": 0,
+  "tests_passing_after": 4,
+  "full_suite_total": 197,
+  "full_suite_failed": 0,
+  "files_created": 2,
+  "files_modified": 2,
+  "build_errors_encountered": 1,
+  "iterations_to_green": 2
+}
