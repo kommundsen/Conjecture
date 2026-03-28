@@ -134,9 +134,9 @@ Strings compose from integer draws (length + char codes) — no new `IRNodeKind`
 ### 1.4 Nullable and Tuple Strategies
 
 #### Cycle 1.4.1 -- Gen.Nullable / .OrNull() combinator
-- [ ] `/test` -- `src/Conjecture.Tests/Strategies/NullableStrategyTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Strategies/NullableStrategyTests.cs`
   - `Gen.Nullable(Gen.Integers<int>())` produces both null and non-null, `.OrNull()` extension produces both null and non-null, non-null values come from inner strategy, null probability ~10%
-- [ ] `/implement` -- `src/Conjecture.Core/Strategies/NullableStrategy.cs` + `Gen.Nullable<T>(Strategy<T>)` in `Gen.cs` + `.OrNull()` in `StrategyExtensions.cs`
+- [x] `/implement` -- `src/Conjecture.Core/Strategies/NullableStrategy.cs` + `Gen.Nullable<T>(Strategy<T>)` in `Gen.cs` + `.OrNull()` in `StrategyExtensions.cs`
   - Internally: `DrawBoolean` to decide null vs non-null, delegate to inner strategy
   - Update `PublicAPI.Unshipped.txt`
 

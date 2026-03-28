@@ -34,4 +34,8 @@ public static class StrategyExtensions
     public static Strategy<TResult> Zip<TFirst, TSecond, TResult>(
         this Strategy<TFirst> first, Strategy<TSecond> second, Func<TFirst, TSecond, TResult> resultSelector) =>
         new ZipStrategy<TFirst, TSecond, TResult>(first, second, resultSelector);
+
+    /// <summary>Wraps the strategy so it may also produce null, with ~10% null probability.</summary>
+    public static Strategy<T?> OrNull<T>(this Strategy<T> source) where T : struct =>
+        new NullableStrategy<T>(source);
 }

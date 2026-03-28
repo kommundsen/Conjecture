@@ -52,4 +52,7 @@ public static class Gen
 
     /// <summary>Alias for <see cref="Strings(int, int, int, int, string)"/>.</summary>
     public static Strategy<string> Text(int minLength = 0, int maxLength = 100) => Strings(minLength, maxLength);
+
+    /// <summary>Returns a strategy that produces nullable <typeparamref name="T"/> values, with ~10% null probability.</summary>
+    public static Strategy<T?> Nullable<T>(Strategy<T> inner) where T : struct => new NullableStrategy<T>(inner);
 }

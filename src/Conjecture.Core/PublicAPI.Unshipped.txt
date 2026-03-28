@@ -39,3 +39,5 @@ static Conjecture.Core.Generation.StrategyExtensions.Zip<TFirst, TSecond>(this C
 static Conjecture.Core.Generation.StrategyExtensions.Zip<TFirst, TSecond, TResult>(this Conjecture.Core.Generation.Strategy<TFirst>! first, Conjecture.Core.Generation.Strategy<TSecond>! second, System.Func<TFirst, TSecond, TResult>! resultSelector) -> Conjecture.Core.Generation.Strategy<TResult>!
 static Conjecture.Core.Gen.Strings(int minLength = 0, int maxLength = 100, int minCodepoint = 32, int maxCodepoint = 126, string? alphabet = null) -> Conjecture.Core.Generation.Strategy<string!>!
 static Conjecture.Core.Gen.Text(int minLength = 0, int maxLength = 100) -> Conjecture.Core.Generation.Strategy<string!>!
+static Conjecture.Core.Gen.Nullable<T>(Conjecture.Core.Generation.Strategy<T>! inner) -> Conjecture.Core.Generation.Strategy<T?>!
+static Conjecture.Core.Generation.StrategyExtensions.OrNull<T>(this Conjecture.Core.Generation.Strategy<T>! source) -> Conjecture.Core.Generation.Strategy<T?>!
