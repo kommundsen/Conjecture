@@ -58,4 +58,12 @@ public static class Gen
 
     /// <summary>Returns a strategy that produces <see cref="ValueTuple{T1,T2}"/> tuples from two component strategies.</summary>
     public static Strategy<(T1, T2)> Tuples<T1, T2>(Strategy<T1> first, Strategy<T2> second) => first.Zip(second);
+
+    /// <summary>Returns a strategy that produces 3-element tuples from three component strategies.</summary>
+    public static Strategy<(T1, T2, T3)> Tuples<T1, T2, T3>(Strategy<T1> first, Strategy<T2> second, Strategy<T3> third)
+        => first.Zip(second).Zip(third, (ab, c) => (ab.Item1, ab.Item2, Item3: c));
+
+    /// <summary>Returns a strategy that produces 4-element tuples from four component strategies.</summary>
+    public static Strategy<(T1, T2, T3, T4)> Tuples<T1, T2, T3, T4>(Strategy<T1> first, Strategy<T2> second, Strategy<T3> third, Strategy<T4> fourth)
+        => Tuples(first, second, third).Zip(fourth, (abc, d) => (abc.Item1, abc.Item2, abc.Item3, d));
 }

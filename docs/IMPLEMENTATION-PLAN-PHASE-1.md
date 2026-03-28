@@ -148,9 +148,9 @@ Strings compose from integer draws (length + char codes) — no new `IRNodeKind`
   - Update `PublicAPI.Unshipped.txt`
 
 #### Cycle 1.4.3 -- Gen.Tuples (3 and 4 element)
-- [ ] `/test` -- `src/Conjecture.Tests/Strategies/TupleStrategy3And4Tests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Strategies/TupleStrategy3And4Tests.cs`
   - `Gen.Tuples(s1, s2, s3)` produces 3-tuples, `Gen.Tuples(s1, s2, s3, s4)` produces 4-tuples, all components vary
-- [ ] `/implement` -- Add 3- and 4-arg `Gen.Tuples` overloads to `Gen.cs`
+- [x] `/implement` -- Add 3- and 4-arg `Gen.Tuples` overloads to `Gen.cs`
   - Update `PublicAPI.Unshipped.txt`
 
 ---
