@@ -5,7 +5,10 @@ internal sealed class ZeroBlocksPass : IShrinkPass
     public bool TryReduce(ShrinkState state)
     {
         bool progress = false;
-        for (int i = 0; i < state.Nodes.Count; i++)
+        // Right-to-left: early-drawn nodes (low indices) survive zeroing last, so they
+        // remain non-minimum when later passes try to reduce the length/count node that
+        // controls how many of them are consumed. This is essential for collection shrinking.
+        for (int i = state.Nodes.Count - 1; i >= 0; i--)
         {
             var node = state.Nodes[i];
             if (node.Kind != IRNodeKind.Integer)

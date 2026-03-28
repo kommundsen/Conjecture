@@ -125,9 +125,9 @@ Strings compose from integer draws (length + char codes) — no new `IRNodeKind`
   - Update `PublicAPI.Unshipped.txt`
 
 #### Cycle 1.3.3 -- String shrinking quality
-- [ ] `/test` -- `src/Conjecture.Tests/Strategies/StringShrinkingTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Strategies/StringShrinkingTests.cs`
   - Failing string property shrinks toward shorter strings, shrinks toward earlier alphabet characters (e.g. 'a'), shrunk string still satisfies the failure condition
-- [ ] `/implement` -- (Likely green-on-write; shrinking is automatic via integer nodes. If not, adjust `StringStrategy` draw ordering to improve shrink quality)
+- [x] `/implement` -- (Likely green-on-write; shrinking is automatic via integer nodes. If not, adjust `StringStrategy` draw ordering to improve shrink quality)
 
 ---
 
