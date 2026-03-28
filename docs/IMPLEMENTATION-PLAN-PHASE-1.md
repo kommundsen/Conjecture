@@ -217,9 +217,9 @@ Phase 0 scope: `CounterexampleFormatter` with `ToString()`. Phase 1: full `IStra
   - Static class with individual formatter implementations; registers via `[ModuleInitializer]`
 
 #### Cycle 1.7.4 -- Built-in formatters: collections and tuples
-- [ ] `/test` -- `src/Conjecture.Tests/Formatting/CollectionFormatterTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Formatting/CollectionFormatterTests.cs`
   - `List<int>` → `[3, -1, 7]`, `HashSet<string>` → set syntax, `Dictionary<int,string>` → `{1: "a", 2: "b"}`, `(int, string)` → `(3, "x")`, empty collections
-- [ ] `/implement` -- Extend `src/Conjecture.Core/Formatting/BuiltInFormatters.cs` with collection and tuple formatters
+- [x] `/implement` -- Extend `src/Conjecture.Core/Formatting/BuiltInFormatters.cs` with collection and tuple formatters
   - Collection formatters use `FormatterRegistry.Get<T>()` for elements; fall back to `ToString()`
 
 #### Cycle 1.7.5 -- Enhanced CounterexampleFormatter (ADR-0022)

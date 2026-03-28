@@ -31,6 +31,11 @@ public static class BuiltInFormatters
         FormatterRegistry.Register(Single);
         FormatterRegistry.Register(String);
         FormatterRegistry.Register(ByteArray);
+        FormatterRegistry.Register(new ListFormatter<int>());
+        FormatterRegistry.Register(new ListFormatter<object>());
+        FormatterRegistry.Register(new HashSetFormatter<string>());
+        FormatterRegistry.Register(new DictionaryFormatter<int, string>());
+        FormatterRegistry.Register(new TupleFormatter<int, string>());
     }
 
     private sealed class Int32Formatter : IStrategyFormatter<int>
@@ -79,5 +84,34 @@ public static class BuiltInFormatters
     {
         public string Format(byte[] value) =>
             $"new byte[] {{ {string.Join(", ", value.Select(b => $"0x{b:X2}"))} }}";
+    }
+
+    private static string FormatElement<T>(T element) =>
+        FormatterRegistry.Get<T>()?.Format(element!) ?? element?.ToString() ?? "null";
+
+    private static string FormatSequence<T>(IEnumerable<T> items, char open, char close) =>
+        $"{open}{string.Join(", ", items.Select(FormatElement))}{close}";
+
+    private sealed class ListFormatter<T> : IStrategyFormatter<List<T>>
+    {
+        public string Format(List<T> value) => FormatSequence(value, '[', ']');
+    }
+
+    private sealed class HashSetFormatter<T> : IStrategyFormatter<HashSet<T>>
+    {
+        public string Format(HashSet<T> value) => FormatSequence(value, '{', '}');
+    }
+
+    private sealed class DictionaryFormatter<TKey, TValue> : IStrategyFormatter<Dictionary<TKey, TValue>>
+        where TKey : notnull
+    {
+        public string Format(Dictionary<TKey, TValue> value) =>
+            $"{{{string.Join(", ", value.Select(kv => $"{FormatElement(kv.Key)}: {FormatElement(kv.Value)}"))}}}";
+    }
+
+    private sealed class TupleFormatter<T1, T2> : IStrategyFormatter<(T1, T2)>
+    {
+        public string Format((T1, T2) value) =>
+            $"({FormatElement(value.Item1)}, {FormatElement(value.Item2)})";
     }
 }
