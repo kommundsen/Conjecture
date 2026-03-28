@@ -18,7 +18,7 @@ One or more production file paths to review (e.g., `src/Conjecture.Core/Strategi
    - If arguments provided: read those files directly.
    - Otherwise: run `git diff HEAD` to find changed production files.
 
-2. **Launch three review agents in parallel** — pass each agent the full diff or file contents.
+2. **Launch three review agents in parallel** — pass each agent the full diff or file contents. Use `model: "haiku"` for all three.
 
    ### Agent 1: Code Reuse
    - Search for existing utilities or helpers that could replace newly written code.
