@@ -8,6 +8,7 @@ internal sealed class StringStrategy : Strategy<string>
     private readonly ulong maxLength;
     private readonly ulong minCodepoint;
     private readonly ulong maxCodepoint;
+    private readonly string? alphabet;
 
     internal StringStrategy(int minLength = 0, int maxLength = 100, int minCodepoint = 32, int maxCodepoint = 126)
     {
@@ -17,13 +18,36 @@ internal sealed class StringStrategy : Strategy<string>
         this.maxCodepoint = (ulong)maxCodepoint;
     }
 
+    internal StringStrategy(string alphabet, int minLength = 0, int maxLength = 100)
+    {
+        if (alphabet.Length == 0)
+        {
+            throw new ArgumentException("Alphabet must not be empty.", nameof(alphabet));
+        }
+        this.alphabet = alphabet;
+        this.minLength = (ulong)minLength;
+        this.maxLength = (ulong)maxLength;
+        this.minCodepoint = 0;
+        this.maxCodepoint = 0;
+    }
+
     internal override string Next(ConjectureData data)
     {
         var length = (int)data.DrawInteger(minLength, maxLength);
         var chars = new char[length];
-        for (var i = 0; i < length; i++)
+        if (alphabet is not null)
         {
-            chars[i] = (char)data.DrawInteger(minCodepoint, maxCodepoint);
+            for (var i = 0; i < length; i++)
+            {
+                chars[i] = alphabet[(int)data.DrawInteger(0, (ulong)(alphabet.Length - 1))];
+            }
+        }
+        else
+        {
+            for (var i = 0; i < length; i++)
+            {
+                chars[i] = (char)data.DrawInteger(minCodepoint, maxCodepoint);
+            }
         }
         return new string(chars);
     }

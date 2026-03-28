@@ -119,9 +119,9 @@ Strings compose from integer draws (length + char codes) — no new `IRNodeKind`
   - Update `PublicAPI.Unshipped.txt`
 
 #### Cycle 1.3.2 -- String charset control
-- [ ] `/test` -- `src/Conjecture.Tests/Strategies/StringCharsetTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Strategies/StringCharsetTests.cs`
   - `Gen.Strings(alphabet: "abc")` only produces strings from {a, b, c}, `Gen.Strings(minCodepoint, maxCodepoint)` respects codepoint range, unicode-safe generation
-- [ ] `/implement` -- Extend `StringStrategy` with charset parameters; add overloads to `Gen.cs`
+- [x] `/implement` -- Extend `StringStrategy` with charset parameters; add overloads to `Gen.cs`
   - Update `PublicAPI.Unshipped.txt`
 
 #### Cycle 1.3.3 -- String shrinking quality

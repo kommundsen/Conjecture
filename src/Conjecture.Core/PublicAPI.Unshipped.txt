@@ -37,5 +37,5 @@ static Conjecture.Core.Generation.StrategyExtensions.SelectMany<TSource, TCollec
 static Conjecture.Core.Generation.StrategyExtensions.Where<T>(this Conjecture.Core.Generation.Strategy<T>! source, System.Func<T, bool>! predicate) -> Conjecture.Core.Generation.Strategy<T>!
 static Conjecture.Core.Generation.StrategyExtensions.Zip<TFirst, TSecond>(this Conjecture.Core.Generation.Strategy<TFirst>! first, Conjecture.Core.Generation.Strategy<TSecond>! second) -> Conjecture.Core.Generation.Strategy<(TFirst, TSecond)>!
 static Conjecture.Core.Generation.StrategyExtensions.Zip<TFirst, TSecond, TResult>(this Conjecture.Core.Generation.Strategy<TFirst>! first, Conjecture.Core.Generation.Strategy<TSecond>! second, System.Func<TFirst, TSecond, TResult>! resultSelector) -> Conjecture.Core.Generation.Strategy<TResult>!
-static Conjecture.Core.Gen.Strings(int minLength = 0, int maxLength = 100) -> Conjecture.Core.Generation.Strategy<string!>!
+static Conjecture.Core.Gen.Strings(int minLength = 0, int maxLength = 100, int minCodepoint = 32, int maxCodepoint = 126, string? alphabet = null) -> Conjecture.Core.Generation.Strategy<string!>!
 static Conjecture.Core.Gen.Text(int minLength = 0, int maxLength = 100) -> Conjecture.Core.Generation.Strategy<string!>!
