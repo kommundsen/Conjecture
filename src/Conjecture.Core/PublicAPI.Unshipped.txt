@@ -52,3 +52,10 @@ static Conjecture.Core.Gen.Dictionaries<TKey, TValue>(Conjecture.Core.Generation
 Conjecture.Core.Formatting.FormatterRegistry
 static Conjecture.Core.Formatting.FormatterRegistry.Get<T>() -> Conjecture.Core.Formatting.IStrategyFormatter<T>?
 static Conjecture.Core.Formatting.FormatterRegistry.Register<T>(Conjecture.Core.Formatting.IStrategyFormatter<T>? formatter) -> void
+Conjecture.Core.Formatting.BuiltInFormatters
+static Conjecture.Core.Formatting.BuiltInFormatters.Int32.get -> Conjecture.Core.Formatting.IStrategyFormatter<int>!
+static Conjecture.Core.Formatting.BuiltInFormatters.Boolean.get -> Conjecture.Core.Formatting.IStrategyFormatter<bool>!
+static Conjecture.Core.Formatting.BuiltInFormatters.Double.get -> Conjecture.Core.Formatting.IStrategyFormatter<double>!
+static Conjecture.Core.Formatting.BuiltInFormatters.Single.get -> Conjecture.Core.Formatting.IStrategyFormatter<float>!
+static Conjecture.Core.Formatting.BuiltInFormatters.String.get -> Conjecture.Core.Formatting.IStrategyFormatter<string!>!
+static Conjecture.Core.Formatting.BuiltInFormatters.ByteArray.get -> Conjecture.Core.Formatting.IStrategyFormatter<byte[]!>!

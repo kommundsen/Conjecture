@@ -211,9 +211,9 @@ Phase 0 scope: `CounterexampleFormatter` with `ToString()`. Phase 1: full `IStra
   - Update `PublicAPI.Unshipped.txt`
 
 #### Cycle 1.7.3 -- Built-in formatters: primitives
-- [ ] `/test` -- `src/Conjecture.Tests/Formatting/BuiltInFormatterTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Formatting/BuiltInFormatterTests.cs`
   - int → `42`, bool → `true`/`false`, double → `3.14`, float → `1.5f`, string → `"hello"` (with quotes and escaping), byte[] → `new byte[] { 0x01, 0xFF }`
-- [ ] `/implement` -- `src/Conjecture.Core/Formatting/BuiltInFormatters.cs`
+- [x] `/implement` -- `src/Conjecture.Core/Formatting/BuiltInFormatters.cs`
   - Static class with individual formatter implementations; registers via `[ModuleInitializer]`
 
 #### Cycle 1.7.4 -- Built-in formatters: collections and tuples

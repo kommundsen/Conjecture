@@ -1,0 +1,83 @@
+using System.Globalization;
+using System.Runtime.CompilerServices;
+using System.Text;
+
+namespace Conjecture.Core.Formatting;
+
+/// <summary>Built-in <see cref="IStrategyFormatter{T}"/> instances for common primitive types.</summary>
+public static class BuiltInFormatters
+{
+    /// <summary>Formatter for <see cref="int"/> values.</summary>
+    public static IStrategyFormatter<int> Int32 { get; } = new Int32Formatter();
+    /// <summary>Formatter for <see cref="bool"/> values.</summary>
+    public static IStrategyFormatter<bool> Boolean { get; } = new BooleanFormatter();
+    /// <summary>Formatter for <see cref="double"/> values.</summary>
+    public static IStrategyFormatter<double> Double { get; } = new DoubleFormatter();
+    /// <summary>Formatter for <see cref="float"/> values.</summary>
+    public static IStrategyFormatter<float> Single { get; } = new SingleFormatter();
+    /// <summary>Formatter for <see cref="string"/> values.</summary>
+    public static IStrategyFormatter<string> String { get; } = new StringFormatter();
+    /// <summary>Formatter for <see cref="byte"/> array values.</summary>
+    public static IStrategyFormatter<byte[]> ByteArray { get; } = new ByteArrayFormatter();
+
+#pragma warning disable CA2255
+    [ModuleInitializer]
+    internal static void Register()
+#pragma warning restore CA2255
+    {
+        FormatterRegistry.Register(Int32);
+        FormatterRegistry.Register(Boolean);
+        FormatterRegistry.Register(Double);
+        FormatterRegistry.Register(Single);
+        FormatterRegistry.Register(String);
+        FormatterRegistry.Register(ByteArray);
+    }
+
+    private sealed class Int32Formatter : IStrategyFormatter<int>
+    {
+        public string Format(int value) => value.ToString();
+    }
+
+    private sealed class BooleanFormatter : IStrategyFormatter<bool>
+    {
+        public string Format(bool value) => value ? "true" : "false";
+    }
+
+    private sealed class DoubleFormatter : IStrategyFormatter<double>
+    {
+        public string Format(double value) => value.ToString("G", CultureInfo.InvariantCulture);
+    }
+
+    private sealed class SingleFormatter : IStrategyFormatter<float>
+    {
+        public string Format(float value) => value.ToString("G", CultureInfo.InvariantCulture) + "f";
+    }
+
+    private sealed class StringFormatter : IStrategyFormatter<string>
+    {
+        public string Format(string value)
+        {
+            var sb = new StringBuilder("\"");
+            foreach (var c in value)
+            {
+                switch (c)
+                {
+                    case '"':  sb.Append("\\\""); break;
+                    case '\\': sb.Append("\\\\"); break;
+                    case '\n': sb.Append("\\n");  break;
+                    case '\r': sb.Append("\\r");  break;
+                    case '\t': sb.Append("\\t");  break;
+                    default:   sb.Append(c);       break;
+                }
+            }
+            sb.Append('"');
+            return sb.ToString();
+        }
+    }
+
+    private sealed class ByteArrayFormatter : IStrategyFormatter<byte[]>
+    {
+        public string Format(byte[] value) =>
+            $"new byte[] {{ {string.Join(", ", value.Select(b => $"0x{b:X2}"))} }}";
+    }
+}
