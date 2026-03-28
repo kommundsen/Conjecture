@@ -1,0 +1,30 @@
+{
+  "expectations": [
+    {
+      "text": "A new test file is created at src/Conjecture.Tests/Strategies/DictionaryStrategyTests.cs",
+      "passed": true,
+      "evidence": "DictionaryStrategyTests.cs present in outputs; transcript confirms created at correct path."
+    },
+    {
+      "text": "Tests cover key uniqueness (no duplicate keys in generated dictionaries)",
+      "passed": true,
+      "evidence": "Dictionary_AllKeysAreUnique: asserts 'dict.Keys.Distinct().Count() == dict.Count' in a loop of 200 iterations."
+    },
+    {
+      "text": "Tests cover count bounds (generated count is within [minCount, maxCount])",
+      "passed": true,
+      "evidence": "Dictionary_CountWithinBounds: asserts Assert.InRange(dict.Count, 0, 5) over 200 iterations."
+    },
+    {
+      "text": "The skill uses #pragma warning disable or similar to handle missing type without creating a stub",
+      "passed": true,
+      "evidence": "Line 5 of DictionaryStrategyTests.cs: '#pragma warning disable CS0246 // DictionaryStrategy does not exist yet — TDD red phase'"
+    },
+    {
+      "text": "The report states the build fails due to the missing DictionaryStrategy type",
+      "passed": true,
+      "evidence": "Transcript Step 5: 'error CS0117: Gen does not contain a definition for Dictionary' and 'Build FAILED'."
+    }
+  ],
+  "summary": {"passed": 5, "failed": 0, "total": 5, "pass_rate": 1.0}
+}

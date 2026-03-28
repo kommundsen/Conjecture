@@ -1,0 +1,9 @@
+{
+  "tool_calls": {"Read": 2, "Write": 1, "Edit": 0, "Bash": 1, "Glob": 0, "Grep": 0},
+  "total_tool_calls": 4,
+  "total_steps": 3,
+  "files_created": ["SelectStrategyTests.cs"],
+  "errors_encountered": 0,
+  "output_chars": 650,
+  "transcript_chars": 900
+}

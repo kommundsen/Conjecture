@@ -1,0 +1,82 @@
+[
+  {
+    "query": "write tests for a new ShuffleStrategy that returns all input elements in any order",
+    "should_trigger": true
+  },
+  {
+    "query": "add a failing test for OneOfStrategy when given an empty collection — expect ArgumentException",
+    "should_trigger": true
+  },
+  {
+    "query": "need test coverage for Gen.Booleans() — verify it generates both true and false over 1000 draws",
+    "should_trigger": true
+  },
+  {
+    "query": "start TDD for a CharStrategy — Gen.Chars(allowed: abc) should only produce chars from that set",
+    "should_trigger": true
+  },
+  {
+    "query": "write tests verifying ZipStrategy returns tuples where each element satisfies its source strategy",
+    "should_trigger": true
+  },
+  {
+    "query": "test that WhereStrategy with an impossible predicate throws UnsatisfiedAssumptionException",
+    "should_trigger": true
+  },
+  {
+    "query": "red phase tests for ListStrategy — lists with length in [min,max], all elements from element strategy",
+    "should_trigger": true
+  },
+  {
+    "query": "cover the edge case where Gen.Integers<byte>(5,5) always returns exactly 5",
+    "should_trigger": true
+  },
+  {
+    "query": "add tests to SelectManyStrategyTests.cs for when the inner strategy gets values from the outer",
+    "should_trigger": true
+  },
+  {
+    "query": "write the test first: SampledFromStrategy should throw when given an empty array",
+    "should_trigger": true
+  },
+  {
+    "query": "DictionaryStrategy tests are written, now implement Gen.Dictionary to make them pass",
+    "should_trigger": false
+  },
+  {
+    "query": "make the failing Integers_MinGreaterThanMax test pass by adding a guard to IntegerStrategy",
+    "should_trigger": false
+  },
+  {
+    "query": "refactor IntegerStrategyTests — replace the six Facts with a single Theory + InlineData",
+    "should_trigger": false
+  },
+  {
+    "query": "run dotnet test and show me which tests are failing in the Strategies folder",
+    "should_trigger": false
+  },
+  {
+    "query": "review SelectStrategyTests for code quality — are the assertions strong enough?",
+    "should_trigger": false
+  },
+  {
+    "query": "port the hypothesis lists() strategy from Python to C# for Conjecture",
+    "should_trigger": false
+  },
+  {
+    "query": "scaffold a new test project Conjecture.Integration referencing Conjecture.Core",
+    "should_trigger": false
+  },
+  {
+    "query": "what is the difference between [Theory] and [Fact] in xUnit?",
+    "should_trigger": false
+  },
+  {
+    "query": "fix the CS0117 build error in DictionaryStrategyTests — Gen has no definition for Dictionary",
+    "should_trigger": false
+  },
+  {
+    "query": "my WhereStrategy tests all pass — explain why and what the implementation is doing",
+    "should_trigger": false
+  }
+]

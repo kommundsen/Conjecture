@@ -2,8 +2,9 @@
 name: test
 description: >
   Write failing xUnit tests for a behavior before implementation exists (TDD Red phase) in the Conjecture .NET project.
-  Use this skill whenever the user asks to write tests, add test coverage, start a TDD cycle, or describes a behavior that needs verifying — even if they don't say "TDD" or "red phase" explicitly.
-  Triggers on phrases like "write tests for", "add tests", "test that X does Y", "cover this behavior", or when implementing a new cycle step requires a failing test first.
+  Use this skill whenever the user wants NEW tests written — they describe a behavior to verify, say "write tests for X", "add coverage for X", "test that X does Y", "I need a failing test", or name a strategy/feature that needs tests.
+  Triggers even without "TDD" or "red phase" language, as long as the goal is creating tests rather than acting on existing ones.
+  Do NOT trigger when the user wants to make existing failing tests pass (use implement), fix build errors in test files (use implement), refactor or reorganize existing tests (use simplify), or simply run/explain tests.
 ---
 
 Write failing xUnit tests for a behavior before implementation exists (TDD Red phase).

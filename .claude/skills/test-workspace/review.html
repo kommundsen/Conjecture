@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eval Review</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Lora:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js" integrity="sha384-EnyY0/GSHQGSxSgMwaIPzSESbqoOLSexfnSMN2AP+39Ckmn92stwABZynq1JyzdT" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --bg: #faf9f5;
+      --surface: #ffffff;
+      --border: #e8e6dc;
+      --text: #141413;
+      --text-muted: #b0aea5;
+      --accent: #d97757;
+      --accent-hover: #c4613f;
+      --green: #788c5d;
+      --green-bg: #eef2e8;
+      --red: #c44;
+      --red-bg: #fceaea;
+      --header-bg: #141413;
+      --header-text: #faf9f5;
+      --radius: 6px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Lora', Georgia, serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ---- Header ---- */
+    .header {
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .header h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    .header .instructions {
+      font-size: 0.8rem;
+      opacity: 0.7;
+      margin-top: 0.25rem;
+    }
+    .header .progress {
+      font-size: 0.875rem;
+      opacity: 0.8;
+      text-align: right;
+    }
+
+    /* ---- Main content ---- */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    /* ---- Sections ---- */
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      flex-shrink: 0;
+    }
+    .section-header {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.75rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .section-body {
+      padding: 1rem;
+    }
+
+    /* ---- Config badge ---- */
+    .config-badge {
+      display: inline-block;
+      padding: 0.2rem 0.625rem;
+      border-radius: 9999px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-left: 0.75rem;
+      vertical-align: middle;
+    }
+    .config-badge.config-primary {
+      background: rgba(33, 150, 243, 0.12);
+      color: #1976d2;
+    }
+    .config-badge.config-baseline {
+      background: rgba(255, 193, 7, 0.15);
+      color: #f57f17;
+    }
+
+    /* ---- Prompt ---- */
+    .prompt-text {
+      white-space: pre-wrap;
+      font-size: 0.9375rem;
+      line-height: 1.6;
+    }
+
+    /* ---- Outputs ---- */
+    .output-file {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .output-file + .output-file {
+      margin-top: 1rem;
+    }
+    .output-file-header {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .output-file-header .dl-btn {
+      font-size: 0.7rem;
+      color: var(--accent);
+      text-decoration: none;
+      cursor: pointer;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-weight: 500;
+      opacity: 0.8;
+    }
+    .output-file-header .dl-btn:hover {
+      opacity: 1;
+      text-decoration: underline;
+    }
+    .output-file-content {
+      padding: 0.75rem;
+      overflow-x: auto;
+    }
+    .output-file-content pre {
+      font-size: 0.8125rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+    .output-file-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+    .output-file-content iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+    }
+    .output-file-content table {
+      border-collapse: collapse;
+      font-size: 0.8125rem;
+      width: 100%;
+    }
+    .output-file-content table td,
+    .output-file-content table th {
+      border: 1px solid var(--border);
+      padding: 0.375rem 0.5rem;
+      text-align: left;
+    }
+    .output-file-content table th {
+      background: var(--bg);
+      font-weight: 600;
+    }
+    .output-file-content .download-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.875rem;
+      cursor: pointer;
+    }
+    .output-file-content .download-link:hover {
+      background: var(--border);
+    }
+    .empty-state {
+      color: var(--text-muted);
+      font-style: italic;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    /* ---- Feedback ---- */
+    .prev-feedback {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.625rem 0.75rem;
+      margin-top: 0.75rem;
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .prev-feedback-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.25rem;
+      color: var(--text-muted);
+    }
+    .feedback-textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 0.9375rem;
+      line-height: 1.5;
+      resize: vertical;
+      color: var(--text);
+    }
+    .feedback-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    .feedback-status {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      min-height: 1.1em;
+    }
+
+    /* ---- Grades (collapsible) ---- */
+    .grades-toggle {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .grades-toggle:hover {
+      color: var(--accent);
+    }
+    .grades-toggle .arrow {
+      margin-right: 0.5rem;
+      transition: transform 0.15s;
+      font-size: 0.75rem;
+    }
+    .grades-toggle .arrow.open {
+      transform: rotate(90deg);
+    }
+    .grades-content {
+      display: none;
+      margin-top: 0.75rem;
+    }
+    .grades-content.open {
+      display: block;
+    }
+    .grades-summary {
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .grade-badge {
+      display: inline-block;
+      padding: 0.125rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .grade-pass { background: var(--green-bg); color: var(--green); }
+    .grade-fail { background: var(--red-bg); color: var(--red); }
+    .assertion-list {
+      list-style: none;
+    }
+    .assertion-item {
+      padding: 0.625rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.8125rem;
+    }
+    .assertion-item:last-child { border-bottom: none; }
+    .assertion-status {
+      font-weight: 600;
+      margin-right: 0.5rem;
+    }
+    .assertion-status.pass { color: var(--green); }
+    .assertion-status.fail { color: var(--red); }
+    .assertion-evidence {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+      padding-left: 1.5rem;
+    }
+
+    /* ---- View tabs ---- */
+    .view-tabs {
+      display: flex;
+      gap: 0;
+      padding: 0 2rem;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .view-tab {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.625rem 1.25rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--text-muted);
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s;
+    }
+    .view-tab:hover { color: var(--text); }
+    .view-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    .view-panel { display: none; }
+    .view-panel.active { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+
+    /* ---- Benchmark view ---- */
+    .benchmark-view {
+      padding: 1.5rem 2rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .benchmark-table {
+      border-collapse: collapse;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.8125rem;
+      width: 100%;
+      margin-bottom: 1.5rem;
+    }
+    .benchmark-table th, .benchmark-table td {
+      padding: 0.625rem 0.75rem;
+      text-align: left;
+      border: 1px solid var(--border);
+    }
+    .benchmark-table th {
+      font-family: 'Poppins', sans-serif;
+      background: var(--header-bg);
+      color: var(--header-text);
+      font-weight: 500;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .benchmark-table tr:hover { background: var(--bg); }
+    .benchmark-table tr.benchmark-row-with { background: rgba(33, 150, 243, 0.06); }
+    .benchmark-table tr.benchmark-row-without { background: rgba(255, 193, 7, 0.06); }
+    .benchmark-table tr.benchmark-row-with:hover { background: rgba(33, 150, 243, 0.12); }
+    .benchmark-table tr.benchmark-row-without:hover { background: rgba(255, 193, 7, 0.12); }
+    .benchmark-table tr.benchmark-row-avg { font-weight: 600; border-top: 2px solid var(--border); }
+    .benchmark-table tr.benchmark-row-avg.benchmark-row-with { background: rgba(33, 150, 243, 0.12); }
+    .benchmark-table tr.benchmark-row-avg.benchmark-row-without { background: rgba(255, 193, 7, 0.12); }
+    .benchmark-delta-positive { color: var(--green); font-weight: 600; }
+    .benchmark-delta-negative { color: var(--red); font-weight: 600; }
+    .benchmark-notes {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+    }
+    .benchmark-notes h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+    }
+    .benchmark-notes ul {
+      list-style: disc;
+      padding-left: 1.25rem;
+    }
+    .benchmark-notes li {
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      margin-bottom: 0.375rem;
+    }
+    .benchmark-empty {
+      color: var(--text-muted);
+      font-style: italic;
+      text-align: center;
+      padding: 3rem;
+    }
+
+    /* ---- Navigation ---- */
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      flex-shrink: 0;
+    }
+    .nav-btn {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text);
+      transition: all 0.15s;
+    }
+    .nav-btn:hover:not(:disabled) {
+      background: var(--bg);
+      border-color: var(--text-muted);
+    }
+    .nav-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .done-btn {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.5rem 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.15s;
+    }
+    .done-btn:hover {
+      background: var(--bg);
+      border-color: var(--text-muted);
+    }
+    .done-btn.ready {
+      border: none;
+      background: var(--accent);
+      color: white;
+      font-weight: 600;
+    }
+    .done-btn.ready:hover {
+      background: var(--accent-hover);
+    }
+    /* ---- Done overlay ---- */
+    .done-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+    .done-overlay.visible {
+      display: flex;
+    }
+    .done-card {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 2rem 3rem;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 500px;
+    }
+    .done-card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .done-card p {
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+    .done-card .btn-row {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+    .done-card button {
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 0.875rem;
+    }
+    .done-card button:hover {
+      background: var(--bg);
+    }
+    /* ---- Toast ---- */
+    .toast {
+      position: fixed;
+      bottom: 5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 0.625rem 1.25rem;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      z-index: 200;
+    }
+    .toast.visible {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div id="app" style="height:100vh; display:flex; flex-direction:column;">
+    <div class="header">
+      <div>
+        <h1>Eval Review: <span id="skill-name"></span></h1>
+        <div class="instructions">Review each output and leave feedback below. Navigate with arrow keys or buttons. When done, copy feedback and paste into Claude Code.</div>
+      </div>
+      <div class="progress" id="progress"></div>
+    </div>
+
+    <!-- View tabs (only shown when benchmark data exists) -->
+    <div class="view-tabs" id="view-tabs" style="display:none;">
+      <button class="view-tab active" onclick="switchView('outputs')">Outputs</button>
+      <button class="view-tab" onclick="switchView('benchmark')">Benchmark</button>
+    </div>
+
+    <!-- Outputs panel (qualitative review) -->
+    <div class="view-panel active" id="panel-outputs">
+    <div class="main">
+      <!-- Prompt -->
+      <div class="section">
+        <div class="section-header">Prompt <span class="config-badge" id="config-badge" style="display:none;"></span></div>
+        <div class="section-body">
+          <div class="prompt-text" id="prompt-text"></div>
+        </div>
+      </div>
+
+      <!-- Outputs -->
+      <div class="section">
+        <div class="section-header">Output</div>
+        <div class="section-body" id="outputs-body">
+          <div class="empty-state">No output files found</div>
+        </div>
+      </div>
+
+      <!-- Previous Output (collapsible) -->
+      <div class="section" id="prev-outputs-section" style="display:none;">
+        <div class="section-header">
+          <div class="grades-toggle" onclick="togglePrevOutputs()">
+            <span class="arrow" id="prev-outputs-arrow">&#9654;</span>
+            Previous Output
+          </div>
+        </div>
+        <div class="grades-content" id="prev-outputs-content"></div>
+      </div>
+
+      <!-- Grades (collapsible) -->
+      <div class="section" id="grades-section" style="display:none;">
+        <div class="section-header">
+          <div class="grades-toggle" onclick="toggleGrades()">
+            <span class="arrow" id="grades-arrow">&#9654;</span>
+            Formal Grades
+          </div>
+        </div>
+        <div class="grades-content" id="grades-content"></div>
+      </div>
+
+      <!-- Feedback -->
+      <div class="section">
+        <div class="section-header">Your Feedback</div>
+        <div class="section-body">
+          <textarea
+            class="feedback-textarea"
+            id="feedback"
+            placeholder="What do you think of this output? Any issues, suggestions, or things that look great?"
+          ></textarea>
+          <div class="feedback-status" id="feedback-status"></div>
+          <div class="prev-feedback" id="prev-feedback" style="display:none;">
+            <div class="prev-feedback-label">Previous feedback</div>
+            <div id="prev-feedback-text"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav" id="outputs-nav">
+      <button class="nav-btn" id="prev-btn" onclick="navigate(-1)">&#8592; Previous</button>
+      <button class="done-btn" id="done-btn" onclick="showDoneDialog()">Submit All Reviews</button>
+      <button class="nav-btn" id="next-btn" onclick="navigate(1)">Next &#8594;</button>
+    </div>
+    </div><!-- end panel-outputs -->
+
+    <!-- Benchmark panel (quantitative stats) -->
+    <div class="view-panel" id="panel-benchmark">
+      <div class="benchmark-view" id="benchmark-content">
+        <div class="benchmark-empty">No benchmark data available. Run a benchmark to see quantitative results here.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Done overlay -->
+  <div class="done-overlay" id="done-overlay">
+    <div class="done-card">
+      <h2>Review Complete</h2>
+      <p>Your feedback has been saved. Go back to your Claude Code session and tell Claude you're done reviewing.</p>
+      <div class="btn-row">
+        <button onclick="closeDoneDialog()">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ---- Embedded data (injected by generate_review.py) ----
+    const EMBEDDED_DATA = {"skill_name": "test", "runs": [{"id": "eval-1-min-greater-than-max-with_skill", "prompt": "Add a test to IntegerStrategyTests.cs for when min > max is passed to Gen.Integers<int>() \u00e2\u20ac\u201d I expect it to throw ArgumentOutOfRangeException", "eval_id": 1, "outputs": [{"name": "IntegerStrategyTests_with_new_test.cs", "type": "binary", "mime": "text/plain", "data_uri": "data:text/plain;base64,dXNpbmcgQ29uamVjdHVyZS5Db3JlOwp1c2luZyBDb25qZWN0dXJlLkNvcmUuSW50ZXJuYWw7CgpuYW1lc3BhY2UgQ29uamVjdHVyZS5UZXN0cy5TdHJhdGVnaWVzOwoKcHVibGljIGNsYXNzIEludGVnZXJTdHJhdGVneVRlc3RzCnsKICAgIHByaXZhdGUgc3RhdGljIENvbmplY3R1cmVEYXRhIE1ha2VEYXRhKHVsb25nIHNlZWQgPSA0MlVMKSA9PgogICAgICAgIENvbmplY3R1cmVEYXRhLkZvckdlbmVyYXRpb24obmV3IFNwbGl0dGFibGVSYW5kb20oc2VlZCkpOwoKICAgIFtGYWN0XQogICAgcHVibGljIHZvaWQgSW50ZWdlcnNfRGVmYXVsdFJhbmdlX0ludF9JblJhbmdlKCkKICAgIHsKICAgICAgICB2YXIgc3RyYXRlZ3kgPSBHZW4uSW50ZWdlcnM8aW50PigpOwogICAgICAgIHZhciBkYXRhID0gTWFrZURhdGEoKTsKICAgICAgICBmb3IgKHZhciBpID0gMDsgaSA8IDEwMDsgaSsrKQogICAgICAgIHsKICAgICAgICAgICAgQXNzZXJ0LkluUmFuZ2Uoc3RyYXRlZ3kuTmV4dChkYXRhKSwgaW50Lk1pblZhbHVlLCBpbnQuTWF4VmFsdWUpOwogICAgICAgIH0KICAgIH0KCiAgICBbRmFjdF0KICAgIHB1YmxpYyB2b2lkIEludGVnZXJzX0JvdW5kZWRSYW5nZV9SZXR1cm5zSW5SYW5nZSgpCiAgICB7CiAgICAgICAgdmFyIHN0cmF0ZWd5ID0gR2VuLkludGVnZXJzPGludD4oMCwgOSk7CiAgICAgICAgdmFyIGRhdGEgPSBNYWtlRGF0YSgpOwogICAgICAgIGZvciAodmFyIGkgPSAwOyBpIDwgMTAwMDsgaSsrKQogICAgICAgIHsKICAgICAgICAgICAgQXNzZXJ0LkluUmFuZ2Uoc3RyYXRlZ3kuTmV4dChkYXRhKSwgMCwgOSk7CiAgICAgICAgfQogICAgfQoKICAgIFtGYWN0XQogICAgcHVibGljIHZvaWQgSW50ZWdlcnNfTWluRXF1YWxzTWF4X1JldHVybnNDb25zdGFudCgpCiAgICB7CiAgICAgICAgdmFyIHN0cmF0ZWd5ID0gR2VuLkludGVnZXJzPGludD4oNSwgNSk7CiAgICAgICAgdmFyIGRhdGEgPSBNYWtlRGF0YSgpOwogICAgICAgIGZvciAodmFyIGkgPSAwOyBpIDwgMjA7IGkrKykKICAgICAgICB7CiAgICAgICAgICAgIEFzc2VydC5FcXVhbCg1LCBzdHJhdGVneS5OZXh0KGRhdGEpKTsKICAgICAgICB9CiAgICB9CgogICAgW0ZhY3RdCiAgICBwdWJsaWMgdm9pZCBJbnRlZ2Vyc19OZWdhdGl2ZVJhbmdlX1JldHVybnNJblJhbmdlKCkKICAgIHsKICAgICAgICB2YXIgc3RyYXRlZ3kgPSBHZW4uSW50ZWdlcnM8aW50PigtMTAsIC0xKTsKICAgICAgICB2YXIgZGF0YSA9IE1ha2VEYXRhKCk7CiAgICAgICAgZm9yICh2YXIgaSA9IDA7IGkgPCAxMDA7IGkrKykKICAgICAgICB7CiAgICAgICAgICAgIEFzc2VydC5JblJhbmdlKHN0cmF0ZWd5Lk5leHQoZGF0YSksIC0xMCwgLTEpOwogICAgICAgIH0KICAgIH0KCiAgICBbRmFjdF0KICAgIHB1YmxpYyB2b2lkIEludGVnZXJzX0xvbmdSYW5nZV9SZXR1cm5zSW5SYW5nZSgpCiAgICB7CiAgICAgICAgdmFyIHN0cmF0ZWd5ID0gR2VuLkludGVnZXJzPGxvbmc+KDBMLCAxMDBMKTsKICAgICAgICB2YXIgZGF0YSA9IE1ha2VEYXRhKCk7CiAgICAgICAgZm9yICh2YXIgaSA9IDA7IGkgPCAxMDA7IGkrKykKICAgICAgICB7CiAgICAgICAgICAgIEFzc2VydC5JblJhbmdlKHN0cmF0ZWd5Lk5leHQoZGF0YSksIDBMLCAxMDBMKTsKICAgICAgICB9CiAgICB9CgogICAgW0ZhY3RdCiAgICBwdWJsaWMgdm9pZCBJbnRlZ2Vyc19CeXRlUmFuZ2VfUmV0dXJuc0luUmFuZ2UoKQogICAgewogICAgICAgIHZhciBzdHJhdGVneSA9IEdlbi5JbnRlZ2VyczxieXRlPigwLCAxMCk7CiAgICAgICAgdmFyIGRhdGEgPSBNYWtlRGF0YSgpOwogICAgICAgIGZvciAodmFyIGkgPSAwOyBpIDwgMTAwOyBpKyspCiAgICAgICAgewogICAgICAgICAgICBBc3NlcnQuSW5SYW5nZShzdHJhdGVneS5OZXh0KGRhdGEpLCAoYnl0ZSkwLCAoYnl0ZSkxMCk7CiAgICAgICAgfQogICAgfQoKICAgIFtGYWN0XQogICAgcHVibGljIHZvaWQgSW50ZWdlcnNfTWluR3JlYXRlclRoYW5NYXhfVGhyb3dzQXJndW1lbnRPdXRPZlJhbmdlRXhjZXB0aW9uKCkKICAgIHsKICAgICAgICBBc3NlcnQuVGhyb3dzPEFyZ3VtZW50T3V0T2ZSYW5nZUV4Y2VwdGlvbj4oKCkgPT4gR2VuLkludGVnZXJzPGludD4oMTAsIDUpKTsKICAgIH0KfQo="}], "grading": {"expectations": [{"text": "A new test is added to the existing IntegerStrategyTests.cs file, not a new file", "passed": true, "evidence": "Output file is the full IntegerStrategyTests.cs with the new test appended at line 77-81. Transcript confirms 'added to existing file'."}, {"text": "The test method name follows the MethodName_Condition_ExpectedResult convention", "passed": true, "evidence": "Method name: Integers_MinGreaterThanMax_ThrowsArgumentOutOfRangeException. Integers=method, MinGreaterThanMax=condition, ThrowsArgumentOutOfRangeException=expected result."}, {"text": "The test uses Assert.Throws<ArgumentOutOfRangeException> or equivalent xUnit pattern", "passed": true, "evidence": "Line 80: Assert.Throws<ArgumentOutOfRangeException>(() => Gen.Integers<int>(10, 5));"}, {"text": "The test calls Gen.Integers<int> with min > max", "passed": true, "evidence": "Gen.Integers<int>(10, 5) \u00e2\u20ac\u201d min=10, max=5, so min > max."}, {"text": "The report states whether the build/test run is red (failing)", "passed": true, "evidence": "Transcript Step 5: 'RED PHASE CONFIRMED' with specific output showing 1 test failed."}], "summary": {"passed": 5, "failed": 0, "total": 5, "pass_rate": 1.0}}}, {"id": "eval-1-min-greater-than-max-without_skill", "prompt": "Add a test to IntegerStrategyTests.cs for when min > max is passed to Gen.Integers<int>() \u00e2\u20ac\u201d I expect it to throw ArgumentOutOfRangeException", "eval_id": 1, "outputs": [{"name": "IntegerStrategyTests_baseline.cs", "type": "binary", "mime": "text/plain", "data_uri": "data:text/plain;base64,dXNpbmcgQ29uamVjdHVyZS5Db3JlOwp1c2luZyBDb25qZWN0dXJlLkNvcmUuSW50ZXJuYWw7CgpuYW1lc3BhY2UgQ29uamVjdHVyZS5UZXN0cy5TdHJhdGVnaWVzOwoKcHVibGljIGNsYXNzIEludGVnZXJTdHJhdGVneVRlc3RzCnsKICAgIHByaXZhdGUgc3RhdGljIENvbmplY3R1cmVEYXRhIE1ha2VEYXRhKHVsb25nIHNlZWQgPSA0MlVMKSA9PgogICAgICAgIENvbmplY3R1cmVEYXRhLkZvckdlbmVyYXRpb24obmV3IFNwbGl0dGFibGVSYW5kb20oc2VlZCkpOwoKICAgIC8vIC4uLiBleGlzdGluZyB0ZXN0cyAuLi4KCiAgICBbRmFjdF0KICAgIHB1YmxpYyB2b2lkIEludGVnZXJzX0ludmFsaWRSYW5nZV9UaHJvd3NFeGNlcHRpb24oKQogICAgewogICAgICAgIEFzc2VydC5UaHJvd3M8QXJndW1lbnRPdXRPZlJhbmdlRXhjZXB0aW9uPigoKSA9PiBHZW4uSW50ZWdlcnM8aW50PigxMCwgNSkpOwogICAgfQp9Cg=="}], "grading": {"expectations": [{"text": "A new test is added to the existing IntegerStrategyTests.cs file, not a new file", "passed": true, "evidence": "Baseline output shows modification to IntegerStrategyTests class, not a new file."}, {"text": "The test method name follows the MethodName_Condition_ExpectedResult convention", "passed": true, "evidence": "Integers_InvalidRange_ThrowsException \u00e2\u20ac\u201d structurally 3-part but less specific: 'InvalidRange' is vague vs 'MinGreaterThanMax', 'ThrowsException' vs 'ThrowsArgumentOutOfRangeException'. Convention met at structural level."}, {"text": "The test uses Assert.Throws<ArgumentOutOfRangeException> or equivalent xUnit pattern", "passed": true, "evidence": "Line 15: Assert.Throws<ArgumentOutOfRangeException>(() => Gen.Integers<int>(10, 5));"}, {"text": "The test calls Gen.Integers<int> with min > max", "passed": true, "evidence": "Gen.Integers<int>(10, 5) \u00e2\u20ac\u201d min=10 > max=5."}, {"text": "The report states whether the build/test run is red (failing)", "passed": true, "evidence": "Transcript mentions test fails and 'red phase confirmed'."}], "summary": {"passed": 5, "failed": 0, "total": 5, "pass_rate": 1.0}}}, {"id": "eval-2-select-strategy-with_skill", "prompt": "Write tests for the existing SelectStrategy \u00e2\u20ac\u201d Gen.Integers<int>(0, 10).Select(x => x * 2) should always return even numbers in [0, 20], and an identity selector should return values in the same range as the source", "eval_id": 2, "outputs": [{"name": "SelectStrategyTests.cs", "type": "binary", "mime": "text/plain", "data_uri": "data:text/plain;base64,dXNpbmcgQ29uamVjdHVyZS5Db3JlOwp1c2luZyBDb25qZWN0dXJlLkNvcmUuR2VuZXJhdGlvbjsKdXNpbmcgQ29uamVjdHVyZS5Db3JlLkludGVybmFsOwoKbmFtZXNwYWNlIENvbmplY3R1cmUuVGVzdHMuU3RyYXRlZ2llczsKCnB1YmxpYyBjbGFzcyBTZWxlY3RTdHJhdGVneVRlc3RzCnsKICAgIHByaXZhdGUgc3RhdGljIENvbmplY3R1cmVEYXRhIE1ha2VEYXRhKHVsb25nIHNlZWQgPSA0MlVMKSA9PgogICAgICAgIENvbmplY3R1cmVEYXRhLkZvckdlbmVyYXRpb24obmV3IFNwbGl0dGFibGVSYW5kb20oc2VlZCkpOwoKICAgIFtGYWN0XQogICAgcHVibGljIHZvaWQgU2VsZWN0X0RvdWJsaW5nU2VsZWN0b3JfUmV0dXJuc0V2ZW5OdW1iZXJzSW5SYW5nZSgpCiAgICB7CiAgICAgICAgdmFyIHN0cmF0ZWd5ID0gR2VuLkludGVnZXJzPGludD4oMCwgMTApLlNlbGVjdCh4ID0+IHggKiAyKTsKICAgICAgICB2YXIgZGF0YSA9IE1ha2VEYXRhKCk7CiAgICAgICAgZm9yICh2YXIgaSA9IDA7IGkgPCAxMDA7IGkrKykKICAgICAgICB7CiAgICAgICAgICAgIHZhciByZXN1bHQgPSBzdHJhdGVneS5OZXh0KGRhdGEpOwogICAgICAgICAgICBBc3NlcnQuSW5SYW5nZShyZXN1bHQsIDAsIDIwKTsKICAgICAgICAgICAgQXNzZXJ0LkVxdWFsKDAsIHJlc3VsdCAlIDIpOwogICAgICAgIH0KICAgIH0KCiAgICBbRmFjdF0KICAgIHB1YmxpYyB2b2lkIFNlbGVjdF9JZGVudGl0eVNlbGVjdG9yX1JldHVybnNWYWx1ZXNJblNvdXJjZVJhbmdlKCkKICAgIHsKICAgICAgICB2YXIgc3RyYXRlZ3kgPSBHZW4uSW50ZWdlcnM8aW50PigwLCAxMCkuU2VsZWN0KHggPT4geCk7CiAgICAgICAgdmFyIGRhdGEgPSBNYWtlRGF0YSgpOwogICAgICAgIGZvciAodmFyIGkgPSAwOyBpIDwgMTAwOyBpKyspCiAgICAgICAgewogICAgICAgICAgICBBc3NlcnQuSW5SYW5nZShzdHJhdGVneS5OZXh0KGRhdGEpLCAwLCAxMCk7CiAgICAgICAgfQogICAgfQp9Cg=="}], "grading": {"expectations": [{"text": "A new file is created at src/Conjecture.Tests/Strategies/SelectStrategyTests.cs", "passed": true, "evidence": "SelectStrategyTests.cs created as new file in outputs; transcript confirms created at correct path."}, {"text": "The file uses file-scoped namespace matching Conjecture.Tests.Strategies", "passed": true, "evidence": "Line 5: 'namespace Conjecture.Tests.Strategies;' \u00e2\u20ac\u201d file-scoped."}, {"text": "At least one test verifies that Select() transforms values correctly", "passed": true, "evidence": "Select_DoublingSelector_ReturnsEvenNumbersInRange asserts InRange(result, 0, 20) and Equal(0, result % 2), directly verifying the x*2 transform."}, {"text": "Tests follow the MethodName_Condition_ExpectedResult naming convention", "passed": true, "evidence": "Select_DoublingSelector_ReturnsEvenNumbersInRange (Select=method, DoublingSelector=condition, ReturnsEvenNumbersInRange=expected). Select_IdentitySelector_ReturnsValuesInSourceRange \u00e2\u20ac\u201d same pattern."}, {"text": "The report states whether the build/test run is red (failing)", "passed": true, "evidence": "Transcript explicitly states 'GREEN (not red)' and notes that the implementation already exists. The skill's red-phase requirement was discussed honestly."}], "summary": {"passed": 5, "failed": 0, "total": 5, "pass_rate": 1.0}}}, {"id": "eval-2-select-strategy-without_skill", "prompt": "Write tests for the existing SelectStrategy \u00e2\u20ac\u201d Gen.Integers<int>(0, 10).Select(x => x * 2) should always return even numbers in [0, 20], and an identity selector should return values in the same range as the source", "eval_id": 2, "outputs": [{"name": "results.trx", "type": "binary", "mime": "application/xml", "data_uri": "data:application/xml;base64,77u/PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjxUZXN0UnVuIGlkPSIyYjgwN2EyYi0xMGFkLTQzNzktYmE4Yy04NjE4ZjdmMjUxZDIiIG5hbWU9ImtpbW9tQEtJTURFU0tUT1AgMjAyNi0wMy0yOCAxMjo0Mjo1OSIgcnVuVXNlcj0iS0lNREVTS1RPUFxraW1vbSIgeG1sbnM9Imh0dHA6Ly9taWNyb3NvZnQuY29tL3NjaGVtYXMvVmlzdWFsU3R1ZGlvL1RlYW1UZXN0LzIwMTAiPg0KICA8VGltZXMgY3JlYXRpb249IjIwMjYtMDMtMjhUMTI6NDI6NTkuNzYyMjAxOCswMTowMCIgcXVldWluZz0iMjAyNi0wMy0yOFQxMjo0Mjo1OS43NjIyMDIwKzAxOjAwIiBzdGFydD0iMjAyNi0wMy0yOFQxMjo0Mjo1OS4xNDA1NTcwKzAxOjAwIiBmaW5pc2g9IjIwMjYtMDMtMjhUMTI6NDI6NTkuNzY2MDc2MyswMTowMCIgLz4NCiAgPFRlc3RTZXR0aW5ncyBuYW1lPSJkZWZhdWx0IiBpZD0iMjcwMzU3MTgtMWNhZS00YTM1LTgzY2MtNmQ2ZGZiZWE1MTY0Ij4NCiAgICA8RGVwbG95bWVudCBydW5EZXBsb3ltZW50Um9vdD0ia2ltb21fS0lNREVTS1RPUF8yMDI2LTAzLTI4XzEyXzQyXzU5IiAvPg0KICA8L1Rlc3RTZXR0aW5ncz4NCiAgPFJlc3VsdHM+DQogICAgPFVuaXRUZXN0UmVzdWx0IGV4ZWN1dGlvbklkPSI0MWY4NmIwOS1hYmUzLTRmMDAtOWZlMS00ZWYyYTdjNTg1NjYiIHRlc3RJZD0iZTViMzNjNzQtNDNjYS1kODllLTc3MTgtYjIwZWRiMmU2ZjAzIiB0ZXN0TmFtZT0iQ29uamVjdHVyZS5UZXN0cy5TdHJhdGVnaWVzLlNlbGVjdFN0cmF0ZWd5VGVzdHMuU2VsZWN0X0lkZW50aXR5U2VsZWN0b3JfUmV0dXJuc1ZhbHVlc0luU291cmNlUmFuZ2UiIGNvbXB1dGVyTmFtZT0iS0lNREVTS1RPUCIgZHVyYXRpb249IjAwOjAwOjAwLjAwNTM1NzEiIHN0YXJ0VGltZT0iMjAyNi0wMy0yOFQxMjo0Mjo1OS42NTkxMTQ5KzAxOjAwIiBlbmRUaW1lPSIyMDI2LTAzLTI4VDEyOjQyOjU5LjY3MDEzNDArMDE6MDAiIHRlc3RUeXBlPSIxM2NkYzlkOS1kZGI1LTRmYTQtYTk3ZC1kOTY1Y2NmYzZkNGIiIG91dGNvbWU9IlBhc3NlZCIgdGVzdExpc3RJZD0iOGM4NGZhOTQtMDRjMS00MjRiLTk4NjgtNTdhMmQ0ODUxYTFkIiByZWxhdGl2ZVJlc3VsdHNEaXJlY3Rvcnk9IjQxZjg2YjA5LWFiZTMtNGYwMC05ZmUxLTRlZjJhN2M1ODU2NiIgLz4NCiAgICA8VW5pdFRlc3RSZXN1bHQgZXhlY3V0aW9uSWQ9ImI4MTJhMzY2LTMxMDUtNDVhMC04NDBjLTkyM2MxNjU0OGY1ZSIgdGVzdElkPSJlNTkyMzUwYi1jNzhlLWJhNTktYWNjYi04NjAwNWZhM2ViMWIiIHRlc3ROYW1lPSJDb25qZWN0dXJlLlRlc3RzLlN0cmF0ZWdpZXMuU2VsZWN0U3RyYXRlZ3lUZXN0cy5TZWxlY3RfRG91YmxlU2VsZWN0b3JfUmV0dXJuc0V2ZW5OdW1iZXJzSW5SYW5nZSIgY29tcHV0ZXJOYW1lPSJLSU1ERVNLVE9QIiBkdXJhdGlvbj0iMDA6MDA6MDAuMDAyNTk1OSIgc3RhcnRUaW1lPSIyMDI2LTAzLTI4VDEyOjQyOjU5LjY3ODc5MzIrMDE6MDAiIGVuZFRpbWU9IjIwMjYtMDMtMjhUMTI6NDI6NTkuNjc4ODcxOCswMTowMCIgdGVzdFR5cGU9IjEzY2RjOWQ5LWRkYjUtNGZhNC1hOTdkLWQ5NjVjY2ZjNmQ0YiIgb3V0Y29tZT0iUGFzc2VkIiB0ZXN0TGlzdElkPSI4Yzg0ZmE5NC0wNGMxLTQyNGItOTg2OC01N2EyZDQ4NTFhMWQiIHJlbGF0aXZlUmVzdWx0c0RpcmVjdG9yeT0iYjgxMmEzNjYtMzEwNS00NWEwLTg0MGMtOTIzYzE2NTQ4ZjVlIiAvPg0KICA8L1Jlc3VsdHM+DQogIDxUZXN0RGVmaW5pdGlvbnM+DQogICAgPFVuaXRUZXN0IG5hbWU9IkNvbmplY3R1cmUuVGVzdHMuU3RyYXRlZ2llcy5TZWxlY3RTdHJhdGVneVRlc3RzLlNlbGVjdF9Eb3VibGVTZWxlY3Rvcl9SZXR1cm5zRXZlbk51bWJlcnNJblJhbmdlIiBzdG9yYWdlPSJjOlx1c2Vyc1xraW1vbVxzb3VyY2VccmVwb3NcY29uamVjdHVyZVwuY2xhdWRlXHdvcmt0cmVlc1xhZ2VudC1hYmNhYzA0OFxzcmNcY29uamVjdHVyZS50ZXN0c1xiaW5cZGVidWdcbmV0MTAuMFxjb25qZWN0dXJlLnRlc3RzLmRsbCIgaWQ9ImU1OTIzNTBiLWM3OGUtYmE1OS1hY2NiLTg2MDA1ZmEzZWIxYiI+DQogICAgICA8RXhlY3V0aW9uIGlkPSJiODEyYTM2Ni0zMTA1LTQ1YTAtODQwYy05MjNjMTY1NDhmNWUiIC8+DQogICAgICA8VGVzdE1ldGhvZCBjb2RlQmFzZT0iQzpcVXNlcnNca2ltb21cc291cmNlXHJlcG9zXENvbmplY3R1cmVcLmNsYXVkZVx3b3JrdHJlZXNcYWdlbnQtYWJjYWMwNDhcc3JjXENvbmplY3R1cmUuVGVzdHNcYmluXERlYnVnXG5ldDEwLjBcQ29uamVjdHVyZS5UZXN0cy5kbGwiIGFkYXB0ZXJUeXBlTmFtZT0iZXhlY3V0b3I6Ly94dW5pdC9Wc1Rlc3RSdW5uZXIzL25ldGNvcmUvIiBjbGFzc05hbWU9IkNvbmplY3R1cmUuVGVzdHMuU3RyYXRlZ2llcy5TZWxlY3RTdHJhdGVneVRlc3RzIiBuYW1lPSJTZWxlY3RfRG91YmxlU2VsZWN0b3JfUmV0dXJuc0V2ZW5OdW1iZXJzSW5SYW5nZSIgLz4NCiAgICA8L1VuaXRUZXN0Pg0KICAgIDxVbml0VGVzdCBuYW1lPSJDb25qZWN0dXJlLlRlc3RzLlN0cmF0ZWdpZXMuU2VsZWN0U3RyYXRlZ3lUZXN0cy5TZWxlY3RfSWRlbnRpdHlTZWxlY3Rvcl9SZXR1cm5zVmFsdWVzSW5Tb3VyY2VSYW5nZSIgc3RvcmFnZT0iYzpcdXNlcnNca2ltb21cc291cmNlXHJlcG9zXGNvbmplY3R1cmVcLmNsYXVkZVx3b3JrdHJlZXNcYWdlbnQtYWJjYWMwNDhcc3JjXGNvbmplY3R1cmUudGVzdHNcYmluXGRlYnVnXG5ldDEwLjBcY29uamVjdHVyZS50ZXN0cy5kbGwiIGlkPSJlNWIzM2M3NC00M2NhLWQ4OWUtNzcxOC1iMjBlZGIyZTZmMDMiPg0KICAgICAgPEV4ZWN1dGlvbiBpZD0iNDFmODZiMDktYWJlMy00ZjAwLTlmZTEtNGVmMmE3YzU4NTY2IiAvPg0KICAgICAgPFRlc3RNZXRob2QgY29kZUJhc2U9IkM6XFVzZXJzXGtpbW9tXHNvdXJjZVxyZXBvc1xDb25qZWN0dXJlXC5jbGF1ZGVcd29ya3RyZWVzXGFnZW50LWFiY2FjMDQ4XHNyY1xDb25qZWN0dXJlLlRlc3RzXGJpblxEZWJ1Z1xuZXQxMC4wXENvbmplY3R1cmUuVGVzdHMuZGxsIiBhZGFwdGVyVHlwZU5hbWU9ImV4ZWN1dG9yOi8veHVuaXQvVnNUZXN0UnVubmVyMy9uZXRjb3JlLyIgY2xhc3NOYW1lPSJDb25qZWN0dXJlLlRlc3RzLlN0cmF0ZWdpZXMuU2VsZWN0U3RyYXRlZ3lUZXN0cyIgbmFtZT0iU2VsZWN0X0lkZW50aXR5U2VsZWN0b3JfUmV0dXJuc1ZhbHVlc0luU291cmNlUmFuZ2UiIC8+DQogICAgPC9Vbml0VGVzdD4NCiAgPC9UZXN0RGVmaW5pdGlvbnM+DQogIDxUZXN0RW50cmllcz4NCiAgICA8VGVzdEVudHJ5IHRlc3RJZD0iZTViMzNjNzQtNDNjYS1kODllLTc3MTgtYjIwZWRiMmU2ZjAzIiBleGVjdXRpb25JZD0iNDFmODZiMDktYWJlMy00ZjAwLTlmZTEtNGVmMmE3YzU4NTY2IiB0ZXN0TGlzdElkPSI4Yzg0ZmE5NC0wNGMxLTQyNGItOTg2OC01N2EyZDQ4NTFhMWQiIC8+DQogICAgPFRlc3RFbnRyeSB0ZXN0SWQ9ImU1OTIzNTBiLWM3OGUtYmE1OS1hY2NiLTg2MDA1ZmEzZWIxYiIgZXhlY3V0aW9uSWQ9ImI4MTJhMzY2LTMxMDUtNDVhMC04NDBjLTkyM2MxNjU0OGY1ZSIgdGVzdExpc3RJZD0iOGM4NGZhOTQtMDRjMS00MjRiLTk4NjgtNTdhMmQ0ODUxYTFkIiAvPg0KICA8L1Rlc3RFbnRyaWVzPg0KICA8VGVzdExpc3RzPg0KICAgIDxUZXN0TGlzdCBuYW1lPSJSZXN1bHRzIE5vdCBpbiBhIExpc3QiIGlkPSI4Yzg0ZmE5NC0wNGMxLTQyNGItOTg2OC01N2EyZDQ4NTFhMWQiIC8+DQogICAgPFRlc3RMaXN0IG5hbWU9IkFsbCBMb2FkZWQgUmVzdWx0cyIgaWQ9IjE5NDMxNTY3LTg1MzktNDIyYS04NWQ3LTQ0ZWU0ZTE2NmJkYSIgLz4NCiAgPC9UZXN0TGlzdHM+DQogIDxSZXN1bHRTdW1tYXJ5IG91dGNvbWU9IkNvbXBsZXRlZCI+DQogICAgPENvdW50ZXJzIHRvdGFsPSIyIiBleGVjdXRlZD0iMiIgcGFzc2VkPSIyIiBmYWlsZWQ9IjAiIGVycm9yPSIwIiB0aW1lb3V0PSIwIiBhYm9ydGVkPSIwIiBpbmNvbmNsdXNpdmU9IjAiIHBhc3NlZEJ1dFJ1bkFib3J0ZWQ9IjAiIG5vdFJ1bm5hYmxlPSIwIiBub3RFeGVjdXRlZD0iMCIgZGlzY29ubmVjdGVkPSIwIiB3YXJuaW5nPSIwIiBjb21wbGV0ZWQ9IjAiIGluUHJvZ3Jlc3M9IjAiIHBlbmRpbmc9IjAiIC8+DQogICAgPE91dHB1dD4NCiAgICAgIDxTdGRPdXQ+W3hVbml0Lm5ldCAwMDowMDowMC4wMF0geFVuaXQubmV0IFZTVGVzdCBBZGFwdGVyIHYzLjEuNCs1MGU2OGJiYjhiICg2NC1iaXQgLk5FVCAxMC4wLjQpJiN4RDsKW3hVbml0Lm5ldCAwMDowMDowMC4wN10gICBEaXNjb3ZlcmluZzogQ29uamVjdHVyZS5UZXN0cyYjeEQ7Clt4VW5pdC5uZXQgMDA6MDA6MDAuMTJdICAgRGlzY292ZXJlZDogIENvbmplY3R1cmUuVGVzdHMmI3hEOwpbeFVuaXQubmV0IDAwOjAwOjAwLjE0XSAgIFN0YXJ0aW5nOiAgICBDb25qZWN0dXJlLlRlc3RzJiN4RDsKW3hVbml0Lm5ldCAwMDowMDowMC4xOF0gICBGaW5pc2hlZDogICAgQ29uamVjdHVyZS5UZXN0cyYjeEQ7CjwvU3RkT3V0Pg0KICAgIDwvT3V0cHV0Pg0KICA8L1Jlc3VsdFN1bW1hcnk+DQo8L1Rlc3RSdW4+"}, {"name": "SelectStrategyTests.cs", "type": "binary", "mime": "text/plain", "data_uri": "data:text/plain;base64,dXNpbmcgQ29uamVjdHVyZS5Db3JlOwp1c2luZyBDb25qZWN0dXJlLkNvcmUuR2VuZXJhdGlvbjsKdXNpbmcgQ29uamVjdHVyZS5Db3JlLkludGVybmFsOwoKbmFtZXNwYWNlIENvbmplY3R1cmUuVGVzdHMuU3RyYXRlZ2llczsKCnB1YmxpYyBjbGFzcyBTZWxlY3RTdHJhdGVneVRlc3RzCnsKICAgIHByaXZhdGUgc3RhdGljIENvbmplY3R1cmVEYXRhIE1ha2VEYXRhKHVsb25nIHNlZWQgPSA0MlVMKSA9PgogICAgICAgIENvbmplY3R1cmVEYXRhLkZvckdlbmVyYXRpb24obmV3IFNwbGl0dGFibGVSYW5kb20oc2VlZCkpOwoKICAgIFtGYWN0XQogICAgcHVibGljIHZvaWQgU2VsZWN0X0RvdWJsZXNWYWx1ZXMoKQogICAgewogICAgICAgIHZhciBzdHJhdGVneSA9IEdlbi5JbnRlZ2VyczxpbnQ+KDAsIDEwKS5TZWxlY3QoeCA9PiB4ICogMik7CiAgICAgICAgdmFyIGRhdGEgPSBNYWtlRGF0YSgpOwogICAgICAgIGZvciAodmFyIGkgPSAwOyBpIDwgMTAwOyBpKyspCiAgICAgICAgewogICAgICAgICAgICB2YXIgcmVzdWx0ID0gc3RyYXRlZ3kuTmV4dChkYXRhKTsKICAgICAgICAgICAgQXNzZXJ0LlRydWUocmVzdWx0ICUgMiA9PSAwLCAkIkV4cGVjdGVkIGV2ZW4gbnVtYmVyLCBnb3Qge3Jlc3VsdH0iKTsKICAgICAgICB9CiAgICB9CgogICAgW0ZhY3RdCiAgICBwdWJsaWMgdm9pZCBTZWxlY3RfSWRlbnRpdHlSZXR1cm5zT3JpZ2luYWxWYWx1ZXMoKQogICAgewogICAgICAgIHZhciBzdHJhdGVneSA9IEdlbi5JbnRlZ2VyczxpbnQ+KDAsIDEwKS5TZWxlY3QoeCA9PiB4KTsKICAgICAgICB2YXIgZGF0YSA9IE1ha2VEYXRhKCk7CiAgICAgICAgZm9yICh2YXIgaSA9IDA7IGkgPCAxMDA7IGkrKykKICAgICAgICB7CiAgICAgICAgICAgIHZhciByZXN1bHQgPSBzdHJhdGVneS5OZXh0KGRhdGEpOwogICAgICAgICAgICBBc3NlcnQuSW5SYW5nZShyZXN1bHQsIDAsIDEwKTsKICAgICAgICB9CiAgICB9Cn0K"}], "grading": {"expectations": [{"text": "A new file is created at src/Conjecture.Tests/Strategies/SelectStrategyTests.cs", "passed": true, "evidence": "New SelectStrategyTests.cs created; transcript confirms correct path."}, {"text": "The file uses file-scoped namespace matching Conjecture.Tests.Strategies", "passed": true, "evidence": "Line 5: 'namespace Conjecture.Tests.Strategies;' \u00e2\u20ac\u201d correct."}, {"text": "At least one test verifies that Select() transforms values correctly", "passed": true, "evidence": "Select_DoublesValues asserts result % 2 == 0, verifying the doubling transform."}, {"text": "Tests follow the MethodName_Condition_ExpectedResult naming convention", "passed": false, "evidence": "Select_DoublesValues is only 2-part (Method_Result), missing condition. Select_IdentityReturnsOriginalValues is also 2-part. The skill's 3-part convention was not followed."}, {"text": "The report states whether the build/test run is red (failing)", "passed": true, "evidence": "Transcript states 'Green (same as with-skill \u00e2\u20ac\u201d implementation exists)'."}], "summary": {"passed": 4, "failed": 1, "total": 5, "pass_rate": 0.8}}}, {"id": "eval-3-dictionary-strategy-with_skill", "prompt": "I want tests for a new DictionaryStrategy \u00e2\u20ac\u201d Gen.Dictionary(keyGen, valueGen, minCount: 0, maxCount: 5) should produce dictionaries where all keys are unique and counts are within [0, 5]. The type doesn't exist yet.", "eval_id": 3, "outputs": [{"name": "DictionaryStrategyTests.cs", "type": "binary", "mime": "text/plain", "data_uri": "data:text/plain;base64,dXNpbmcgQ29uamVjdHVyZS5Db3JlOwp1c2luZyBDb25qZWN0dXJlLkNvcmUuSW50ZXJuYWw7CgojcHJhZ21hIHdhcm5pbmcgZGlzYWJsZSBDUzAyNDYgLy8gRGljdGlvbmFyeVN0cmF0ZWd5IGRvZXMgbm90IGV4aXN0IHlldCDigJQgVEREIHJlZCBwaGFzZQoKbmFtZXNwYWNlIENvbmplY3R1cmUuVGVzdHMuU3RyYXRlZ2llczsKCnB1YmxpYyBjbGFzcyBEaWN0aW9uYXJ5U3RyYXRlZ3lUZXN0cwp7CiAgICBwcml2YXRlIHN0YXRpYyBDb25qZWN0dXJlRGF0YSBNYWtlRGF0YSh1bG9uZyBzZWVkID0gNDJVTCkgPT4KICAgICAgICBDb25qZWN0dXJlRGF0YS5Gb3JHZW5lcmF0aW9uKG5ldyBTcGxpdHRhYmxlUmFuZG9tKHNlZWQpKTsKCiAgICBbRmFjdF0KICAgIHB1YmxpYyB2b2lkIERpY3Rpb25hcnlfQ291bnRXaXRoaW5Cb3VuZHMoKQogICAgewogICAgICAgIHZhciBzdHJhdGVneSA9IEdlbi5EaWN0aW9uYXJ5KEdlbi5JbnRlZ2VyczxpbnQ+KCksIEdlbi5Cb29sZWFucygpLCBtaW5Db3VudDogMCwgbWF4Q291bnQ6IDUpOwogICAgICAgIHZhciBkYXRhID0gTWFrZURhdGEoKTsKICAgICAgICBmb3IgKHZhciBpID0gMDsgaSA8IDIwMDsgaSsrKQogICAgICAgIHsKICAgICAgICAgICAgdmFyIGRpY3QgPSBzdHJhdGVneS5OZXh0KGRhdGEpOwogICAgICAgICAgICBBc3NlcnQuSW5SYW5nZShkaWN0LkNvdW50LCAwLCA1KTsKICAgICAgICB9CiAgICB9CgogICAgW0ZhY3RdCiAgICBwdWJsaWMgdm9pZCBEaWN0aW9uYXJ5X0FsbEtleXNBcmVVbmlxdWUoKQogICAgewogICAgICAgIHZhciBzdHJhdGVneSA9IEdlbi5EaWN0aW9uYXJ5KEdlbi5JbnRlZ2VyczxpbnQ+KDAsIDEwMCksIEdlbi5JbnRlZ2VyczxpbnQ+KCksIG1pbkNvdW50OiAxLCBtYXhDb3VudDogNSk7CiAgICAgICAgdmFyIGRhdGEgPSBNYWtlRGF0YSgpOwogICAgICAgIGZvciAodmFyIGkgPSAwOyBpIDwgMjAwOyBpKyspCiAgICAgICAgewogICAgICAgICAgICB2YXIgZGljdCA9IHN0cmF0ZWd5Lk5leHQoZGF0YSk7CiAgICAgICAgICAgIEFzc2VydC5FcXVhbChkaWN0LkNvdW50LCBkaWN0LktleXMuRGlzdGluY3QoKS5Db3VudCgpKTsKICAgICAgICB9CiAgICB9CgogICAgW0ZhY3RdCiAgICBwdWJsaWMgdm9pZCBEaWN0aW9uYXJ5X01pbkNvdW50WmVyb19DYW5Qcm9kdWNlRW1wdHlEaWN0aW9uYXJ5KCkKICAgIHsKICAgICAgICB2YXIgc3RyYXRlZ3kgPSBHZW4uRGljdGlvbmFyeShHZW4uSW50ZWdlcnM8aW50PigpLCBHZW4uQm9vbGVhbnMoKSwgbWluQ291bnQ6IDAsIG1heENvdW50OiA1KTsKICAgICAgICB2YXIgZGF0YSA9IE1ha2VEYXRhKCk7CiAgICAgICAgdmFyIHNhd0VtcHR5ID0gZmFsc2U7CiAgICAgICAgZm9yICh2YXIgaSA9IDA7IGkgPCAxMDAwOyBpKyspCiAgICAgICAgewogICAgICAgICAgICBpZiAoc3RyYXRlZ3kuTmV4dChkYXRhKS5Db3VudCA9PSAwKSB7IHNhd0VtcHR5ID0gdHJ1ZTsgYnJlYWs7IH0KICAgICAgICB9CiAgICAgICAgQXNzZXJ0LlRydWUoc2F3RW1wdHksICJFeHBlY3RlZCB0byBzZWUgYXQgbGVhc3Qgb25lIGVtcHR5IGRpY3Rpb25hcnkiKTsKICAgIH0KCiAgICBbRmFjdF0KICAgIHB1YmxpYyB2b2lkIERpY3Rpb25hcnlfTWF4Q291bnRfTmV2ZXJFeGNlZWRlZCgpCiAgICB7CiAgICAgICAgdmFyIHN0cmF0ZWd5ID0gR2VuLkRpY3Rpb25hcnkoR2VuLkludGVnZXJzPGludD4oKSwgR2VuLkludGVnZXJzPGludD4oKSwgbWluQ291bnQ6IDAsIG1heENvdW50OiA1KTsKICAgICAgICB2YXIgZGF0YSA9IE1ha2VEYXRhKCk7CiAgICAgICAgZm9yICh2YXIgaSA9IDA7IGkgPCA1MDA7IGkrKykKICAgICAgICB7CiAgICAgICAgICAgIEFzc2VydC5UcnVlKHN0cmF0ZWd5Lk5leHQoZGF0YSkuQ291bnQgPD0gNSk7CiAgICAgICAgfQogICAgfQp9Cg=="}], "grading": {"expectations": [{"text": "A new test file is created at src/Conjecture.Tests/Strategies/DictionaryStrategyTests.cs", "passed": true, "evidence": "DictionaryStrategyTests.cs present in outputs; transcript confirms created at correct path."}, {"text": "Tests cover key uniqueness (no duplicate keys in generated dictionaries)", "passed": true, "evidence": "Dictionary_AllKeysAreUnique: asserts 'dict.Keys.Distinct().Count() == dict.Count' in a loop of 200 iterations."}, {"text": "Tests cover count bounds (generated count is within [minCount, maxCount])", "passed": true, "evidence": "Dictionary_CountWithinBounds: asserts Assert.InRange(dict.Count, 0, 5) over 200 iterations."}, {"text": "The skill uses #pragma warning disable or similar to handle missing type without creating a stub", "passed": true, "evidence": "Line 5 of DictionaryStrategyTests.cs: '#pragma warning disable CS0246 // DictionaryStrategy does not exist yet \u00e2\u20ac\u201d TDD red phase'"}, {"text": "The report states the build fails due to the missing DictionaryStrategy type", "passed": true, "evidence": "Transcript Step 5: 'error CS0117: Gen does not contain a definition for Dictionary' and 'Build FAILED'."}], "summary": {"passed": 5, "failed": 0, "total": 5, "pass_rate": 1.0}}}, {"id": "eval-3-dictionary-strategy-without_skill", "prompt": "I want tests for a new DictionaryStrategy \u00e2\u20ac\u201d Gen.Dictionary(keyGen, valueGen, minCount: 0, maxCount: 5) should produce dictionaries where all keys are unique and counts are within [0, 5]. The type doesn't exist yet.", "eval_id": 3, "outputs": [{"name": "DictionaryStrategyTests.cs", "type": "binary", "mime": "text/plain", "data_uri": "data:text/plain;base64,dXNpbmcgQ29uamVjdHVyZS5Db3JlOwp1c2luZyBDb25qZWN0dXJlLkNvcmUuSW50ZXJuYWw7CgpuYW1lc3BhY2UgQ29uamVjdHVyZS5UZXN0cy5TdHJhdGVnaWVzOwoKLy8gVE9ETzogR2VuLkRpY3Rpb25hcnkgYW5kIERpY3Rpb25hcnlTdHJhdGVneSBuZWVkIHRvIGJlIGltcGxlbWVudGVkCnB1YmxpYyBjbGFzcyBEaWN0aW9uYXJ5U3RyYXRlZ3lUZXN0cwp7CiAgICBwcml2YXRlIHN0YXRpYyBDb25qZWN0dXJlRGF0YSBNYWtlRGF0YSh1bG9uZyBzZWVkID0gNDJVTCkgPT4KICAgICAgICBDb25qZWN0dXJlRGF0YS5Gb3JHZW5lcmF0aW9uKG5ldyBTcGxpdHRhYmxlUmFuZG9tKHNlZWQpKTsKCiAgICBbRmFjdF0KICAgIHB1YmxpYyB2b2lkIERpY3Rpb25hcnlfR2VuZXJhdGVzV2l0aENvcnJlY3RDb3VudCgpCiAgICB7CiAgICAgICAgdmFyIHN0cmF0ZWd5ID0gR2VuLkRpY3Rpb25hcnkoR2VuLkludGVnZXJzPGludD4oKSwgR2VuLkJvb2xlYW5zKCksIG1pbkNvdW50OiAwLCBtYXhDb3VudDogNSk7CiAgICAgICAgdmFyIGRhdGEgPSBNYWtlRGF0YSgpOwogICAgICAgIGZvciAodmFyIGkgPSAwOyBpIDwgMTAwOyBpKyspCiAgICAgICAgewogICAgICAgICAgICB2YXIgcmVzdWx0ID0gc3RyYXRlZ3kuTmV4dChkYXRhKTsKICAgICAgICAgICAgQXNzZXJ0LkluUmFuZ2UocmVzdWx0LkNvdW50LCAwLCA1KTsKICAgICAgICB9CiAgICB9CgogICAgW0ZhY3RdCiAgICBwdWJsaWMgdm9pZCBEaWN0aW9uYXJ5X0hhc1VuaXF1ZUtleXMoKQogICAgewogICAgICAgIHZhciBzdHJhdGVneSA9IEdlbi5EaWN0aW9uYXJ5KEdlbi5JbnRlZ2VyczxpbnQ+KDAsIDEwMDApLCBHZW4uSW50ZWdlcnM8aW50PigpLCBtaW5Db3VudDogMSwgbWF4Q291bnQ6IDUpOwogICAgICAgIHZhciBkYXRhID0gTWFrZURhdGEoKTsKICAgICAgICBmb3IgKHZhciBpID0gMDsgaSA8IDEwMDsgaSsrKQogICAgICAgIHsKICAgICAgICAgICAgdmFyIHJlc3VsdCA9IHN0cmF0ZWd5Lk5leHQoZGF0YSk7CiAgICAgICAgICAgIHZhciB1bmlxdWVLZXlzID0gcmVzdWx0LktleXMuRGlzdGluY3QoKS5Db3VudCgpOwogICAgICAgICAgICBBc3NlcnQuRXF1YWwocmVzdWx0LkNvdW50LCB1bmlxdWVLZXlzKTsKICAgICAgICB9CiAgICB9Cn0K"}], "grading": {"expectations": [{"text": "A new test file is created at src/Conjecture.Tests/Strategies/DictionaryStrategyTests.cs", "passed": true, "evidence": "DictionaryStrategyTests.cs present in outputs."}, {"text": "Tests cover key uniqueness (no duplicate keys in generated dictionaries)", "passed": true, "evidence": "Dictionary_HasUniqueKeys: asserts result.Keys.Distinct().Count() == result.Count."}, {"text": "Tests cover count bounds (generated count is within [minCount, maxCount])", "passed": true, "evidence": "Dictionary_GeneratesWithCorrectCount: asserts Assert.InRange(result.Count, 0, 5)."}, {"text": "The skill uses #pragma warning disable or similar to handle missing type without creating a stub", "passed": false, "evidence": "Baseline uses '// TODO: Gen.Dictionary and DictionaryStrategy need to be implemented' comment. No #pragma warning disable directive anywhere in the file."}, {"text": "The report states the build fails due to the missing DictionaryStrategy type", "passed": true, "evidence": "Transcript: 'error CS0117: Gen does not contain a definition for Dictionary' and 'Build FAILED'."}], "summary": {"passed": 4, "failed": 1, "total": 5, "pass_rate": 0.8}}}], "previous_feedback": {}, "previous_outputs": {}, "benchmark": {"metadata": {"skill_name": "test", "skill_path": "C:\\Users\\kimom\\source\\repos\\Conjecture\\.claude\\skills\\test", "executor_model": "claude-sonnet-4-6", "analyzer_model": "claude-sonnet-4-6", "timestamp": "2026-03-28T00:00:00Z", "evals_run": [1, 2, 3], "runs_per_configuration": 1}, "runs": [{"eval_id": 1, "eval_name": "min-greater-than-max", "configuration": "with_skill", "run_number": 1, "result": {"pass_rate": 1.0, "passed": 5, "failed": 0, "total": 5, "time_seconds": 46.2, "tokens": 14669, "tool_calls": 6, "errors": 0}, "expectations": [{"text": "A new test is added to the existing IntegerStrategyTests.cs file, not a new file", "passed": true, "evidence": "Output file is the full IntegerStrategyTests.cs with the new test appended."}, {"text": "The test method name follows the MethodName_Condition_ExpectedResult convention", "passed": true, "evidence": "Integers_MinGreaterThanMax_ThrowsArgumentOutOfRangeException \u00e2\u20ac\u201d 3-part, specific."}, {"text": "The test uses Assert.Throws<ArgumentOutOfRangeException>", "passed": true, "evidence": "Assert.Throws<ArgumentOutOfRangeException>(() => Gen.Integers<int>(10, 5))"}, {"text": "The test calls Gen.Integers<int> with min > max", "passed": true, "evidence": "Gen.Integers<int>(10, 5) \u00e2\u20ac\u201d min=10 > max=5."}, {"text": "The report states whether the build/test run is red (failing)", "passed": true, "evidence": "Transcript: RED PHASE CONFIRMED with test failure output."}]}, {"eval_id": 1, "eval_name": "min-greater-than-max", "configuration": "without_skill", "run_number": 1, "result": {"pass_rate": 1.0, "passed": 5, "failed": 0, "total": 5, "time_seconds": 51.3, "tokens": 16649, "tool_calls": 4, "errors": 0}, "expectations": [{"text": "A new test is added to the existing IntegerStrategyTests.cs file, not a new file", "passed": true, "evidence": "Baseline modifies existing class."}, {"text": "The test method name follows the MethodName_Condition_ExpectedResult convention", "passed": true, "evidence": "Integers_InvalidRange_ThrowsException \u00e2\u20ac\u201d 3-part structurally, though less specific."}, {"text": "The test uses Assert.Throws<ArgumentOutOfRangeException>", "passed": true, "evidence": "Assert.Throws<ArgumentOutOfRangeException>() used."}, {"text": "The test calls Gen.Integers<int> with min > max", "passed": true, "evidence": "Gen.Integers<int>(10, 5) \u00e2\u20ac\u201d min=10 > max=5."}, {"text": "The report states whether the build/test run is red (failing)", "passed": true, "evidence": "Transcript confirms test fails."}]}, {"eval_id": 2, "eval_name": "select-strategy", "configuration": "with_skill", "run_number": 1, "result": {"pass_rate": 1.0, "passed": 5, "failed": 0, "total": 5, "time_seconds": 107.0, "tokens": 21828, "tool_calls": 10, "errors": 1}, "expectations": [{"text": "A new file is created at src/Conjecture.Tests/Strategies/SelectStrategyTests.cs", "passed": true, "evidence": "File created at correct path."}, {"text": "The file uses file-scoped namespace matching Conjecture.Tests.Strategies", "passed": true, "evidence": "namespace Conjecture.Tests.Strategies;"}, {"text": "At least one test verifies that Select() transforms values correctly", "passed": true, "evidence": "Select_DoublingSelector_ReturnsEvenNumbersInRange checks x*2 is even and in [0,20]."}, {"text": "Tests follow the MethodName_Condition_ExpectedResult naming convention", "passed": true, "evidence": "Select_DoublingSelector_ReturnsEvenNumbersInRange is 3-part."}, {"text": "The report states whether the build/test run is red (failing)", "passed": true, "evidence": "Transcript states GREEN and explains why \u00e2\u20ac\u201d implementation already exists."}]}, {"eval_id": 2, "eval_name": "select-strategy", "configuration": "without_skill", "run_number": 1, "result": {"pass_rate": 0.8, "passed": 4, "failed": 1, "total": 5, "time_seconds": 39.0, "tokens": 17022, "tool_calls": 4, "errors": 0}, "expectations": [{"text": "A new file is created at src/Conjecture.Tests/Strategies/SelectStrategyTests.cs", "passed": true, "evidence": "File created at correct path."}, {"text": "The file uses file-scoped namespace matching Conjecture.Tests.Strategies", "passed": true, "evidence": "namespace Conjecture.Tests.Strategies;"}, {"text": "At least one test verifies that Select() transforms values correctly", "passed": true, "evidence": "Select_DoublesValues checks result % 2 == 0."}, {"text": "Tests follow the MethodName_Condition_ExpectedResult naming convention", "passed": false, "evidence": "Select_DoublesValues is 2-part (Method_Result), missing condition segment."}, {"text": "The report states whether the build/test run is red (failing)", "passed": true, "evidence": "Transcript states Green."}]}, {"eval_id": 3, "eval_name": "dictionary-strategy", "configuration": "with_skill", "run_number": 1, "result": {"pass_rate": 1.0, "passed": 5, "failed": 0, "total": 5, "time_seconds": 93.0, "tokens": 21499, "tool_calls": 9, "errors": 1}, "expectations": [{"text": "A new test file is created at src/Conjecture.Tests/Strategies/DictionaryStrategyTests.cs", "passed": true, "evidence": "File created at correct path."}, {"text": "Tests cover key uniqueness", "passed": true, "evidence": "Dictionary_AllKeysAreUnique asserts Distinct().Count() == Count."}, {"text": "Tests cover count bounds", "passed": true, "evidence": "Dictionary_CountWithinBounds asserts InRange(dict.Count, 0, 5)."}, {"text": "The skill uses #pragma warning disable or similar to handle missing type without creating a stub", "passed": true, "evidence": "#pragma warning disable CS0246 present at top of file."}, {"text": "The report states the build fails due to the missing DictionaryStrategy type", "passed": true, "evidence": "Transcript: CS0117 error and Build FAILED."}]}, {"eval_id": 3, "eval_name": "dictionary-strategy", "configuration": "without_skill", "run_number": 1, "result": {"pass_rate": 0.8, "passed": 4, "failed": 1, "total": 5, "time_seconds": 82.0, "tokens": 21649, "tool_calls": 3, "errors": 0}, "expectations": [{"text": "A new test file is created at src/Conjecture.Tests/Strategies/DictionaryStrategyTests.cs", "passed": true, "evidence": "File created at correct path."}, {"text": "Tests cover key uniqueness", "passed": true, "evidence": "Dictionary_HasUniqueKeys asserts distinct count equals total."}, {"text": "Tests cover count bounds", "passed": true, "evidence": "Dictionary_GeneratesWithCorrectCount asserts InRange."}, {"text": "The skill uses #pragma warning disable or similar to handle missing type without creating a stub", "passed": false, "evidence": "Used // TODO comment instead of #pragma warning disable. No pragma directive in file."}, {"text": "The report states the build fails due to the missing DictionaryStrategy type", "passed": true, "evidence": "Transcript mentions CS0117 and Build FAILED."}]}], "run_summary": {"with_skill": {"pass_rate": {"mean": 1.0, "stddev": 0.0, "min": 1.0, "max": 1.0}, "time_seconds": {"mean": 82.1, "stddev": 25.2, "min": 46.2, "max": 107.0}, "tokens": {"mean": 19332, "stddev": 3826, "min": 14669, "max": 21828}}, "without_skill": {"pass_rate": {"mean": 0.867, "stddev": 0.094, "min": 0.8, "max": 1.0}, "time_seconds": {"mean": 57.4, "stddev": 18.7, "min": 39.0, "max": 82.0}, "tokens": {"mean": 18440, "stddev": 2535, "min": 16649, "max": 21649}}, "delta": {"pass_rate": "+0.133", "time_seconds": "+24.7", "tokens": "+892"}}, "notes": ["Eval 1 (min > max): Both configurations score 5/5 \u00e2\u20ac\u201d the naming convention assertion is satisfied by both but the skill produces a more specific, informative test name.", "Eval 2 (SelectStrategy): Skill version correctly identifies #pragma/using issue and reports green vs red. Baseline misses the 3-part naming convention (Select_DoublesValues is 2-part).", "Eval 3 (DictionaryStrategy): Key differentiator is the #pragma warning disable instruction \u00e2\u20ac\u201d baseline uses // TODO comment which doesn't suppress compiler warnings. Skill correctly follows its own guidance.", "The naming convention assertion (eval 1) is a weak discriminator \u00e2\u20ac\u201d both configurations structurally satisfy it even though quality differs. Consider checking name specificity.", "With-skill runs take more time (+24.7s avg) because the skill prompts reading production code and docs/decisions before writing tests."]}};
+
+    // ---- State ----
+    let feedbackMap = {};  // run_id -> feedback text
+    let currentIndex = 0;
+    let visitedRuns = new Set();
+
+    // ---- Init ----
+    async function init() {
+      // Load saved feedback from server — but only if this isn't a fresh
+      // iteration (indicated by previous_feedback being present). When
+      // previous feedback exists, the feedback.json on disk is stale from
+      // the prior iteration and should not pre-fill the textareas.
+      const hasPrevious = Object.keys(EMBEDDED_DATA.previous_feedback || {}).length > 0
+        || Object.keys(EMBEDDED_DATA.previous_outputs || {}).length > 0;
+      if (!hasPrevious) {
+        try {
+          const resp = await fetch("/api/feedback");
+          const data = await resp.json();
+          if (data.reviews) {
+            for (const r of data.reviews) feedbackMap[r.run_id] = r.feedback;
+          }
+        } catch { /* first run, no feedback yet */ }
+      }
+
+      document.getElementById("skill-name").textContent = EMBEDDED_DATA.skill_name;
+      showRun(0);
+
+      // Wire up feedback auto-save
+      const textarea = document.getElementById("feedback");
+      let saveTimeout = null;
+      textarea.addEventListener("input", () => {
+        clearTimeout(saveTimeout);
+        document.getElementById("feedback-status").textContent = "";
+        saveTimeout = setTimeout(() => saveCurrentFeedback(), 800);
+      });
+    }
+
+    // ---- Navigation ----
+    function navigate(delta) {
+      const newIndex = currentIndex + delta;
+      if (newIndex >= 0 && newIndex < EMBEDDED_DATA.runs.length) {
+        saveCurrentFeedback();
+        showRun(newIndex);
+      }
+    }
+
+    function updateNavButtons() {
+      document.getElementById("prev-btn").disabled = currentIndex === 0;
+      document.getElementById("next-btn").disabled =
+        currentIndex === EMBEDDED_DATA.runs.length - 1;
+    }
+
+    // ---- Show a run ----
+    function showRun(index) {
+      currentIndex = index;
+      const run = EMBEDDED_DATA.runs[index];
+
+      // Progress
+      document.getElementById("progress").textContent =
+        `${index + 1} of ${EMBEDDED_DATA.runs.length}`;
+
+      // Prompt
+      document.getElementById("prompt-text").textContent = run.prompt;
+
+      // Config badge
+      const badge = document.getElementById("config-badge");
+      const configMatch = run.id.match(/(with_skill|without_skill|new_skill|old_skill)/);
+      if (configMatch) {
+        const config = configMatch[1];
+        const isBaseline = config === "without_skill" || config === "old_skill";
+        badge.textContent = config.replace(/_/g, " ");
+        badge.className = "config-badge " + (isBaseline ? "config-baseline" : "config-primary");
+        badge.style.display = "inline-block";
+      } else {
+        badge.style.display = "none";
+      }
+
+      // Outputs
+      renderOutputs(run);
+
+      // Previous outputs
+      renderPrevOutputs(run);
+
+      // Grades
+      renderGrades(run);
+
+      // Previous feedback
+      const prevFb = (EMBEDDED_DATA.previous_feedback || {})[run.id];
+      const prevEl = document.getElementById("prev-feedback");
+      if (prevFb) {
+        document.getElementById("prev-feedback-text").textContent = prevFb;
+        prevEl.style.display = "block";
+      } else {
+        prevEl.style.display = "none";
+      }
+
+      // Feedback
+      document.getElementById("feedback").value = feedbackMap[run.id] || "";
+      document.getElementById("feedback-status").textContent = "";
+
+      updateNavButtons();
+
+      // Track visited runs and promote done button when all visited
+      visitedRuns.add(index);
+      const doneBtn = document.getElementById("done-btn");
+      if (visitedRuns.size >= EMBEDDED_DATA.runs.length) {
+        doneBtn.classList.add("ready");
+      }
+
+      // Scroll main content to top
+      document.querySelector(".main").scrollTop = 0;
+    }
+
+    // ---- Render outputs ----
+    function renderOutputs(run) {
+      const container = document.getElementById("outputs-body");
+      container.innerHTML = "";
+
+      const outputs = run.outputs || [];
+      if (outputs.length === 0) {
+        container.innerHTML = '<div class="empty-state">No output files</div>';
+        return;
+      }
+
+      for (const file of outputs) {
+        const fileDiv = document.createElement("div");
+        fileDiv.className = "output-file";
+
+        // Always show file header with download link
+        const header = document.createElement("div");
+        header.className = "output-file-header";
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = file.name;
+        header.appendChild(nameSpan);
+        const dlBtn = document.createElement("a");
+        dlBtn.className = "dl-btn";
+        dlBtn.textContent = "Download";
+        dlBtn.download = file.name;
+        dlBtn.href = getDownloadUri(file);
+        header.appendChild(dlBtn);
+        fileDiv.appendChild(header);
+
+        const content = document.createElement("div");
+        content.className = "output-file-content";
+
+        if (file.type === "text") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          content.appendChild(pre);
+        } else if (file.type === "image") {
+          const img = document.createElement("img");
+          img.src = file.data_uri;
+          img.alt = file.name;
+          content.appendChild(img);
+        } else if (file.type === "pdf") {
+          const iframe = document.createElement("iframe");
+          iframe.src = file.data_uri;
+          content.appendChild(iframe);
+        } else if (file.type === "xlsx") {
+          renderXlsx(content, file.data_b64);
+        } else if (file.type === "binary") {
+          const a = document.createElement("a");
+          a.className = "download-link";
+          a.href = file.data_uri;
+          a.download = file.name;
+          a.textContent = "Download " + file.name;
+          content.appendChild(a);
+        } else if (file.type === "error") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          pre.style.color = "var(--red)";
+          content.appendChild(pre);
+        }
+
+        fileDiv.appendChild(content);
+        container.appendChild(fileDiv);
+      }
+    }
+
+    // ---- XLSX rendering via SheetJS ----
+    function renderXlsx(container, b64Data) {
+      try {
+        const raw = Uint8Array.from(atob(b64Data), c => c.charCodeAt(0));
+        const wb = XLSX.read(raw, { type: "array" });
+
+        for (let i = 0; i < wb.SheetNames.length; i++) {
+          const sheetName = wb.SheetNames[i];
+          const ws = wb.Sheets[sheetName];
+
+          if (wb.SheetNames.length > 1) {
+            const sheetLabel = document.createElement("div");
+            sheetLabel.style.cssText =
+              "font-weight:600; font-size:0.8rem; color:#b0aea5; margin-top:0.5rem; margin-bottom:0.25rem;";
+            sheetLabel.textContent = "Sheet: " + sheetName;
+            container.appendChild(sheetLabel);
+          }
+
+          const htmlStr = XLSX.utils.sheet_to_html(ws, { editable: false });
+          const wrapper = document.createElement("div");
+          wrapper.innerHTML = htmlStr;
+          container.appendChild(wrapper);
+        }
+      } catch (err) {
+        container.textContent = "Error rendering spreadsheet: " + err.message;
+      }
+    }
+
+    // ---- Grades ----
+    function renderGrades(run) {
+      const section = document.getElementById("grades-section");
+      const content = document.getElementById("grades-content");
+
+      if (!run.grading) {
+        section.style.display = "none";
+        return;
+      }
+
+      const grading = run.grading;
+      section.style.display = "block";
+      // Reset to collapsed
+      content.classList.remove("open");
+      document.getElementById("grades-arrow").classList.remove("open");
+
+      const summary = grading.summary || {};
+      const expectations = grading.expectations || [];
+
+      let html = '<div style="padding: 1rem;">';
+
+      // Summary line
+      const passRate = summary.pass_rate != null
+        ? Math.round(summary.pass_rate * 100) + "%"
+        : "?";
+      const badgeClass = summary.pass_rate >= 0.8 ? "grade-pass" : summary.pass_rate >= 0.5 ? "" : "grade-fail";
+      html += '<div class="grades-summary">';
+      html += '<span class="grade-badge ' + badgeClass + '">' + passRate + '</span>';
+      html += '<span>' + (summary.passed || 0) + ' passed, ' + (summary.failed || 0) + ' failed of ' + (summary.total || 0) + '</span>';
+      html += '</div>';
+
+      // Assertions list
+      html += '<ul class="assertion-list">';
+      for (const exp of expectations) {
+        const statusClass = exp.passed ? "pass" : "fail";
+        const statusIcon = exp.passed ? "\u2713" : "\u2717";
+        html += '<li class="assertion-item">';
+        html += '<span class="assertion-status ' + statusClass + '">' + statusIcon + '</span>';
+        html += '<span>' + escapeHtml(exp.text) + '</span>';
+        if (exp.evidence) {
+          html += '<div class="assertion-evidence">' + escapeHtml(exp.evidence) + '</div>';
+        }
+        html += '</li>';
+      }
+      html += '</ul>';
+
+      html += '</div>';
+      content.innerHTML = html;
+    }
+
+    function toggleGrades() {
+      const content = document.getElementById("grades-content");
+      const arrow = document.getElementById("grades-arrow");
+      content.classList.toggle("open");
+      arrow.classList.toggle("open");
+    }
+
+    // ---- Previous outputs (collapsible) ----
+    function renderPrevOutputs(run) {
+      const section = document.getElementById("prev-outputs-section");
+      const content = document.getElementById("prev-outputs-content");
+      const prevOutputs = (EMBEDDED_DATA.previous_outputs || {})[run.id];
+
+      if (!prevOutputs || prevOutputs.length === 0) {
+        section.style.display = "none";
+        return;
+      }
+
+      section.style.display = "block";
+      // Reset to collapsed
+      content.classList.remove("open");
+      document.getElementById("prev-outputs-arrow").classList.remove("open");
+
+      // Render the files into the content area
+      content.innerHTML = "";
+      const wrapper = document.createElement("div");
+      wrapper.style.padding = "1rem";
+
+      for (const file of prevOutputs) {
+        const fileDiv = document.createElement("div");
+        fileDiv.className = "output-file";
+
+        const header = document.createElement("div");
+        header.className = "output-file-header";
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = file.name;
+        header.appendChild(nameSpan);
+        const dlBtn = document.createElement("a");
+        dlBtn.className = "dl-btn";
+        dlBtn.textContent = "Download";
+        dlBtn.download = file.name;
+        dlBtn.href = getDownloadUri(file);
+        header.appendChild(dlBtn);
+        fileDiv.appendChild(header);
+
+        const fc = document.createElement("div");
+        fc.className = "output-file-content";
+
+        if (file.type === "text") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          fc.appendChild(pre);
+        } else if (file.type === "image") {
+          const img = document.createElement("img");
+          img.src = file.data_uri;
+          img.alt = file.name;
+          fc.appendChild(img);
+        } else if (file.type === "pdf") {
+          const iframe = document.createElement("iframe");
+          iframe.src = file.data_uri;
+          fc.appendChild(iframe);
+        } else if (file.type === "xlsx") {
+          renderXlsx(fc, file.data_b64);
+        } else if (file.type === "binary") {
+          const a = document.createElement("a");
+          a.className = "download-link";
+          a.href = file.data_uri;
+          a.download = file.name;
+          a.textContent = "Download " + file.name;
+          fc.appendChild(a);
+        }
+
+        fileDiv.appendChild(fc);
+        wrapper.appendChild(fileDiv);
+      }
+
+      content.appendChild(wrapper);
+    }
+
+    function togglePrevOutputs() {
+      const content = document.getElementById("prev-outputs-content");
+      const arrow = document.getElementById("prev-outputs-arrow");
+      content.classList.toggle("open");
+      arrow.classList.toggle("open");
+    }
+
+    // ---- Feedback (saved to server -> feedback.json) ----
+    function saveCurrentFeedback() {
+      const run = EMBEDDED_DATA.runs[currentIndex];
+      const text = document.getElementById("feedback").value;
+
+      if (text.trim() === "") {
+        delete feedbackMap[run.id];
+      } else {
+        feedbackMap[run.id] = text;
+      }
+
+      // Build reviews array from map
+      const reviews = [];
+      for (const [run_id, feedback] of Object.entries(feedbackMap)) {
+        if (feedback.trim()) {
+          reviews.push({ run_id, feedback, timestamp: new Date().toISOString() });
+        }
+      }
+
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reviews, status: "in_progress" }),
+      }).then(() => {
+        document.getElementById("feedback-status").textContent = "Saved";
+      }).catch(() => {
+        // Static mode or server unavailable — no-op on auto-save,
+        // feedback will be downloaded on final submit
+        document.getElementById("feedback-status").textContent = "Will download on submit";
+      });
+    }
+
+    // ---- Done ----
+    function showDoneDialog() {
+      // Save current textarea to feedbackMap (but don't POST yet)
+      const run = EMBEDDED_DATA.runs[currentIndex];
+      const text = document.getElementById("feedback").value;
+      if (text.trim() === "") {
+        delete feedbackMap[run.id];
+      } else {
+        feedbackMap[run.id] = text;
+      }
+
+      // POST once with status: complete — include ALL runs so the model
+      // can distinguish "no feedback" (looks good) from "not reviewed"
+      const reviews = [];
+      const ts = new Date().toISOString();
+      for (const r of EMBEDDED_DATA.runs) {
+        reviews.push({ run_id: r.id, feedback: feedbackMap[r.id] || "", timestamp: ts });
+      }
+      const payload = JSON.stringify({ reviews, status: "complete" }, null, 2);
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: payload,
+      }).then(() => {
+        document.getElementById("done-overlay").classList.add("visible");
+      }).catch(() => {
+        // Server not available (static mode) — download as file
+        const blob = new Blob([payload], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "feedback.json";
+        a.click();
+        URL.revokeObjectURL(url);
+        document.getElementById("done-overlay").classList.add("visible");
+      });
+    }
+
+    function closeDoneDialog() {
+      // Reset status back to in_progress
+      saveCurrentFeedback();
+      document.getElementById("done-overlay").classList.remove("visible");
+    }
+
+    // ---- Toast ----
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("visible");
+      setTimeout(() => toast.classList.remove("visible"), 2000);
+    }
+
+    // ---- Keyboard nav ----
+    document.addEventListener("keydown", (e) => {
+      // Don't capture when typing in textarea
+      if (e.target.tagName === "TEXTAREA") return;
+
+      if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        e.preventDefault();
+        navigate(-1);
+      } else if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        e.preventDefault();
+        navigate(1);
+      }
+    });
+
+    // ---- Util ----
+    function getDownloadUri(file) {
+      if (file.data_uri) return file.data_uri;
+      if (file.data_b64) return "data:application/octet-stream;base64," + file.data_b64;
+      if (file.type === "text") return "data:text/plain;charset=utf-8," + encodeURIComponent(file.content);
+      return "#";
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // ---- View switching ----
+    function switchView(view) {
+      document.querySelectorAll(".view-tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".view-panel").forEach(p => p.classList.remove("active"));
+      document.querySelector(`[onclick="switchView('${view}')"]`).classList.add("active");
+      document.getElementById("panel-" + view).classList.add("active");
+    }
+
+    // ---- Benchmark rendering ----
+    function renderBenchmark() {
+      const data = EMBEDDED_DATA.benchmark;
+      if (!data) return;
+
+      // Show the tabs
+      document.getElementById("view-tabs").style.display = "flex";
+
+      const container = document.getElementById("benchmark-content");
+      const summary = data.run_summary || {};
+      const metadata = data.metadata || {};
+      const notes = data.notes || [];
+
+      let html = "";
+
+      // Header
+      html += "<h2 style='font-family: Poppins, sans-serif; margin-bottom: 0.5rem;'>Benchmark Results</h2>";
+      html += "<p style='color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.25rem;'>";
+      if (metadata.skill_name) html += "<strong>" + escapeHtml(metadata.skill_name) + "</strong> &mdash; ";
+      if (metadata.timestamp) html += metadata.timestamp + " &mdash; ";
+      if (metadata.evals_run) html += "Evals: " + metadata.evals_run.join(", ") + " &mdash; ";
+      html += (metadata.runs_per_configuration || "?") + " runs per configuration";
+      html += "</p>";
+
+      // Summary table
+      html += '<table class="benchmark-table">';
+
+      function fmtStat(stat, pct) {
+        if (!stat) return "—";
+        const suffix = pct ? "%" : "";
+        const m = pct ? (stat.mean * 100).toFixed(0) : stat.mean.toFixed(1);
+        const s = pct ? (stat.stddev * 100).toFixed(0) : stat.stddev.toFixed(1);
+        return m + suffix + " ± " + s + suffix;
+      }
+
+      function deltaClass(val) {
+        if (!val) return "";
+        const n = parseFloat(val);
+        if (n > 0) return "benchmark-delta-positive";
+        if (n < 0) return "benchmark-delta-negative";
+        return "";
+      }
+
+      // Discover config names dynamically (everything except "delta")
+      const configs = Object.keys(summary).filter(k => k !== "delta");
+      const configA = configs[0] || "config_a";
+      const configB = configs[1] || "config_b";
+      const labelA = configA.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      const labelB = configB.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      const a = summary[configA] || {};
+      const b = summary[configB] || {};
+      const delta = summary.delta || {};
+
+      html += "<thead><tr><th>Metric</th><th>" + escapeHtml(labelA) + "</th><th>" + escapeHtml(labelB) + "</th><th>Delta</th></tr></thead>";
+      html += "<tbody>";
+
+      html += "<tr><td><strong>Pass Rate</strong></td>";
+      html += "<td>" + fmtStat(a.pass_rate, true) + "</td>";
+      html += "<td>" + fmtStat(b.pass_rate, true) + "</td>";
+      html += '<td class="' + deltaClass(delta.pass_rate) + '">' + (delta.pass_rate || "—") + "</td></tr>";
+
+      // Time (only show row if data exists)
+      if (a.time_seconds || b.time_seconds) {
+        html += "<tr><td><strong>Time (s)</strong></td>";
+        html += "<td>" + fmtStat(a.time_seconds, false) + "</td>";
+        html += "<td>" + fmtStat(b.time_seconds, false) + "</td>";
+        html += '<td class="' + deltaClass(delta.time_seconds) + '">' + (delta.time_seconds ? delta.time_seconds + "s" : "—") + "</td></tr>";
+      }
+
+      // Tokens (only show row if data exists)
+      if (a.tokens || b.tokens) {
+        html += "<tr><td><strong>Tokens</strong></td>";
+        html += "<td>" + fmtStat(a.tokens, false) + "</td>";
+        html += "<td>" + fmtStat(b.tokens, false) + "</td>";
+        html += '<td class="' + deltaClass(delta.tokens) + '">' + (delta.tokens || "—") + "</td></tr>";
+      }
+
+      html += "</tbody></table>";
+
+      // Per-eval breakdown (if runs data available)
+      const runs = data.runs || [];
+      if (runs.length > 0) {
+        const evalIds = [...new Set(runs.map(r => r.eval_id))].sort((a, b) => a - b);
+
+        html += "<h3 style='font-family: Poppins, sans-serif; margin-bottom: 0.75rem;'>Per-Eval Breakdown</h3>";
+
+        const hasTime = runs.some(r => r.result && r.result.time_seconds != null);
+        const hasErrors = runs.some(r => r.result && r.result.errors > 0);
+
+        for (const evalId of evalIds) {
+          const evalRuns = runs.filter(r => r.eval_id === evalId);
+          const evalName = evalRuns[0] && evalRuns[0].eval_name ? evalRuns[0].eval_name : "Eval " + evalId;
+
+          html += "<h4 style='font-family: Poppins, sans-serif; margin: 1rem 0 0.5rem; color: var(--text);'>" + escapeHtml(evalName) + "</h4>";
+          html += '<table class="benchmark-table">';
+          html += "<thead><tr><th>Config</th><th>Run</th><th>Pass Rate</th>";
+          if (hasTime) html += "<th>Time (s)</th>";
+          if (hasErrors) html += "<th>Crashes During Execution</th>";
+          html += "</tr></thead>";
+          html += "<tbody>";
+
+          // Group by config and render with average rows
+          const configGroups = [...new Set(evalRuns.map(r => r.configuration))];
+          for (let ci = 0; ci < configGroups.length; ci++) {
+            const config = configGroups[ci];
+            const configRuns = evalRuns.filter(r => r.configuration === config);
+            if (configRuns.length === 0) continue;
+
+            const rowClass = ci === 0 ? "benchmark-row-with" : "benchmark-row-without";
+            const configLabel = config.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+
+            for (const run of configRuns) {
+              const r = run.result || {};
+              const prClass = r.pass_rate >= 0.8 ? "benchmark-delta-positive" : r.pass_rate < 0.5 ? "benchmark-delta-negative" : "";
+              html += '<tr class="' + rowClass + '">';
+              html += "<td>" + configLabel + "</td>";
+              html += "<td>" + run.run_number + "</td>";
+              html += '<td class="' + prClass + '">' + ((r.pass_rate || 0) * 100).toFixed(0) + "% (" + (r.passed || 0) + "/" + (r.total || 0) + ")</td>";
+              if (hasTime) html += "<td>" + (r.time_seconds != null ? r.time_seconds.toFixed(1) : "—") + "</td>";
+              if (hasErrors) html += "<td>" + (r.errors || 0) + "</td>";
+              html += "</tr>";
+            }
+
+            // Average row
+            const rates = configRuns.map(r => (r.result || {}).pass_rate || 0);
+            const avgRate = rates.reduce((a, b) => a + b, 0) / rates.length;
+            const avgPrClass = avgRate >= 0.8 ? "benchmark-delta-positive" : avgRate < 0.5 ? "benchmark-delta-negative" : "";
+            html += '<tr class="benchmark-row-avg ' + rowClass + '">';
+            html += "<td>" + configLabel + "</td>";
+            html += "<td>Avg</td>";
+            html += '<td class="' + avgPrClass + '">' + (avgRate * 100).toFixed(0) + "%</td>";
+            if (hasTime) {
+              const times = configRuns.map(r => (r.result || {}).time_seconds).filter(t => t != null);
+              html += "<td>" + (times.length ? (times.reduce((a, b) => a + b, 0) / times.length).toFixed(1) : "—") + "</td>";
+            }
+            if (hasErrors) html += "<td></td>";
+            html += "</tr>";
+          }
+          html += "</tbody></table>";
+
+          // Per-assertion detail for this eval
+          const runsWithExpectations = {};
+          for (const config of configGroups) {
+            runsWithExpectations[config] = evalRuns.filter(r => r.configuration === config && r.expectations && r.expectations.length > 0);
+          }
+          const hasAnyExpectations = Object.values(runsWithExpectations).some(runs => runs.length > 0);
+          if (hasAnyExpectations) {
+            // Collect all unique assertion texts across all configs
+            const allAssertions = [];
+            const seen = new Set();
+            for (const config of configGroups) {
+              for (const run of runsWithExpectations[config]) {
+                for (const exp of (run.expectations || [])) {
+                  if (!seen.has(exp.text)) {
+                    seen.add(exp.text);
+                    allAssertions.push(exp.text);
+                  }
+                }
+              }
+            }
+
+            html += '<table class="benchmark-table" style="margin-top: 0.5rem;">';
+            html += "<thead><tr><th>Assertion</th>";
+            for (const config of configGroups) {
+              const label = config.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+              html += "<th>" + escapeHtml(label) + "</th>";
+            }
+            html += "</tr></thead><tbody>";
+
+            for (const assertionText of allAssertions) {
+              html += "<tr><td>" + escapeHtml(assertionText) + "</td>";
+
+              for (const config of configGroups) {
+                html += "<td>";
+                for (const run of runsWithExpectations[config]) {
+                  const exp = (run.expectations || []).find(e => e.text === assertionText);
+                  if (exp) {
+                    const cls = exp.passed ? "benchmark-delta-positive" : "benchmark-delta-negative";
+                    const icon = exp.passed ? "\u2713" : "\u2717";
+                    html += '<span class="' + cls + '" title="Run ' + run.run_number + ': ' + escapeHtml(exp.evidence || "") + '">' + icon + "</span> ";
+                  } else {
+                    html += "— ";
+                  }
+                }
+                html += "</td>";
+              }
+              html += "</tr>";
+            }
+            html += "</tbody></table>";
+          }
+        }
+      }
+
+      // Notes
+      if (notes.length > 0) {
+        html += '<div class="benchmark-notes">';
+        html += "<h3>Analysis Notes</h3>";
+        html += "<ul>";
+        for (const note of notes) {
+          html += "<li>" + escapeHtml(note) + "</li>";
+        }
+        html += "</ul></div>";
+      }
+
+      container.innerHTML = html;
+    }
+
+    // ---- Start ----
+    init();
+    renderBenchmark();
+  </script>
+</body>
+</html>

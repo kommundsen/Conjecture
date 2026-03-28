@@ -1,0 +1,12 @@
+{
+  "eval_id": 3,
+  "eval_name": "dictionary-strategy",
+  "prompt": "I want tests for a new DictionaryStrategy — Gen.Dictionary(keyGen, valueGen, minCount: 0, maxCount: 5) should produce dictionaries where all keys are unique and counts are within [0, 5]. The type doesn't exist yet.",
+  "assertions": [
+    "A new test file is created at src/Conjecture.Tests/Strategies/DictionaryStrategyTests.cs",
+    "Tests cover key uniqueness (no duplicate keys in generated dictionaries)",
+    "Tests cover count bounds (generated count is within [minCount, maxCount])",
+    "The skill uses #pragma warning disable or similar to handle missing type without creating a stub",
+    "The report states the build fails due to the missing DictionaryStrategy type"
+  ]
+}

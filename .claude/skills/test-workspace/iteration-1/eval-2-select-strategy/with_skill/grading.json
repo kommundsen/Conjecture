@@ -1,0 +1,30 @@
+{
+  "expectations": [
+    {
+      "text": "A new file is created at src/Conjecture.Tests/Strategies/SelectStrategyTests.cs",
+      "passed": true,
+      "evidence": "SelectStrategyTests.cs created as new file in outputs; transcript confirms created at correct path."
+    },
+    {
+      "text": "The file uses file-scoped namespace matching Conjecture.Tests.Strategies",
+      "passed": true,
+      "evidence": "Line 5: 'namespace Conjecture.Tests.Strategies;' — file-scoped."
+    },
+    {
+      "text": "At least one test verifies that Select() transforms values correctly",
+      "passed": true,
+      "evidence": "Select_DoublingSelector_ReturnsEvenNumbersInRange asserts InRange(result, 0, 20) and Equal(0, result % 2), directly verifying the x*2 transform."
+    },
+    {
+      "text": "Tests follow the MethodName_Condition_ExpectedResult naming convention",
+      "passed": true,
+      "evidence": "Select_DoublingSelector_ReturnsEvenNumbersInRange (Select=method, DoublingSelector=condition, ReturnsEvenNumbersInRange=expected). Select_IdentitySelector_ReturnsValuesInSourceRange — same pattern."
+    },
+    {
+      "text": "The report states whether the build/test run is red (failing)",
+      "passed": true,
+      "evidence": "Transcript explicitly states 'GREEN (not red)' and notes that the implementation already exists. The skill's red-phase requirement was discussed honestly."
+    }
+  ],
+  "summary": {"passed": 5, "failed": 0, "total": 5, "pass_rate": 1.0}
+}

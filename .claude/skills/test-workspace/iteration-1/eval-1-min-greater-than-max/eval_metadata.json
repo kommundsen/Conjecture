@@ -1,0 +1,12 @@
+{
+  "eval_id": 1,
+  "eval_name": "min-greater-than-max",
+  "prompt": "Add a test to IntegerStrategyTests.cs for when min > max is passed to Gen.Integers<int>() — I expect it to throw ArgumentOutOfRangeException",
+  "assertions": [
+    "A new test is added to the existing IntegerStrategyTests.cs file, not a new file",
+    "The test method name follows the MethodName_Condition_ExpectedResult convention",
+    "The test uses Assert.Throws<ArgumentOutOfRangeException> or equivalent xUnit pattern",
+    "The test calls Gen.Integers<int> with min > max",
+    "The report states whether the build/test run is red (failing)"
+  ]
+}
