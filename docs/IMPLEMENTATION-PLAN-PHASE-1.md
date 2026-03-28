@@ -111,9 +111,9 @@ Each cycle: `/test` (Red) then `/implement` (Green). 10 sub-phases.
 Strings compose from integer draws (length + char codes) — no new `IRNodeKind` needed. Existing shrinker passes work automatically on the underlying integer nodes.
 
 #### Cycle 1.3.1 -- StringStrategy core (Gen.Strings / Gen.Text)
-- [ ] `/test` -- `src/Conjecture.Tests/Strategies/StringStrategyTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Strategies/StringStrategyTests.cs`
   - `Gen.Strings()` produces strings, deterministic with seed, default charset is printable ASCII, `Gen.Strings(minLength: 5, maxLength: 10)` respects bounds, empty string possible when minLength=0
-- [ ] `/implement` -- `src/Conjecture.Core/Strategies/StringStrategy.cs` + add `Gen.Strings()` and `Gen.Text()` to `Gen.cs`
+- [x] `/implement` -- `src/Conjecture.Core/Strategies/StringStrategy.cs` + add `Gen.Strings()` and `Gen.Text()` to `Gen.cs`
   - `Gen.Text()` is alias for `Gen.Strings()` (Python Hypothesis convention)
   - Internally: `DrawInteger` for length, `DrawInteger` per character from charset range
   - Update `PublicAPI.Unshipped.txt`

@@ -43,4 +43,10 @@ public static class Gen
 
     /// <summary>Returns a strategy that generates random <see cref="float"/> values in [<paramref name="min"/>, <paramref name="max"/>].</summary>
     public static Strategy<float> Floats(float min, float max) => new FloatingPointStrategy<float>(min, max);
+
+    /// <summary>Returns a strategy that generates random printable-ASCII strings.</summary>
+    public static Strategy<string> Strings(int minLength = 0, int maxLength = 100) => new StringStrategy(minLength, maxLength);
+
+    /// <summary>Alias for <see cref="Strings(int, int)"/>.</summary>
+    public static Strategy<string> Text(int minLength = 0, int maxLength = 100) => Strings(minLength, maxLength);
 }

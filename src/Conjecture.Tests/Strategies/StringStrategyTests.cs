@@ -1,0 +1,90 @@
+using Conjecture.Core;
+using Conjecture.Core.Internal;
+using Conjecture.Core.Generation;
+
+namespace Conjecture.Tests.Strategies;
+
+public class StringStrategyTests
+{
+    private static ConjectureData MakeData(ulong seed = 42UL) =>
+        ConjectureData.ForGeneration(new SplittableRandom(seed));
+
+    [Fact]
+    public void Strings_ProducesString()
+    {
+        var strategy = Gen.Strings();
+        var value = strategy.Next(MakeData());
+        Assert.IsType<string>(value);
+    }
+
+    [Fact]
+    public void Strings_DefaultCharset_IsPrintableAscii()
+    {
+        var strategy = Gen.Strings();
+        var data = MakeData();
+
+        for (var i = 0; i < 200; i++)
+        {
+            var s = strategy.Next(data);
+            foreach (var c in s)
+            {
+                Assert.InRange((int)c, 32, 126);
+            }
+        }
+    }
+
+    [Fact]
+    public void Strings_DeterministicWithSeed()
+    {
+        var strategy = Gen.Strings();
+
+        var results1 = Enumerable.Range(0, 20).Select(_ => strategy.Next(MakeData(99UL))).ToList();
+        var results2 = Enumerable.Range(0, 20).Select(_ => strategy.Next(MakeData(99UL))).ToList();
+
+        Assert.Equal(results1, results2);
+    }
+
+    [Fact]
+    public void Strings_RespectsBoundsWhenMinAndMaxLengthSet()
+    {
+        var strategy = Gen.Strings(minLength: 5, maxLength: 10);
+        var data = MakeData();
+
+        for (var i = 0; i < 100; i++)
+        {
+            var s = strategy.Next(data);
+            Assert.InRange(s.Length, 5, 10);
+        }
+    }
+
+    [Fact]
+    public void Strings_MinLengthZero_CanProduceEmptyString()
+    {
+        var strategy = Gen.Strings(minLength: 0, maxLength: 5);
+        var sawEmpty = false;
+
+        for (var seed = 0UL; seed < 1000UL && !sawEmpty; seed++)
+        {
+            var s = strategy.Next(MakeData(seed));
+            if (s.Length == 0)
+            {
+                sawEmpty = true;
+            }
+        }
+
+        Assert.True(sawEmpty, "Expected empty string to be generated with minLength=0");
+    }
+
+    [Fact]
+    public void Text_IsAliasForStrings()
+    {
+        var textStrategy = Gen.Text();
+        var data = MakeData(77UL);
+        var s = textStrategy.Next(data);
+        Assert.IsType<string>(s);
+        foreach (var c in s)
+        {
+            Assert.InRange((int)c, 32, 126);
+        }
+    }
+}
