@@ -79,7 +79,7 @@ public class TestRunnerTests
         {
             var v = data.DrawInteger(0, 100);
             callCount++;
-            if (callCount == failOn) throw new InvalidOperationException("fail");
+            if (callCount == failOn) { throw new InvalidOperationException("fail"); }
         });
 
         callCount = 0;
@@ -105,7 +105,9 @@ public class TestRunnerTests
         {
             totalCalls++;
             if (totalCalls <= 5)
+            {
                 throw new UnsatisfiedAssumptionException();
+            }
             validCount++;
         });
 

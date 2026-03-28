@@ -10,7 +10,12 @@ internal sealed class SampledFromStrategy<T> : Strategy<T>
     internal SampledFromStrategy(IReadOnlyList<T> values)
     {
         if (values.Count == 0)
+        {
+
             throw new ArgumentException("At least one value is required.", nameof(values));
+        }
+
+
         this.values = values;
         lastIndex = (ulong)(values.Count - 1);
     }

@@ -12,6 +12,7 @@ public class PropertyAttributeTests
 {
     // --- xUnit discovery: [Property] methods that should always pass ---
 
+#pragma warning disable IDE0060
     [Property(MaxExamples = 20, Seed = 1UL)]
     public void IntParameter_NoAssertion_Passes(int x) { }
 
@@ -20,6 +21,7 @@ public class PropertyAttributeTests
 
     [Property(MaxExamples = 20, Seed = 1UL)]
     public void MultipleParameters_IntAndBool_Passes(int x, bool b) { }
+#pragma warning restore IDE0060
 
     // --- Failure: failing property must throw so xUnit reports it as failed.
     //     We can't put a known-failing [Property] in the test suite, so we verify
@@ -47,13 +49,13 @@ public class PropertyAttributeTests
         var run1 = TestRunner.Run(settings, data =>
         {
             var v = data.DrawInteger(0, 100);
-            if (v > 70) throw new Exception("fail");
+            if (v > 70) { throw new Exception("fail"); }
         });
 
         var run2 = TestRunner.Run(settings, data =>
         {
             var v = data.DrawInteger(0, 100);
-            if (v > 70) throw new Exception("fail");
+            if (v > 70) { throw new Exception("fail"); }
         });
 
         Assert.Equal(

@@ -1,7 +1,7 @@
 using Conjecture.Core.Internal;
 using Conjecture.Core.Generation;
 
-namespace Conjecture.Tests.Generation;
+namespace Conjecture.Tests.Strategies;
 
 public class StrategyBaseTests
 {

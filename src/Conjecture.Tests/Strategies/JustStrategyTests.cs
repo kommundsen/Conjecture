@@ -2,7 +2,7 @@ using Conjecture.Core;
 using Conjecture.Core.Internal;
 using Conjecture.Core.Generation;
 
-namespace Conjecture.Tests.Generation;
+namespace Conjecture.Tests.Strategies;
 
 public class JustStrategyTests
 {
@@ -16,7 +16,9 @@ public class JustStrategyTests
         var data = MakeData();
 
         for (var i = 0; i < 20; i++)
+        {
             Assert.Equal(42, strategy.Next(data));
+        }
     }
 
     [Fact]
@@ -26,7 +28,9 @@ public class JustStrategyTests
         var data = MakeData();
 
         for (var i = 0; i < 20; i++)
+        {
             Assert.Equal("hello", strategy.Next(data));
+        }
     }
 
     [Fact]

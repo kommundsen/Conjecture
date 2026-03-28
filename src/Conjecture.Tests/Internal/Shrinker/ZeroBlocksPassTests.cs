@@ -46,9 +46,9 @@ public class ZeroBlocksPassTests
     {
         // Predicate only accepts original value — zeroing would break it, so no progress.
         var nodes = new[] { IRNode.ForInteger(99, 0, 100) };
-        Func<IReadOnlyList<IRNode>, Status> onlyOriginal =
-            ns => ns[0].Value == 99 ? Status.Interesting : Status.Valid;
-        var state = MakeState(nodes, onlyOriginal);
+        static Status OnlyOriginal(IReadOnlyList<IRNode> ns) =>
+            ns[0].Value == 99 ? Status.Interesting : Status.Valid;
+        var state = MakeState(nodes, OnlyOriginal);
         var pass = new ZeroBlocksPass();
 
         var progress = pass.TryReduce(state);

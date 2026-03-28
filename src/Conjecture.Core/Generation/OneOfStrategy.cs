@@ -9,7 +9,11 @@ internal sealed class OneOfStrategy<T> : Strategy<T>
     internal OneOfStrategy(Strategy<T>[] strategies)
     {
         if (strategies.Length == 0)
+        {
             throw new ArgumentException("At least one strategy is required.", nameof(strategies));
+        }
+
+
         this.strategies = strategies;
     }
 

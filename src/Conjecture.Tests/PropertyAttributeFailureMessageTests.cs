@@ -12,8 +12,10 @@ namespace Conjecture.Tests;
 public class PropertyAttributeFailureMessageTests
 {
     // Dummy method used to get ParameterInfo for int parameter named "x".
+#pragma warning disable IDE0060
     private static void PropertyWithInt(int x) { }
     private static void PropertyWithIntAndBool(int x, bool flag) { }
+#pragma warning restore IDE0060
 
     private static ParameterInfo[] Params(string methodName) =>
         typeof(PropertyAttributeFailureMessageTests)
@@ -57,7 +59,7 @@ public class PropertyAttributeFailureMessageTests
         var result = TestRunner.Run(settings, data =>
         {
             var args = ParameterStrategyResolver.Resolve(parameters, data);
-            if ((int)args[0] > 5) throw new Exception("fail");
+            if ((int)args[0] > 5) { throw new Exception("fail"); }
         });
 
         Assert.False(result.Passed);
@@ -75,7 +77,7 @@ public class PropertyAttributeFailureMessageTests
         var result = TestRunner.Run(settings, data =>
         {
             var args = ParameterStrategyResolver.Resolve(parameters, data);
-            if ((int)args[0] > 5) throw new Exception("fail");
+            if ((int)args[0] > 5) { throw new Exception("fail"); }
         });
 
         Assert.False(result.Passed);

@@ -39,9 +39,13 @@ public class PrngAdapterTests
         var buckets = new int[5];
 
         for (var i = 0; i < 10_000; i++)
+        {
             buckets[PrngAdapter.NextUInt64(rng, 4UL)]++;
+        }
 
         foreach (var count in buckets)
+        {
             Assert.InRange(count, 1500, 2500);
+        }
     }
 }

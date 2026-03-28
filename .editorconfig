@@ -90,6 +90,53 @@ dotnet_remove_unnecessary_suppression_exclusions = none
 # Enforce naming rules at build time (requires EnforceCodeStyleInBuild=true in Directory.Build.props)
 dotnet_diagnostic.IDE1006.severity = warning
 
+# Enforce suggestion-level rules at build time
+dotnet_diagnostic.IDE0011.severity = warning  # Braces
+dotnet_diagnostic.IDE0016.severity = warning  # Throw expressions
+dotnet_diagnostic.IDE0017.severity = warning  # Object initializers
+dotnet_diagnostic.IDE0018.severity = warning  # Inlined variable declaration
+dotnet_diagnostic.IDE0019.severity = warning  # Pattern matching over as+null check
+dotnet_diagnostic.IDE0020.severity = warning  # Pattern matching over is+cast
+dotnet_diagnostic.IDE0028.severity = warning  # Collection initializers
+dotnet_diagnostic.IDE0029.severity = warning  # Null coalescing (non-nullable)
+dotnet_diagnostic.IDE0030.severity = warning  # Null coalescing (nullable)
+dotnet_diagnostic.IDE0031.severity = warning  # Null propagation
+dotnet_diagnostic.IDE0032.severity = warning  # Auto properties
+dotnet_diagnostic.IDE0033.severity = warning  # Explicit tuple names
+dotnet_diagnostic.IDE0034.severity = warning  # Simple default expression
+dotnet_diagnostic.IDE0036.severity = warning  # Modifier order
+dotnet_diagnostic.IDE0037.severity = warning  # Inferred tuple/anon type member names
+dotnet_diagnostic.IDE0039.severity = warning  # Local function over lambda
+dotnet_diagnostic.IDE0041.severity = warning  # Null check over reference equality
+dotnet_diagnostic.IDE0042.severity = warning  # Deconstructed variable declaration
+dotnet_diagnostic.IDE0045.severity = warning  # Ternary over assignment
+dotnet_diagnostic.IDE0046.severity = warning  # Ternary over return
+dotnet_diagnostic.IDE0053.severity = warning  # Expression-bodied lambdas
+dotnet_diagnostic.IDE0054.severity = warning  # Compound assignment
+dotnet_diagnostic.IDE0056.severity = warning  # Index operator
+dotnet_diagnostic.IDE0057.severity = warning  # Range operator
+dotnet_diagnostic.IDE0059.severity = warning  # Unused value assignment
+dotnet_diagnostic.IDE0060.severity = warning  # Unused parameters
+dotnet_diagnostic.IDE0063.severity = warning  # Simple using statement
+dotnet_diagnostic.IDE0066.severity = warning  # Switch expression
+dotnet_diagnostic.IDE0071.severity = warning  # Simplified interpolation
+dotnet_diagnostic.IDE0074.severity = warning  # Coalesce compound assignment
+dotnet_diagnostic.IDE0075.severity = warning  # Simplified boolean expressions
+dotnet_diagnostic.IDE0083.severity = warning  # not pattern
+dotnet_diagnostic.IDE0090.severity = warning  # Implicit object creation
+dotnet_diagnostic.IDE0130.severity = warning  # Namespace matches folder
+dotnet_diagnostic.IDE0150.severity = warning  # Null check over type check
+dotnet_diagnostic.IDE0160.severity = warning  # File-scoped namespace
+dotnet_diagnostic.IDE0170.severity = warning  # Extended property pattern
+dotnet_diagnostic.IDE0180.severity = warning  # Tuple swap
+dotnet_diagnostic.IDE0220.severity = warning  # Foreach explicit cast
+dotnet_diagnostic.IDE0230.severity = warning  # UTF-8 string literals
+dotnet_diagnostic.IDE0250.severity = warning  # Readonly struct
+dotnet_diagnostic.IDE0251.severity = warning  # Readonly struct member
+dotnet_diagnostic.IDE0258.severity = warning  # Static anonymous function
+dotnet_diagnostic.IDE0290.severity = warning  # Primary constructors
+dotnet_diagnostic.IDE1005.severity = warning  # Conditional delegate call
+
 #### C# Coding Conventions ####
 [*.cs]
 

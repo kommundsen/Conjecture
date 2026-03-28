@@ -2,7 +2,7 @@ using Conjecture.Core;
 using Conjecture.Core.Internal;
 using Conjecture.Core.Generation;
 
-namespace Conjecture.Tests.Generation;
+namespace Conjecture.Tests.Strategies;
 
 public class FloatingPointSpecialValuesTests
 {
@@ -56,14 +56,18 @@ public class FloatingPointSpecialValuesTests
     public void Doubles_Bounded_NeverProducesNaN()
     {
         for (var s = 0; s < 10_000; s++)
+        {
             Assert.False(double.IsNaN(DrawBoundedDouble((ulong)s)), $"Gen.Doubles(0.0, 1.0) produced NaN at seed {s}");
+        }
     }
 
     [Fact]
     public void Doubles_Bounded_NeverProducesInfinity()
     {
         for (var s = 0; s < 10_000; s++)
+        {
             Assert.False(double.IsInfinity(DrawBoundedDouble((ulong)s)), $"Gen.Doubles(0.0, 1.0) produced Infinity at seed {s}");
+        }
     }
 
     [Fact]

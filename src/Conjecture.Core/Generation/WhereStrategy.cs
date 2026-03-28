@@ -19,7 +19,11 @@ internal sealed class WhereStrategy<T> : Strategy<T>
         for (var i = 0; i < MaxAttempts; i++)
         {
             var value = source.Next(data);
-            if (predicate(value)) return value;
+            if (predicate(value))
+            {
+                return value;
+            }
+
         }
         data.MarkInvalid();
         throw new UnsatisfiedAssumptionException();

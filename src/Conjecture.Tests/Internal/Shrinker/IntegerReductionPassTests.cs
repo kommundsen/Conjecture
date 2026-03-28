@@ -17,9 +17,9 @@ public class IntegerReductionPassTests
     {
         // Value 1000, threshold 5 — binary search should land exactly at 5.
         var nodes = new[] { IRNode.ForInteger(1000, 0, 2000) };
-        Func<IReadOnlyList<IRNode>, Status> atLeastFive =
-            ns => ns[0].Value >= 5 ? Status.Interesting : Status.Valid;
-        var state = MakeState(nodes, atLeastFive);
+        static Status AtLeastFive(IReadOnlyList<IRNode> ns) =>
+            ns[0].Value >= 5 ? Status.Interesting : Status.Valid;
+        var state = MakeState(nodes, AtLeastFive);
         var pass = new IntegerReductionPass();
 
         var progress = pass.TryReduce(state);
@@ -46,9 +46,9 @@ public class IntegerReductionPassTests
     {
         // Only the original value satisfies the predicate.
         var nodes = new[] { IRNode.ForInteger(42, 0, 100) };
-        Func<IReadOnlyList<IRNode>, Status> onlyFortyTwo =
-            ns => ns[0].Value == 42 ? Status.Interesting : Status.Valid;
-        var state = MakeState(nodes, onlyFortyTwo);
+        static Status OnlyFortyTwo(IReadOnlyList<IRNode> ns) =>
+            ns[0].Value == 42 ? Status.Interesting : Status.Valid;
+        var state = MakeState(nodes, OnlyFortyTwo);
         var pass = new IntegerReductionPass();
 
         var progress = pass.TryReduce(state);
@@ -62,9 +62,9 @@ public class IntegerReductionPassTests
     {
         // Min is 10, value is 100, threshold is 20 — result must be in [20, 100).
         var nodes = new[] { IRNode.ForInteger(100, 10, 200) };
-        Func<IReadOnlyList<IRNode>, Status> atLeastTwenty =
-            ns => ns[0].Value >= 20 ? Status.Interesting : Status.Valid;
-        var state = MakeState(nodes, atLeastTwenty);
+        static Status AtLeastTwenty(IReadOnlyList<IRNode> ns) =>
+            ns[0].Value >= 20 ? Status.Interesting : Status.Valid;
+        var state = MakeState(nodes, AtLeastTwenty);
         var pass = new IntegerReductionPass();
 
         var progress = pass.TryReduce(state);
@@ -83,9 +83,9 @@ public class IntegerReductionPassTests
             IRNode.ForInteger(500, 0, 1000),
             IRNode.ForInteger(800, 0, 1000),
         };
-        Func<IReadOnlyList<IRNode>, Status> thresholds =
-            ns => ns[0].Value >= 3 && ns[1].Value >= 7 ? Status.Interesting : Status.Valid;
-        var state = MakeState(nodes, thresholds);
+        static Status Thresholds(IReadOnlyList<IRNode> ns) =>
+            ns[0].Value >= 3 && ns[1].Value >= 7 ? Status.Interesting : Status.Valid;
+        var state = MakeState(nodes, Thresholds);
         var pass = new IntegerReductionPass();
 
         var progress = pass.TryReduce(state);

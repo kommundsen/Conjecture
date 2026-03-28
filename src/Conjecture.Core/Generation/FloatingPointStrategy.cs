@@ -43,7 +43,11 @@ internal sealed class FloatingPointStrategy<T> : Strategy<T>
     internal FloatingPointStrategy(T min, T max)
     {
         if (max < min)
+        {
             throw new ArgumentException($"max ({max}) must be >= min ({min}).", nameof(max));
+        }
+
+
         bounded = true;
         this.min = min;
         range = max - min;

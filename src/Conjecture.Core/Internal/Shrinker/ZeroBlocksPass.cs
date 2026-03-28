@@ -8,12 +8,21 @@ internal sealed class ZeroBlocksPass : IShrinkPass
         for (int i = 0; i < state.Nodes.Count; i++)
         {
             var node = state.Nodes[i];
-            if (node.Kind != IRNodeKind.Integer) continue;
-            if (node.Value == node.Min) continue;
+            if (node.Kind != IRNodeKind.Integer)
+            {
+                continue;
+            }
+
+            if (node.Value == node.Min)
+            {
+                continue;
+            }
 
             var candidate = Replace(state.Nodes, i, IRNode.ForInteger(node.Min, node.Min, node.Max));
             if (state.TryUpdate(candidate))
+            {
                 progress = true;
+            }
         }
         return progress;
     }
@@ -22,7 +31,10 @@ internal sealed class ZeroBlocksPass : IShrinkPass
     {
         var arr = new IRNode[nodes.Count];
         for (int i = 0; i < nodes.Count; i++)
+        {
             arr[i] = i == index ? replacement : nodes[i];
+        }
+
         return arr;
     }
 }

@@ -12,7 +12,11 @@ internal sealed class GeneratorContext : IGeneratorContext
     // Does NOT call MarkInvalid — ComposeStrategy owns the retry budget.
     public void Assume(bool condition)
     {
-        if (!condition) throw new UnsatisfiedAssumptionException();
+        if (!condition)
+        {
+            throw new UnsatisfiedAssumptionException();
+        }
+
     }
 }
 

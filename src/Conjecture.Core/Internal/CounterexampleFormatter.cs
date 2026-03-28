@@ -8,7 +8,10 @@ internal static class CounterexampleFormatter
     {
         var sb = new StringBuilder();
         foreach (var (name, value) in parameters)
+        {
             sb.AppendLine($"{name} = {value}");
+        }
+
         sb.Append($"Reproduce with: [Property(Seed = 0x{seed:X})]");
         return sb.ToString();
     }

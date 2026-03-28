@@ -2,7 +2,7 @@ using Conjecture.Core;
 using Conjecture.Core.Internal;
 using Conjecture.Core.Generation;
 
-namespace Conjecture.Tests.Generation;
+namespace Conjecture.Tests.Strategies;
 
 public class FloatingPointRangeTests
 {
@@ -16,7 +16,9 @@ public class FloatingPointRangeTests
         var data = MakeData();
 
         for (var i = 0; i < 1000; i++)
+        {
             Assert.InRange(strategy.Next(data), 0.0, 1.0);
+        }
     }
 
     [Fact]
@@ -26,7 +28,9 @@ public class FloatingPointRangeTests
         var data = MakeData();
 
         for (var i = 0; i < 1000; i++)
+        {
             Assert.InRange(strategy.Next(data), -100.0, -1.0);
+        }
     }
 
     [Fact]
@@ -36,7 +40,9 @@ public class FloatingPointRangeTests
         var data = MakeData();
 
         for (var i = 0; i < 20; i++)
+        {
             Assert.Equal(3.14, strategy.Next(data));
+        }
     }
 
     [Fact]
@@ -52,7 +58,9 @@ public class FloatingPointRangeTests
         var data = MakeData();
 
         for (var i = 0; i < 1000; i++)
+        {
             Assert.InRange(strategy.Next(data), -1f, 1f);
+        }
     }
 
     [Fact]
@@ -62,7 +70,9 @@ public class FloatingPointRangeTests
         var data = MakeData();
 
         for (var i = 0; i < 20; i++)
+        {
             Assert.Equal(2.5f, strategy.Next(data));
+        }
     }
 
     [Fact]

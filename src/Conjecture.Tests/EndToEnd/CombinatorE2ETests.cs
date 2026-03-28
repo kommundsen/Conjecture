@@ -1,6 +1,7 @@
 using Conjecture.Core;
 using Conjecture.Core.Generation;
 using Conjecture.Core.Internal;
+using CoreStrategies = Conjecture.Core.Strategies;
 
 namespace Conjecture.Tests.EndToEnd;
 
@@ -23,7 +24,7 @@ public class CombinatorE2ETests
         var result = TestRunner.Run(settings, data =>
         {
             var v = strategy.Next(data);
-            if (v > 10) throw new Exception("fail");
+            if (v > 10) { throw new Exception("fail"); }
         });
 
         Assert.False(result.Passed);
@@ -41,7 +42,7 @@ public class CombinatorE2ETests
         var result = TestRunner.Run(settings, data =>
         {
             var v = strategy.Next(data);
-            if (v > 20) throw new Exception("impossible");
+            if (v > 20) { throw new Exception("impossible"); }
         });
 
         Assert.True(result.Passed);
@@ -61,7 +62,7 @@ public class CombinatorE2ETests
         var result = TestRunner.Run(settings, data =>
         {
             var v = strategy.Next(data);
-            if (v > 5) throw new Exception("fail");
+            if (v > 5) { throw new Exception("fail"); }
         });
 
         Assert.False(result.Passed);
@@ -81,7 +82,7 @@ public class CombinatorE2ETests
         var result = TestRunner.Run(settings, data =>
         {
             var v = strategy.Next(data);
-            if (v % 2 != 0) throw new Exception("odd value slipped through");
+            if (v % 2 != 0) { throw new Exception("odd value slipped through"); }
         });
 
         Assert.True(result.Passed);
@@ -103,7 +104,7 @@ public class CombinatorE2ETests
         var result = TestRunner.Run(settings, data =>
         {
             var (x, _) = strategy.Next(data);
-            if (x > 5) throw new Exception("fail");
+            if (x > 5) { throw new Exception("fail"); }
         });
 
         Assert.False(result.Passed);
@@ -120,7 +121,7 @@ public class CombinatorE2ETests
     {
         // Generates (x, y) where y in [0, x]. Property fails when x + y > 10.
         // Minimal sum > 10 is 11; shrinker finds minimal (x, y) pair.
-        var strategy = Strategies.Compose(gen =>
+        var strategy = CoreStrategies.Compose(gen =>
         {
             var x = gen.Next(Gen.Integers<int>(0, 100));
             var y = gen.Next(Gen.Integers<int>(0, x));
@@ -131,7 +132,7 @@ public class CombinatorE2ETests
         var result = TestRunner.Run(settings, data =>
         {
             var (x, y) = strategy.Next(data);
-            if (x + y > 10) throw new Exception("fail");
+            if (x + y > 10) { throw new Exception("fail"); }
         });
 
         Assert.False(result.Passed);
@@ -145,7 +146,7 @@ public class CombinatorE2ETests
     {
         // Only considers (x, y) where x > y. Property fails when x > 5.
         // Minimal x > y && x > 5 is x=6, y=0.
-        var strategy = Strategies.Compose(gen =>
+        var strategy = CoreStrategies.Compose(gen =>
         {
             var x = gen.Next(Gen.Integers<int>(0, 20));
             var y = gen.Next(Gen.Integers<int>(0, 20));
@@ -157,7 +158,7 @@ public class CombinatorE2ETests
         var result = TestRunner.Run(settings, data =>
         {
             var (x, _) = strategy.Next(data);
-            if (x > 5) throw new Exception("fail");
+            if (x > 5) { throw new Exception("fail"); }
         });
 
         Assert.False(result.Passed);

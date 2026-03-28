@@ -2,7 +2,7 @@ using Conjecture.Core;
 using Conjecture.Core.Internal;
 using Conjecture.Core.Generation;
 
-namespace Conjecture.Tests.Generation;
+namespace Conjecture.Tests.Strategies;
 
 public class FloatingPointStrategyTests
 {
@@ -34,9 +34,9 @@ public class FloatingPointStrategyTests
         for (var i = 0; i < 1000; i++)
         {
             var value = strategy.Next(data);
-            if (value > 0) hasPositive = true;
-            if (value < 0) hasNegative = true;
-            if (hasPositive && hasNegative) break;
+            if (value > 0) { hasPositive = true; }
+            if (value < 0) { hasNegative = true; }
+            if (hasPositive && hasNegative) { break; }
         }
 
         Assert.True(hasPositive, "Expected at least one positive double");
@@ -82,9 +82,9 @@ public class FloatingPointStrategyTests
         for (var i = 0; i < 1000; i++)
         {
             var value = strategy.Next(data);
-            if (value > 0) hasPositive = true;
-            if (value < 0) hasNegative = true;
-            if (hasPositive && hasNegative) break;
+            if (value > 0) { hasPositive = true; }
+            if (value < 0) { hasNegative = true; }
+            if (hasPositive && hasNegative) { break; }
         }
 
         Assert.True(hasPositive, "Expected at least one positive float");

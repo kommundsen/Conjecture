@@ -4,8 +4,8 @@ internal static class PrngAdapter
 {
     internal static ulong NextUInt64(IRandom rng, ulong max)
     {
-        if (max == 0UL) return 0UL;
-        if (max == ulong.MaxValue) return rng.NextUInt64();
+        if (max == 0UL) { return 0UL; }
+        if (max == ulong.MaxValue) { return rng.NextUInt64(); }
 
         var threshold = (ulong.MaxValue - max) % (max + 1);
         ulong x;

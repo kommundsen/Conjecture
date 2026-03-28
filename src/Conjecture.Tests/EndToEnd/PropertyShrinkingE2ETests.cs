@@ -11,9 +11,11 @@ namespace Conjecture.Tests.EndToEnd;
 /// </summary>
 public class PropertyShrinkingE2ETests
 {
+#pragma warning disable IDE0060
     private static void IntProperty(int x) { }
     private static void TwoIntProperty(int x, int y) { }
     private static void IntAndBoolProperty(int x, bool flag) { }
+#pragma warning restore IDE0060
 
     private static ParameterInfo[] Params(string methodName) =>
         typeof(PropertyShrinkingE2ETests)
@@ -33,7 +35,7 @@ public class PropertyShrinkingE2ETests
         var result = TestRunner.Run(settings, data =>
         {
             var args = ParameterStrategyResolver.Resolve(parameters, data);
-            if ((int)args[0] > 5) throw new Exception("fail");
+            if ((int)args[0] > 5) { throw new Exception("fail"); }
         });
 
         Assert.False(result.Passed);
@@ -50,7 +52,7 @@ public class PropertyShrinkingE2ETests
         var result = TestRunner.Run(settings, data =>
         {
             var args = ParameterStrategyResolver.Resolve(parameters, data);
-            if ((int)args[0] > 5) throw new Exception("fail");
+            if ((int)args[0] > 5) { throw new Exception("fail"); }
         });
 
         Assert.False(result.Passed);
@@ -70,7 +72,7 @@ public class PropertyShrinkingE2ETests
         var result = TestRunner.Run(settings, data =>
         {
             var args = ParameterStrategyResolver.Resolve(parameters, data);
-            if ((int)args[0] + (int)args[1] > 10) throw new Exception("fail");
+            if ((int)args[0] + (int)args[1] > 10) { throw new Exception("fail"); }
         });
 
         Assert.False(result.Passed);
@@ -121,7 +123,7 @@ public class PropertyShrinkingE2ETests
             var args = ParameterStrategyResolver.Resolve(parameters, data);
             var x = (int)args[0];
             Assume.That(x > 0);
-            if (x > 5) throw new Exception("fail");
+            if (x > 5) { throw new Exception("fail"); }
         });
 
         Assert.False(result.Passed);

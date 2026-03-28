@@ -2,7 +2,7 @@ using Conjecture.Core;
 using Conjecture.Core.Internal;
 using Conjecture.Core.Generation;
 
-namespace Conjecture.Tests.Generation;
+namespace Conjecture.Tests.Strategies;
 
 public class ZipStrategyTests
 {
@@ -28,7 +28,9 @@ public class ZipStrategyTests
         var strategy = Gen.Integers<int>(1, 10).Zip(Gen.Integers<int>(1, 10), (a, b) => a + b);
         var data = MakeData();
         for (var i = 0; i < 100; i++)
+        {
             Assert.InRange(strategy.Next(data), 2, 20);
+        }
     }
 
     [Fact]

@@ -33,14 +33,14 @@ public class ShrinkerTests
         var nodes = SingleIntegerNodes(0, 0, 100);
         // Predicate requires a draw — empty replay overruns and is not interesting,
         // so DeleteBlocksPass cannot remove the node.
-        Func<IReadOnlyList<IRNode>, Status> isInteresting = ns =>
+        static Status IsInteresting(IReadOnlyList<IRNode> ns)
         {
             var data = ConjectureData.ForRecord(ns);
             try { data.DrawInteger(0, 100); return Status.Interesting; }
             catch { return Status.Overrun; }
-        };
+        }
 
-        var result = Core.Internal.Shrinker.Shrinker.Shrink(nodes, isInteresting);
+        var result = Core.Internal.Shrinker.Shrinker.Shrink(nodes, IsInteresting);
 
         var single = Assert.Single(result);
         Assert.Equal(0UL, single.Value);
@@ -82,22 +82,21 @@ public class ShrinkerTests
         // must terminate and return that buffer.
         var nodes = SingleIntegerNodes(1, 0, 100);
         // Interesting only when value == 1 (exactly at threshold, 0 would not be interesting).
-        Func<IReadOnlyList<IRNode>, Status> isInteresting =
-            ns =>
+        static Status IsInteresting(IReadOnlyList<IRNode> ns)
+        {
+            var data = ConjectureData.ForRecord(ns);
+            try
             {
-                var data = ConjectureData.ForRecord(ns);
-                try
-                {
-                    var v = data.DrawInteger(0, 100);
-                    return v == 1 ? Status.Interesting : Status.Valid;
-                }
-                catch
-                {
-                    return Status.Overrun;
-                }
-            };
+                var v = data.DrawInteger(0, 100);
+                return v == 1 ? Status.Interesting : Status.Valid;
+            }
+            catch
+            {
+                return Status.Overrun;
+            }
+        }
 
-        var result = Core.Internal.Shrinker.Shrinker.Shrink(nodes, isInteresting);
+        var result = Core.Internal.Shrinker.Shrinker.Shrink(nodes, IsInteresting);
 
         Assert.Single(result);
         Assert.Equal(1UL, result[0].Value);
@@ -114,27 +113,26 @@ public class ShrinkerTests
             IRNode.ForInteger(50, 0, 100),
         };
 
-        Func<IReadOnlyList<IRNode>, Status> isInteresting =
-            ns =>
+        static Status IsInteresting(IReadOnlyList<IRNode> ns)
+        {
+            var data = ConjectureData.ForRecord(ns);
+            try
             {
-                var data = ConjectureData.ForRecord(ns);
-                try
-                {
-                    var a = data.DrawInteger(0, 100);
-                    var b = data.DrawInteger(0, 100);
-                    return a + b >= 10 ? Status.Interesting : Status.Valid;
-                }
-                catch
-                {
-                    return Status.Overrun;
-                }
-            };
+                var a = data.DrawInteger(0, 100);
+                var b = data.DrawInteger(0, 100);
+                return a + b >= 10 ? Status.Interesting : Status.Valid;
+            }
+            catch
+            {
+                return Status.Overrun;
+            }
+        }
 
-        var result = Core.Internal.Shrinker.Shrinker.Shrink(nodes, isInteresting);
+        var result = Core.Internal.Shrinker.Shrinker.Shrink(nodes, IsInteresting);
 
         Assert.Equal(2, result.Count);
         ulong sum = result[0].Value + result[1].Value;
         Assert.True(sum < 100, $"Expected sum < 100, got {sum}");
-        Assert.Equal(Status.Interesting, isInteresting(result));
+        Assert.Equal(Status.Interesting, IsInteresting(result));
     }
 }

@@ -2,7 +2,7 @@ using Conjecture.Core;
 using Conjecture.Core.Internal;
 using Conjecture.Core.Generation;
 
-namespace Conjecture.Tests.Generation;
+namespace Conjecture.Tests.Strategies;
 
 public class SelectManyStrategyTests
 {
@@ -15,7 +15,9 @@ public class SelectManyStrategyTests
         var strategy = Gen.Integers<int>(1, 5).SelectMany(n => Gen.Integers<int>(0, n));
         var data = MakeData();
         for (var i = 0; i < 100; i++)
+        {
             Assert.InRange(strategy.Next(data), 0, 5);
+        }
     }
 
     [Fact]

@@ -8,7 +8,9 @@ internal sealed class DeleteBlocksPass : IShrinkPass
         {
             var candidate = Without(state.Nodes, i);
             if (state.TryUpdate(candidate))
+            {
                 return true;
+            }
         }
         return false;
     }
@@ -18,7 +20,13 @@ internal sealed class DeleteBlocksPass : IShrinkPass
         var arr = new IRNode[nodes.Count - 1];
         int dst = 0;
         for (int i = 0; i < nodes.Count; i++)
-            if (i != index) arr[dst++] = nodes[i];
+        {
+            if (i != index)
+            {
+                arr[dst++] = nodes[i];
+            }
+        }
+
         return arr;
     }
 }

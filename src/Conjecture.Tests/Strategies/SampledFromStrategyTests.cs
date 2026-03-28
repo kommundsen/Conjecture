@@ -2,7 +2,7 @@ using Conjecture.Core;
 using Conjecture.Core.Internal;
 using Conjecture.Core.Generation;
 
-namespace Conjecture.Tests.Generation;
+namespace Conjecture.Tests.Strategies;
 
 public class SampledFromStrategyTests
 {
@@ -32,7 +32,9 @@ public class SampledFromStrategyTests
         var seen = new HashSet<int>();
 
         for (var i = 0; i < 1000; i++)
+        {
             seen.Add(strategy.Next(data));
+        }
 
         Assert.Contains(10, seen);
         Assert.Contains(20, seen);
@@ -46,7 +48,9 @@ public class SampledFromStrategyTests
         var data = MakeData();
 
         for (var i = 0; i < 20; i++)
+        {
             Assert.Equal(99, strategy.Next(data));
+        }
     }
 
     [Fact]

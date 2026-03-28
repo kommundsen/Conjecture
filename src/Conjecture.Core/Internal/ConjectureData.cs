@@ -87,6 +87,9 @@ internal sealed class ConjectureData
     private void CheckCanDraw()
     {
         if (frozen || Status != Status.Valid)
+        {
             throw new InvalidOperationException("Cannot draw from a frozen or non-valid ConjectureData.");
+        }
+
     }
 }

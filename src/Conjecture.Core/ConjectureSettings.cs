@@ -10,7 +10,10 @@ public record ConjectureSettings
         init
         {
             if (value <= 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(MaxExamples), value, "Must be greater than 0.");
+            }
+
             field = value;
         }
     } = 100;

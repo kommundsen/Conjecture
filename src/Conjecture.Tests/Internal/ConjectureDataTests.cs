@@ -19,7 +19,9 @@ public class ConjectureDataTests
     {
         var data = Make();
         for (var i = 0; i < 100; i++)
+        {
             Assert.InRange(data.DrawInteger(0UL, 9UL), 0UL, 9UL);
+        }
     }
 
     [Fact]
@@ -30,9 +32,9 @@ public class ConjectureDataTests
         var seenFalse = false;
         for (var i = 0; i < 1000; i++)
         {
-            if (data.DrawBoolean()) seenTrue = true;
-            else seenFalse = true;
-            if (seenTrue && seenFalse) break;
+            if (data.DrawBoolean()) { seenTrue = true; }
+            else { seenFalse = true; }
+            if (seenTrue && seenFalse) { break; }
         }
         Assert.True(seenTrue, "DrawBoolean never returned true");
         Assert.True(seenFalse, "DrawBoolean never returned false");

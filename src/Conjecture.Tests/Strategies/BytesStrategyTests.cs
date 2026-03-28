@@ -1,7 +1,7 @@
 using Conjecture.Core;
 using Conjecture.Core.Internal;
 
-namespace Conjecture.Tests.Generation;
+namespace Conjecture.Tests.Strategies;
 
 public class BytesStrategyTests
 {

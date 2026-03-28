@@ -14,7 +14,7 @@ public class TestRunnerShrinkingTests
         var result = TestRunner.Run(settings, data =>
         {
             var v = data.DrawInteger(0, 1000);
-            if (v > 5) throw new Exception("too big");
+            if (v > 5) { throw new Exception("too big"); }
         });
 
         Assert.False(result.Passed);
@@ -45,7 +45,7 @@ public class TestRunnerShrinkingTests
         var result = TestRunner.Run(settings, data =>
         {
             var v = data.DrawInteger(0, 500);
-            if (v > 3) throw new InvalidOperationException($"fail at {v}");
+            if (v > 3) { throw new InvalidOperationException($"fail at {v}"); }
         });
 
         Assert.False(result.Passed);
@@ -56,7 +56,7 @@ public class TestRunnerShrinkingTests
         try
         {
             var v = replay.DrawInteger(0, 500);
-            if (v > 3) throw new InvalidOperationException($"fail at {v}");
+            if (v > 3) { throw new InvalidOperationException($"fail at {v}"); }
         }
         catch (Exception ex)
         {
@@ -76,7 +76,7 @@ public class TestRunnerShrinkingTests
         {
             var a = data.DrawInteger(0, 200);
             var b = data.DrawInteger(0, 200);
-            if (a + b > 10) throw new Exception("sum too big");
+            if (a + b > 10) { throw new Exception("sum too big"); }
         });
 
         Assert.False(result.Passed);

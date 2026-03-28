@@ -21,7 +21,7 @@ public class ShrinkQualityTests
         var result = TestRunner.Run(settings, data =>
         {
             var v = data.DrawInteger(0, 10000);
-            if (v >= 42) throw new Exception("fail");
+            if (v >= 42) { throw new Exception("fail"); }
         });
 
         Assert.False(result.Passed);
@@ -39,7 +39,7 @@ public class ShrinkQualityTests
         var result = TestRunner.Run(settings, data =>
         {
             var v = data.DrawInteger(0, 10000);
-            if (v >= 100) throw new Exception("fail");
+            if (v >= 100) { throw new Exception("fail"); }
         });
 
         Assert.False(result.Passed);
@@ -58,7 +58,7 @@ public class ShrinkQualityTests
         {
             var a = data.DrawInteger(0, 200);
             var b = data.DrawInteger(0, 200);
-            if (a + b > 100) throw new Exception("fail");
+            if (a + b > 100) { throw new Exception("fail"); }
         });
 
         Assert.False(result.Passed);
@@ -79,7 +79,7 @@ public class ShrinkQualityTests
         var result = TestRunner.Run(settings, data =>
         {
             var v = data.DrawBoolean();
-            if (v) throw new Exception("fail");
+            if (v) { throw new Exception("fail"); }
         });
 
         Assert.False(result.Passed);
@@ -97,7 +97,7 @@ public class ShrinkQualityTests
         var result = TestRunner.Run(settings, data =>
         {
             var v = data.DrawBoolean();
-            if (!v) throw new Exception("fail");
+            if (!v) { throw new Exception("fail"); }
         });
 
         Assert.False(result.Passed);
@@ -117,7 +117,7 @@ public class ShrinkQualityTests
         var result = TestRunner.Run(settings, data =>
         {
             var v = data.DrawInteger(500, 10000);
-            if (v >= 1000) throw new Exception("fail");
+            if (v >= 1000) { throw new Exception("fail"); }
         });
 
         Assert.False(result.Passed);
@@ -133,7 +133,7 @@ public class ShrinkQualityTests
         var result = TestRunner.Run(settings, data =>
         {
             var v = data.DrawInteger(200, 5000);
-            if (v > 300) throw new Exception("fail");
+            if (v > 300) { throw new Exception("fail"); }
         });
 
         Assert.False(result.Passed);

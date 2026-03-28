@@ -3,20 +3,15 @@ using Xunit.Sdk;
 
 namespace Conjecture.Xunit.Internal;
 
-internal sealed class PropertyTestCaseDiscoverer : IXunitTestCaseDiscoverer
+internal sealed class PropertyTestCaseDiscoverer(IMessageSink diagnosticMessageSink) : IXunitTestCaseDiscoverer
 {
-    private readonly IMessageSink diagnosticMessageSink;
-
-    public PropertyTestCaseDiscoverer(IMessageSink diagnosticMessageSink)
-        => this.diagnosticMessageSink = diagnosticMessageSink;
-
     public IEnumerable<IXunitTestCase> Discover(
         ITestFrameworkDiscoveryOptions discoveryOptions,
         ITestMethod testMethod,
         IAttributeInfo factAttribute)
     {
         var maxExamples = factAttribute.GetNamedArgument<int>("MaxExamples");
-        if (maxExamples <= 0) maxExamples = 100;
+        if (maxExamples <= 0) { maxExamples = 100; }
 
         var rawSeed = factAttribute.GetNamedArgument<ulong>("Seed");
         var seed = rawSeed == 0UL ? (ulong?)null : rawSeed;

@@ -1,8 +1,8 @@
 using Conjecture.Core;
-using Conjecture.Core.Internal;
 using Conjecture.Core.Generation;
+using Conjecture.Core.Internal;
 
-namespace Conjecture.Tests.Generation;
+namespace Conjecture.Tests.Strategies;
 
 public class BooleanStrategyTests
 {
@@ -27,9 +27,9 @@ public class BooleanStrategyTests
 
         for (var i = 0; i < 1000; i++)
         {
-            if (strategy.Next(data)) seenTrue = true;
-            else seenFalse = true;
-            if (seenTrue && seenFalse) break;
+            if (strategy.Next(data)) { seenTrue = true; }
+            else { seenFalse = true; }
+            if (seenTrue && seenFalse) { break; }
         }
 
         Assert.True(seenTrue, "Booleans() never produced true");

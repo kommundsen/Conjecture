@@ -7,6 +7,8 @@ public static class Assume
     public static void That(bool condition)
     {
         if (!condition)
+        {
             throw new UnsatisfiedAssumptionException();
+        }
     }
 }

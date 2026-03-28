@@ -37,13 +37,13 @@ public class DeleteBlocksPassTests
         // at least one draw, the empty replay overruns and is not interesting.
         var nodes = new[] { IRNode.ForInteger(5, 0, 10) };
         // Predicate needs to draw — empty buffer causes Overrun → not interesting.
-        Func<IReadOnlyList<IRNode>, Status> needsDraw = ns =>
+        static Status NeedsDraw(IReadOnlyList<IRNode> ns)
         {
             var data = ConjectureData.ForRecord(ns);
             try { data.DrawInteger(0, 10); return Status.Interesting; }
             catch { return Status.Overrun; }
-        };
-        var state = MakeState(nodes, needsDraw);
+        }
+        var state = MakeState(nodes, NeedsDraw);
         var pass = new DeleteBlocksPass();
 
         var progress = pass.TryReduce(state);
@@ -61,9 +61,9 @@ public class DeleteBlocksPassTests
             IRNode.ForInteger(3, 0, 10),
             IRNode.ForInteger(7, 0, 10),
         };
-        Func<IReadOnlyList<IRNode>, Status> needsTwo =
-            ns => ns.Count == 2 ? Status.Interesting : Status.Valid;
-        var state = MakeState(nodes, needsTwo);
+        static Status NeedsTwo(IReadOnlyList<IRNode> ns) =>
+            ns.Count == 2 ? Status.Interesting : Status.Valid;
+        var state = MakeState(nodes, NeedsTwo);
         var pass = new DeleteBlocksPass();
 
         var progress = pass.TryReduce(state);
@@ -83,9 +83,9 @@ public class DeleteBlocksPassTests
             IRNode.ForInteger(4, 0, 10),
         };
         // Interesting only when there are ≤2 nodes — triggers on first deletion.
-        Func<IReadOnlyList<IRNode>, Status> interestingWhenShorter =
-            ns => ns.Count <= 2 ? Status.Interesting : Status.Valid;
-        var state = MakeState(nodes, interestingWhenShorter);
+        static Status InterestingWhenShorter(IReadOnlyList<IRNode> ns) =>
+            ns.Count <= 2 ? Status.Interesting : Status.Valid;
+        var state = MakeState(nodes, InterestingWhenShorter);
         var pass = new DeleteBlocksPass();
 
         var progress = pass.TryReduce(state);

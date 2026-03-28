@@ -2,14 +2,13 @@ namespace Conjecture.Core.Internal.Shrinker;
 
 internal sealed class ShrinkState
 {
-    private IReadOnlyList<IRNode> nodes;
     private readonly Func<IReadOnlyList<IRNode>, Status> isInteresting;
 
-    internal IReadOnlyList<IRNode> Nodes => nodes;
+    internal IReadOnlyList<IRNode> Nodes { get; private set; }
 
     internal ShrinkState(IReadOnlyList<IRNode> nodes, Func<IReadOnlyList<IRNode>, Status> isInteresting)
     {
-        this.nodes = nodes;
+        Nodes = nodes;
         this.isInteresting = isInteresting;
     }
 
@@ -21,7 +20,7 @@ internal sealed class ShrinkState
     {
         if (isInteresting(candidate) == Status.Interesting)
         {
-            nodes = candidate;
+            Nodes = candidate;
             return true;
         }
         return false;

@@ -10,16 +10,16 @@ internal static class ParameterStrategyResolver
     {
         var args = new object[parameters.Length];
         for (var i = 0; i < parameters.Length; i++)
+        {
             args[i] = DrawValue(parameters[i].ParameterType, data);
+        }
         return args;
     }
 
-    private static object DrawValue(Type type, ConjectureData data)
-    {
-        if (type == typeof(int))  return new IntegerStrategy<int>(int.MinValue, int.MaxValue).Next(data);
-        if (type == typeof(long)) return new IntegerStrategy<long>(long.MinValue, long.MaxValue).Next(data);
-        if (type == typeof(byte)) return new IntegerStrategy<byte>(byte.MinValue, byte.MaxValue).Next(data);
-        if (type == typeof(bool)) return new BooleanStrategy().Next(data);
+    private static object DrawValue(Type type, ConjectureData data) =>
+        type == typeof(int)  ? (object)new IntegerStrategy<int>(int.MinValue, int.MaxValue).Next(data) :
+        type == typeof(long) ? new IntegerStrategy<long>(long.MinValue, long.MaxValue).Next(data) :
+        type == typeof(byte) ? new IntegerStrategy<byte>(byte.MinValue, byte.MaxValue).Next(data) :
+        type == typeof(bool) ? new BooleanStrategy().Next(data) :
         throw new NotSupportedException($"No strategy registered for parameter type '{type.FullName}'.");
-    }
 }

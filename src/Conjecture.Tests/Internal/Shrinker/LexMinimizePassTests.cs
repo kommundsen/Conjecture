@@ -45,9 +45,9 @@ public class LexMinimizePassTests
     {
         // Predicate requires the exact original value — any reduction breaks it.
         var nodes = new[] { IRNode.ForInteger(5, 0, 10) };
-        Func<IReadOnlyList<IRNode>, Status> onlyFive =
-            ns => ns[0].Value == 5 ? Status.Interesting : Status.Valid;
-        var state = MakeState(nodes, onlyFive);
+        static Status OnlyFive(IReadOnlyList<IRNode> ns) =>
+            ns[0].Value == 5 ? Status.Interesting : Status.Valid;
+        var state = MakeState(nodes, OnlyFive);
         var pass = new LexMinimizePass();
 
         var progress = pass.TryReduce(state);

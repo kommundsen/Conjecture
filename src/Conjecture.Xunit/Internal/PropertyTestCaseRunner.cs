@@ -32,7 +32,9 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
         var test = CreateTest(TestCase, DisplayName);
 
         if (!MessageBus.QueueMessage(new TestStarting(test)))
+        {
             CancellationTokenSource.Cancel();
+        }
 
         var sw = Stopwatch.StartNew();
         Exception? setupFailure = null;
@@ -68,7 +70,9 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
         if (setupFailure is null && result!.Passed)
         {
             if (!MessageBus.QueueMessage(new TestPassed(test, elapsed, null)))
+            {
                 CancellationTokenSource.Cancel();
+            }
         }
         else
         {
@@ -76,11 +80,15 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
             var failure = setupFailure
                 ?? new Exception(BuildFailureMessage(result!, TestMethod.GetParameters()));
             if (!MessageBus.QueueMessage(new TestFailed(test, elapsed, null, failure)))
+            {
                 CancellationTokenSource.Cancel();
+            }
         }
 
         if (!MessageBus.QueueMessage(new TestFinished(test, elapsed, null)))
+        {
             CancellationTokenSource.Cancel();
+        }
 
         return summary;
     }

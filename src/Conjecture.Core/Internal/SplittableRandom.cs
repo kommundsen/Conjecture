@@ -28,7 +28,9 @@ internal sealed class SplittableRandom : IRandom
     {
         var words = MemoryMarshal.Cast<byte, ulong>(buffer);
         for (var i = 0; i < words.Length; i++)
+        {
             words[i] = NextUInt64();
+        }
 
         var remainder = buffer.Length % 8;
         if (remainder > 0)

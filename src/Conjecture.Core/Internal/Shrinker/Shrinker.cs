@@ -21,7 +21,9 @@ internal static class Shrinker
         {
             progress = false;
             foreach (var pass in Passes)
+            {
                 progress |= pass.TryReduce(state);
+            }
         } while (progress);
 
         return state.Nodes;
