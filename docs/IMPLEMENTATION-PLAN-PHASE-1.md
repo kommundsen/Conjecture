@@ -203,9 +203,9 @@ Phase 0 scope: `CounterexampleFormatter` with `ToString()`. Phase 1: full `IStra
   - Update `PublicAPI.Unshipped.txt`
 
 #### Cycle 1.7.2 -- FormatterRegistry with Holder<T> pattern (ADR-0014)
-- [ ] `/test` -- `src/Conjecture.Tests/Formatting/FormatterRegistryTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Formatting/FormatterRegistryTests.cs`
   - `FormatterRegistry.Register<int>(formatter)` then `FormatterRegistry.Get<int>()` returns it, unregistered type returns null, register replaces previous
-- [ ] `/implement` -- `src/Conjecture.Core/Formatting/FormatterRegistry.cs`
+- [x] `/implement` -- `src/Conjecture.Core/Formatting/FormatterRegistry.cs`
   - Uses `static class Holder<T> { public static IStrategyFormatter<T>? Instance; }` pattern (NativeAOT-safe, no Type-keyed dictionary)
   - `public static void Register<T>(IStrategyFormatter<T>)` and `public static IStrategyFormatter<T>? Get<T>()`
   - Update `PublicAPI.Unshipped.txt`

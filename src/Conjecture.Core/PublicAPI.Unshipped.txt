@@ -49,3 +49,6 @@ static Conjecture.Core.Gen.Tuples<T1, T2, T3, T4>(Conjecture.Core.Generation.Str
 static Conjecture.Core.Gen.Lists<T>(Conjecture.Core.Generation.Strategy<T>! inner, int minSize = 0, int maxSize = 100) -> Conjecture.Core.Generation.Strategy<System.Collections.Generic.List<T>!>!
 static Conjecture.Core.Gen.Sets<T>(Conjecture.Core.Generation.Strategy<T>! inner, int minSize = 0, int maxSize = 100) -> Conjecture.Core.Generation.Strategy<System.Collections.Generic.IReadOnlySet<T>!>!
 static Conjecture.Core.Gen.Dictionaries<TKey, TValue>(Conjecture.Core.Generation.Strategy<TKey>! keyStrategy, Conjecture.Core.Generation.Strategy<TValue>! valueStrategy, int minSize = 0, int maxSize = 100) -> Conjecture.Core.Generation.Strategy<System.Collections.Generic.IReadOnlyDictionary<TKey, TValue>!>!
+Conjecture.Core.Formatting.FormatterRegistry
+static Conjecture.Core.Formatting.FormatterRegistry.Get<T>() -> Conjecture.Core.Formatting.IStrategyFormatter<T>?
+static Conjecture.Core.Formatting.FormatterRegistry.Register<T>(Conjecture.Core.Formatting.IStrategyFormatter<T>? formatter) -> void
