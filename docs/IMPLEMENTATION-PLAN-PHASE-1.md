@@ -172,9 +172,9 @@ Strings compose from integer draws (length + char codes) — no new `IRNodeKind`
   - Update `PublicAPI.Unshipped.txt`
 
 #### Cycle 1.5.3 -- Gen.Dictionaries
-- [ ] `/test` -- `src/Conjecture.Tests/Strategies/DictionaryStrategyTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Strategies/DictionaryStrategyTests.cs`
   - `Gen.Dictionaries(Gen.Integers<int>(0, 100), Gen.Strings())` produces dictionaries, keys are unique, respects minSize/maxSize
-- [ ] `/implement` -- `src/Conjecture.Core/Strategies/DictionaryStrategy.cs` + `Gen.Dictionaries<TKey,TValue>` in `Gen.cs`
+- [x] `/implement` -- `src/Conjecture.Core/Strategies/DictionaryStrategy.cs` + `Gen.Dictionaries<TKey,TValue>` in `Gen.cs`
   - Draws key-value pairs; deduplicates by key with rejection budget (ADR-0020)
   - Update `PublicAPI.Unshipped.txt`
 
