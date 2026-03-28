@@ -196,9 +196,9 @@ Strings compose from integer draws (length + char codes) — no new `IRNodeKind`
 Phase 0 scope: `CounterexampleFormatter` with `ToString()`. Phase 1: full `IStrategyFormatter<T>` / `FormatterRegistry` with C#-like literal output.
 
 #### Cycle 1.7.1 -- IStrategyFormatter<T> interface
-- [ ] `/test` -- `src/Conjecture.Tests/Formatting/StrategyFormatterTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Formatting/StrategyFormatterTests.cs`
   - Custom formatter implementing `IStrategyFormatter<int>` formats correctly, `Format(42)` returns expected string
-- [ ] `/implement` -- `src/Conjecture.Core/Formatting/IStrategyFormatter.cs`
+- [x] `/implement` -- `src/Conjecture.Core/Formatting/IStrategyFormatter.cs`
   - `public interface IStrategyFormatter<T> { string Format(T value); }`
   - Update `PublicAPI.Unshipped.txt`
 
