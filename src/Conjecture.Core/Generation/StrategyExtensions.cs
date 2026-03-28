@@ -38,4 +38,8 @@ public static class StrategyExtensions
     /// <summary>Wraps the strategy so it may also produce null, with ~10% null probability.</summary>
     public static Strategy<T?> OrNull<T>(this Strategy<T> source) where T : struct =>
         new NullableStrategy<T>(source);
+
+    /// <summary>Annotates the strategy with a label used in counterexample output.</summary>
+    public static Strategy<T> WithLabel<T>(this Strategy<T> source, string label) =>
+        new LabeledStrategy<T>(source, label);
 }

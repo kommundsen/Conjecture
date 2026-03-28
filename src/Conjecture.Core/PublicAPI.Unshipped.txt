@@ -29,7 +29,8 @@ Conjecture.Core.UnsatisfiedAssumptionException.UnsatisfiedAssumptionException() 
 Conjecture.Core.Formatting.IStrategyFormatter<T>
 Conjecture.Core.Formatting.IStrategyFormatter<T>.Format(T value) -> string!
 Conjecture.Core.Generation.Strategy<T>
-Conjecture.Core.Generation.Strategy<T>.Strategy() -> void
+Conjecture.Core.Generation.Strategy<T>.Label.get -> string?
+Conjecture.Core.Generation.Strategy<T>.Strategy(string? label = null) -> void
 Conjecture.Core.Generation.StrategyExtensions
 static Conjecture.Core.Generation.StrategyExtensions.Select<TSource, TResult>(this Conjecture.Core.Generation.Strategy<TSource>! source, System.Func<TSource, TResult>! selector) -> Conjecture.Core.Generation.Strategy<TResult>!
 static Conjecture.Core.Generation.StrategyExtensions.SelectMany<TSource, TResult>(this Conjecture.Core.Generation.Strategy<TSource>! source, System.Func<TSource, Conjecture.Core.Generation.Strategy<TResult>!>! selector) -> Conjecture.Core.Generation.Strategy<TResult>!
@@ -41,6 +42,7 @@ static Conjecture.Core.Gen.Strings(int minLength = 0, int maxLength = 100, int m
 static Conjecture.Core.Gen.Text(int minLength = 0, int maxLength = 100) -> Conjecture.Core.Generation.Strategy<string!>!
 static Conjecture.Core.Gen.Nullable<T>(Conjecture.Core.Generation.Strategy<T>! inner) -> Conjecture.Core.Generation.Strategy<T?>!
 static Conjecture.Core.Generation.StrategyExtensions.OrNull<T>(this Conjecture.Core.Generation.Strategy<T>! source) -> Conjecture.Core.Generation.Strategy<T?>!
+static Conjecture.Core.Generation.StrategyExtensions.WithLabel<T>(this Conjecture.Core.Generation.Strategy<T>! source, string! label) -> Conjecture.Core.Generation.Strategy<T>!
 static Conjecture.Core.Gen.Tuples<T1, T2>(Conjecture.Core.Generation.Strategy<T1>! first, Conjecture.Core.Generation.Strategy<T2>! second) -> Conjecture.Core.Generation.Strategy<(T1, T2)>!
 static Conjecture.Core.Gen.Tuples<T1, T2, T3>(Conjecture.Core.Generation.Strategy<T1>! first, Conjecture.Core.Generation.Strategy<T2>! second, Conjecture.Core.Generation.Strategy<T3>! third) -> Conjecture.Core.Generation.Strategy<(T1, T2, T3)>!
 static Conjecture.Core.Gen.Tuples<T1, T2, T3, T4>(Conjecture.Core.Generation.Strategy<T1>! first, Conjecture.Core.Generation.Strategy<T2>! second, Conjecture.Core.Generation.Strategy<T3>! third, Conjecture.Core.Generation.Strategy<T4>! fourth) -> Conjecture.Core.Generation.Strategy<(T1, T2, T3, T4)>!

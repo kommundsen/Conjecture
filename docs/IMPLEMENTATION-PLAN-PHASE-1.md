@@ -183,9 +183,9 @@ Strings compose from integer draws (length + char codes) — no new `IRNodeKind`
 ### 1.6 WithLabel Combinator (ADR-0018)
 
 #### Cycle 1.6.1 -- .WithLabel() extension
-- [ ] `/test` -- `src/Conjecture.Tests/Strategies/WithLabelTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Strategies/WithLabelTests.cs`
   - `.WithLabel("age")` annotates strategy, label is accessible on strategy instance, generation still works correctly, labeled strategy produces same values as unlabeled
-- [ ] `/implement` -- `src/Conjecture.Core/Strategies/LabeledStrategy.cs` + add `WithLabel<T>(this Strategy<T>, string)` to `StrategyExtensions.cs`
+- [x] `/implement` -- `src/Conjecture.Core/Strategies/LabeledStrategy.cs` + add `WithLabel<T>(this Strategy<T>, string)` to `StrategyExtensions.cs`
   - Add `string? Label` property to `Strategy<T>` base class (nullable, default null)
   - Update `PublicAPI.Unshipped.txt`
 
