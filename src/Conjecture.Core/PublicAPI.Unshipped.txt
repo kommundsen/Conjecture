@@ -41,3 +41,4 @@ static Conjecture.Core.Gen.Strings(int minLength = 0, int maxLength = 100, int m
 static Conjecture.Core.Gen.Text(int minLength = 0, int maxLength = 100) -> Conjecture.Core.Generation.Strategy<string!>!
 static Conjecture.Core.Gen.Nullable<T>(Conjecture.Core.Generation.Strategy<T>! inner) -> Conjecture.Core.Generation.Strategy<T?>!
 static Conjecture.Core.Generation.StrategyExtensions.OrNull<T>(this Conjecture.Core.Generation.Strategy<T>! source) -> Conjecture.Core.Generation.Strategy<T?>!
+static Conjecture.Core.Gen.Tuples<T1, T2>(Conjecture.Core.Generation.Strategy<T1>! first, Conjecture.Core.Generation.Strategy<T2>! second) -> Conjecture.Core.Generation.Strategy<(T1, T2)>!

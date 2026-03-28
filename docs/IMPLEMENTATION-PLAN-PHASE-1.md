@@ -141,9 +141,9 @@ Strings compose from integer draws (length + char codes) — no new `IRNodeKind`
   - Update `PublicAPI.Unshipped.txt`
 
 #### Cycle 1.4.2 -- Gen.Tuples (2-element)
-- [ ] `/test` -- `src/Conjecture.Tests/Strategies/TupleStrategyTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Strategies/TupleStrategyTests.cs`
   - `Gen.Tuples(Gen.Integers<int>(), Gen.Booleans())` produces `(int, bool)` tuples, both components vary, deterministic with seed
-- [ ] `/implement` -- Add `Gen.Tuples<T1,T2>(Strategy<T1>, Strategy<T2>)` to `Gen.cs`
+- [x] `/implement` -- Add `Gen.Tuples<T1,T2>(Strategy<T1>, Strategy<T2>)` to `Gen.cs`
   - Delegates to existing `Zip` combinator internally
   - Update `PublicAPI.Unshipped.txt`
 

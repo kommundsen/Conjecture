@@ -55,4 +55,7 @@ public static class Gen
 
     /// <summary>Returns a strategy that produces nullable <typeparamref name="T"/> values, with ~10% null probability.</summary>
     public static Strategy<T?> Nullable<T>(Strategy<T> inner) where T : struct => new NullableStrategy<T>(inner);
+
+    /// <summary>Returns a strategy that produces <see cref="ValueTuple{T1,T2}"/> tuples from two component strategies.</summary>
+    public static Strategy<(T1, T2)> Tuples<T1, T2>(Strategy<T1> first, Strategy<T2> second) => first.Zip(second);
 }
