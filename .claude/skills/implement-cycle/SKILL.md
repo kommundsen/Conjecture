@@ -29,7 +29,8 @@ Optional cycle specifier:
 
 3. **Green phase — implement**
    - Invoke the `implement` skill with the test class name extracted from the test file path.
-   - Run `dotnet test src/ --filter "FullyQualifiedName~<TestClassName>"` — all targeted tests must pass.
+   - Run `dotnet test src/ --filter "FullyQualifiedName~<TestClassName>"`.
+   - If tests fail, invoke `implement` again with the failing test output as additional context. Repeat until all targeted tests pass or 3 attempts have been made. If still failing after 3 attempts, stop and report what remains failing.
 
 4. **Refactor phase — simplify**
    - Invoke the `simplify` skill on the production files created or modified during the Green phase.
