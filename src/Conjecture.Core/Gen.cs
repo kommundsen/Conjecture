@@ -66,4 +66,8 @@ public static class Gen
     /// <summary>Returns a strategy that produces 4-element tuples from four component strategies.</summary>
     public static Strategy<(T1, T2, T3, T4)> Tuples<T1, T2, T3, T4>(Strategy<T1> first, Strategy<T2> second, Strategy<T3> third, Strategy<T4> fourth)
         => Tuples(first, second, third).Zip(fourth, (abc, d) => (abc.Item1, abc.Item2, abc.Item3, d));
+
+    /// <summary>Returns a strategy that generates <see cref="List{T}"/> with size in [<paramref name="minSize"/>, <paramref name="maxSize"/>].</summary>
+    public static Strategy<List<T>> Lists<T>(Strategy<T> inner, int minSize = 0, int maxSize = 100)
+        => new ListStrategy<T>(inner, minSize, maxSize);
 }

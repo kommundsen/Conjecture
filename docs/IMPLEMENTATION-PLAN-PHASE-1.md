@@ -158,9 +158,9 @@ Strings compose from integer draws (length + char codes) — no new `IRNodeKind`
 ### 1.5 Collection Strategies
 
 #### Cycle 1.5.1 -- Gen.Lists (ADR-0018)
-- [ ] `/test` -- `src/Conjecture.Tests/Strategies/ListStrategyTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Strategies/ListStrategyTests.cs`
   - `Gen.Lists(Gen.Integers<int>())` produces `List<int>`, default size varies 0–~100, `Gen.Lists(s, minSize: 3, maxSize: 5)` respects bounds, empty list possible when minSize=0, deterministic with seed
-- [ ] `/implement` -- `src/Conjecture.Core/Strategies/ListStrategy.cs` + `Gen.Lists<T>(Strategy<T>, int minSize = 0, int maxSize = 100)` in `Gen.cs`
+- [x] `/implement` -- `src/Conjecture.Core/Strategies/ListStrategy.cs` + `Gen.Lists<T>(Strategy<T>, int minSize = 0, int maxSize = 100)` in `Gen.cs`
   - `DrawInteger` for size, then draw N elements via inner strategy
   - Update `PublicAPI.Unshipped.txt`
 
