@@ -165,9 +165,9 @@ Strings compose from integer draws (length + char codes) — no new `IRNodeKind`
   - Update `PublicAPI.Unshipped.txt`
 
 #### Cycle 1.5.2 -- Gen.Sets
-- [ ] `/test` -- `src/Conjecture.Tests/Strategies/SetStrategyTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Strategies/SetStrategyTests.cs`
   - `Gen.Sets(Gen.Integers<int>(0, 100))` produces `IReadOnlySet<int>` with unique elements, respects minSize/maxSize, handles rejection when inner strategy can't produce enough unique values
-- [ ] `/implement` -- `src/Conjecture.Core/Strategies/SetStrategy.cs` + `Gen.Sets<T>` in `Gen.cs`
+- [x] `/implement` -- `src/Conjecture.Core/Strategies/SetStrategy.cs` + `Gen.Sets<T>` in `Gen.cs`
   - Draws elements and deduplicates; uses rejection budget for uniqueness (ADR-0020)
   - Update `PublicAPI.Unshipped.txt`
 
