@@ -82,7 +82,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
 Extend `IRNodeKind` so specialized shrinker passes can identify float and string nodes. This is invisible to users but enables Passes 2.4.
 
 #### Cycle 2.1.1 -- IRNodeKind extension + strategy updates
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/Internal/IRNodeKindExtendedTests.cs`
     - `IRNodeKind.Float64` and `Float32` exist, `StringChar` and `StringLength` exist
     - `IRNode.ForFloat64(value, min, max)` and `ForFloat32` factory methods work
