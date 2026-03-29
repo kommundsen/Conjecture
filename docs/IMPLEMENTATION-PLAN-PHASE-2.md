@@ -317,7 +317,7 @@ Extend `IRNodeKind` so specialized shrinker passes can identify float and string
 ### 2.9 Enhanced Failure Reporting
 
 #### Cycle 2.9.1 -- Original vs shrunk counterexample + improved format
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/Internal/EnhancedReportingTests.cs`
     - When shrinkCount > 0: output shows both "Falsifying example" (original) and "Minimal counterexample" (shrunk)
     - When shrinkCount == 0: output shows only "Falsifying example"

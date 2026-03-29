@@ -13,7 +13,7 @@ internal static class CounterexampleFormatter
             sb.AppendLine($"{name} = {value}");
         }
 
-        sb.Append($"Reproduce with: [Property(Seed = 0x{seed:X})]");
+        AppendReproduceLine(sb, seed);
         return sb.ToString();
     }
 
@@ -27,7 +27,34 @@ internal static class CounterexampleFormatter
             sb.AppendLine($"{name} = {FormatValue(value)}");
         }
 
-        sb.Append($"Reproduce with: [Property(Seed = 0x{seed:X})]");
+        AppendReproduceLine(sb, seed);
+        return sb.ToString();
+    }
+
+    internal static string Format(
+        IEnumerable<(string name, object value)> originalParameters,
+        IEnumerable<(string name, object value)> shrunkParameters,
+        ulong seed,
+        int exampleCount,
+        int shrinkCount)
+    {
+        var sb = new StringBuilder();
+        sb.AppendLine($"Falsifying example found after {exampleCount} examples (shrunk {shrinkCount} times)");
+        foreach ((string name, object value) in originalParameters)
+        {
+            sb.AppendLine($"{name} = {FormatValue(value)}");
+        }
+
+        if (shrinkCount > 0)
+        {
+            sb.AppendLine("Minimal counterexample:");
+            foreach ((string name, object value) in shrunkParameters)
+            {
+                sb.AppendLine($"{name} = {FormatValue(value)}");
+            }
+        }
+
+        AppendReproduceLine(sb, seed);
         return sb.ToString();
     }
 
@@ -42,6 +69,11 @@ internal static class CounterexampleFormatter
 
         sb.Append(failure.Message);
         return sb.ToString();
+    }
+
+    private static void AppendReproduceLine(StringBuilder sb, ulong seed)
+    {
+        sb.Append($"Reproduce with: [Property(Seed = 0x{seed:X})]");
     }
 
     private static string FormatValue(object? value)
