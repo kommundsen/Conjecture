@@ -358,7 +358,7 @@ Extend `IRNodeKind` so specialized shrinker passes can identify float and string
     - xUnit integration (internal, uses reflection) is annotated as trim-unsafe
 
 #### Cycle 2.10.2 -- CI trim validation setup
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- Verify: `dotnet publish src/Conjecture.Core -c Release` with `<EnableTrimAnalyzer>true</EnableTrimAnalyzer>` produces zero warnings
   - **Impl** -- Add `<EnableTrimAnalyzer>true</EnableTrimAnalyzer>` and `<IsTrimmable>true</IsTrimmable>` to `Conjecture.Core.csproj`
     - Document trim validation in CI notes

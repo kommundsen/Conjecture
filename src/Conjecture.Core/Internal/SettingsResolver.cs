@@ -1,7 +1,10 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Conjecture.Core.Internal;
 
 internal static class SettingsResolver
 {
+    [RequiresUnreferencedCode("Loads settings from JSON via SettingsLoader, which uses reflection-based deserialization.")]
     internal static ConjectureSettings Resolve(
         string baseDirectory,
         ConjectureSettingsAttribute? assemblyAttribute = null,

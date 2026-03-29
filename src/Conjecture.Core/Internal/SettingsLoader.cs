@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace Conjecture.Core.Internal;
@@ -9,6 +10,7 @@ internal static class SettingsLoader
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
     };
 
+    [RequiresUnreferencedCode("JSON deserialization of SettingsDto requires type metadata preserved at runtime.")]
     internal static ConjectureSettings Load(string baseDirectory)
     {
         var path = Path.Combine(baseDirectory, ".conjecture", "settings.json");
