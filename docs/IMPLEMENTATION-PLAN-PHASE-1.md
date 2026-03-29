@@ -312,9 +312,9 @@ Phase 0 scope: `CounterexampleFormatter` with `ToString()`. Phase 1: full `IStra
 ### 1.10 Extended ParameterStrategyResolver & End-to-End Tests
 
 #### Cycle 1.10.1 -- ParameterStrategyResolver extended types
-- [ ] `/test` -- `src/Conjecture.Tests/ParameterStrategyResolverExtendedTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/ParameterStrategyResolverExtendedTests.cs`
   - Resolves `string`, `float`, `double`, `List<int>`, enum, nullable `int?` params; unsupported type gives clear error
-- [ ] `/implement` -- Extend `src/Conjecture.Xunit/Internal/ParameterStrategyResolver.cs`
+- [x] `/implement` -- Extend `src/Conjecture.Xunit/Internal/ParameterStrategyResolver.cs`
   - `string` → `Gen.Strings()`, `float` → `Gen.Floats()`, `double` → `Gen.Doubles()`, `List<int>` → `Gen.Lists(Gen.Integers<int>())`, enums → `Gen.Enums<T>()`, nullable → `Gen.Nullable(...)`
 
 #### Cycle 1.10.2 -- End-to-end: string property tests
