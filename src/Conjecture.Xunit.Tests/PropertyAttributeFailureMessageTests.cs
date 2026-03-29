@@ -3,7 +3,7 @@ using Conjecture.Core;
 using Conjecture.Core.Internal;
 using Conjecture.Xunit.Internal;
 
-namespace Conjecture.Tests;
+namespace Conjecture.Xunit.Tests;
 
 /// <summary>
 /// Tests that [Property] failure messages include formatted parameter values and the seed.

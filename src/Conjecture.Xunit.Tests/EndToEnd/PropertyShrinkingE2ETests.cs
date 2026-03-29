@@ -3,7 +3,7 @@ using Conjecture.Core;
 using Conjecture.Core.Internal;
 using Conjecture.Xunit.Internal;
 
-namespace Conjecture.Tests.EndToEnd;
+namespace Conjecture.Xunit.Tests.EndToEnd;
 
 /// <summary>
 /// End-to-end tests verifying that shrinking, the test runner, and failure

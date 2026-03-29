@@ -2,7 +2,7 @@ using Conjecture.Core;
 using Conjecture.Core.Internal;
 using Conjecture.Xunit;
 
-namespace Conjecture.Tests;
+namespace Conjecture.Xunit.Tests;
 
 /// <summary>
 /// Integration tests for [Property]. The [Property]-decorated methods below ARE the tests —
