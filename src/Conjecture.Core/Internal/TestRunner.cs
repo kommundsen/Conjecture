@@ -9,7 +9,7 @@ internal static class TestRunner
 {
     private readonly record struct DbContext(ExampleDatabase Database, string TestIdHash);
 
-    internal static TestRunResult Run(
+    internal static async Task<TestRunResult> Run(
         ConjectureSettings settings,
         Action<ConjectureData> test,
         ExampleDatabase db,
@@ -26,7 +26,8 @@ internal static class TestRunner
                 Status replayStatus = Replay(nodes, test);
                 if (replayStatus == Status.Interesting)
                 {
-                    var (shrunk, shrinkCount) = ShrinkEngine.Shrink(nodes, n => Replay(n, test));
+                    (IReadOnlyList<IRNode> shrunk, int shrinkCount) = await ShrinkEngine.ShrinkAsync(
+                        nodes, n => new ValueTask<Status>(Replay(n, test)));
                     db.Delete(testIdHash);
                     db.Save(testIdHash, SerializeNodes(shrunk));
                     return TestRunResult.Fail(shrunk, 0UL, 1, shrinkCount);
@@ -40,7 +41,51 @@ internal static class TestRunner
         }
 
         DbContext? dbContext = useDb ? new(db, testIdHash) : null;
-        return RunGeneration(settings, test, dbContext);
+        return await RunGeneration(settings, test, dbContext);
+    }
+
+    internal static Task<TestRunResult> RunAsync(
+        ConjectureSettings settings,
+        Func<ConjectureData, Task> test,
+        ExampleDatabase db,
+        string testIdHash)
+    {
+        bool useDb = settings.UseDatabase && settings.Seed is null;
+
+        if (!useDb)
+        {
+            return RunGenerationAsync(settings, test, null);
+        }
+
+        return RunAsyncWithDatabase(settings, test, new(db, testIdHash));
+    }
+
+    private static async Task<TestRunResult> RunAsyncWithDatabase(
+        ConjectureSettings settings,
+        Func<ConjectureData, Task> test,
+        DbContext dbContext)
+    {
+        IReadOnlyList<byte[]> stored = dbContext.Database.Load(dbContext.TestIdHash);
+        foreach (byte[] buffer in stored)
+        {
+            List<IRNode> nodes = DeserializeNodes(buffer);
+            Status replayStatus = await ReplayAsync(nodes, test);
+            if (replayStatus == Status.Interesting)
+            {
+                (IReadOnlyList<IRNode> shrunk, int shrinkCount) = await ShrinkEngine.ShrinkAsync(
+                    nodes, n => ReplayAsync(n, test));
+                dbContext.Database.Delete(dbContext.TestIdHash);
+                dbContext.Database.Save(dbContext.TestIdHash, SerializeNodes(shrunk));
+                return TestRunResult.Fail(shrunk, 0UL, 1, shrinkCount);
+            }
+        }
+
+        if (stored.Count > 0)
+        {
+            dbContext.Database.Delete(dbContext.TestIdHash);
+        }
+
+        return await RunGenerationAsync(settings, test, dbContext);
     }
 
     internal static Task<TestRunResult> RunAsync(
@@ -50,9 +95,9 @@ internal static class TestRunner
         return RunGenerationAsync(settings, test, null);
     }
 
-    internal static TestRunResult Run(ConjectureSettings settings, Action<ConjectureData> test)
+    internal static async Task<TestRunResult> Run(ConjectureSettings settings, Action<ConjectureData> test)
     {
-        return RunGeneration(settings, test, null);
+        return await RunGeneration(settings, test, null);
     }
 
     private static async Task<TestRunResult> RunGenerationAsync(
@@ -67,7 +112,6 @@ internal static class TestRunner
         int totalAttempts = 0;
         int maxAttempts = settings.MaxExamples * 200;
         TimeSpan? deadline = settings.Deadline;
-        Stopwatch? sw = deadline.HasValue ? Stopwatch.StartNew() : null;
 
         while (valid < settings.MaxExamples && totalAttempts < maxAttempts)
         {
@@ -75,12 +119,21 @@ internal static class TestRunner
             ConjectureData data = ConjectureData.ForGeneration(rng.Split());
             try
             {
-                await test(data);
-                valid++;
-                if (sw is not null && sw.Elapsed > deadline!.Value)
+                Task testTask = test(data);
+                if (deadline.HasValue)
                 {
-                    throw new ConjectureException("deadline exceeded");
+                    await testTask.WaitAsync(deadline.Value);
                 }
+                else
+                {
+                    await testTask;
+                }
+
+                valid++;
+            }
+            catch (TimeoutException)
+            {
+                throw new ConjectureException("deadline exceeded");
             }
             catch (UnsatisfiedAssumptionException)
             {
@@ -98,7 +151,8 @@ internal static class TestRunner
             catch
             {
                 data.MarkInteresting();
-                var (shrunk, shrinkCount) = ShrinkEngine.Shrink(data.IRNodes, nodes => Replay(nodes, test));
+                (IReadOnlyList<IRNode> shrunk, int shrinkCount) = await ShrinkEngine.ShrinkAsync(
+                    data.IRNodes, n => ReplayAsync(n, test));
                 if (dbContext is DbContext ctx)
                 {
                     ctx.Database.Save(ctx.TestIdHash, SerializeNodes(shrunk));
@@ -115,12 +169,12 @@ internal static class TestRunner
         return TestRunResult.Pass(seed, valid);
     }
 
-    private static Status Replay(IReadOnlyList<IRNode> nodes, Func<ConjectureData, Task> test)
+    private static async ValueTask<Status> ReplayAsync(IReadOnlyList<IRNode> nodes, Func<ConjectureData, Task> test)
     {
         ConjectureData data = ConjectureData.ForRecord(nodes);
         try
         {
-            test(data).GetAwaiter().GetResult();
+            await test(data);
             return Status.Valid;
         }
         catch (UnsatisfiedAssumptionException)
@@ -137,7 +191,7 @@ internal static class TestRunner
         }
     }
 
-    private static TestRunResult RunGeneration(
+    private static async Task<TestRunResult> RunGeneration(
         ConjectureSettings settings,
         Action<ConjectureData> test,
         DbContext? dbContext)
@@ -180,7 +234,8 @@ internal static class TestRunner
             catch
             {
                 data.MarkInteresting();
-                var (shrunk, shrinkCount) = ShrinkEngine.Shrink(data.IRNodes, nodes => Replay(nodes, test));
+                (IReadOnlyList<IRNode> shrunk, int shrinkCount) = await ShrinkEngine.ShrinkAsync(
+                    data.IRNodes, nodes => new ValueTask<Status>(Replay(nodes, test)));
                 if (dbContext is DbContext ctx)
                 {
                     ctx.Database.Save(ctx.TestIdHash, SerializeNodes(shrunk));

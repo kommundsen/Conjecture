@@ -9,7 +9,7 @@ public class PropertyAttributeSettingsTests
     [Fact]
     public void UseDatabase_DefaultsToTrue()
     {
-        var attr = new PropertyAttribute();
+        PropertyAttribute attr = new();
 
         Assert.True(attr.UseDatabase);
     }
@@ -17,7 +17,7 @@ public class PropertyAttributeSettingsTests
     [Fact]
     public void UseDatabase_CanBeSetToFalse()
     {
-        var attr = new PropertyAttribute { UseDatabase = false };
+        PropertyAttribute attr = new() { UseDatabase = false };
 
         Assert.False(attr.UseDatabase);
     }
@@ -25,7 +25,7 @@ public class PropertyAttributeSettingsTests
     [Fact]
     public void MaxStrategyRejections_DefaultsFive()
     {
-        var attr = new PropertyAttribute();
+        PropertyAttribute attr = new();
 
         Assert.Equal(5, attr.MaxStrategyRejections);
     }
@@ -33,7 +33,7 @@ public class PropertyAttributeSettingsTests
     [Fact]
     public void MaxStrategyRejections_CanBeSet()
     {
-        var attr = new PropertyAttribute { MaxStrategyRejections = 20 };
+        PropertyAttribute attr = new() { MaxStrategyRejections = 20 };
 
         Assert.Equal(20, attr.MaxStrategyRejections);
     }
@@ -41,7 +41,7 @@ public class PropertyAttributeSettingsTests
     [Fact]
     public void DeadlineMs_DefaultsZero()
     {
-        var attr = new PropertyAttribute();
+        PropertyAttribute attr = new();
 
         Assert.Equal(0, attr.DeadlineMs);
     }
@@ -49,21 +49,21 @@ public class PropertyAttributeSettingsTests
     [Fact]
     public void DeadlineMs_CanBeSet()
     {
-        var attr = new PropertyAttribute { DeadlineMs = 500 };
+        PropertyAttribute attr = new() { DeadlineMs = 500 };
 
         Assert.Equal(500, attr.DeadlineMs);
     }
 
     [Fact]
-    public void TestRunner_Deadline_TerminatesLongRunningTest()
+    public async Task TestRunner_Deadline_TerminatesLongRunningTest()
     {
-        var settings = new ConjectureSettings
+        ConjectureSettings settings = new()
         {
             MaxExamples = 10_000,
             Deadline = TimeSpan.FromMilliseconds(50),
         };
 
-        Assert.Throws<ConjectureException>(() =>
+        await Assert.ThrowsAsync<ConjectureException>(() =>
             TestRunner.Run(settings, data =>
             {
                 _ = data.DrawInteger(0, 100);

@@ -2,7 +2,7 @@ namespace Conjecture.Core.Internal.Shrinker;
 
 internal sealed class ZeroBlocksPass : IShrinkPass
 {
-    public bool TryReduce(ShrinkState state)
+    public async ValueTask<bool> TryReduce(ShrinkState state)
     {
         bool progress = false;
         // Right-to-left: early-drawn nodes (low indices) survive zeroing last, so they
@@ -10,7 +10,7 @@ internal sealed class ZeroBlocksPass : IShrinkPass
         // controls how many of them are consumed. This is essential for collection shrinking.
         for (int i = state.Nodes.Count - 1; i >= 0; i--)
         {
-            var node = state.Nodes[i];
+            IRNode node = state.Nodes[i];
             if (!node.IsIntegerLike)
             {
                 continue;
@@ -21,8 +21,8 @@ internal sealed class ZeroBlocksPass : IShrinkPass
                 continue;
             }
 
-            var candidate = Replace(state.Nodes, i, node.WithValue(node.Min));
-            if (state.TryUpdate(candidate))
+            IRNode[] candidate = Replace(state.Nodes, i, node.WithValue(node.Min));
+            if (await state.TryUpdate(candidate))
             {
                 progress = true;
             }
@@ -32,7 +32,7 @@ internal sealed class ZeroBlocksPass : IShrinkPass
 
     private static IRNode[] Replace(IReadOnlyList<IRNode> nodes, int index, IRNode replacement)
     {
-        var arr = new IRNode[nodes.Count];
+        IRNode[] arr = new IRNode[nodes.Count];
         for (int i = 0; i < nodes.Count; i++)
         {
             arr[i] = i == index ? replacement : nodes[i];

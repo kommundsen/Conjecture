@@ -9,9 +9,9 @@ internal static class Shrinker
         [new FloatSimplificationPass(), new StringAwarePass(), new AdaptivePass(new IntegerReductionPass())],
     ];
 
-    internal static (IReadOnlyList<IRNode> Nodes, int ShrinkCount) Shrink(
+    internal static async Task<(IReadOnlyList<IRNode> Nodes, int ShrinkCount)> ShrinkAsync(
         IReadOnlyList<IRNode> nodes,
-        Func<IReadOnlyList<IRNode>, Status> isInteresting)
+        Func<IReadOnlyList<IRNode>, ValueTask<Status>> isInteresting)
     {
         ShrinkState state = new(nodes, isInteresting);
 
@@ -27,7 +27,7 @@ internal static class Shrinker
                     tierProgress = false;
                     foreach (IShrinkPass pass in tier)
                     {
-                        tierProgress |= pass.TryReduce(state);
+                        tierProgress |= await pass.TryReduce(state);
                     }
                     outerProgress |= tierProgress;
                 } while (tierProgress);
@@ -36,4 +36,6 @@ internal static class Shrinker
 
         return (state.Nodes, state.ShrinkCount);
     }
+
+
 }

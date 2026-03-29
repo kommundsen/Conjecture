@@ -28,10 +28,10 @@ public class PropertyAttributeTests
     //     via TestRunner directly that a counterexample is produced. ---
 
     [Fact]
-    public void Property_FailingPredicate_ReturnsFailingResult()
+    public async Task Property_FailingPredicate_ReturnsFailingResult()
     {
-        var settings = new ConjectureSettings { MaxExamples = 10, Seed = 1UL };
-        var result = TestRunner.Run(settings, _ =>
+        ConjectureSettings settings = new() { MaxExamples = 10, Seed = 1UL };
+        TestRunResult result = await TestRunner.Run(settings, _ =>
             throw new InvalidOperationException("always fails"));
 
         Assert.False(result.Passed);
@@ -41,20 +41,20 @@ public class PropertyAttributeTests
     // --- Seed: attribute Seed property flows into ConjectureSettings ---
 
     [Fact]
-    public void Property_SameSeedAttribute_ProducesSameCounterexample()
+    public async Task Property_SameSeedAttribute_ProducesSameCounterexample()
     {
         // Simulate two runs of [Property(Seed = 42)] with the same failing predicate
-        var settings = new ConjectureSettings { MaxExamples = 50, Seed = 42UL };
+        ConjectureSettings settings = new() { MaxExamples = 50, Seed = 42UL };
 
-        var run1 = TestRunner.Run(settings, data =>
+        TestRunResult run1 = await TestRunner.Run(settings, data =>
         {
-            var v = data.DrawInteger(0, 100);
+            ulong v = data.DrawInteger(0, 100);
             if (v > 70) { throw new Exception("fail"); }
         });
 
-        var run2 = TestRunner.Run(settings, data =>
+        TestRunResult run2 = await TestRunner.Run(settings, data =>
         {
-            var v = data.DrawInteger(0, 100);
+            ulong v = data.DrawInteger(0, 100);
             if (v > 70) { throw new Exception("fail"); }
         });
 
@@ -66,11 +66,11 @@ public class PropertyAttributeTests
     // --- MaxExamples: attribute MaxExamples property flows into ConjectureSettings ---
 
     [Fact]
-    public void Property_MaxExamples5_RunsExactly5Times()
+    public async Task Property_MaxExamples5_RunsExactly5Times()
     {
-        var count = 0;
-        var settings = new ConjectureSettings { MaxExamples = 5, Seed = 1UL };
-        TestRunner.Run(settings, _ => count++);
+        int count = 0;
+        ConjectureSettings settings = new() { MaxExamples = 5, Seed = 1UL };
+        await TestRunner.Run(settings, _ => count++);
         Assert.Equal(5, count);
     }
 }

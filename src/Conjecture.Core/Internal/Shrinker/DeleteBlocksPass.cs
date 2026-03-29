@@ -2,12 +2,12 @@ namespace Conjecture.Core.Internal.Shrinker;
 
 internal sealed class DeleteBlocksPass : IShrinkPass
 {
-    public bool TryReduce(ShrinkState state)
+    public async ValueTask<bool> TryReduce(ShrinkState state)
     {
         for (int i = 0; i < state.Nodes.Count; i++)
         {
-            var candidate = Without(state.Nodes, i);
-            if (state.TryUpdate(candidate))
+            IRNode[] candidate = Without(state.Nodes, i);
+            if (await state.TryUpdate(candidate))
             {
                 return true;
             }
@@ -17,7 +17,7 @@ internal sealed class DeleteBlocksPass : IShrinkPass
 
     private static IRNode[] Without(IReadOnlyList<IRNode> nodes, int index)
     {
-        var arr = new IRNode[nodes.Count - 1];
+        IRNode[] arr = new IRNode[nodes.Count - 1];
         int dst = 0;
         for (int i = 0; i < nodes.Count; i++)
         {

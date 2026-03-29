@@ -31,13 +31,13 @@ public class FloatingPointPropertyE2ETests
     // --- [Property] with double param runs MaxExamples without exception ---
 
     [Fact]
-    public void DoubleParameter_PassingProperty_RunsMaxExamplesWithoutException()
+    public async Task DoubleParameter_PassingProperty_RunsMaxExamplesWithoutException()
     {
         int count = 0;
-        var settings = new ConjectureSettings { MaxExamples = 50, Seed = 1UL };
-        var parameters = Params(nameof(DoubleMethod));
+        ConjectureSettings settings = new() { MaxExamples = 50, Seed = 1UL };
+        ParameterInfo[] parameters = Params(nameof(DoubleMethod));
 
-        var result = TestRunner.Run(settings, data =>
+        TestRunResult result = await TestRunner.Run(settings, data =>
         {
             ParameterStrategyResolver.Resolve(parameters, data);
             count++;
@@ -51,13 +51,13 @@ public class FloatingPointPropertyE2ETests
     // --- [Property] with float param runs MaxExamples without exception ---
 
     [Fact]
-    public void FloatParameter_PassingProperty_RunsMaxExamplesWithoutException()
+    public async Task FloatParameter_PassingProperty_RunsMaxExamplesWithoutException()
     {
         int count = 0;
-        var settings = new ConjectureSettings { MaxExamples = 50, Seed = 2UL };
-        var parameters = Params(nameof(FloatMethod));
+        ConjectureSettings settings = new() { MaxExamples = 50, Seed = 2UL };
+        ParameterInfo[] parameters = Params(nameof(FloatMethod));
 
-        var result = TestRunner.Run(settings, data =>
+        TestRunResult result = await TestRunner.Run(settings, data =>
         {
             ParameterStrategyResolver.Resolve(parameters, data);
             count++;
@@ -71,15 +71,15 @@ public class FloatingPointPropertyE2ETests
     // --- Special values (NaN) can be generated through ParameterStrategyResolver ---
 
     [Fact]
-    public void DoubleParameter_CanProduceNaN_OverManySamples()
+    public async Task DoubleParameter_CanProduceNaN_OverManySamples()
     {
-        var parameters = Params(nameof(DoubleMethod));
+        ParameterInfo[] parameters = Params(nameof(DoubleMethod));
         bool foundNaN = false;
 
         for (ulong seed = 0; seed < 10_000 && !foundNaN; seed++)
         {
-            var settings = new ConjectureSettings { MaxExamples = 1, Seed = seed };
-            TestRunner.Run(settings, data =>
+            ConjectureSettings settings = new() { MaxExamples = 1, Seed = seed };
+            await TestRunner.Run(settings, data =>
             {
                 object[] args = ParameterStrategyResolver.Resolve(parameters, data);
                 if (double.IsNaN((double)args[0])) { foundNaN = true; }
@@ -90,15 +90,15 @@ public class FloatingPointPropertyE2ETests
     }
 
     [Fact]
-    public void FloatParameter_CanProduceNaN_OverManySamples()
+    public async Task FloatParameter_CanProduceNaN_OverManySamples()
     {
-        var parameters = Params(nameof(FloatMethod));
+        ParameterInfo[] parameters = Params(nameof(FloatMethod));
         bool foundNaN = false;
 
         for (ulong seed = 0; seed < 10_000 && !foundNaN; seed++)
         {
-            var settings = new ConjectureSettings { MaxExamples = 1, Seed = seed };
-            TestRunner.Run(settings, data =>
+            ConjectureSettings settings = new() { MaxExamples = 1, Seed = seed };
+            await TestRunner.Run(settings, data =>
             {
                 object[] args = ParameterStrategyResolver.Resolve(parameters, data);
                 if (float.IsNaN((float)args[0])) { foundNaN = true; }
@@ -111,12 +111,12 @@ public class FloatingPointPropertyE2ETests
     // --- Failing double property produces counterexample ---
 
     [Fact]
-    public void DoubleParameter_FailingProperty_ProducesCounterexample()
+    public async Task DoubleParameter_FailingProperty_ProducesCounterexample()
     {
-        var settings = new ConjectureSettings { MaxExamples = 200, Seed = 3UL };
-        var parameters = Params(nameof(DoubleMethod));
+        ConjectureSettings settings = new() { MaxExamples = 200, Seed = 3UL };
+        ParameterInfo[] parameters = Params(nameof(DoubleMethod));
 
-        var result = TestRunner.Run(settings, data =>
+        TestRunResult result = await TestRunner.Run(settings, data =>
         {
             object[] args = ParameterStrategyResolver.Resolve(parameters, data);
             double d = (double)args[0];
@@ -131,12 +131,12 @@ public class FloatingPointPropertyE2ETests
     // --- Failure message contains param name and seed ---
 
     [Fact]
-    public void DoubleParameter_FailureMessage_ContainsParamNameAndSeed()
+    public async Task DoubleParameter_FailureMessage_ContainsParamNameAndSeed()
     {
-        var settings = new ConjectureSettings { MaxExamples = 200, Seed = 5UL };
-        var parameters = Params(nameof(DoubleMethod));
+        ConjectureSettings settings = new() { MaxExamples = 200, Seed = 5UL };
+        ParameterInfo[] parameters = Params(nameof(DoubleMethod));
 
-        var result = TestRunner.Run(settings, data =>
+        TestRunResult result = await TestRunner.Run(settings, data =>
         {
             object[] args = ParameterStrategyResolver.Resolve(parameters, data);
             double d = (double)args[0];

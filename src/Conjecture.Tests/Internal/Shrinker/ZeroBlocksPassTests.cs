@@ -8,68 +8,68 @@ public class ZeroBlocksPassTests
     private static ShrinkState MakeState(
         IReadOnlyList<IRNode> nodes,
         Func<IReadOnlyList<IRNode>, Status> isInteresting)
-        => new(nodes, isInteresting);
+        => new(nodes, n => new ValueTask<Status>(isInteresting(n)));
 
     // Always interesting — any buffer satisfies the predicate.
     private static Status AlwaysInteresting(IReadOnlyList<IRNode> _) => Status.Interesting;
 
     [Fact]
-    public void TryReduce_IntegerNodeAboveMin_ZeroesNodeAndReturnsTrue()
+    public async Task TryReduce_IntegerNodeAboveMin_ZeroesNodeAndReturnsTrue()
     {
         // Node with value 42, min 0 — zeroing to min should succeed.
-        var nodes = new[] { IRNode.ForInteger(42, 0, 100) };
-        var state = MakeState(nodes, AlwaysInteresting);
-        var pass = new ZeroBlocksPass();
+        IRNode[] nodes = [IRNode.ForInteger(42, 0, 100)];
+        ShrinkState state = MakeState(nodes, AlwaysInteresting);
+        ZeroBlocksPass pass = new();
 
-        var progress = pass.TryReduce(state);
+        bool progress = await pass.TryReduce(state);
 
         Assert.True(progress);
         Assert.Equal(0UL, state.Nodes[0].Value);
     }
 
     [Fact]
-    public void TryReduce_IntegerNodeAtMin_SkipsNodeAndReturnsFalse()
+    public async Task TryReduce_IntegerNodeAtMin_SkipsNodeAndReturnsFalse()
     {
         // Node already at minimum — nothing to zero, no progress.
-        var nodes = new[] { IRNode.ForInteger(0, 0, 100) };
-        var state = MakeState(nodes, AlwaysInteresting);
-        var pass = new ZeroBlocksPass();
+        IRNode[] nodes = [IRNode.ForInteger(0, 0, 100)];
+        ShrinkState state = MakeState(nodes, AlwaysInteresting);
+        ZeroBlocksPass pass = new();
 
-        var progress = pass.TryReduce(state);
+        bool progress = await pass.TryReduce(state);
 
         Assert.False(progress);
         Assert.Equal(0UL, state.Nodes[0].Value);
     }
 
     [Fact]
-    public void TryReduce_ZeroingNotInteresting_ReturnsFalse()
+    public async Task TryReduce_ZeroingNotInteresting_ReturnsFalse()
     {
         // Predicate only accepts original value — zeroing would break it, so no progress.
-        var nodes = new[] { IRNode.ForInteger(99, 0, 100) };
+        IRNode[] nodes = [IRNode.ForInteger(99, 0, 100)];
         static Status OnlyOriginal(IReadOnlyList<IRNode> ns) =>
             ns[0].Value == 99 ? Status.Interesting : Status.Valid;
-        var state = MakeState(nodes, OnlyOriginal);
-        var pass = new ZeroBlocksPass();
+        ShrinkState state = MakeState(nodes, OnlyOriginal);
+        ZeroBlocksPass pass = new();
 
-        var progress = pass.TryReduce(state);
+        bool progress = await pass.TryReduce(state);
 
         Assert.False(progress);
         Assert.Equal(99UL, state.Nodes[0].Value); // unchanged
     }
 
     [Fact]
-    public void TryReduce_MultipleNodes_ZeroesFirstReducibleNode()
+    public async Task TryReduce_MultipleNodes_ZeroesFirstReducibleNode()
     {
         // First node already at min; second node can be zeroed.
-        var nodes = new[]
-        {
+        IRNode[] nodes =
+        [
             IRNode.ForInteger(0, 0, 10),   // already at min
             IRNode.ForInteger(7, 0, 10),   // can be zeroed
-        };
-        var state = MakeState(nodes, AlwaysInteresting);
-        var pass = new ZeroBlocksPass();
+        ];
+        ShrinkState state = MakeState(nodes, AlwaysInteresting);
+        ZeroBlocksPass pass = new();
 
-        var progress = pass.TryReduce(state);
+        bool progress = await pass.TryReduce(state);
 
         Assert.True(progress);
         Assert.Equal(0UL, state.Nodes[0].Value); // unchanged
@@ -77,27 +77,27 @@ public class ZeroBlocksPassTests
     }
 
     [Fact]
-    public void TryReduce_NonIntegerNodes_IgnoredReturnsFalse()
+    public async Task TryReduce_NonIntegerNodes_IgnoredReturnsFalse()
     {
         // Boolean node — ZeroBlocks operates only on integers; nothing to do.
-        var nodes = new[] { IRNode.ForBoolean(true) };
-        var state = MakeState(nodes, AlwaysInteresting);
-        var pass = new ZeroBlocksPass();
+        IRNode[] nodes = [IRNode.ForBoolean(true)];
+        ShrinkState state = MakeState(nodes, AlwaysInteresting);
+        ZeroBlocksPass pass = new();
 
-        var progress = pass.TryReduce(state);
+        bool progress = await pass.TryReduce(state);
 
         Assert.False(progress);
     }
 
     [Fact]
-    public void TryReduce_IntegerNodeWithNonZeroMin_ZeroesToMin()
+    public async Task TryReduce_IntegerNodeWithNonZeroMin_ZeroesToMin()
     {
         // Min is 5, value is 50 — "zeroing" means reducing to Min, not literally 0.
-        var nodes = new[] { IRNode.ForInteger(50, 5, 100) };
-        var state = MakeState(nodes, AlwaysInteresting);
-        var pass = new ZeroBlocksPass();
+        IRNode[] nodes = [IRNode.ForInteger(50, 5, 100)];
+        ShrinkState state = MakeState(nodes, AlwaysInteresting);
+        ZeroBlocksPass pass = new();
 
-        var progress = pass.TryReduce(state);
+        bool progress = await pass.TryReduce(state);
 
         Assert.True(progress);
         Assert.Equal(5UL, state.Nodes[0].Value);

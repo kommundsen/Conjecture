@@ -6,14 +6,14 @@ namespace Conjecture.Tests.Internal;
 public class TestRunnerShrinkingTests
 {
     [Fact]
-    public void Run_FailingProperty_CounterexampleIsShrunkTowardMinimum()
+    public async Task Run_FailingProperty_CounterexampleIsShrunkTowardMinimum()
     {
         // Property fails when integer > 5. After shrinking, counterexample should be 6 (smallest failing value).
-        var settings = new ConjectureSettings { MaxExamples = 50, Seed = 1UL };
+        ConjectureSettings settings = new() { MaxExamples = 50, Seed = 1UL };
 
-        var result = TestRunner.Run(settings, data =>
+        TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            var v = data.DrawInteger(0, 1000);
+            ulong v = data.DrawInteger(0, 1000);
             if (v > 5) { throw new Exception("too big"); }
         });
 
@@ -24,27 +24,27 @@ public class TestRunnerShrinkingTests
     }
 
     [Fact]
-    public void Run_PassingProperty_CounterexampleIsNull()
+    public async Task Run_PassingProperty_CounterexampleIsNull()
     {
         // Passing run — no shrinking should occur, no counterexample stored.
-        var settings = new ConjectureSettings { MaxExamples = 20, Seed = 1UL };
+        ConjectureSettings settings = new() { MaxExamples = 20, Seed = 1UL };
 
-        var result = TestRunner.Run(settings, data => data.DrawInteger(0, 100));
+        TestRunResult result = await TestRunner.Run(settings, data => data.DrawInteger(0, 100));
 
         Assert.True(result.Passed);
         Assert.Null(result.Counterexample);
     }
 
     [Fact]
-    public void Run_ShrunkCounterexample_StillCausesPropertyToFail()
+    public async Task Run_ShrunkCounterexample_StillCausesPropertyToFail()
     {
         // The shrunk counterexample nodes must replay and still trigger the failure.
-        var settings = new ConjectureSettings { MaxExamples = 50, Seed = 42UL };
+        ConjectureSettings settings = new() { MaxExamples = 50, Seed = 42UL };
         Exception? captured = null;
 
-        var result = TestRunner.Run(settings, data =>
+        TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            var v = data.DrawInteger(0, 500);
+            ulong v = data.DrawInteger(0, 500);
             if (v > 3) { throw new InvalidOperationException($"fail at {v}"); }
         });
 
@@ -52,10 +52,10 @@ public class TestRunnerShrinkingTests
         Assert.NotNull(result.Counterexample);
 
         // Replay shrunk nodes — must still throw.
-        var replay = ConjectureData.ForRecord(result.Counterexample!);
+        ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
         try
         {
-            var v = replay.DrawInteger(0, 500);
+            ulong v = replay.DrawInteger(0, 500);
             if (v > 3) { throw new InvalidOperationException($"fail at {v}"); }
         }
         catch (Exception ex)
@@ -67,22 +67,22 @@ public class TestRunnerShrinkingTests
     }
 
     [Fact]
-    public void Run_FailingPropertyWithMultipleDraws_ShrinksBothNodes()
+    public async Task Run_FailingPropertyWithMultipleDraws_ShrinksBothNodes()
     {
         // Property fails when a + b > 10. Minimal counterexample should have a + b == 11.
-        var settings = new ConjectureSettings { MaxExamples = 100, Seed = 7UL };
+        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 7UL };
 
-        var result = TestRunner.Run(settings, data =>
+        TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            var a = data.DrawInteger(0, 200);
-            var b = data.DrawInteger(0, 200);
+            ulong a = data.DrawInteger(0, 200);
+            ulong b = data.DrawInteger(0, 200);
             if (a + b > 10) { throw new Exception("sum too big"); }
         });
 
         Assert.False(result.Passed);
         Assert.NotNull(result.Counterexample);
-        var shrunkA = result.Counterexample![0].Value;
-        var shrunkB = result.Counterexample![1].Value;
+        ulong shrunkA = result.Counterexample![0].Value;
+        ulong shrunkB = result.Counterexample![1].Value;
         Assert.Equal(11UL, shrunkA + shrunkB);
     }
 }

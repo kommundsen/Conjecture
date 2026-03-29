@@ -9,7 +9,7 @@ public class ShrinkQualityAdvancedTests
     // ── Float > threshold shrinks to just above threshold ─────────────────────
 
     [Fact]
-    public void Shrink_FloatAboveOne_ShrinksToJustAboveOne()
+    public async Task Shrink_FloatAboveOne_ShrinksToJustAboveOne()
     {
         ulong largeBits = Unsafe.BitCast<double, ulong>(1e200);
         IRNode[] nodes = [IRNode.ForFloat64(largeBits, 0UL, ulong.MaxValue)];
@@ -29,7 +29,8 @@ public class ShrinkQualityAdvancedTests
             }
         }
 
-        (IReadOnlyList<IRNode> result, _) = Core.Internal.Shrinker.Shrinker.Shrink(nodes, FloatAboveOne);
+        (IReadOnlyList<IRNode> result, int _) = await Core.Internal.Shrinker.Shrinker.ShrinkAsync(
+            nodes, n => new ValueTask<Status>(FloatAboveOne(n)));
 
         ulong resultBits = result[0].Value;
         double resultValue = Unsafe.BitCast<ulong, double>(resultBits);
@@ -44,7 +45,7 @@ public class ShrinkQualityAdvancedTests
     // ── String with "error" prefix shrinks to exactly "error" ─────────────────
 
     [Fact]
-    public void Shrink_StringWithErrorPrefix_ShrinksToExactlyError()
+    public async Task Shrink_StringWithErrorPrefix_ShrinksToExactlyError()
     {
         IRNode[] nodes =
         [
@@ -78,7 +79,8 @@ public class ShrinkQualityAdvancedTests
             }
         }
 
-        (IReadOnlyList<IRNode> result, _) = Core.Internal.Shrinker.Shrinker.Shrink(nodes, ContainsError);
+        (IReadOnlyList<IRNode> result, int _) = await Core.Internal.Shrinker.Shrinker.ShrinkAsync(
+            nodes, n => new ValueTask<Status>(ContainsError(n)));
 
         ConjectureData replay = ConjectureData.ForRecord(result);
         int shrunkenLength = (int)replay.DrawStringLength(0, 20);
@@ -96,7 +98,7 @@ public class ShrinkQualityAdvancedTests
     // ── List sum > 100 shrinks to single element 101 ──────────────────────────
 
     [Fact]
-    public void Shrink_ListSumAbove100_ShrinksToSingleElement101()
+    public async Task Shrink_ListSumAbove100_ShrinksToSingleElement101()
     {
         IRNode[] nodes =
         [
@@ -125,7 +127,8 @@ public class ShrinkQualityAdvancedTests
             }
         }
 
-        (IReadOnlyList<IRNode> result, _) = Core.Internal.Shrinker.Shrinker.Shrink(nodes, SumOver100);
+        (IReadOnlyList<IRNode> result, int _) = await Core.Internal.Shrinker.Shrinker.ShrinkAsync(
+            nodes, n => new ValueTask<Status>(SumOver100(n)));
 
         ConjectureData replay = ConjectureData.ForRecord(result);
         int shrunkenSize = (int)replay.DrawInteger(0, 10);
@@ -143,7 +146,7 @@ public class ShrinkQualityAdvancedTests
     // ── Adjacent integers a > b shrinks to minimal pair (1, 0) ───────────────
 
     [Fact]
-    public void Shrink_AdjacentIntegers_AGreaterThanB_ShrinksToMinimalPair()
+    public async Task Shrink_AdjacentIntegers_AGreaterThanB_ShrinksToMinimalPair()
     {
         // a=100, b=5 satisfies a > b. Minimal satisfying pair is (1, 0).
         IRNode[] nodes =
@@ -167,7 +170,8 @@ public class ShrinkQualityAdvancedTests
             }
         }
 
-        (IReadOnlyList<IRNode> result, _) = Core.Internal.Shrinker.Shrinker.Shrink(nodes, AGreaterThanB);
+        (IReadOnlyList<IRNode> result, int _) = await Core.Internal.Shrinker.Shrinker.ShrinkAsync(
+            nodes, n => new ValueTask<Status>(AGreaterThanB(n)));
 
         Assert.Equal(Status.Interesting, AGreaterThanB(result));
         Assert.Equal(2, result.Count);
@@ -178,7 +182,7 @@ public class ShrinkQualityAdvancedTests
     // ── Nested list shrinks both outer and inner dimensions ───────────────────
 
     [Fact]
-    public void Shrink_NestedList_ShrinksOuterAndInnerDimensions()
+    public async Task Shrink_NestedList_ShrinksOuterAndInnerDimensions()
     {
         IRNode[] nodes =
         [
@@ -218,7 +222,8 @@ public class ShrinkQualityAdvancedTests
             }
         }
 
-        (IReadOnlyList<IRNode> result, _) = Core.Internal.Shrinker.Shrinker.Shrink(nodes, InnerSumOver3);
+        (IReadOnlyList<IRNode> result, int _) = await Core.Internal.Shrinker.Shrinker.ShrinkAsync(
+            nodes, n => new ValueTask<Status>(InnerSumOver3(n)));
 
         ConjectureData replay = ConjectureData.ForRecord(result);
         int outerSize = (int)replay.DrawInteger(0, 5);

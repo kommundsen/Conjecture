@@ -13,10 +13,10 @@ public class ShrinkerTests
     private static Func<IReadOnlyList<IRNode>, Status> InterestingWhenAtLeast(ulong threshold) =>
         nodes =>
         {
-            var data = ConjectureData.ForRecord(nodes);
+            ConjectureData data = ConjectureData.ForRecord(nodes);
             try
             {
-                var v = data.DrawInteger(0, ulong.MaxValue);
+                ulong v = data.DrawInteger(0, ulong.MaxValue);
                 return v >= threshold ? Status.Interesting : Status.Valid;
             }
             catch
@@ -26,68 +26,71 @@ public class ShrinkerTests
         };
 
     [Fact]
-    public void Shrink_AlreadyMinimalBuffer_ReturnsUnchanged()
+    public async Task Shrink_AlreadyMinimalBuffer_ReturnsUnchanged()
     {
         // A buffer whose single integer node is already at the minimum (0)
         // is already as small as it can get; shrinking should leave it unchanged.
-        var nodes = SingleIntegerNodes(0, 0, 100);
+        IReadOnlyList<IRNode> nodes = SingleIntegerNodes(0, 0, 100);
         // Predicate requires a draw — empty replay overruns and is not interesting,
         // so DeleteBlocksPass cannot remove the node.
         static Status IsInteresting(IReadOnlyList<IRNode> ns)
         {
-            var data = ConjectureData.ForRecord(ns);
+            ConjectureData data = ConjectureData.ForRecord(ns);
             try { data.DrawInteger(0, 100); return Status.Interesting; }
             catch { return Status.Overrun; }
         }
 
-        var (result, _) = Core.Internal.Shrinker.Shrinker.Shrink(nodes, IsInteresting);
+        (IReadOnlyList<IRNode> result, int _) = await Core.Internal.Shrinker.Shrinker.ShrinkAsync(
+            nodes, n => new ValueTask<Status>(IsInteresting(n)));
 
-        var single = Assert.Single(result);
+        IRNode single = Assert.Single(result);
         Assert.Equal(0UL, single.Value);
     }
 
     [Fact]
-    public void Shrink_ReducibleInteger_ProducesLexicographicallySmaller()
+    public async Task Shrink_ReducibleInteger_ProducesLexicographicallySmaller()
     {
         // Buffer with a large integer; shrinking should reduce the value toward the threshold.
-        var nodes = SingleIntegerNodes(1000, 0, 2000);
+        IReadOnlyList<IRNode> nodes = SingleIntegerNodes(1000, 0, 2000);
         // Interesting when value >= 5.
-        var isInteresting = InterestingWhenAtLeast(5);
+        Func<IReadOnlyList<IRNode>, Status> isInteresting = InterestingWhenAtLeast(5);
 
-        var (result, _) = Core.Internal.Shrinker.Shrinker.Shrink(nodes, isInteresting);
+        (IReadOnlyList<IRNode> result, int _) = await Core.Internal.Shrinker.Shrinker.ShrinkAsync(
+            nodes, n => new ValueTask<Status>(isInteresting(n)));
 
         Assert.Single(result);
         Assert.True(result[0].Value < 1000, $"Expected value < 1000, got {result[0].Value}");
     }
 
     [Fact]
-    public void Shrink_PreservesFailure_ResultIsStillInteresting()
+    public async Task Shrink_PreservesFailure_ResultIsStillInteresting()
     {
         // Whatever the shrinker produces, replaying through the predicate must
         // still yield Interesting — shrinking must never discard the failure.
-        var nodes = SingleIntegerNodes(500, 0, 1000);
-        var isInteresting = InterestingWhenAtLeast(10);
+        IReadOnlyList<IRNode> nodes = SingleIntegerNodes(500, 0, 1000);
+        Func<IReadOnlyList<IRNode>, Status> isInteresting = InterestingWhenAtLeast(10);
 
-        var (result, _) = Core.Internal.Shrinker.Shrinker.Shrink(nodes, isInteresting);
+        (IReadOnlyList<IRNode> result, int _) = await Core.Internal.Shrinker.Shrinker.ShrinkAsync(
+            nodes, n => new ValueTask<Status>(isInteresting(n)));
 
-        var status = isInteresting(result);
+        Status status = isInteresting(result);
         Assert.Equal(Status.Interesting, status);
     }
 
     [Fact]
-    public void Shrink_WhenNoPassMakesProgress_ReturnsCurrentBest()
+    public async Task Shrink_WhenNoPassMakesProgress_ReturnsCurrentBest()
     {
         // If the only interesting buffer is the one already at minimum expressible
         // value for the predicate, no pass can make progress and the shrinker
         // must terminate and return that buffer.
-        var nodes = SingleIntegerNodes(1, 0, 100);
+        IReadOnlyList<IRNode> nodes = SingleIntegerNodes(1, 0, 100);
         // Interesting only when value == 1 (exactly at threshold, 0 would not be interesting).
         static Status IsInteresting(IReadOnlyList<IRNode> ns)
         {
-            var data = ConjectureData.ForRecord(ns);
+            ConjectureData data = ConjectureData.ForRecord(ns);
             try
             {
-                var v = data.DrawInteger(0, 100);
+                ulong v = data.DrawInteger(0, 100);
                 return v == 1 ? Status.Interesting : Status.Valid;
             }
             catch
@@ -96,30 +99,31 @@ public class ShrinkerTests
             }
         }
 
-        var (result, _) = Core.Internal.Shrinker.Shrinker.Shrink(nodes, IsInteresting);
+        (IReadOnlyList<IRNode> result, int _) = await Core.Internal.Shrinker.Shrinker.ShrinkAsync(
+            nodes, n => new ValueTask<Status>(IsInteresting(n)));
 
         Assert.Single(result);
         Assert.Equal(1UL, result[0].Value);
     }
 
     [Fact]
-    public void Shrink_MultipleNodes_ShrinksToMinimalInterestingCombination()
+    public async Task Shrink_MultipleNodes_ShrinksToMinimalInterestingCombination()
     {
         // Two integer nodes; interesting when their sum >= 10.
         // Starting from [50, 50], the shrinker should reduce dramatically.
-        var nodes = new[]
-        {
+        IRNode[] nodes =
+        [
             IRNode.ForInteger(50, 0, 100),
             IRNode.ForInteger(50, 0, 100),
-        };
+        ];
 
         static Status IsInteresting(IReadOnlyList<IRNode> ns)
         {
-            var data = ConjectureData.ForRecord(ns);
+            ConjectureData data = ConjectureData.ForRecord(ns);
             try
             {
-                var a = data.DrawInteger(0, 100);
-                var b = data.DrawInteger(0, 100);
+                ulong a = data.DrawInteger(0, 100);
+                ulong b = data.DrawInteger(0, 100);
                 return a + b >= 10 ? Status.Interesting : Status.Valid;
             }
             catch
@@ -128,7 +132,8 @@ public class ShrinkerTests
             }
         }
 
-        var (result, _) = Core.Internal.Shrinker.Shrinker.Shrink(nodes, IsInteresting);
+        (IReadOnlyList<IRNode> result, int _) = await Core.Internal.Shrinker.Shrinker.ShrinkAsync(
+            nodes, n => new ValueTask<Status>(IsInteresting(n)));
 
         Assert.Equal(2, result.Count);
         ulong sum = result[0].Value + result[1].Value;

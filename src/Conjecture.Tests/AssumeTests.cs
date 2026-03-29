@@ -18,16 +18,16 @@ public class AssumeTests
     }
 
     [Fact]
-    public void That_False_InsideTestRunner_SkipsExampleAndDoesNotCountTowardMaxExamples()
+    public async Task That_False_InsideTestRunner_SkipsExampleAndDoesNotCountTowardMaxExamples()
     {
-        var validCount = 0;
-        var totalCalls = 0;
-        var settings = new ConjectureSettings { MaxExamples = 3, Seed = 1UL };
+        int validCount = 0;
+        int totalCalls = 0;
+        ConjectureSettings settings = new() { MaxExamples = 3, Seed = 1UL };
 
-        TestRunner.Run(settings, data =>
+        await TestRunner.Run(settings, data =>
         {
             totalCalls++;
-            var x = (int)data.DrawInteger(0, 10);
+            int x = (int)data.DrawInteger(0, 10);
             Assume.That(x % 2 == 0); // skip odd values
             validCount++;
         });

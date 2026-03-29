@@ -4,7 +4,7 @@ internal sealed class IntervalDeletionPass : IShrinkPass
 {
     private static readonly int[] Sizes = [8, 4, 2];
 
-    public bool TryReduce(ShrinkState state)
+    public async ValueTask<bool> TryReduce(ShrinkState state)
     {
         foreach (int size in Sizes)
         {
@@ -12,7 +12,7 @@ internal sealed class IntervalDeletionPass : IShrinkPass
             for (int i = 0; i <= limit; i++)
             {
                 IRNode[] candidate = WithoutInterval(state.Nodes, i, size);
-                if (state.TryUpdate(candidate))
+                if (await state.TryUpdate(candidate))
                 {
                     return true;
                 }

@@ -125,20 +125,20 @@ public sealed class IRNodeKindWiringTests : IDisposable
     // ── Serialization round-trips ─────────────────────────────────────────────
 
     [Fact]
-    public void Serialization_Float64Node_RoundTripsViaDatabase()
+    public async Task Serialization_Float64Node_RoundTripsViaDatabase()
     {
         const string testId = "float64-roundtrip";
         ConjectureSettings settings = new() { MaxExamples = 1, UseDatabase = true };
         FloatingPointStrategy<double> strategy = new(0.0, 1.0);
 
-        TestRunner.Run(settings, data =>
+        await TestRunner.Run(settings, data =>
         {
             strategy.Next(data);
             throw new InvalidOperationException("fail");
         }, db, testId);
 
         IReadOnlyList<IRNode>? replayNodes = null;
-        TestRunner.Run(settings, data =>
+        await TestRunner.Run(settings, data =>
         {
             strategy.Next(data);
             if (data.IsReplay)
@@ -153,20 +153,20 @@ public sealed class IRNodeKindWiringTests : IDisposable
     }
 
     [Fact]
-    public void Serialization_Float32Node_RoundTripsViaDatabase()
+    public async Task Serialization_Float32Node_RoundTripsViaDatabase()
     {
         const string testId = "float32-roundtrip";
         ConjectureSettings settings = new() { MaxExamples = 1, UseDatabase = true };
         FloatingPointStrategy<float> strategy = new(0f, 1f);
 
-        TestRunner.Run(settings, data =>
+        await TestRunner.Run(settings, data =>
         {
             strategy.Next(data);
             throw new InvalidOperationException("fail");
         }, db, testId);
 
         IReadOnlyList<IRNode>? replayNodes = null;
-        TestRunner.Run(settings, data =>
+        await TestRunner.Run(settings, data =>
         {
             strategy.Next(data);
             if (data.IsReplay)
@@ -181,20 +181,20 @@ public sealed class IRNodeKindWiringTests : IDisposable
     }
 
     [Fact]
-    public void Serialization_StringNodes_RoundTripsViaDatabase()
+    public async Task Serialization_StringNodes_RoundTripsViaDatabase()
     {
         const string testId = "string-roundtrip";
         ConjectureSettings settings = new() { MaxExamples = 1, UseDatabase = true };
         StringStrategy strategy = new(minLength: 1, maxLength: 5);
 
-        TestRunner.Run(settings, data =>
+        await TestRunner.Run(settings, data =>
         {
             strategy.Next(data);
             throw new InvalidOperationException("fail");
         }, db, testId);
 
         IReadOnlyList<IRNode>? replayNodes = null;
-        TestRunner.Run(settings, data =>
+        await TestRunner.Run(settings, data =>
         {
             strategy.Next(data);
             if (data.IsReplay)
@@ -211,7 +211,7 @@ public sealed class IRNodeKindWiringTests : IDisposable
     // ── Backward compatibility ────────────────────────────────────────────────
 
     [Fact]
-    public void Deserialization_OldIntegerKindBytes_DeserializesCorrectly()
+    public async Task Deserialization_OldIntegerKindBytes_DeserializesCorrectly()
     {
         const string testId = "legacy-integer";
         const ulong expectedValue = 7UL;
@@ -222,7 +222,7 @@ public sealed class IRNodeKindWiringTests : IDisposable
 
         ulong? replayed = null;
         ConjectureSettings settings = new() { MaxExamples = 1, UseDatabase = true };
-        TestRunner.Run(settings, data =>
+        await TestRunner.Run(settings, data =>
         {
             if (data.IsReplay)
             {

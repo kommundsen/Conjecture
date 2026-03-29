@@ -67,7 +67,7 @@ public class AsyncPropertyTests
             await Task.Yield();
         });
 
-        TestRunner.Run(new ConjectureSettings { MaxExamples = 30, Seed = seed }, data =>
+        await TestRunner.Run(new ConjectureSettings { MaxExamples = 30, Seed = seed }, data =>
         {
             int x = Gen.Integers<int>(0, 100).Next(data);
             syncValues.Add(x);

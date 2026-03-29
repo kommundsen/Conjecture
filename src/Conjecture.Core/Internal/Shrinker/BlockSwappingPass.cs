@@ -2,7 +2,7 @@ namespace Conjecture.Core.Internal.Shrinker;
 
 internal sealed class BlockSwappingPass : IShrinkPass
 {
-    public bool TryReduce(ShrinkState state)
+    public async ValueTask<bool> TryReduce(ShrinkState state)
     {
         for (int i = 0; i < state.Nodes.Count - 1; i++)
         {
@@ -15,7 +15,7 @@ internal sealed class BlockSwappingPass : IShrinkPass
             }
 
             IRNode[] candidate = BuildSwapped(state.Nodes, i);
-            if (state.TryUpdate(candidate))
+            if (await state.TryUpdate(candidate))
             {
                 return true;
             }

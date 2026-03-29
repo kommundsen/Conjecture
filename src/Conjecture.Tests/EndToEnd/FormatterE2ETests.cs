@@ -1,5 +1,6 @@
 using Conjecture.Core;
 using Conjecture.Core.Formatting;
+using Conjecture.Core.Generation;
 using Conjecture.Core.Internal;
 
 namespace Conjecture.Tests.EndToEnd;
@@ -14,19 +15,19 @@ public class FormatterE2ETests
     // --- Example count ---
 
     [Fact]
-    public void FailingProperty_ExampleCount_AppearsInFailureMessage()
+    public async Task FailingProperty_ExampleCount_AppearsInFailureMessage()
     {
-        var strategy = Gen.Integers<int>(0, 100);
-        var settings = new ConjectureSettings { MaxExamples = 50, Seed = 1UL };
+        Strategy<int> strategy = Gen.Integers<int>(0, 100);
+        ConjectureSettings settings = new() { MaxExamples = 50, Seed = 1UL };
 
-        var result = TestRunner.Run(settings, data =>
+        TestRunResult result = await TestRunner.Run(settings, data =>
         {
             int x = strategy.Next(data);
             if (x > 5) { throw new Exception("fail"); }
         });
 
         Assert.False(result.Passed);
-        var msg = CounterexampleFormatter.Format(
+        string msg = CounterexampleFormatter.Format(
             [("x", (object)6)],
             seed: result.Seed!.Value,
             exampleCount: result.ExampleCount,
@@ -38,19 +39,19 @@ public class FormatterE2ETests
     // --- Shrink count ---
 
     [Fact]
-    public void FailingProperty_ShrinkCount_AppearsInFailureMessage()
+    public async Task FailingProperty_ShrinkCount_AppearsInFailureMessage()
     {
-        var strategy = Gen.Integers<int>(0, 100);
-        var settings = new ConjectureSettings { MaxExamples = 100, Seed = 2UL };
+        Strategy<int> strategy = Gen.Integers<int>(0, 100);
+        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 2UL };
 
-        var result = TestRunner.Run(settings, data =>
+        TestRunResult result = await TestRunner.Run(settings, data =>
         {
             int x = strategy.Next(data);
             if (x > 5) { throw new Exception("fail"); }
         });
 
         Assert.False(result.Passed);
-        var msg = CounterexampleFormatter.Format(
+        string msg = CounterexampleFormatter.Format(
             [("x", (object)6)],
             seed: result.Seed!.Value,
             exampleCount: result.ExampleCount,
@@ -60,13 +61,13 @@ public class FormatterE2ETests
     }
 
     [Fact]
-    public void FailingProperty_WithLargeInitialValue_ShrinkCountIsPositive()
+    public async Task FailingProperty_WithLargeInitialValue_ShrinkCountIsPositive()
     {
         // min=50 forces values far above threshold; shrinker must make several passes to reach 50
-        var strategy = Gen.Integers<int>(50, 100);
-        var settings = new ConjectureSettings { MaxExamples = 100, Seed = 3UL };
+        Strategy<int> strategy = Gen.Integers<int>(50, 100);
+        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 3UL };
 
-        var result = TestRunner.Run(settings, data =>
+        TestRunResult result = await TestRunner.Run(settings, data =>
         {
             int x = strategy.Next(data);
             if (x > 5) { throw new Exception("fail"); }
@@ -82,7 +83,7 @@ public class FormatterE2ETests
     public void FailureMessage_IntValue_FormattedAsNumericLiteral()
     {
         // BuiltInFormatters registers int; value must appear as "42", not the type name
-        var msg = CounterexampleFormatter.Format(
+        string msg = CounterexampleFormatter.Format(
             [("x", (object)42)],
             seed: 0UL, exampleCount: 1, shrinkCount: 0);
 
@@ -91,22 +92,22 @@ public class FormatterE2ETests
     }
 
     [Fact]
-    public void FailureMessage_WithRunnerResult_IntValuesUseBuiltInFormatter()
+    public async Task FailureMessage_WithRunnerResult_IntValuesUseBuiltInFormatter()
     {
-        var strategy = Gen.Integers<int>(0, 100);
-        var settings = new ConjectureSettings { MaxExamples = 100, Seed = 4UL };
+        Strategy<int> strategy = Gen.Integers<int>(0, 100);
+        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 4UL };
 
-        var result = TestRunner.Run(settings, data =>
+        TestRunResult result = await TestRunner.Run(settings, data =>
         {
             int x = strategy.Next(data);
             if (x > 5) { throw new Exception("fail"); }
         });
 
         Assert.False(result.Passed);
-        var replay = ConjectureData.ForRecord(result.Counterexample!);
+        ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
         int shrunkValue = strategy.Next(replay);
 
-        var msg = CounterexampleFormatter.Format(
+        string msg = CounterexampleFormatter.Format(
             [("x", (object)shrunkValue)],
             seed: result.Seed!.Value,
             exampleCount: result.ExampleCount,
@@ -119,25 +120,25 @@ public class FormatterE2ETests
     // --- Custom formatter ---
 
     [Fact]
-    public void CustomFormatter_RegisteredViaFormatterRegistry_AppearsInFailureOutput()
+    public async Task CustomFormatter_RegisteredViaFormatterRegistry_AppearsInFailureOutput()
     {
         FormatterRegistry.Register<CustomPoint>(new CustomPointFormatter());
         try
         {
-            var strategy = Gen.Just(new CustomPoint(3, 7));
-            var settings = new ConjectureSettings { MaxExamples = 10, Seed = 5UL };
+            Strategy<CustomPoint> strategy = Gen.Just(new CustomPoint(3, 7));
+            ConjectureSettings settings = new() { MaxExamples = 10, Seed = 5UL };
 
-            var result = TestRunner.Run(settings, data =>
+            TestRunResult result = await TestRunner.Run(settings, data =>
             {
-                var pt = strategy.Next(data);
+                CustomPoint pt = strategy.Next(data);
                 if (pt.X > 0) { throw new Exception("fail"); }
             });
 
             Assert.False(result.Passed);
-            var replay = ConjectureData.ForRecord(result.Counterexample!);
-            var shrunk = strategy.Next(replay);
+            ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
+            CustomPoint shrunk = strategy.Next(replay);
 
-            var msg = CounterexampleFormatter.Format(
+            string msg = CounterexampleFormatter.Format(
                 [("pt", (object)shrunk)],
                 seed: result.Seed!.Value,
                 exampleCount: result.ExampleCount,
@@ -156,16 +157,16 @@ public class FormatterE2ETests
     {
         // Before registration, falls back to ToString(); after, uses formatter
         FormatterRegistry.Register<NamedThing>(null); // ensure no prior registration
-        var value = new NamedThing("widget");
-        var paramsBefore = new[] { ("v", (object)value) };
-        var msgBefore = CounterexampleFormatter.Format(paramsBefore, seed: 0UL, exampleCount: 1, shrinkCount: 0);
+        NamedThing value = new("widget");
+        (string, object)[] paramsBefore = [("v", (object)value)];
+        string msgBefore = CounterexampleFormatter.Format(paramsBefore, seed: 0UL, exampleCount: 1, shrinkCount: 0);
         Assert.Contains("v = widget", msgBefore); // ToString fallback
 
         FormatterRegistry.Register<NamedThing>(new NamedThingFormatter());
         try
         {
-            var paramsAfter = new[] { ("v", (object)value) };
-            var msgAfter = CounterexampleFormatter.Format(paramsAfter, seed: 0UL, exampleCount: 1, shrinkCount: 0);
+            (string, object)[] paramsAfter = [("v", (object)value)];
+            string msgAfter = CounterexampleFormatter.Format(paramsAfter, seed: 0UL, exampleCount: 1, shrinkCount: 0);
             Assert.Contains("v = [NamedThing: widget]", msgAfter);
         }
         finally

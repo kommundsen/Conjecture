@@ -8,42 +8,42 @@ public class IntervalDeletionPassTests
     private static ShrinkState MakeState(
         IReadOnlyList<IRNode> nodes,
         Func<IReadOnlyList<IRNode>, Status> isInteresting)
-        => new(nodes, isInteresting);
+        => new(nodes, n => new ValueTask<Status>(isInteresting(n)));
 
     private static IRNode Int(ulong v) => IRNode.ForInteger(v, 0, 10);
 
     [Fact]
-    public void TryReduce_DeletesContiguousRunOfTwoNodes_InOneStep()
+    public async Task TryReduce_DeletesContiguousRunOfTwoNodes_InOneStep()
     {
         // 4 nodes; predicate interesting only when <= 2 nodes remain.
         // A single-node deletion leaves 3 (not interesting), so only an interval ≥2 works.
-        var nodes = new[] { Int(1), Int(2), Int(3), Int(4) };
+        IRNode[] nodes = [Int(1), Int(2), Int(3), Int(4)];
         static Status InterestingWhenTwo(IReadOnlyList<IRNode> ns) =>
             ns.Count <= 2 ? Status.Interesting : Status.Valid;
-        var state = MakeState(nodes, InterestingWhenTwo);
-        var pass = new IntervalDeletionPass();
+        ShrinkState state = MakeState(nodes, InterestingWhenTwo);
+        IntervalDeletionPass pass = new();
 
-        bool progress = pass.TryReduce(state);
+        bool progress = await pass.TryReduce(state);
 
         Assert.True(progress);
         Assert.True(state.Nodes.Count <= 2);
     }
 
     [Fact]
-    public void TryReduce_PreservesInterestingStatusAfterDeletion()
+    public async Task TryReduce_PreservesInterestingStatusAfterDeletion()
     {
         // After deleting an interval the remaining nodes still satisfy the predicate.
-        var nodes = new[] { Int(5), Int(6), Int(7) };
+        IRNode[] nodes = [Int(5), Int(6), Int(7)];
         int calls = 0;
         Status Interesting(IReadOnlyList<IRNode> ns)
         {
             calls++;
             return ns.Count < 3 ? Status.Interesting : Status.Valid;
         }
-        var state = MakeState(nodes, Interesting);
-        var pass = new IntervalDeletionPass();
+        ShrinkState state = MakeState(nodes, Interesting);
+        IntervalDeletionPass pass = new();
 
-        bool progress = pass.TryReduce(state);
+        bool progress = await pass.TryReduce(state);
 
         Assert.True(progress);
         // The predicate must have accepted the new nodes as interesting.
@@ -51,38 +51,38 @@ public class IntervalDeletionPassTests
     }
 
     [Fact]
-    public void TryReduce_MoreAggressiveThanSingleNodeDeletion()
+    public async Task TryReduce_MoreAggressiveThanSingleNodeDeletion()
     {
         // Predicate: interesting only when exactly 1 node remains.
         // Deleting one node from 3 leaves 2 (not interesting) — DeleteBlocks fails.
         // An interval deletion of 2 from 3 leaves 1 (interesting) — IntervalDeletion succeeds.
-        var nodes = new[] { Int(1), Int(2), Int(3) };
+        IRNode[] nodes = [Int(1), Int(2), Int(3)];
         static Status InterestingWhenOne(IReadOnlyList<IRNode> ns) =>
             ns.Count == 1 ? Status.Interesting : Status.Valid;
 
         // Verify DeleteBlocksPass cannot make progress.
-        var deleteState = MakeState(nodes, InterestingWhenOne);
-        bool deleteProgress = new DeleteBlocksPass().TryReduce(deleteState);
+        ShrinkState deleteState = MakeState(nodes, InterestingWhenOne);
+        bool deleteProgress = await new DeleteBlocksPass().TryReduce(deleteState);
         Assert.False(deleteProgress);
 
         // IntervalDeletionPass should succeed where DeleteBlocksPass cannot.
-        var intervalState = MakeState(nodes, InterestingWhenOne);
-        bool intervalProgress = new IntervalDeletionPass().TryReduce(intervalState);
+        ShrinkState intervalState = MakeState(nodes, InterestingWhenOne);
+        bool intervalProgress = await new IntervalDeletionPass().TryReduce(intervalState);
         Assert.True(intervalProgress);
         Assert.Single(intervalState.Nodes);
     }
 
     [Fact]
-    public void TryReduce_Noop_WhenNoIntervalDeletionIsInteresting()
+    public async Task TryReduce_Noop_WhenNoIntervalDeletionIsInteresting()
     {
         // Predicate requires exactly 5 nodes; any deletion makes it uninteresting.
-        var nodes = new[] { Int(1), Int(2), Int(3), Int(4), Int(5) };
+        IRNode[] nodes = [Int(1), Int(2), Int(3), Int(4), Int(5)];
         static Status NeedsExactlyFive(IReadOnlyList<IRNode> ns) =>
             ns.Count == 5 ? Status.Interesting : Status.Valid;
-        var state = MakeState(nodes, NeedsExactlyFive);
-        var pass = new IntervalDeletionPass();
+        ShrinkState state = MakeState(nodes, NeedsExactlyFive);
+        IntervalDeletionPass pass = new();
 
-        bool progress = pass.TryReduce(state);
+        bool progress = await pass.TryReduce(state);
 
         Assert.False(progress);
         Assert.Equal(5, state.Nodes.Count);
@@ -92,7 +92,7 @@ public class IntervalDeletionPassTests
     [InlineData(2)]
     [InlineData(4)]
     [InlineData(8)]
-    public void TryReduce_HandlesIntervalSize(int intervalSize)
+    public async Task TryReduce_HandlesIntervalSize(int intervalSize)
     {
         // Build a list that is exactly intervalSize+1 long.
         // Predicate: interesting only when 1 node remains, so only deleting `intervalSize`
@@ -104,10 +104,10 @@ public class IntervalDeletionPassTests
         }
         static Status InterestingWhenOne(IReadOnlyList<IRNode> ns) =>
             ns.Count == 1 ? Status.Interesting : Status.Valid;
-        var state = MakeState(nodes, InterestingWhenOne);
-        var pass = new IntervalDeletionPass();
+        ShrinkState state = MakeState(nodes, InterestingWhenOne);
+        IntervalDeletionPass pass = new();
 
-        bool progress = pass.TryReduce(state);
+        bool progress = await pass.TryReduce(state);
 
         Assert.True(progress);
         Assert.Single(state.Nodes);

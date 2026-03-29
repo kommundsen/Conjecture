@@ -2,11 +2,11 @@ namespace Conjecture.Core.Internal.Shrinker;
 
 internal sealed class ShrinkState
 {
-    private readonly Func<IReadOnlyList<IRNode>, Status> isInteresting;
+    private readonly Func<IReadOnlyList<IRNode>, ValueTask<Status>> isInteresting;
 
     internal IReadOnlyList<IRNode> Nodes { get; private set; }
 
-    internal ShrinkState(IReadOnlyList<IRNode> nodes, Func<IReadOnlyList<IRNode>, Status> isInteresting)
+    internal ShrinkState(IReadOnlyList<IRNode> nodes, Func<IReadOnlyList<IRNode>, ValueTask<Status>> isInteresting)
     {
         Nodes = nodes;
         this.isInteresting = isInteresting;
@@ -22,18 +22,18 @@ internal sealed class ShrinkState
     /// Updates state and returns true only if the candidate is still interesting.
     /// Resets <see cref="LastModifiedIndex"/> to -1 on success.
     /// </summary>
-    internal bool TryUpdate(IReadOnlyList<IRNode> candidate)
+    internal async ValueTask<bool> TryUpdate(IReadOnlyList<IRNode> candidate)
     {
-        return TryUpdate(candidate, -1);
+        return await TryUpdate(candidate, -1);
     }
 
     /// <summary>
     /// Try replacing current nodes with <paramref name="candidate"/>, recording
     /// <paramref name="modifiedIndex"/> as <see cref="LastModifiedIndex"/> on success.
     /// </summary>
-    internal bool TryUpdate(IReadOnlyList<IRNode> candidate, int modifiedIndex)
+    internal async ValueTask<bool> TryUpdate(IReadOnlyList<IRNode> candidate, int modifiedIndex)
     {
-        if (isInteresting(candidate) == Status.Interesting)
+        if (await isInteresting(candidate) == Status.Interesting)
         {
             Nodes = candidate;
             ShrinkCount++;

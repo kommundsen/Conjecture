@@ -65,7 +65,7 @@ public class ShrinkerPassOrderTests
     }
 
     [Fact]
-    public void TierFixpoint_MultipleIntegerNodes_AllReducedBeforeLoopEnds()
+    public async Task TierFixpoint_MultipleIntegerNodes_AllReducedBeforeLoopEnds()
     {
         // Each tier must run to fixpoint before the next tier starts.
         // With two integer nodes and a sum predicate, cheap tier-0 passes (ZeroBlocks,
@@ -89,7 +89,8 @@ public class ShrinkerPassOrderTests
             catch { return Status.Overrun; }
         }
 
-        var (result, shrinkCount) = Core.Internal.Shrinker.Shrinker.Shrink(nodes, IsInteresting);
+        (IReadOnlyList<IRNode> result, int shrinkCount) = await Core.Internal.Shrinker.Shrinker.ShrinkAsync(
+            nodes, n => new ValueTask<Status>(IsInteresting(n)));
 
         Assert.Equal(Status.Interesting, IsInteresting(result));
         Assert.True(shrinkCount > 0, "Expected at least one shrink step.");
@@ -99,7 +100,7 @@ public class ShrinkerPassOrderTests
     }
 
     [Fact]
-    public void FullShrinkLoop_FloatNodeAboveThreshold_ConvergesAndPreservesFailure()
+    public async Task FullShrinkLoop_FloatNodeAboveThreshold_ConvergesAndPreservesFailure()
     {
         // With all 10 passes active across 3 tiers, the loop must still terminate
         // and the final result must remain interesting.
@@ -118,7 +119,8 @@ public class ShrinkerPassOrderTests
             catch { return Status.Overrun; }
         }
 
-        var (result, _) = Core.Internal.Shrinker.Shrinker.Shrink(nodes, IsInteresting);
+        (IReadOnlyList<IRNode> result, int _) = await Core.Internal.Shrinker.Shrinker.ShrinkAsync(
+            nodes, n => new ValueTask<Status>(IsInteresting(n)));
 
         Assert.Equal(Status.Interesting, IsInteresting(result));
         // The shrunken float must be smaller than the starting value.

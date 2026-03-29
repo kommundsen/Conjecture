@@ -4,14 +4,14 @@ internal sealed class AdaptivePass(IShrinkPass inner) : IShrinkPass
 {
     private readonly HashSet<int> productiveIndices = [];
 
-    public bool TryReduce(ShrinkState state)
+    public async ValueTask<bool> TryReduce(ShrinkState state)
     {
         if (productiveIndices.Count > 0)
         {
             int[] snapshot = [..productiveIndices];
             foreach (int i in snapshot)
             {
-                if (TryReduceAt(state, i))
+                if (await TryReduceAt(state, i))
                 {
                     return true;
                 }
@@ -19,7 +19,7 @@ internal sealed class AdaptivePass(IShrinkPass inner) : IShrinkPass
             }
         }
 
-        bool progress = inner.TryReduce(state);
+        bool progress = await inner.TryReduce(state);
         if (progress && state.LastModifiedIndex >= 0)
         {
             productiveIndices.Add(state.LastModifiedIndex);
@@ -27,7 +27,7 @@ internal sealed class AdaptivePass(IShrinkPass inner) : IShrinkPass
         return progress;
     }
 
-    private static bool TryReduceAt(ShrinkState state, int index)
+    private static async ValueTask<bool> TryReduceAt(ShrinkState state, int index)
     {
         if (index >= state.Nodes.Count)
         {
@@ -40,6 +40,6 @@ internal sealed class AdaptivePass(IShrinkPass inner) : IShrinkPass
         }
         IRNode[] candidate = [..state.Nodes];
         candidate[index] = node.WithValue(node.Value - 1);
-        return state.TryUpdate(candidate, index);
+        return await state.TryUpdate(candidate, index);
     }
 }

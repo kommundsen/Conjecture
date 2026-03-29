@@ -31,30 +31,30 @@ public sealed class TestRunnerDatabaseTests : IDisposable
     }
 
     [Fact]
-    public void Run_FailingTest_UseDatabase_SavesBufferToDatabase()
+    public async Task Run_FailingTest_UseDatabase_SavesBufferToDatabase()
     {
-        var settings = new ConjectureSettings { MaxExamples = 10, UseDatabase = true };
+        ConjectureSettings settings = new() { MaxExamples = 10, UseDatabase = true };
         string testId = "test-failing-saves";
 
-        TestRunner.Run(settings, _ => throw new InvalidOperationException("fail"), db, testId);
+        await TestRunner.Run(settings, _ => throw new InvalidOperationException("fail"), db, testId);
 
         IReadOnlyList<byte[]> saved = db.Load(testId);
         Assert.NotEmpty(saved);
     }
 
     [Fact]
-    public void Run_FailingThenSameId_ReplaysStoredBufferFirst()
+    public async Task Run_FailingThenSameId_ReplaysStoredBufferFirst()
     {
-        var settings = new ConjectureSettings { MaxExamples = 10, UseDatabase = true };
+        ConjectureSettings settings = new() { MaxExamples = 10, UseDatabase = true };
         string testId = "test-replay-first";
-        var replayInvoked = false;
+        bool replayInvoked = false;
 
         // First run: fails and saves
-        TestRunner.Run(settings, _ => throw new InvalidOperationException("fail"), db, testId);
+        await TestRunner.Run(settings, _ => throw new InvalidOperationException("fail"), db, testId);
         Assert.NotEmpty(db.Load(testId));
 
         // Second run: replay buffer is attempted first
-        TestRunner.Run(settings, data =>
+        await TestRunner.Run(settings, data =>
         {
             if (data.IsReplay)
             {
@@ -67,42 +67,42 @@ public sealed class TestRunnerDatabaseTests : IDisposable
     }
 
     [Fact]
-    public void Run_PassingReplay_RemovesBufferFromDatabase()
+    public async Task Run_PassingReplay_RemovesBufferFromDatabase()
     {
-        var settings = new ConjectureSettings { MaxExamples = 10, UseDatabase = true };
+        ConjectureSettings settings = new() { MaxExamples = 10, UseDatabase = true };
         string testId = "test-passing-removes";
 
         // Save a buffer that would be replayed
         db.Save(testId, [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
 
         // Run that passes — stored buffer should be removed
-        TestRunner.Run(settings, _ => { }, db, testId);
+        await TestRunner.Run(settings, _ => { }, db, testId);
 
         Assert.Empty(db.Load(testId));
     }
 
     [Fact]
-    public void Run_UseDatabaseFalse_DoesNotSaveOnFailure()
+    public async Task Run_UseDatabaseFalse_DoesNotSaveOnFailure()
     {
-        var settings = new ConjectureSettings { MaxExamples = 10, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 10, UseDatabase = false };
         string testId = "test-no-db-save";
 
-        TestRunner.Run(settings, _ => throw new InvalidOperationException("fail"), db, testId);
+        await TestRunner.Run(settings, _ => throw new InvalidOperationException("fail"), db, testId);
 
         Assert.Empty(db.Load(testId));
     }
 
     [Fact]
-    public void Run_UseDatabaseFalse_DoesNotReplayStoredBuffer()
+    public async Task Run_UseDatabaseFalse_DoesNotReplayStoredBuffer()
     {
         string testId = "test-no-db-replay";
 
         // Save a buffer manually
         db.Save(testId, [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
 
-        var replayInvoked = false;
-        var noDbSettings = new ConjectureSettings { MaxExamples = 10, UseDatabase = false };
-        TestRunner.Run(noDbSettings, data =>
+        bool replayInvoked = false;
+        ConjectureSettings noDbSettings = new() { MaxExamples = 10, UseDatabase = false };
+        await TestRunner.Run(noDbSettings, data =>
         {
             if (data.IsReplay)
             {
@@ -114,27 +114,27 @@ public sealed class TestRunnerDatabaseTests : IDisposable
     }
 
     [Fact]
-    public void Run_ExplicitSeed_DoesNotSaveOnFailure()
+    public async Task Run_ExplicitSeed_DoesNotSaveOnFailure()
     {
-        var settings = new ConjectureSettings { MaxExamples = 10, Seed = 42UL, UseDatabase = true };
+        ConjectureSettings settings = new() { MaxExamples = 10, Seed = 42UL, UseDatabase = true };
         string testId = "test-seed-no-save";
 
-        TestRunner.Run(settings, _ => throw new InvalidOperationException("fail"), db, testId);
+        await TestRunner.Run(settings, _ => throw new InvalidOperationException("fail"), db, testId);
 
         Assert.Empty(db.Load(testId));
     }
 
     [Fact]
-    public void Run_ExplicitSeed_DoesNotReplayStoredBuffer()
+    public async Task Run_ExplicitSeed_DoesNotReplayStoredBuffer()
     {
         string testId = "test-seed-no-replay";
 
         // Save a buffer manually
         db.Save(testId, [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
 
-        var replayInvoked = false;
-        var settings = new ConjectureSettings { MaxExamples = 10, Seed = 99UL, UseDatabase = true };
-        TestRunner.Run(settings, data =>
+        bool replayInvoked = false;
+        ConjectureSettings settings = new() { MaxExamples = 10, Seed = 99UL, UseDatabase = true };
+        await TestRunner.Run(settings, data =>
         {
             if (data.IsReplay)
             {

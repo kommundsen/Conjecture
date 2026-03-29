@@ -301,7 +301,7 @@ Extend `IRNodeKind` so specialized shrinker passes can identify float and string
     - If sync: existing path
 
 #### Cycle 2.8.2 -- Async shrinking and deadline
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/AsyncPropertyShrinkingTests.cs`
     - Async failing test shrinks to minimal counterexample
     - `Deadline` setting applies per-example to async methods

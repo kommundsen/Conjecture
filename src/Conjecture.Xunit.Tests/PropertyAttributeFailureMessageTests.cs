@@ -23,94 +23,93 @@ public class PropertyAttributeFailureMessageTests
             .GetParameters();
 
     [Fact]
-    public void Run_WithSeed_ResultCarriesThatSeed()
+    public async Task Run_WithSeed_ResultCarriesThatSeed()
     {
-        var settings = new ConjectureSettings { MaxExamples = 10, Seed = 42UL };
+        ConjectureSettings settings = new() { MaxExamples = 10, Seed = 42UL };
 
-        var result = TestRunner.Run(settings, data =>
+        TestRunResult result = await TestRunner.Run(settings, data =>
         {
             data.DrawInteger(0, 100);
             throw new Exception("fail");
         });
 
-        Assert.Equal(42UL, result.Seed); // compile error until Seed added to TestRunResult
+        Assert.Equal(42UL, result.Seed);
     }
 
     [Fact]
-    public void Run_WithNoSeed_ResultCarriesNonNullSeed()
+    public async Task Run_WithNoSeed_ResultCarriesNonNullSeed()
     {
-        var settings = new ConjectureSettings { MaxExamples = 10 };
+        ConjectureSettings settings = new() { MaxExamples = 10 };
 
-        var result = TestRunner.Run(settings, data =>
+        TestRunResult result = await TestRunner.Run(settings, data =>
         {
             data.DrawInteger(0, 100);
             throw new Exception("fail");
         });
 
-        Assert.NotNull(result.Seed); // compile error until Seed added to TestRunResult
+        Assert.NotNull(result.Seed);
     }
 
     [Fact]
-    public void BuildFailureMessage_IntParam_ContainsParamNameAndValue()
+    public async Task BuildFailureMessage_IntParam_ContainsParamNameAndValue()
     {
-        var settings = new ConjectureSettings { MaxExamples = 50, Seed = 1UL };
-        var parameters = Params(nameof(PropertyWithInt));
+        ConjectureSettings settings = new() { MaxExamples = 50, Seed = 1UL };
+        ParameterInfo[] parameters = Params(nameof(PropertyWithInt));
 
-        var result = TestRunner.Run(settings, data =>
+        TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            var args = ParameterStrategyResolver.Resolve(parameters, data);
+            object[] args = ParameterStrategyResolver.Resolve(parameters, data);
             if ((int)args[0] > 5) { throw new Exception("fail"); }
         });
 
         Assert.False(result.Passed);
-        var message = PropertyTestCaseRunner.BuildFailureMessage(result, parameters);
-        // compile error until BuildFailureMessage added to PropertyTestCaseRunner
+        string message = PropertyTestCaseRunner.BuildFailureMessage(result, parameters);
         Assert.Contains("x =", message);
     }
 
     [Fact]
-    public void BuildFailureMessage_ContainsSeedReproductionLine()
+    public async Task BuildFailureMessage_ContainsSeedReproductionLine()
     {
-        var settings = new ConjectureSettings { MaxExamples = 50, Seed = 0xDEADBEEFUL };
-        var parameters = Params(nameof(PropertyWithInt));
+        ConjectureSettings settings = new() { MaxExamples = 50, Seed = 0xDEADBEEFUL };
+        ParameterInfo[] parameters = Params(nameof(PropertyWithInt));
 
-        var result = TestRunner.Run(settings, data =>
+        TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            var args = ParameterStrategyResolver.Resolve(parameters, data);
+            object[] args = ParameterStrategyResolver.Resolve(parameters, data);
             if ((int)args[0] > 5) { throw new Exception("fail"); }
         });
 
         Assert.False(result.Passed);
-        var message = PropertyTestCaseRunner.BuildFailureMessage(result, parameters);
+        string message = PropertyTestCaseRunner.BuildFailureMessage(result, parameters);
         Assert.Contains("Reproduce with: [Property(Seed = 0xDEADBEEF)]", message);
     }
 
     [Fact]
-    public void BuildFailureMessage_MultipleParams_ContainsAllParamNames()
+    public async Task BuildFailureMessage_MultipleParams_ContainsAllParamNames()
     {
-        var settings = new ConjectureSettings { MaxExamples = 50, Seed = 7UL };
-        var parameters = Params(nameof(PropertyWithIntAndBool));
+        ConjectureSettings settings = new() { MaxExamples = 50, Seed = 7UL };
+        ParameterInfo[] parameters = Params(nameof(PropertyWithIntAndBool));
 
-        var result = TestRunner.Run(settings, data =>
+        TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            var args = ParameterStrategyResolver.Resolve(parameters, data);
+            object[] args = ParameterStrategyResolver.Resolve(parameters, data);
             throw new Exception("always fail");
         });
 
         Assert.False(result.Passed);
-        var message = PropertyTestCaseRunner.BuildFailureMessage(result, parameters);
+        string message = PropertyTestCaseRunner.BuildFailureMessage(result, parameters);
         Assert.Contains("x =", message);
         Assert.Contains("flag =", message);
     }
 
     [Fact]
-    public void Run_PassingProperty_SeedIsStillCarried()
+    public async Task Run_PassingProperty_SeedIsStillCarried()
     {
-        var settings = new ConjectureSettings { MaxExamples = 5, Seed = 99UL };
+        ConjectureSettings settings = new() { MaxExamples = 5, Seed = 99UL };
 
-        var result = TestRunner.Run(settings, _ => { });
+        TestRunResult result = await TestRunner.Run(settings, _ => { });
 
         Assert.True(result.Passed);
-        Assert.Equal(99UL, result.Seed); // passing result also carries the seed used
+        Assert.Equal(99UL, result.Seed);
     }
 }

@@ -6,33 +6,33 @@ namespace Conjecture.Tests.Internal;
 public class TestRunnerTests
 {
     [Fact]
-    public void Run_AllExamplesPass_RunsExactlyMaxExamplesTimes()
+    public async Task Run_AllExamplesPass_RunsExactlyMaxExamplesTimes()
     {
-        var count = 0;
-        var settings = new ConjectureSettings { MaxExamples = 10, Seed = 1UL };
+        int count = 0;
+        ConjectureSettings settings = new() { MaxExamples = 10, Seed = 1UL };
 
-        TestRunner.Run(settings, _ => count++);
+        await TestRunner.Run(settings, _ => count++);
 
         Assert.Equal(10, count);
     }
 
     [Fact]
-    public void Run_AllExamplesPass_ReturnsPassingResult()
+    public async Task Run_AllExamplesPass_ReturnsPassingResult()
     {
-        var settings = new ConjectureSettings { MaxExamples = 5, Seed = 1UL };
+        ConjectureSettings settings = new() { MaxExamples = 5, Seed = 1UL };
 
-        var result = TestRunner.Run(settings, _ => { });
+        TestRunResult result = await TestRunner.Run(settings, _ => { });
 
         Assert.True(result.Passed);
     }
 
     [Fact]
-    public void Run_FirstExampleFails_StopsAfterOneInvocation()
+    public async Task Run_FirstExampleFails_StopsAfterOneInvocation()
     {
-        var count = 0;
-        var settings = new ConjectureSettings { MaxExamples = 100, Seed = 1UL };
+        int count = 0;
+        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 1UL };
 
-        TestRunner.Run(settings, _ =>
+        await TestRunner.Run(settings, _ =>
         {
             count++;
             throw new InvalidOperationException("fail");
@@ -42,22 +42,22 @@ public class TestRunnerTests
     }
 
     [Fact]
-    public void Run_PropertyFails_ReturnsFailingResult()
+    public async Task Run_PropertyFails_ReturnsFailingResult()
     {
-        var settings = new ConjectureSettings { MaxExamples = 10, Seed = 1UL };
+        ConjectureSettings settings = new() { MaxExamples = 10, Seed = 1UL };
 
-        var result = TestRunner.Run(settings, _ =>
+        TestRunResult result = await TestRunner.Run(settings, _ =>
             throw new InvalidOperationException("fail"));
 
         Assert.False(result.Passed);
     }
 
     [Fact]
-    public void Run_PropertyFails_ResultContainsCounterexampleNodes()
+    public async Task Run_PropertyFails_ResultContainsCounterexampleNodes()
     {
-        var settings = new ConjectureSettings { MaxExamples = 10, Seed = 1UL };
+        ConjectureSettings settings = new() { MaxExamples = 10, Seed = 1UL };
 
-        var result = TestRunner.Run(settings, data =>
+        TestRunResult result = await TestRunner.Run(settings, data =>
         {
             data.DrawBoolean();
             throw new InvalidOperationException("fail");
@@ -69,23 +69,23 @@ public class TestRunnerTests
     }
 
     [Fact]
-    public void Run_SameSeed_ProducesSameCounterexampleNodes()
+    public async Task Run_SameSeed_ProducesSameCounterexampleNodes()
     {
-        var settings = new ConjectureSettings { MaxExamples = 20, Seed = 99UL };
-        var failOn = 5;
-        var callCount = 0;
+        ConjectureSettings settings = new() { MaxExamples = 20, Seed = 99UL };
+        int failOn = 5;
+        int callCount = 0;
 
-        TestRunResult RunOnce() => TestRunner.Run(settings, data =>
+        async Task<TestRunResult> RunOnce() => await TestRunner.Run(settings, data =>
         {
-            var v = data.DrawInteger(0, 100);
+            ulong v = data.DrawInteger(0, 100);
             callCount++;
             if (callCount == failOn) { throw new InvalidOperationException("fail"); }
         });
 
         callCount = 0;
-        var first = RunOnce();
+        TestRunResult first = await RunOnce();
         callCount = 0;
-        var second = RunOnce();
+        TestRunResult second = await RunOnce();
 
         Assert.Equal(
             first.Counterexample!.Select(n => n.Value),
@@ -93,15 +93,15 @@ public class TestRunnerTests
     }
 
     [Fact]
-    public void Run_UnsatisfiedAssumptions_NotCountedTowardMaxExamples()
+    public async Task Run_UnsatisfiedAssumptions_NotCountedTowardMaxExamples()
     {
-        var validCount = 0;
+        int validCount = 0;
         // Throw UnsatisfiedAssumptionException for first 5 calls, then pass.
         // With MaxExamples=3, we expect exactly 3 valid runs beyond the invalid ones.
-        var totalCalls = 0;
-        var settings = new ConjectureSettings { MaxExamples = 3, Seed = 1UL };
+        int totalCalls = 0;
+        ConjectureSettings settings = new() { MaxExamples = 3, Seed = 1UL };
 
-        var result = TestRunner.Run(settings, _ =>
+        TestRunResult result = await TestRunner.Run(settings, _ =>
         {
             totalCalls++;
             if (totalCalls <= 5)
@@ -116,11 +116,11 @@ public class TestRunnerTests
     }
 
     [Fact]
-    public void Run_UnsatisfiedAssumption_DoesNotProduceFailingResult()
+    public async Task Run_UnsatisfiedAssumption_DoesNotProduceFailingResult()
     {
-        var settings = new ConjectureSettings { MaxExamples = 5, Seed = 1UL };
+        ConjectureSettings settings = new() { MaxExamples = 5, Seed = 1UL };
 
-        var result = TestRunner.Run(settings, _ =>
+        TestRunResult result = await TestRunner.Run(settings, _ =>
             throw new UnsatisfiedAssumptionException());
 
         // All examples were invalid — still not a failure

@@ -44,13 +44,13 @@ public class StrategyProviderTests
     }
 
     [Fact]
-    public void Strategy_FromProvider_PassesTestRunner()
+    public async Task Strategy_FromProvider_PassesTestRunner()
     {
         IStrategyProvider<int> provider = new PositiveIntsProvider();
         Strategy<int> strategy = provider.Create();
         ConjectureSettings settings = new() { MaxExamples = 50, Seed = 1UL };
 
-        TestRunResult result = TestRunner.Run(settings, data =>
+        TestRunResult result = await TestRunner.Run(settings, data =>
         {
             int value = strategy.Next(data);
             if (value <= 0)

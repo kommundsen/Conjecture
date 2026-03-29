@@ -103,13 +103,13 @@ public class PropertyAttributeExampleTests
     // ── Explicit examples contribute to ExampleCount ─────────────────────────
 
     [Fact]
-    public void ExplicitExamples_AddedToExampleCount_InFailureResult()
+    public async Task ExplicitExamples_AddedToExampleCount_InFailureResult()
     {
         // When 2 explicit examples pass and a generated one fails:
         // ExampleCount in the failure result = 2 (explicit) + 1 (generated that failed) = 3
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 1UL };
 
-        TestRunResult generated = TestRunner.Run(settings, _ =>
+        TestRunResult generated = await TestRunner.Run(settings, _ =>
             throw new Exception("always fails"));
 
         // Simulate: 2 explicit examples ran before the generated run

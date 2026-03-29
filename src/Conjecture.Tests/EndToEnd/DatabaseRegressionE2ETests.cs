@@ -1,4 +1,5 @@
 using Conjecture.Core;
+using Conjecture.Core.Generation;
 using Conjecture.Core.Internal;
 using Conjecture.Core.Internal.Database;
 
@@ -35,32 +36,32 @@ public sealed class DatabaseRegressionE2ETests : IDisposable
     // --- Full round-trip ---
 
     [Fact]
-    public void Fail_SavesCounterexampleToDatabase()
+    public async Task Fail_SavesCounterexampleToDatabase()
     {
-        var settings = new ConjectureSettings { MaxExamples = 20, UseDatabase = true };
+        ConjectureSettings settings = new() { MaxExamples = 20, UseDatabase = true };
         string testId = "e2e-roundtrip-fail-saves";
 
         using ExampleDatabase db = new(dbPath);
-        TestRunner.Run(settings, _ => throw new Exception("fail"), db, testId);
+        await TestRunner.Run(settings, _ => throw new Exception("fail"), db, testId);
 
         Assert.NotEmpty(db.Load(testId));
     }
 
     [Fact]
-    public void Fail_ThenRerun_ReplaysStoredBuffer()
+    public async Task Fail_ThenRerun_ReplaysStoredBuffer()
     {
-        var settings = new ConjectureSettings { MaxExamples = 20, UseDatabase = true };
+        ConjectureSettings settings = new() { MaxExamples = 20, UseDatabase = true };
         string testId = "e2e-roundtrip-replay";
 
         using ExampleDatabase db = new(dbPath);
 
         // First run: always fails → saves buffer
-        TestRunner.Run(settings, _ => throw new Exception("fail"), db, testId);
+        await TestRunner.Run(settings, _ => throw new Exception("fail"), db, testId);
         Assert.NotEmpty(db.Load(testId));
 
         // Second run: verify the stored buffer is replayed
         bool replayInvoked = false;
-        TestRunner.Run(settings, data =>
+        await TestRunner.Run(settings, data =>
         {
             if (data.IsReplay)
             {
@@ -73,19 +74,19 @@ public sealed class DatabaseRegressionE2ETests : IDisposable
     }
 
     [Fact]
-    public void Fail_ThenFix_RemovesStoredBuffer()
+    public async Task Fail_ThenFix_RemovesStoredBuffer()
     {
-        var settings = new ConjectureSettings { MaxExamples = 20, UseDatabase = true };
+        ConjectureSettings settings = new() { MaxExamples = 20, UseDatabase = true };
         string testId = "e2e-roundtrip-fix-cleans";
 
         using ExampleDatabase db = new(dbPath);
 
         // First run: always fails → saves buffer
-        TestRunner.Run(settings, _ => throw new Exception("fail"), db, testId);
+        await TestRunner.Run(settings, _ => throw new Exception("fail"), db, testId);
         Assert.NotEmpty(db.Load(testId));
 
         // Second run: property "fixed" (always passes) → stored buffer removed
-        TestRunner.Run(settings, _ => { }, db, testId);
+        await TestRunner.Run(settings, _ => { }, db, testId);
 
         Assert.Empty(db.Load(testId));
     }
@@ -93,27 +94,27 @@ public sealed class DatabaseRegressionE2ETests : IDisposable
     // --- DB file on disk ---
 
     [Fact]
-    public void FailingProperty_UseDatabase_DbFileExistsOnDisk()
+    public async Task FailingProperty_UseDatabase_DbFileExistsOnDisk()
     {
-        var settings = new ConjectureSettings { MaxExamples = 10, UseDatabase = true };
+        ConjectureSettings settings = new() { MaxExamples = 10, UseDatabase = true };
         string testId = "e2e-db-file-exists";
 
         using (ExampleDatabase db = new(dbPath))
         {
-            TestRunner.Run(settings, _ => throw new Exception("fail"), db, testId);
+            await TestRunner.Run(settings, _ => throw new Exception("fail"), db, testId);
         }
 
         Assert.True(File.Exists(dbPath), $"Expected DB file at {dbPath}");
     }
 
     [Fact]
-    public void FailingProperty_UseDatabase_DbFileContainsSavedBuffer()
+    public async Task FailingProperty_UseDatabase_DbFileContainsSavedBuffer()
     {
-        var settings = new ConjectureSettings { MaxExamples = 10, UseDatabase = true };
+        ConjectureSettings settings = new() { MaxExamples = 10, UseDatabase = true };
         string testId = "e2e-db-file-has-buffer";
 
         using ExampleDatabase db = new(dbPath);
-        TestRunner.Run(settings, _ => throw new Exception("fail"), db, testId);
+        await TestRunner.Run(settings, _ => throw new Exception("fail"), db, testId);
 
         // Reopen database to confirm persistence is on disk, not just in-memory
         using ExampleDatabase db2 = new(dbPath);
@@ -123,14 +124,14 @@ public sealed class DatabaseRegressionE2ETests : IDisposable
     // --- Seed in failure message ---
 
     [Fact]
-    public void FailureMessage_IncludesSeed_ForReproduction()
+    public async Task FailureMessage_IncludesSeed_ForReproduction()
     {
-        var strategy = Gen.Integers<int>(0, 100);
-        var settings = new ConjectureSettings { MaxExamples = 50, UseDatabase = true };
+        Strategy<int> strategy = Gen.Integers<int>(0, 100);
+        ConjectureSettings settings = new() { MaxExamples = 50, UseDatabase = true };
         string testId = "e2e-seed-in-message";
 
         using ExampleDatabase db = new(dbPath);
-        TestRunResult result = TestRunner.Run(settings, data =>
+        TestRunResult result = await TestRunner.Run(settings, data =>
         {
             int x = strategy.Next(data);
             if (x > 5) { throw new Exception("too large"); }
@@ -149,14 +150,14 @@ public sealed class DatabaseRegressionE2ETests : IDisposable
     }
 
     [Fact]
-    public void FailureMessage_SeedAllowsReproduction_ReplayProducesSameCounterexample()
+    public async Task FailureMessage_SeedAllowsReproduction_ReplayProducesSameCounterexample()
     {
-        var strategy = Gen.Integers<int>(0, 100);
+        Strategy<int> strategy = Gen.Integers<int>(0, 100);
 
         // First run: no seed, find a failing example
-        var settings1 = new ConjectureSettings { MaxExamples = 50, UseDatabase = false };
+        ConjectureSettings settings1 = new() { MaxExamples = 50, UseDatabase = false };
         using ExampleDatabase db = new(dbPath);
-        TestRunResult first = TestRunner.Run(settings1, data =>
+        TestRunResult first = await TestRunner.Run(settings1, data =>
         {
             int x = strategy.Next(data);
             if (x > 5) { throw new Exception("too large"); }
@@ -166,13 +167,13 @@ public sealed class DatabaseRegressionE2ETests : IDisposable
         Assert.NotNull(first.Seed);
 
         // Second run: use seed from failure → must also fail
-        var settings2 = new ConjectureSettings
+        ConjectureSettings settings2 = new()
         {
             MaxExamples = 50,
             Seed = first.Seed!.Value,
             UseDatabase = false
         };
-        TestRunResult second = TestRunner.Run(settings2, data =>
+        TestRunResult second = await TestRunner.Run(settings2, data =>
         {
             int x = strategy.Next(data);
             if (x > 5) { throw new Exception("too large"); }

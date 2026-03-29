@@ -2,7 +2,7 @@ namespace Conjecture.Core.Internal.Shrinker;
 
 internal sealed class RedistributionPass : IShrinkPass
 {
-    public bool TryReduce(ShrinkState state)
+    public async ValueTask<bool> TryReduce(ShrinkState state)
     {
         for (int i = 0; i < state.Nodes.Count - 1; i++)
         {
@@ -19,7 +19,7 @@ internal sealed class RedistributionPass : IShrinkPass
             for (ulong delta = 1; delta <= maxShift; delta++)
             {
                 IRNode[] candidate = BuildRedistributed(state.Nodes, i, delta);
-                if (state.TryUpdate(candidate))
+                if (await state.TryUpdate(candidate))
                 {
                     return true;
                 }

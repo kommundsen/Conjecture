@@ -14,16 +14,16 @@ internal sealed class FloatSimplificationPass : IShrinkPass
     private static readonly ulong MinFinite32 = Unsafe.BitCast<float, uint>(float.MinValue);
     private const ulong SignBit32 = 0x80000000UL;
 
-    public bool TryReduce(ShrinkState state)
+    public async ValueTask<bool> TryReduce(ShrinkState state)
     {
         for (int i = 0; i < state.Nodes.Count; i++)
         {
             IRNode node = state.Nodes[i];
-            if (node.Kind == IRNodeKind.Float64 && TryReduceAt64(state, i, node))
+            if (node.Kind == IRNodeKind.Float64 && await TryReduceAt64(state, i, node))
             {
                 return true;
             }
-            if (node.Kind == IRNodeKind.Float32 && TryReduceAt32(state, i, node))
+            if (node.Kind == IRNodeKind.Float32 && await TryReduceAt32(state, i, node))
             {
                 return true;
             }
@@ -31,14 +31,14 @@ internal sealed class FloatSimplificationPass : IShrinkPass
         return false;
     }
 
-    private static bool TryReduceAt64(ShrinkState state, int index, IRNode node)
+    private static async ValueTask<bool> TryReduceAt64(ShrinkState state, int index, IRNode node)
     {
         ulong bits = node.Value;
         foreach (ulong candidate in Candidates64(bits))
         {
             IRNode[] arr = [..state.Nodes];
             arr[index] = IRNode.ForFloat64(candidate, node.Min, node.Max);
-            if (state.TryUpdate(arr))
+            if (await state.TryUpdate(arr))
             {
                 return true;
             }
@@ -46,14 +46,14 @@ internal sealed class FloatSimplificationPass : IShrinkPass
         return false;
     }
 
-    private static bool TryReduceAt32(ShrinkState state, int index, IRNode node)
+    private static async ValueTask<bool> TryReduceAt32(ShrinkState state, int index, IRNode node)
     {
         ulong bits = node.Value;
         foreach (ulong candidate in Candidates32(bits))
         {
             IRNode[] arr = [..state.Nodes];
             arr[index] = IRNode.ForFloat32(candidate, node.Min, node.Max);
-            if (state.TryUpdate(arr))
+            if (await state.TryUpdate(arr))
             {
                 return true;
             }

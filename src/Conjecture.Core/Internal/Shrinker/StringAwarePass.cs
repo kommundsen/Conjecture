@@ -6,18 +6,18 @@ internal sealed class StringAwarePass : IShrinkPass
     private const ulong SpaceCodepoint = 32;
     private static readonly ulong[] CharTargets = [ACodepoint, SpaceCodepoint];
 
-    public bool TryReduce(ShrinkState state)
+    public async ValueTask<bool> TryReduce(ShrinkState state)
     {
         for (int i = 0; i < state.Nodes.Count; i++)
         {
-            if (state.Nodes[i].Kind == IRNodeKind.StringLength && TryReduceLength(state, i))
+            if (state.Nodes[i].Kind == IRNodeKind.StringLength && await TryReduceLength(state, i))
             {
                 return true;
             }
         }
         for (int i = 0; i < state.Nodes.Count; i++)
         {
-            if (state.Nodes[i].Kind == IRNodeKind.StringChar && TrySimplifyChar(state, i))
+            if (state.Nodes[i].Kind == IRNodeKind.StringChar && await TrySimplifyChar(state, i))
             {
                 return true;
             }
@@ -25,7 +25,7 @@ internal sealed class StringAwarePass : IShrinkPass
         return false;
     }
 
-    private static bool TryReduceLength(ShrinkState state, int lenIndex)
+    private static async ValueTask<bool> TryReduceLength(ShrinkState state, int lenIndex)
     {
         IRNode lenNode = state.Nodes[lenIndex];
         ulong currentLen = lenNode.Value;
@@ -71,7 +71,7 @@ internal sealed class StringAwarePass : IShrinkPass
                 candidate[dstStart + k] = state.Nodes[afterChars + k];
             }
 
-            if (state.TryUpdate(candidate))
+            if (await state.TryUpdate(candidate))
             {
                 return true;
             }
@@ -79,7 +79,7 @@ internal sealed class StringAwarePass : IShrinkPass
         return false;
     }
 
-    private static bool TrySimplifyChar(ShrinkState state, int charIndex)
+    private static async ValueTask<bool> TrySimplifyChar(ShrinkState state, int charIndex)
     {
         IRNode charNode = state.Nodes[charIndex];
         foreach (ulong target in CharTargets)
@@ -90,7 +90,7 @@ internal sealed class StringAwarePass : IShrinkPass
             }
             IRNode[] candidate = [..state.Nodes];
             candidate[charIndex] = IRNode.ForStringChar(target, charNode.Min, charNode.Max);
-            if (state.TryUpdate(candidate))
+            if (await state.TryUpdate(candidate))
             {
                 return true;
             }

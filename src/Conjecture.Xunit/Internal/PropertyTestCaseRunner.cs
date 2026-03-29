@@ -117,18 +117,22 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
             else
             {
                 using ExampleDatabase db = new(dbPath);
-                result = TestRunner.Run(settings, data =>
+                if (IsAsyncReturnType(methodInfo.ReturnType))
                 {
-                    object[] args = ParameterStrategyResolver.Resolve(methodParams, data);
-                    try
+                    result = await TestRunner.RunAsync(settings, async data =>
                     {
-                        methodInfo.Invoke(testInstance, args);
-                    }
-                    catch (TargetInvocationException ex) when (ex.InnerException is not null)
+                        object[] args = ParameterStrategyResolver.Resolve(methodParams, data);
+                        await InvokeAsync(methodInfo, testInstance, args);
+                    }, db, testIdHash);
+                }
+                else
+                {
+                    result = await TestRunner.Run(settings, data =>
                     {
-                        System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
-                    }
-                }, db, testIdHash);
+                        object[] args = ParameterStrategyResolver.Resolve(methodParams, data);
+                        InvokeSync(methodInfo, testInstance, args);
+                    }, db, testIdHash);
+                }
 
                 if (explicitCount > 0)
                 {
@@ -177,6 +181,50 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
         object[] values = ParameterStrategyResolver.Resolve(parameters, replay);
         IEnumerable<(string name, object value)> pairs = parameters.Zip(values, (p, v) => (p.Name!, (object)v!));
         return CounterexampleFormatter.Format(pairs, result.Seed!.Value, result.ExampleCount, result.ShrinkCount);
+    }
+
+    private static bool IsAsyncReturnType(Type returnType)
+    {
+        return returnType == typeof(Task)
+            || returnType == typeof(ValueTask)
+            || (returnType.IsGenericType && (
+                returnType.GetGenericTypeDefinition() == typeof(Task<>)
+                || returnType.GetGenericTypeDefinition() == typeof(ValueTask<>)));
+    }
+
+    private static void InvokeSync(MethodInfo method, object? instance, object[] args)
+    {
+        try
+        {
+            method.Invoke(instance, args);
+        }
+        catch (TargetInvocationException ex) when (ex.InnerException is not null)
+        {
+            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
+        }
+    }
+
+    private static async Task InvokeAsync(MethodInfo method, object? instance, object[] args)
+    {
+        object? result;
+        try
+        {
+            result = method.Invoke(instance, args);
+        }
+        catch (TargetInvocationException ex) when (ex.InnerException is not null)
+        {
+            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
+            return;
+        }
+
+        if (result is Task task)
+        {
+            await task;
+        }
+        else if (result is ValueTask valueTask)
+        {
+            await valueTask;
+        }
     }
 
     internal static void ValidateExampleArgs(ExampleAttribute example, ParameterInfo[] parameters)

@@ -27,13 +27,13 @@ public class StringPropertyE2ETests
     // --- [Property] with string param runs MaxExamples without exception ---
 
     [Fact]
-    public void StringParameter_PassingProperty_RunsMaxExamplesWithoutException()
+    public async Task StringParameter_PassingProperty_RunsMaxExamplesWithoutException()
     {
         int count = 0;
-        var settings = new ConjectureSettings { MaxExamples = 50, Seed = 1UL };
-        var parameters = Params(nameof(StringMethod));
+        ConjectureSettings settings = new() { MaxExamples = 50, Seed = 1UL };
+        ParameterInfo[] parameters = Params(nameof(StringMethod));
 
-        var result = TestRunner.Run(settings, data =>
+        TestRunResult result = await TestRunner.Run(settings, data =>
         {
             ParameterStrategyResolver.Resolve(parameters, data);
             count++;
@@ -47,14 +47,14 @@ public class StringPropertyE2ETests
     // --- Failing string property shrinks to minimal string (length exactly 4) ---
 
     [Fact]
-    public void StringParameter_FailsWhenLengthOver3_ShrinksTolength4()
+    public async Task StringParameter_FailsWhenLengthOver3_ShrinksTolength4()
     {
         // Property fails when string.Length > 3.
         // Shrinker must find a minimal counterexample of exactly length 4.
-        var settings = new ConjectureSettings { MaxExamples = 200, Seed = 1UL };
-        var parameters = Params(nameof(StringMethod));
+        ConjectureSettings settings = new() { MaxExamples = 200, Seed = 1UL };
+        ParameterInfo[] parameters = Params(nameof(StringMethod));
 
-        var result = TestRunner.Run(settings, data =>
+        TestRunResult result = await TestRunner.Run(settings, data =>
         {
             object[] args = ParameterStrategyResolver.Resolve(parameters, data);
             string s = (string)args[0];
@@ -62,19 +62,19 @@ public class StringPropertyE2ETests
         });
 
         Assert.False(result.Passed);
-        var replay = ConjectureData.ForRecord(result.Counterexample!);
+        ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
         object[] shrunkArgs = ParameterStrategyResolver.Resolve(parameters, replay);
         string shrunk = (string)shrunkArgs[0];
         Assert.Equal(4, shrunk.Length);
     }
 
     [Fact]
-    public void StringParameter_ShrunkCounterexample_StillSatisfiesFailureCondition()
+    public async Task StringParameter_ShrunkCounterexample_StillSatisfiesFailureCondition()
     {
-        var settings = new ConjectureSettings { MaxExamples = 200, Seed = 3UL };
-        var parameters = Params(nameof(StringMethod));
+        ConjectureSettings settings = new() { MaxExamples = 200, Seed = 3UL };
+        ParameterInfo[] parameters = Params(nameof(StringMethod));
 
-        var result = TestRunner.Run(settings, data =>
+        TestRunResult result = await TestRunner.Run(settings, data =>
         {
             object[] args = ParameterStrategyResolver.Resolve(parameters, data);
             string s = (string)args[0];
@@ -82,7 +82,7 @@ public class StringPropertyE2ETests
         });
 
         Assert.False(result.Passed);
-        var replay = ConjectureData.ForRecord(result.Counterexample!);
+        ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
         object[] shrunkArgs = ParameterStrategyResolver.Resolve(parameters, replay);
         string shrunk = (string)shrunkArgs[0];
         Assert.True(shrunk.Length > 3, $"Replayed shrunk string '{shrunk}' does not trigger the failure condition");
@@ -91,12 +91,12 @@ public class StringPropertyE2ETests
     // --- Formatted failure output shows string value in double quotes ---
 
     [Fact]
-    public void StringParameter_FailureMessage_ShowsStringInDoubleQuotes()
+    public async Task StringParameter_FailureMessage_ShowsStringInDoubleQuotes()
     {
-        var settings = new ConjectureSettings { MaxExamples = 200, Seed = 1UL };
-        var parameters = Params(nameof(StringMethod));
+        ConjectureSettings settings = new() { MaxExamples = 200, Seed = 1UL };
+        ParameterInfo[] parameters = Params(nameof(StringMethod));
 
-        var result = TestRunner.Run(settings, data =>
+        TestRunResult result = await TestRunner.Run(settings, data =>
         {
             object[] args = ParameterStrategyResolver.Resolve(parameters, data);
             string s = (string)args[0];
@@ -109,12 +109,12 @@ public class StringPropertyE2ETests
     }
 
     [Fact]
-    public void StringParameter_FailureMessage_ContainsParamNameAndSeed()
+    public async Task StringParameter_FailureMessage_ContainsParamNameAndSeed()
     {
-        var settings = new ConjectureSettings { MaxExamples = 200, Seed = 7UL };
-        var parameters = Params(nameof(StringMethod));
+        ConjectureSettings settings = new() { MaxExamples = 200, Seed = 7UL };
+        ParameterInfo[] parameters = Params(nameof(StringMethod));
 
-        var result = TestRunner.Run(settings, data =>
+        TestRunResult result = await TestRunner.Run(settings, data =>
         {
             object[] args = ParameterStrategyResolver.Resolve(parameters, data);
             string s = (string)args[0];
