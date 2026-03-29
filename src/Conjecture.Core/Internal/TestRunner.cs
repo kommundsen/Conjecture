@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 using ShrinkEngine = Conjecture.Core.Internal.Shrinker.Shrinker;
 
 namespace Conjecture.Core.Internal;
@@ -12,6 +14,8 @@ internal static class TestRunner
         var unsatisfied = 0;
         var totalAttempts = 0;
         var maxAttempts = settings.MaxExamples * 200;
+        var deadline = settings.Deadline;
+        var sw = deadline.HasValue ? Stopwatch.StartNew() : null;
 
         while (valid < settings.MaxExamples && totalAttempts < maxAttempts)
         {
@@ -21,6 +25,10 @@ internal static class TestRunner
             {
                 test(data);
                 valid++;
+                if (sw is not null && sw.Elapsed > deadline!.Value)
+                {
+                    throw new ConjectureException("deadline exceeded");
+                }
             }
             catch (UnsatisfiedAssumptionException)
             {
@@ -30,6 +38,10 @@ internal static class TestRunner
                 {
                     throw new ConjectureException("too many unsatisfied assumptions");
                 }
+            }
+            catch (ConjectureException)
+            {
+                throw;
             }
             catch
             {

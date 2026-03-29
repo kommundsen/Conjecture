@@ -16,12 +16,20 @@ internal sealed class PropertyTestCaseDiscoverer(IMessageSink diagnosticMessageS
         var rawSeed = factAttribute.GetNamedArgument<ulong>("Seed");
         var seed = rawSeed == 0UL ? (ulong?)null : rawSeed;
 
+        var useDatabase = factAttribute.GetNamedArgument<bool>("UseDatabase");
+        var maxStrategyRejections = factAttribute.GetNamedArgument<int>("MaxStrategyRejections");
+        if (maxStrategyRejections <= 0) { maxStrategyRejections = 5; }
+        var deadlineMs = factAttribute.GetNamedArgument<int>("DeadlineMs");
+
         yield return new PropertyTestCase(
             diagnosticMessageSink,
             discoveryOptions.MethodDisplayOrDefault(),
             discoveryOptions.MethodDisplayOptionsOrDefault(),
             testMethod,
             maxExamples,
-            seed);
+            seed,
+            useDatabase,
+            maxStrategyRejections,
+            deadlineMs);
     }
 }

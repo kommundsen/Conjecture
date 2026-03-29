@@ -263,9 +263,9 @@ Phase 0 scope: `CounterexampleFormatter` with `ToString()`. Phase 1: full `IStra
   - Update `PublicAPI.Unshipped.txt`
 
 #### Cycle 1.8.6 -- Wire extended settings into PropertyAttribute
-- [ ] `/test` -- `src/Conjecture.Tests/PropertyAttributeSettingsTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/PropertyAttributeSettingsTests.cs`
   - `[Property(UseDatabase = false)]` is respected, `[Property(MaxStrategyRejections = 20)]` flows through, Deadline timeout terminates long-running test
-- [ ] `/implement` -- Extend `src/Conjecture.Xunit/PropertyAttribute.cs`; modify `PropertyTestCaseRunner` to build full settings via `SettingsResolver`
+- [x] `/implement` -- Extend `src/Conjecture.Xunit/PropertyAttribute.cs`; modify `PropertyTestCaseRunner` to build full settings via `SettingsResolver`
   - Update `PublicAPI.Unshipped.txt`
 
 ---

@@ -7,6 +7,9 @@ internal sealed class PropertyTestCase : XunitTestCase
 {
     internal int MaxExamples { get; private set; }
     internal ulong? Seed { get; private set; }
+    internal bool UseDatabase { get; private set; }
+    internal int MaxStrategyRejections { get; private set; }
+    internal int DeadlineMs { get; private set; }
 
     [Obsolete("For deserialization only", error: false)]
     public PropertyTestCase() { }
@@ -17,11 +20,17 @@ internal sealed class PropertyTestCase : XunitTestCase
         TestMethodDisplayOptions defaultMethodDisplayOptions,
         ITestMethod testMethod,
         int maxExamples,
-        ulong? seed)
+        ulong? seed,
+        bool useDatabase,
+        int maxStrategyRejections,
+        int deadlineMs)
         : base(diagnosticMessageSink, defaultMethodDisplay, defaultMethodDisplayOptions, testMethod)
     {
         MaxExamples = maxExamples;
         Seed = seed;
+        UseDatabase = useDatabase;
+        MaxStrategyRejections = maxStrategyRejections;
+        DeadlineMs = deadlineMs;
     }
 
     public override void Serialize(IXunitSerializationInfo info)
@@ -29,6 +38,9 @@ internal sealed class PropertyTestCase : XunitTestCase
         base.Serialize(info);
         info.AddValue("MaxExamples", MaxExamples);
         info.AddValue("Seed", Seed.HasValue ? Seed.Value.ToString() : null);
+        info.AddValue("UseDatabase", UseDatabase);
+        info.AddValue("MaxStrategyRejections", MaxStrategyRejections);
+        info.AddValue("DeadlineMs", DeadlineMs);
     }
 
     public override void Deserialize(IXunitSerializationInfo info)
@@ -37,6 +49,9 @@ internal sealed class PropertyTestCase : XunitTestCase
         MaxExamples = info.GetValue<int>("MaxExamples");
         var seedStr = info.GetValue<string?>("Seed");
         Seed = seedStr is not null ? ulong.Parse(seedStr) : null;
+        UseDatabase = info.GetValue<bool>("UseDatabase");
+        MaxStrategyRejections = info.GetValue<int>("MaxStrategyRejections");
+        DeadlineMs = info.GetValue<int>("DeadlineMs");
     }
 
     public override Task<RunSummary> RunAsync(
