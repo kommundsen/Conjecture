@@ -347,7 +347,7 @@ Extend `IRNodeKind` so specialized shrinker passes can identify float and string
 ### 2.10 Trim/NativeAOT Validation
 
 #### Cycle 2.10.1 -- Trimming annotations
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/TrimAnnotationTests.cs`
     - `[RequiresUnreferencedCode]` present on `ParameterStrategyResolver.Resolve`
     - `[RequiresDynamicCode]` present on `PropertyTestCaseRunner.RunTestAsync`

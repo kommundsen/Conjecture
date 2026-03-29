@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Conjecture.Core;
 using Conjecture.Core.Generation;
@@ -10,6 +11,7 @@ internal static class ParameterStrategyResolver
     private static readonly Type OpenFromAttribute = typeof(FromAttribute<>).GetGenericTypeDefinition();
     private static readonly Type OpenStrategyProvider = typeof(IStrategyProvider<>);
 
+    [RequiresUnreferencedCode("Accesses parameter type metadata via reflection; not trim-safe.")]
     internal static object[] Resolve(ParameterInfo[] parameters, ConjectureData data)
     {
         object[] args = new object[parameters.Length];
