@@ -107,7 +107,7 @@ Extend `IRNodeKind` so specialized shrinker passes can identify float and string
 ### 2.2 Advanced Shrinker: Structural Passes
 
 #### Cycle 2.2.1 -- IntervalDeletionPass
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/Internal/Shrinker/IntervalDeletionPassTests.cs`
     - Deletes contiguous runs of 2+ nodes in one operation
     - Preserves failure status after deletion
@@ -119,7 +119,7 @@ Extend `IRNodeKind` so specialized shrinker passes can identify float and string
     - Call `state.TryUpdate` with candidate minus the interval
 
 #### Cycle 2.2.2 -- BlockSwappingPass
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/Internal/Shrinker/BlockSwappingPassTests.cs`
     - Swaps adjacent same-kind nodes to find lexicographically smaller arrangement
     - `[5, 3]` integer nodes → `[3, 5]` if still interesting
