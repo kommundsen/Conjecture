@@ -368,7 +368,7 @@ Extend `IRNodeKind` so specialized shrinker passes can identify float and string
 ### 2.11 End-to-End Tests
 
 #### Cycle 2.11.1 -- Advanced shrinking end-to-end
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/EndToEnd/AdvancedShrinkingE2ETests.cs`
     - Float property `x > 100.0` shrinks to exactly `100.0...01` (not NaN, not infinity)
     - String property `s.Contains("err")` shrinks to `"err"` (shortest matching)
