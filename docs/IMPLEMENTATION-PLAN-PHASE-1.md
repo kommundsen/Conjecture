@@ -330,7 +330,7 @@ Phase 0 scope: `CounterexampleFormatter` with `ToString()`. Phase 1: full `IStra
   - `[Property]` with `List<int>` param runs and shrinks, list shrinks toward empty/minimal, formatted output shows list as `[1, 2, 3]`
 
 #### Cycle 1.10.5 -- End-to-end: formatter integration
-- [ ] `/test` -- `src/Conjecture.Tests/EndToEnd/FormatterE2ETests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/EndToEnd/FormatterE2ETests.cs`
   - Failure output shows "Falsifying example found after N examples", includes shrink count, values use registered formatters, custom formatter works
 
 #### Cycle 1.10.6 -- End-to-end: database regression
