@@ -215,7 +215,7 @@ Extend `IRNodeKind` so specialized shrinker passes can identify float and string
 ### 2.6 [Example] Attribute
 
 #### Cycle 2.6.1 -- ExampleAttribute
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/ExampleAttributeTests.cs`
     - `[Example(1, 2)]` stores arguments, `[Example("hello")]` stores string arg
     - Multiple `[Example]` on same method all recorded

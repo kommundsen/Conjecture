@@ -84,3 +84,6 @@ Conjecture.Core.ConjectureSettingsAttribute.MaxUnsatisfiedRatio.set -> void
 Conjecture.Core.ConjectureSettingsAttribute.DatabasePath.get -> string!
 Conjecture.Core.ConjectureSettingsAttribute.DatabasePath.set -> void
 Conjecture.Core.ConjectureSettingsAttribute.Apply(Conjecture.Core.ConjectureSettings! baseline) -> Conjecture.Core.ConjectureSettings!
+Conjecture.Core.ExampleAttribute
+Conjecture.Core.ExampleAttribute.ExampleAttribute(params object?[]! arguments) -> void
+Conjecture.Core.ExampleAttribute.Arguments.get -> object?[]!
