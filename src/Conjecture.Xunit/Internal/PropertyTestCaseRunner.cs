@@ -1,7 +1,11 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using System.Text;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
+using Conjecture.Core.Internal.Database;
+using Xunit.Abstractions;
 using Xunit.Sdk;
 
 namespace Conjecture.Xunit.Internal;
@@ -31,28 +35,57 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
         };
     }
 
+    [RequiresUnreferencedCode("Accesses type and parameter metadata via reflection; not trim-safe.")]
+    internal static string ComputeTestId(MethodInfo method)
+    {
+        StringBuilder sb = new();
+        sb.Append(method.DeclaringType?.FullName ?? method.DeclaringType?.Name ?? "Unknown");
+        sb.Append('.');
+        sb.Append(method.Name);
+        sb.Append('(');
+        ParameterInfo[] parameters = method.GetParameters();
+        for (int i = 0; i < parameters.Length; i++)
+        {
+            if (i > 0)
+            {
+                sb.Append(',');
+            }
+
+            sb.Append(parameters[i].ParameterType.FullName ?? parameters[i].ParameterType.Name);
+        }
+
+        sb.Append(')');
+        return TestIdHasher.Hash(sb.ToString());
+    }
+
+    [RequiresDynamicCode("xUnit test execution invokes test methods and creates instances via reflection.")]
+    [RequiresUnreferencedCode("xUnit test execution accesses type and method metadata that may be trimmed.")]
     protected override async Task<RunSummary> RunTestAsync()
     {
-        var summary = new RunSummary { Total = 1 };
-        var test = CreateTest(TestCase, DisplayName);
+        RunSummary summary = new() { Total = 1 };
+        ITest test = CreateTest(TestCase, DisplayName);
 
         if (!MessageBus.QueueMessage(new TestStarting(test)))
         {
             CancellationTokenSource.Cancel();
         }
 
-        var sw = Stopwatch.StartNew();
+        Stopwatch sw = Stopwatch.StartNew();
         Exception? setupFailure = null;
         TestRunResult? result = null;
 
         try
         {
-            var testInstance = Activator.CreateInstance(TestClass);
-            var methodInfo = TestMethod;
+            object? testInstance = Activator.CreateInstance(TestClass);
+            MethodInfo methodInfo = TestMethod;
+            string dbPath = Path.Combine(settings.DatabasePath, "conjecture.db");
+            string testIdHash = ComputeTestId(methodInfo);
 
+            ParameterInfo[] methodParams = methodInfo.GetParameters();
+            using ExampleDatabase db = new(dbPath);
             result = TestRunner.Run(settings, data =>
             {
-                var args = ParameterStrategyResolver.Resolve(methodInfo.GetParameters(), data);
+                object[] args = ParameterStrategyResolver.Resolve(methodParams, data);
                 try
                 {
                     methodInfo.Invoke(testInstance, args);
@@ -61,7 +94,7 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
                 {
                     System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
                 }
-            });
+            }, db, testIdHash);
         }
         catch (Exception ex)
         {
@@ -69,7 +102,7 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
         }
 
         sw.Stop();
-        var elapsed = (decimal)sw.Elapsed.TotalSeconds;
+        decimal elapsed = (decimal)sw.Elapsed.TotalSeconds;
 
         if (setupFailure is null && result!.Passed)
         {
@@ -81,7 +114,7 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
         else
         {
             summary.Failed = 1;
-            var failure = setupFailure
+            Exception failure = setupFailure
                 ?? new Exception(BuildFailureMessage(result!, TestMethod.GetParameters()));
             if (!MessageBus.QueueMessage(new TestFailed(test, elapsed, null, failure)))
             {
@@ -97,11 +130,12 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
         return summary;
     }
 
+    [RequiresUnreferencedCode("Resolves parameter strategies by Type, which may be trimmed.")]
     internal static string BuildFailureMessage(TestRunResult result, ParameterInfo[] parameters)
     {
-        var replay = ConjectureData.ForRecord(result.Counterexample!);
-        var values = ParameterStrategyResolver.Resolve(parameters, replay);
-        var pairs = parameters.Zip(values, (p, v) => (p.Name!, (object)v));
+        ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
+        object[] values = ParameterStrategyResolver.Resolve(parameters, replay);
+        IEnumerable<(string name, object value)> pairs = parameters.Zip(values, (p, v) => (p.Name!, (object)v!));
         return CounterexampleFormatter.Format(pairs, result.Seed!.Value, result.ExampleCount, result.ShrinkCount);
     }
 }

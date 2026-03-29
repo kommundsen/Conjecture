@@ -302,9 +302,9 @@ Phase 0 scope: `CounterexampleFormatter` with `ToString()`. Phase 1: full `IStra
   - Replay stored buffers before generating new; save on failure; delete on pass
 
 #### Cycle 1.9.6 -- Wire database into PropertyTestCaseRunner
-- [ ] `/test` -- `src/Conjecture.Tests/PropertyAttributeDatabaseTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/PropertyAttributeDatabaseTests.cs`
   - `[Property]` that fails stores counterexample in DB, re-run replays stored failure, after fix stored buffer cleaned up
-- [ ] `/implement` -- Modify `src/Conjecture.Xunit/Internal/PropertyTestCaseRunner.cs`
+- [x] `/implement` -- Modify `src/Conjecture.Xunit/Internal/PropertyTestCaseRunner.cs`
   - Create `ExampleDatabase` + `TestIdHasher`, pass to `TestRunner`
 
 ---
