@@ -273,9 +273,9 @@ Phase 0 scope: `CounterexampleFormatter` with `ToString()`. Phase 1: full `IStra
 ### 1.9 Example Database (ADR-0012, ADR-0024)
 
 #### Cycle 1.9.1 -- ExampleDatabase schema and initialization
-- [ ] `/test` -- `src/Conjecture.Tests/Internal/Database/ExampleDatabaseSchemaTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Internal/Database/ExampleDatabaseSchemaTests.cs`
   - Creates `.conjecture/examples/conjecture.db`, schema has version table (version 1), schema has examples table (test_id_hash TEXT, buffer BLOB, created_at TEXT), WAL mode enabled
-- [ ] `/implement` -- `src/Conjecture.Core/Internal/Database/ExampleDatabase.cs`
+- [x] `/implement` -- `src/Conjecture.Core/Internal/Database/ExampleDatabase.cs`
   - Uses `Microsoft.Data.Sqlite`; creates tables on first access; enables WAL mode (ADR-0017)
 
 #### Cycle 1.9.2 -- ExampleDatabase Save and Load
