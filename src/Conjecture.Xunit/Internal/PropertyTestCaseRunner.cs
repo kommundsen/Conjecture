@@ -82,19 +82,59 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
             string testIdHash = ComputeTestId(methodInfo);
 
             ParameterInfo[] methodParams = methodInfo.GetParameters();
-            using ExampleDatabase db = new(dbPath);
-            result = TestRunner.Run(settings, data =>
+
+            ExampleAttribute[] exampleAttrs = methodInfo
+                .GetCustomAttributes(typeof(ExampleAttribute), inherit: false)
+                .Cast<ExampleAttribute>()
+                .ToArray();
+
+            foreach (ExampleAttribute exampleAttr in exampleAttrs)
             {
-                object[] args = ParameterStrategyResolver.Resolve(methodParams, data);
+                ValidateExampleArgs(exampleAttr, methodParams);
+            }
+
+            int explicitCount = 0;
+            Exception? explicitFailure = null;
+
+            foreach (ExampleAttribute exampleAttr in exampleAttrs)
+            {
                 try
                 {
-                    methodInfo.Invoke(testInstance, args);
+                    methodInfo.Invoke(testInstance, exampleAttr.Arguments);
+                    explicitCount++;
                 }
                 catch (TargetInvocationException ex) when (ex.InnerException is not null)
                 {
-                    System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
+                    explicitFailure = new Exception(BuildExampleFailureMessage(exampleAttr, methodParams, ex.InnerException), ex.InnerException);
+                    break;
                 }
-            }, db, testIdHash);
+            }
+
+            if (explicitFailure is not null)
+            {
+                setupFailure = explicitFailure;
+            }
+            else
+            {
+                using ExampleDatabase db = new(dbPath);
+                result = TestRunner.Run(settings, data =>
+                {
+                    object[] args = ParameterStrategyResolver.Resolve(methodParams, data);
+                    try
+                    {
+                        methodInfo.Invoke(testInstance, args);
+                    }
+                    catch (TargetInvocationException ex) when (ex.InnerException is not null)
+                    {
+                        System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
+                    }
+                }, db, testIdHash);
+
+                if (explicitCount > 0)
+                {
+                    result = TestRunResult.WithExtraExamples(result, explicitCount);
+                }
+            }
         }
         catch (Exception ex)
         {
@@ -137,5 +177,20 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
         object[] values = ParameterStrategyResolver.Resolve(parameters, replay);
         IEnumerable<(string name, object value)> pairs = parameters.Zip(values, (p, v) => (p.Name!, (object)v!));
         return CounterexampleFormatter.Format(pairs, result.Seed!.Value, result.ExampleCount, result.ShrinkCount);
+    }
+
+    internal static void ValidateExampleArgs(ExampleAttribute example, ParameterInfo[] parameters)
+    {
+        if (example.Arguments.Length != parameters.Length)
+        {
+            throw new ArgumentException(
+                $"[Example] provides {example.Arguments.Length} argument(s) but the method expects {parameters.Length}.");
+        }
+    }
+
+    internal static string BuildExampleFailureMessage(ExampleAttribute example, ParameterInfo[] parameters, Exception failure)
+    {
+        IEnumerable<(string name, object? value)> pairs = parameters.Zip(example.Arguments, (p, a) => (p.Name!, a));
+        return CounterexampleFormatter.FormatExplicit(pairs, failure);
     }
 }

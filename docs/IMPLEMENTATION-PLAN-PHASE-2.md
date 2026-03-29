@@ -227,7 +227,7 @@ Extend `IRNodeKind` so specialized shrinker passes can identify float and string
     - Update `PublicAPI.Unshipped.txt`
 
 #### Cycle 2.6.2 -- Wire [Example] into PropertyTestCaseRunner
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/PropertyAttributeExampleTests.cs`
     - `[Example(0, 0)]` case runs before generated examples
     - Multiple `[Example]` attributes all execute in order

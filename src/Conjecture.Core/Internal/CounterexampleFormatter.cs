@@ -31,6 +31,19 @@ internal static class CounterexampleFormatter
         return sb.ToString();
     }
 
+    internal static string FormatExplicit(IEnumerable<(string name, object? value)> parameters, Exception failure)
+    {
+        StringBuilder sb = new();
+        sb.AppendLine("Explicit example failed:");
+        foreach ((string name, object? value) in parameters)
+        {
+            sb.AppendLine($"  {name} = {FormatValue(value)}");
+        }
+
+        sb.Append(failure.Message);
+        return sb.ToString();
+    }
+
     private static string FormatValue(object? value)
     {
         if (value is null)

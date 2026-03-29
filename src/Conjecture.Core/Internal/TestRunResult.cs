@@ -20,4 +20,6 @@ internal sealed class TestRunResult
     internal static TestRunResult Pass(ulong seed, int exampleCount) => new(true, null, seed, exampleCount, 0);
     internal static TestRunResult Fail(IReadOnlyList<IRNode> counterexample, ulong seed, int exampleCount, int shrinkCount) =>
         new(false, counterexample, seed, exampleCount, shrinkCount);
+    internal static TestRunResult WithExtraExamples(TestRunResult result, int extraCount) =>
+        new(result.Passed, result.Counterexample, result.Seed, result.ExampleCount + extraCount, result.ShrinkCount);
 }
