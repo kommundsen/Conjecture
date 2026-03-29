@@ -144,7 +144,7 @@ Extend `IRNodeKind` so specialized shrinker passes can identify float and string
     - For each adjacent integer pair, try shifting value from right to left (decreasing left, increasing right) while staying in bounds
 
 #### Cycle 2.3.2 -- AdaptivePass
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/Internal/Shrinker/AdaptivePassTests.cs`
     - Tracks which node indices produced progress on prior passes
     - Biases effort toward recently productive indices
