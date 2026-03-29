@@ -8,7 +8,7 @@ internal sealed class IntegerReductionPass : IShrinkPass
         for (int i = 0; i < state.Nodes.Count; i++)
         {
             var node = state.Nodes[i];
-            if (node.Kind != IRNodeKind.Integer)
+            if (!node.IsIntegerLike)
             {
                 continue;
             }
@@ -22,7 +22,7 @@ internal sealed class IntegerReductionPass : IShrinkPass
             while (lo < hi)
             {
                 ulong mid = lo + (hi - lo) / 2;
-                var candidate = Replace(state.Nodes, i, IRNode.ForInteger(mid, node.Min, node.Max));
+                var candidate = Replace(state.Nodes, i, node.WithValue(mid));
                 if (state.TryUpdate(candidate))
                 {
                     hi = mid;

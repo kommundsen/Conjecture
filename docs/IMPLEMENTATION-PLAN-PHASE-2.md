@@ -65,10 +65,10 @@ Trimming annotations ─────────────> CI validation
 ## Pre-requisites
 
 - [ ] `/decision` -- ADR-0028: Parameter Strategy Resolution Attributes — design for `IStrategyProvider<T>`, `[From<T>]`, `[FromFactory]`, `[Example]`
-- [ ] Extend `IRNodeKind` with `Float64`, `Float32`, `StringChar`, `StringLength` variants
-- [ ] Update `FloatingPointStrategy<T>` to record `Float64`/`Float32` kind nodes
-- [ ] Update `StringStrategy` to record `StringLength`/`StringChar` kind nodes
-- [ ] Update `TestRunner.SerializeNodes`/`DeserializeNodes` for new `IRNodeKind` values
+- [x] Extend `IRNodeKind` with `Float64`, `Float32`, `StringChar`, `StringLength` variants
+- [x] Update `FloatingPointStrategy<T>` to record `Float64`/`Float32` kind nodes
+- [x] Update `StringStrategy` to record `StringLength`/`StringChar` kind nodes
+- [x] Update `TestRunner.SerializeNodes`/`DeserializeNodes` for new `IRNodeKind` values
 - [ ] Update `PublicAPI.Unshipped.txt` for every cycle adding public API (ADR-0002)
 
 ## TDD Execution Plan

@@ -8,7 +8,7 @@ internal sealed class LexMinimizePass : IShrinkPass
         for (int i = 0; i < state.Nodes.Count; i++)
         {
             var node = state.Nodes[i];
-            if (node.Kind != IRNodeKind.Integer)
+            if (!node.IsIntegerLike)
             {
                 continue;
             }
@@ -22,7 +22,7 @@ internal sealed class LexMinimizePass : IShrinkPass
             for (ulong step = 1; node.Value >= node.Min + step; step *= 2)
             {
                 var candidate = Replace(state.Nodes, i,
-                    IRNode.ForInteger(node.Value - step, node.Min, node.Max));
+                    node.WithValue(node.Value - step));
                 if (state.TryUpdate(candidate))
                 {
                     progress = true;

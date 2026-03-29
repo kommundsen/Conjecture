@@ -11,7 +11,7 @@ internal sealed class ZeroBlocksPass : IShrinkPass
         for (int i = state.Nodes.Count - 1; i >= 0; i--)
         {
             var node = state.Nodes[i];
-            if (node.Kind != IRNodeKind.Integer)
+            if (!node.IsIntegerLike)
             {
                 continue;
             }
@@ -21,7 +21,7 @@ internal sealed class ZeroBlocksPass : IShrinkPass
                 continue;
             }
 
-            var candidate = Replace(state.Nodes, i, IRNode.ForInteger(node.Min, node.Min, node.Max));
+            var candidate = Replace(state.Nodes, i, node.WithValue(node.Min));
             if (state.TryUpdate(candidate))
             {
                 progress = true;

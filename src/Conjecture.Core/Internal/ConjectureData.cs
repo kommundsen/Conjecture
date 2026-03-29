@@ -48,6 +48,32 @@ internal sealed class ConjectureData
         return value;
     }
 
+    internal ulong DrawFloat64(ulong min, ulong max) => DrawTyped(min, max, IRNodeKind.Float64);
+    internal ulong DrawFloat32(ulong min, ulong max) => DrawTyped(min, max, IRNodeKind.Float32);
+    internal ulong DrawStringLength(ulong min, ulong max) => DrawTyped(min, max, IRNodeKind.StringLength);
+    internal ulong DrawStringChar(ulong min, ulong max) => DrawTyped(min, max, IRNodeKind.StringChar);
+
+    private ulong DrawTyped(ulong min, ulong max, IRNodeKind kind)
+    {
+        CheckCanDraw();
+        if (replayNodes is not null)
+        {
+            var node = ConsumeReplayNode();
+            nodes.Add(node);
+            return node.Value;
+        }
+        var value = PrngAdapter.NextUInt64(rng!, max - min) + min;
+        nodes.Add(kind switch
+        {
+            IRNodeKind.Float64 => IRNode.ForFloat64(value, min, max),
+            IRNodeKind.Float32 => IRNode.ForFloat32(value, min, max),
+            IRNodeKind.StringLength => IRNode.ForStringLength(value, min, max),
+            IRNodeKind.StringChar => IRNode.ForStringChar(value, min, max),
+            _ => IRNode.ForInteger(value, min, max),
+        });
+        return value;
+    }
+
     internal byte[] DrawBytes(int length)
     {
         CheckCanDraw();

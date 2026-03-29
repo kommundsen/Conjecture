@@ -57,7 +57,9 @@ internal sealed class FloatingPointStrategy<T> : Strategy<T>
     {
         if (bounded)
         {
-            var raw = data.DrawInteger(0UL, ulong.MaxValue);
+            ulong raw = Unsafe.SizeOf<T>() == sizeof(double)
+                ? data.DrawFloat64(0UL, ulong.MaxValue)
+                : data.DrawFloat32(0UL, uint.MaxValue);
             var t = T.CreateSaturating(raw) / MaxUlong;
             return min + range * t;
         }
@@ -72,14 +74,14 @@ internal sealed class FloatingPointStrategy<T> : Strategy<T>
         {
             var bits = useSpecial
                 ? DoubleSpecialBits[(int)data.DrawInteger(0UL, (ulong)(DoubleSpecialBits.Length - 1))]
-                : data.DrawInteger(0UL, ulong.MaxValue);
+                : data.DrawFloat64(0UL, ulong.MaxValue);
             return Unsafe.BitCast<ulong, T>(bits);
         }
         if (Unsafe.SizeOf<T>() == sizeof(float))
         {
             var bits = useSpecial
                 ? FloatSpecialBits[(int)data.DrawInteger(0UL, (ulong)(FloatSpecialBits.Length - 1))]
-                : (uint)data.DrawInteger(0UL, uint.MaxValue);
+                : (uint)data.DrawFloat32(0UL, uint.MaxValue);
             return Unsafe.BitCast<uint, T>(bits);
         }
         throw new NotSupportedException($"FloatingPointStrategy does not support {typeof(T).Name} (size={Unsafe.SizeOf<T>()}).");

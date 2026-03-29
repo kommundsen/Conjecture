@@ -33,20 +33,20 @@ internal sealed class StringStrategy : Strategy<string>
 
     internal override string Next(ConjectureData data)
     {
-        var length = (int)data.DrawInteger(minLength, maxLength);
+        var length = (int)data.DrawStringLength(minLength, maxLength);
         var chars = new char[length];
         if (alphabet is not null)
         {
             for (var i = 0; i < length; i++)
             {
-                chars[i] = alphabet[(int)data.DrawInteger(0, (ulong)(alphabet.Length - 1))];
+                chars[i] = alphabet[(int)data.DrawStringChar(0, (ulong)(alphabet.Length - 1))];
             }
         }
         else
         {
             for (var i = 0; i < length; i++)
             {
-                chars[i] = (char)data.DrawInteger(minCodepoint, maxCodepoint);
+                chars[i] = (char)data.DrawStringChar(minCodepoint, maxCodepoint);
             }
         }
         return new string(chars);
