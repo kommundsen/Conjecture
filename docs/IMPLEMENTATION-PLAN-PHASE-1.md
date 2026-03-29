@@ -295,9 +295,9 @@ Phase 0 scope: `CounterexampleFormatter` with `ToString()`. Phase 1: full `IStra
   - SHA256 of `namespace.class.method(paramType1,paramType2)`
 
 #### Cycle 1.9.5 -- Wire database into TestRunner (ADR-0024)
-- [ ] `/test` -- `src/Conjecture.Tests/Internal/TestRunnerDatabaseTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Internal/TestRunnerDatabaseTests.cs`
   - `UseDatabase=true` + failing test saves buffer, next run replays stored buffer first, passing replay removes buffer, `UseDatabase=false` skips DB, explicit `Seed` skips DB
-- [ ] `/implement` -- Modify `src/Conjecture.Core/Internal/TestRunner.cs`
+- [x] `/implement` -- Modify `src/Conjecture.Core/Internal/TestRunner.cs`
   - `TestRunner.Run` extended to accept optional `ExampleDatabase` + test ID hash
   - Replay stored buffers before generating new; save on failure; delete on pass
 

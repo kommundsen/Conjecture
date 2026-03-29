@@ -12,6 +12,7 @@ internal sealed class ConjectureData
 
     internal Status Status { get; private set; } = Status.Valid;
     internal IReadOnlyList<IRNode> IRNodes => nodes;
+    internal bool IsReplay => replayNodes is not null;
 
     private ConjectureData(IRandom rng) => this.rng = rng;
     private ConjectureData(IReadOnlyList<IRNode> nodes) => replayNodes = nodes;
