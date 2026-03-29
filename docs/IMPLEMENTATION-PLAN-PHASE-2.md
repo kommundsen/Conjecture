@@ -160,7 +160,7 @@ Extend `IRNodeKind` so specialized shrinker passes can identify float and string
 ### 2.4 Advanced Shrinker: Specialized Passes
 
 #### Cycle 2.4.1 -- FloatSimplificationPass
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/Internal/Shrinker/FloatSimplificationPassTests.cs`
     - NaN bit pattern → tries 0.0 bit pattern
     - ±Infinity → tries max/min finite value, then 0.0
