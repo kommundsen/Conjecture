@@ -326,7 +326,7 @@ Phase 0 scope: `CounterexampleFormatter` with `ToString()`. Phase 1: full `IStra
   - `[Property]` with double param runs, `[Property]` with float param runs, special values (NaN) can be generated
 
 #### Cycle 1.10.4 -- End-to-end: collection property tests
-- [ ] `/test` -- `src/Conjecture.Tests/EndToEnd/CollectionPropertyE2ETests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/EndToEnd/CollectionPropertyE2ETests.cs`
   - `[Property]` with `List<int>` param runs and shrinks, list shrinks toward empty/minimal, formatted output shows list as `[1, 2, 3]`
 
 #### Cycle 1.10.5 -- End-to-end: formatter integration
