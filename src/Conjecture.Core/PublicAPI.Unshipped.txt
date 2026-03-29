@@ -93,3 +93,6 @@ Conjecture.Core.IStrategyProvider<T>.Create() -> Conjecture.Core.Generation.Stra
 Conjecture.Core.FromAttribute<TProvider>
 Conjecture.Core.FromAttribute<TProvider>.FromAttribute() -> void
 Conjecture.Core.FromAttribute<TProvider>.ProviderType.get -> System.Type!
+Conjecture.Core.FromFactoryAttribute
+Conjecture.Core.FromFactoryAttribute.FromFactoryAttribute(string! methodName) -> void
+Conjecture.Core.FromFactoryAttribute.MethodName.get -> string!

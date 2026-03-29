@@ -270,7 +270,7 @@ Extend `IRNodeKind` so specialized shrinker passes can identify float and string
     - Update `PublicAPI.Unshipped.txt`
 
 #### Cycle 2.7.3 -- FromFactoryAttribute + resolver integration
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/FromFactoryAttributeTests.cs`
     - `[FromFactory(nameof(EvenInts))]` finds static method on test class
     - Method returning `Strategy<int>` works for `int` param

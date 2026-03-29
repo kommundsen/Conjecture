@@ -16,6 +16,7 @@ internal static class ParameterStrategyResolver
         for (int i = 0; i < parameters.Length; i++)
         {
             args[i] = TryDrawFromAttribute(parameters[i], data)
+                ?? TryDrawFromFactory(parameters[i], data)
                 ?? DrawValue(parameters[i].ParameterType, data);
         }
         return args;
@@ -57,6 +58,56 @@ internal static class ParameterStrategyResolver
         }
 
         return null;
+    }
+
+    private static object? TryDrawFromFactory(ParameterInfo parameter, ConjectureData data)
+    {
+        FromFactoryAttribute? attr = parameter.GetCustomAttribute<FromFactoryAttribute>();
+        if (attr is null)
+        {
+            return null;
+        }
+
+        Type declaringType = parameter.Member.DeclaringType
+            ?? throw new InvalidOperationException(
+                $"[FromFactory] on parameter '{parameter.Name}' could not resolve its declaring type.");
+
+
+        MethodInfo? method = declaringType.GetMethod(
+            attr.MethodName,
+            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance);
+
+        if (method is null)
+        {
+            throw new InvalidOperationException(
+                $"Method '{attr.MethodName}' not found on '{declaringType.Name}'.");
+        }
+
+        if (!method.IsStatic)
+        {
+            throw new InvalidOperationException(
+                $"Method '{attr.MethodName}' on '{declaringType.Name}' must be static.");
+        }
+
+        Type expectedStrategyType = typeof(Strategy<>).MakeGenericType(parameter.ParameterType);
+        if (!method.ReturnType.IsAssignableTo(expectedStrategyType))
+        {
+            throw new InvalidOperationException(
+                $"Method '{attr.MethodName}' returns '{method.ReturnType.Name}' " +
+                $"but must return Strategy<{parameter.ParameterType.Name}>.");
+        }
+
+        MethodInfo drawMethod = typeof(ParameterStrategyResolver)
+            .GetMethod(nameof(DrawFromFactory), BindingFlags.NonPublic | BindingFlags.Static)!
+            .MakeGenericMethod(parameter.ParameterType);
+
+        return drawMethod.Invoke(null, [method, data])!;
+    }
+
+    private static object DrawFromFactory<T>(MethodInfo factory, ConjectureData data)
+    {
+        Strategy<T> strategy = (Strategy<T>)factory.Invoke(null, [])!;
+        return strategy.Next(data)!;
     }
 
     private static object DrawFromProvider<TProvider, T>(ConjectureData data)
