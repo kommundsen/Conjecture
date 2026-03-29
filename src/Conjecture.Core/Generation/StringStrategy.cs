@@ -10,7 +10,7 @@ internal sealed class StringStrategy : Strategy<string>
     private readonly ulong maxCodepoint;
     private readonly string? alphabet;
 
-    internal StringStrategy(int minLength = 0, int maxLength = 100, int minCodepoint = 32, int maxCodepoint = 126)
+    internal StringStrategy(int minLength = 0, int maxLength = 20, int minCodepoint = 32, int maxCodepoint = 126)
     {
         this.minLength = (ulong)minLength;
         this.maxLength = (ulong)maxLength;
@@ -18,7 +18,7 @@ internal sealed class StringStrategy : Strategy<string>
         this.maxCodepoint = (ulong)maxCodepoint;
     }
 
-    internal StringStrategy(string alphabet, int minLength = 0, int maxLength = 100)
+    internal StringStrategy(string alphabet, int minLength = 0, int maxLength = 20)
     {
         if (alphabet.Length == 0)
         {

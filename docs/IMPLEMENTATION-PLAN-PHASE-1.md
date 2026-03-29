@@ -318,7 +318,7 @@ Phase 0 scope: `CounterexampleFormatter` with `ToString()`. Phase 1: full `IStra
   - `string` → `Gen.Strings()`, `float` → `Gen.Floats()`, `double` → `Gen.Doubles()`, `List<int>` → `Gen.Lists(Gen.Integers<int>())`, enums → `Gen.Enums<T>()`, nullable → `Gen.Nullable(...)`
 
 #### Cycle 1.10.2 -- End-to-end: string property tests
-- [ ] `/test` -- `src/Conjecture.Tests/EndToEnd/StringPropertyE2ETests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/EndToEnd/StringPropertyE2ETests.cs`
   - `[Property]` with string param runs, failing test shrinks to minimal string, formatted output shows string in quotes
 
 #### Cycle 1.10.3 -- End-to-end: floating point property tests

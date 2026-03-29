@@ -1,0 +1,129 @@
+using System.Reflection;
+using Conjecture.Core;
+using Conjecture.Core.Internal;
+using Conjecture.Xunit.Internal;
+
+namespace Conjecture.Xunit.Tests.EndToEnd;
+
+/// <summary>
+/// End-to-end tests verifying that [Property] with string parameters
+/// runs, shrinks to minimal length, and produces formatted failure messages.
+/// </summary>
+public class StringPropertyE2ETests
+{
+    // [Property]-decorated method xUnit discovers directly — must pass.
+#pragma warning disable IDE0060
+    [Property(MaxExamples = 20, Seed = 1UL)]
+    public void StringParameter_NoAssertion_Passes(string s) { }
+#pragma warning restore IDE0060
+
+    private static void StringMethod(string s) { }
+
+    private static ParameterInfo[] Params(string methodName) =>
+        typeof(StringPropertyE2ETests)
+            .GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static)!
+            .GetParameters();
+
+    // --- [Property] with string param runs MaxExamples without exception ---
+
+    [Fact]
+    public void StringParameter_PassingProperty_RunsMaxExamplesWithoutException()
+    {
+        int count = 0;
+        var settings = new ConjectureSettings { MaxExamples = 50, Seed = 1UL };
+        var parameters = Params(nameof(StringMethod));
+
+        var result = TestRunner.Run(settings, data =>
+        {
+            ParameterStrategyResolver.Resolve(parameters, data);
+            count++;
+        });
+
+        Assert.True(result.Passed);
+        Assert.Equal(50, count);
+        Assert.Null(result.Counterexample);
+    }
+
+    // --- Failing string property shrinks to minimal string (length exactly 4) ---
+
+    [Fact]
+    public void StringParameter_FailsWhenLengthOver3_ShrinksTolength4()
+    {
+        // Property fails when string.Length > 3.
+        // Shrinker must find a minimal counterexample of exactly length 4.
+        var settings = new ConjectureSettings { MaxExamples = 200, Seed = 1UL };
+        var parameters = Params(nameof(StringMethod));
+
+        var result = TestRunner.Run(settings, data =>
+        {
+            object[] args = ParameterStrategyResolver.Resolve(parameters, data);
+            string s = (string)args[0];
+            if (s.Length > 3) { throw new Exception("too long"); }
+        });
+
+        Assert.False(result.Passed);
+        var replay = ConjectureData.ForRecord(result.Counterexample!);
+        object[] shrunkArgs = ParameterStrategyResolver.Resolve(parameters, replay);
+        string shrunk = (string)shrunkArgs[0];
+        Assert.Equal(4, shrunk.Length);
+    }
+
+    [Fact]
+    public void StringParameter_ShrunkCounterexample_StillSatisfiesFailureCondition()
+    {
+        var settings = new ConjectureSettings { MaxExamples = 200, Seed = 3UL };
+        var parameters = Params(nameof(StringMethod));
+
+        var result = TestRunner.Run(settings, data =>
+        {
+            object[] args = ParameterStrategyResolver.Resolve(parameters, data);
+            string s = (string)args[0];
+            if (s.Length > 3) { throw new Exception("too long"); }
+        });
+
+        Assert.False(result.Passed);
+        var replay = ConjectureData.ForRecord(result.Counterexample!);
+        object[] shrunkArgs = ParameterStrategyResolver.Resolve(parameters, replay);
+        string shrunk = (string)shrunkArgs[0];
+        Assert.True(shrunk.Length > 3, $"Replayed shrunk string '{shrunk}' does not trigger the failure condition");
+    }
+
+    // --- Formatted failure output shows string value in double quotes ---
+
+    [Fact]
+    public void StringParameter_FailureMessage_ShowsStringInDoubleQuotes()
+    {
+        var settings = new ConjectureSettings { MaxExamples = 200, Seed = 1UL };
+        var parameters = Params(nameof(StringMethod));
+
+        var result = TestRunner.Run(settings, data =>
+        {
+            object[] args = ParameterStrategyResolver.Resolve(parameters, data);
+            string s = (string)args[0];
+            if (s.Length > 3) { throw new Exception("too long"); }
+        });
+
+        Assert.False(result.Passed);
+        string message = PropertyTestCaseRunner.BuildFailureMessage(result, parameters);
+        Assert.Contains("s = \"", message);
+    }
+
+    [Fact]
+    public void StringParameter_FailureMessage_ContainsParamNameAndSeed()
+    {
+        var settings = new ConjectureSettings { MaxExamples = 200, Seed = 7UL };
+        var parameters = Params(nameof(StringMethod));
+
+        var result = TestRunner.Run(settings, data =>
+        {
+            object[] args = ParameterStrategyResolver.Resolve(parameters, data);
+            string s = (string)args[0];
+            if (s.Length > 3) { throw new Exception("too long"); }
+        });
+
+        Assert.False(result.Passed);
+        string message = PropertyTestCaseRunner.BuildFailureMessage(result, parameters);
+        Assert.Contains("s =", message);
+        Assert.Contains("Reproduce with: [Property(Seed = 0x7)]", message);
+    }
+}

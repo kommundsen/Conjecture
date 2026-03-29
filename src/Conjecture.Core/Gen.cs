@@ -45,13 +45,13 @@ public static class Gen
     public static Strategy<float> Floats(float min, float max) => new FloatingPointStrategy<float>(min, max);
 
     /// <summary>Returns a strategy that generates random strings. When <paramref name="alphabet"/> is provided it takes precedence and <paramref name="minCodepoint"/>/<paramref name="maxCodepoint"/> are ignored.</summary>
-    public static Strategy<string> Strings(int minLength = 0, int maxLength = 100, int minCodepoint = 32, int maxCodepoint = 126, string? alphabet = null)
+    public static Strategy<string> Strings(int minLength = 0, int maxLength = 20, int minCodepoint = 32, int maxCodepoint = 126, string? alphabet = null)
         => alphabet is not null
             ? new StringStrategy(alphabet, minLength, maxLength)
             : new StringStrategy(minLength, maxLength, minCodepoint, maxCodepoint);
 
     /// <summary>Alias for <see cref="Strings(int, int, int, int, string)"/>.</summary>
-    public static Strategy<string> Text(int minLength = 0, int maxLength = 100) => Strings(minLength, maxLength);
+    public static Strategy<string> Text(int minLength = 0, int maxLength = 20) => Strings(minLength, maxLength);
 
     /// <summary>Returns a strategy that produces nullable <typeparamref name="T"/> values, with ~10% null probability.</summary>
     public static Strategy<T?> Nullable<T>(Strategy<T> inner) where T : struct => new NullableStrategy<T>(inner);
