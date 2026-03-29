@@ -223,10 +223,10 @@ Phase 0 scope: `CounterexampleFormatter` with `ToString()`. Phase 1: full `IStra
   - Collection formatters use `FormatterRegistry.Get<T>()` for elements; fall back to `ToString()`
 
 #### Cycle 1.7.5 -- Enhanced CounterexampleFormatter (ADR-0022)
-- [ ] `/test` -- `src/Conjecture.Tests/Internal/EnhancedCounterexampleFormatterTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Internal/EnhancedCounterexampleFormatterTests.cs`
   - Output includes "Falsifying example found after N examples", includes "Shrunk M times from original", param values use FormatterRegistry when available, falls back to `ToString()`, includes seed line
-- [ ] `/implement` -- Modify `src/Conjecture.Core/Internal/CounterexampleFormatter.cs` to use `FormatterRegistry`
-  - Extend `TestRunResult` with example count and shrink count metadata
+- [x] `/implement` -- Modify `src/Conjecture.Core/Internal/CounterexampleFormatter.cs` to use `FormatterRegistry`
+  - Extended `TestRunResult` with `ExampleCount`/`ShrinkCount`; `Shrinker` returns `(Nodes, ShrinkCount)` tuple; `PropertyTestCaseRunner` uses enhanced overload
 
 ---
 

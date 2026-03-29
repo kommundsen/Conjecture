@@ -12,6 +12,8 @@ internal sealed class ShrinkState
         this.isInteresting = isInteresting;
     }
 
+    internal int ShrinkCount { get; private set; }
+
     /// <summary>
     /// Try replacing current nodes with <paramref name="candidate"/>.
     /// Updates state and returns true only if the candidate is still interesting.
@@ -21,6 +23,7 @@ internal sealed class ShrinkState
         if (isInteresting(candidate) == Status.Interesting)
         {
             Nodes = candidate;
+            ShrinkCount++;
             return true;
         }
         return false;

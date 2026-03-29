@@ -40,7 +40,7 @@ public class ShrinkerTests
             catch { return Status.Overrun; }
         }
 
-        var result = Core.Internal.Shrinker.Shrinker.Shrink(nodes, IsInteresting);
+        var (result, _) = Core.Internal.Shrinker.Shrinker.Shrink(nodes, IsInteresting);
 
         var single = Assert.Single(result);
         Assert.Equal(0UL, single.Value);
@@ -54,7 +54,7 @@ public class ShrinkerTests
         // Interesting when value >= 5.
         var isInteresting = InterestingWhenAtLeast(5);
 
-        var result = Core.Internal.Shrinker.Shrinker.Shrink(nodes, isInteresting);
+        var (result, _) = Core.Internal.Shrinker.Shrinker.Shrink(nodes, isInteresting);
 
         Assert.Single(result);
         Assert.True(result[0].Value < 1000, $"Expected value < 1000, got {result[0].Value}");
@@ -68,7 +68,7 @@ public class ShrinkerTests
         var nodes = SingleIntegerNodes(500, 0, 1000);
         var isInteresting = InterestingWhenAtLeast(10);
 
-        var result = Core.Internal.Shrinker.Shrinker.Shrink(nodes, isInteresting);
+        var (result, _) = Core.Internal.Shrinker.Shrinker.Shrink(nodes, isInteresting);
 
         var status = isInteresting(result);
         Assert.Equal(Status.Interesting, status);
@@ -96,7 +96,7 @@ public class ShrinkerTests
             }
         }
 
-        var result = Core.Internal.Shrinker.Shrinker.Shrink(nodes, IsInteresting);
+        var (result, _) = Core.Internal.Shrinker.Shrinker.Shrink(nodes, IsInteresting);
 
         Assert.Single(result);
         Assert.Equal(1UL, result[0].Value);
@@ -128,7 +128,7 @@ public class ShrinkerTests
             }
         }
 
-        var result = Core.Internal.Shrinker.Shrinker.Shrink(nodes, IsInteresting);
+        var (result, _) = Core.Internal.Shrinker.Shrinker.Shrink(nodes, IsInteresting);
 
         Assert.Equal(2, result.Count);
         ulong sum = result[0].Value + result[1].Value;

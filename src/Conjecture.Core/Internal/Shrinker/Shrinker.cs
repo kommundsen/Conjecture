@@ -10,7 +10,7 @@ internal static class Shrinker
         new IntegerReductionPass(),
     ];
 
-    internal static IReadOnlyList<IRNode> Shrink(
+    internal static (IReadOnlyList<IRNode> Nodes, int ShrinkCount) Shrink(
         IReadOnlyList<IRNode> nodes,
         Func<IReadOnlyList<IRNode>, Status> isInteresting)
     {
@@ -26,6 +26,6 @@ internal static class Shrinker
             }
         } while (progress);
 
-        return state.Nodes;
+        return (state.Nodes, state.ShrinkCount);
     }
 }

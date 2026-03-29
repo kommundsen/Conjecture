@@ -98,6 +98,6 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
         var replay = ConjectureData.ForRecord(result.Counterexample!);
         var values = ParameterStrategyResolver.Resolve(parameters, replay);
         var pairs = parameters.Zip(values, (p, v) => (p.Name!, (object)v));
-        return CounterexampleFormatter.Format(pairs, result.Seed!.Value);
+        return CounterexampleFormatter.Format(pairs, result.Seed!.Value, result.ExampleCount, result.ShrinkCount);
     }
 }
