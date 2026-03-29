@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Conjecture.Core.Formatting;
@@ -19,24 +18,6 @@ public static class BuiltInFormatters
     public static IStrategyFormatter<string> String { get; } = new StringFormatter();
     /// <summary>Formatter for <see cref="byte"/> array values.</summary>
     public static IStrategyFormatter<byte[]> ByteArray { get; } = new ByteArrayFormatter();
-
-#pragma warning disable CA2255
-    [ModuleInitializer]
-    internal static void Register()
-#pragma warning restore CA2255
-    {
-        FormatterRegistry.Register(Int32);
-        FormatterRegistry.Register(Boolean);
-        FormatterRegistry.Register(Double);
-        FormatterRegistry.Register(Single);
-        FormatterRegistry.Register(String);
-        FormatterRegistry.Register(ByteArray);
-        FormatterRegistry.Register(new ListFormatter<int>());
-        FormatterRegistry.Register(new ListFormatter<object>());
-        FormatterRegistry.Register(new HashSetFormatter<string>());
-        FormatterRegistry.Register(new DictionaryFormatter<int, string>());
-        FormatterRegistry.Register(new TupleFormatter<int, string>());
-    }
 
     private sealed class Int32Formatter : IStrategyFormatter<int>
     {
@@ -92,24 +73,24 @@ public static class BuiltInFormatters
     private static string FormatSequence<T>(IEnumerable<T> items, char open, char close) =>
         $"{open}{string.Join(", ", items.Select(FormatElement))}{close}";
 
-    private sealed class ListFormatter<T> : IStrategyFormatter<List<T>>
+    internal sealed class ListFormatter<T> : IStrategyFormatter<List<T>>
     {
         public string Format(List<T> value) => FormatSequence(value, '[', ']');
     }
 
-    private sealed class HashSetFormatter<T> : IStrategyFormatter<HashSet<T>>
+    internal sealed class HashSetFormatter<T> : IStrategyFormatter<HashSet<T>>
     {
         public string Format(HashSet<T> value) => FormatSequence(value, '{', '}');
     }
 
-    private sealed class DictionaryFormatter<TKey, TValue> : IStrategyFormatter<Dictionary<TKey, TValue>>
+    internal sealed class DictionaryFormatter<TKey, TValue> : IStrategyFormatter<Dictionary<TKey, TValue>>
         where TKey : notnull
     {
         public string Format(Dictionary<TKey, TValue> value) =>
             $"{{{string.Join(", ", value.Select(kv => $"{FormatElement(kv.Key)}: {FormatElement(kv.Value)}"))}}}";
     }
 
-    private sealed class TupleFormatter<T1, T2> : IStrategyFormatter<(T1, T2)>
+    internal sealed class TupleFormatter<T1, T2> : IStrategyFormatter<(T1, T2)>
     {
         public string Format((T1, T2) value) =>
             $"({FormatElement(value.Item1)}, {FormatElement(value.Item2)})";

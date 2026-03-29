@@ -7,6 +7,21 @@ public static class FormatterRegistry
 {
     private static readonly ConcurrentDictionary<Type, Func<object, string>> UntypedFormatters = new();
 
+    static FormatterRegistry()
+    {
+        Register(BuiltInFormatters.Int32);
+        Register(BuiltInFormatters.Boolean);
+        Register(BuiltInFormatters.Double);
+        Register(BuiltInFormatters.Single);
+        Register(BuiltInFormatters.String);
+        Register(BuiltInFormatters.ByteArray);
+        Register(new BuiltInFormatters.ListFormatter<int>());
+        Register(new BuiltInFormatters.ListFormatter<object>());
+        Register(new BuiltInFormatters.HashSetFormatter<string>());
+        Register(new BuiltInFormatters.DictionaryFormatter<int, string>());
+        Register(new BuiltInFormatters.TupleFormatter<int, string>());
+    }
+
     /// <summary>Registers <paramref name="formatter"/> for type <typeparamref name="T"/>, replacing any existing registration.</summary>
     public static void Register<T>(IStrategyFormatter<T>? formatter)
     {
