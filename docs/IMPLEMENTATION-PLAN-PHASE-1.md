@@ -284,9 +284,9 @@ Phase 0 scope: `CounterexampleFormatter` with `ToString()`. Phase 1: full `IStra
 - [x] `/implement` -- Add `Save`, `Load` methods to `ExampleDatabase`
 
 #### Cycle 1.9.3 -- ExampleDatabase Delete
-- [ ] `/test` -- `src/Conjecture.Tests/Internal/Database/ExampleDatabaseDeleteTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Internal/Database/ExampleDatabaseDeleteTests.cs`
   - `Delete(testIdHash)` removes all buffers, nonexistent key is no-op, Delete then Load returns empty
-- [ ] `/implement` -- Add `Delete` method to `ExampleDatabase`
+- [x] `/implement` -- Add `Delete` method to `ExampleDatabase`
 
 #### Cycle 1.9.4 -- Test ID hashing (ADR-0024)
 - [ ] `/test` -- `src/Conjecture.Tests/Internal/Database/TestIdHasherTests.cs`

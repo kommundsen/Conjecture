@@ -52,6 +52,14 @@ internal sealed class ExampleDatabase : IDisposable
         cmd.ExecuteNonQuery();
     }
 
+    internal void Delete(string testIdHash)
+    {
+        using SqliteCommand cmd = connection.CreateCommand();
+        cmd.CommandText = "DELETE FROM examples WHERE test_id_hash = @hash";
+        cmd.Parameters.AddWithValue("@hash", testIdHash);
+        cmd.ExecuteNonQuery();
+    }
+
     internal IReadOnlyList<byte[]> Load(string testIdHash)
     {
         using SqliteCommand cmd = connection.CreateCommand();
