@@ -134,7 +134,7 @@ Extend `IRNodeKind` so specialized shrinker passes can identify float and string
 ### 2.3 Advanced Shrinker: Value-Level Passes
 
 #### Cycle 2.3.1 -- RedistributionPass
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/Internal/Shrinker/RedistributionPassTests.cs`
     - Moves magnitude between adjacent integer nodes: `(5, 3)` → tries `(4, 4)`, `(3, 5)`, `(2, 6)`, etc.
     - Finds lexicographically smallest pair that preserves failure
