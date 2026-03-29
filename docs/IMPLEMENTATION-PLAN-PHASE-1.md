@@ -279,9 +279,9 @@ Phase 0 scope: `CounterexampleFormatter` with `ToString()`. Phase 1: full `IStra
   - Uses `Microsoft.Data.Sqlite`; creates tables on first access; enables WAL mode (ADR-0017)
 
 #### Cycle 1.9.2 -- ExampleDatabase Save and Load
-- [ ] `/test` -- `src/Conjecture.Tests/Internal/Database/ExampleDatabaseCrudTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Internal/Database/ExampleDatabaseCrudTests.cs`
   - `Save(testIdHash, buffer)` persists, `Load(testIdHash)` returns saved buffers, empty returns empty list, multiple buffers per test ID returned, duplicate save doesn't create duplicates
-- [ ] `/implement` -- Add `Save`, `Load` methods to `ExampleDatabase`
+- [x] `/implement` -- Add `Save`, `Load` methods to `ExampleDatabase`
 
 #### Cycle 1.9.3 -- ExampleDatabase Delete
 - [ ] `/test` -- `src/Conjecture.Tests/Internal/Database/ExampleDatabaseDeleteTests.cs`
