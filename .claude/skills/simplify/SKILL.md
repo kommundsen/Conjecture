@@ -44,7 +44,7 @@ One or more production file paths to review (e.g., `src/Conjecture.Core/Strategi
    - **Broad ask** ("simplify", "refactor", "any issues?", "clean this up"): apply all legitimate findings.
    - **Narrow ask** ("clean up the comments", "just fix X"): apply only findings that match the stated scope. Note other findings as observations but don't apply them — the user asked for one thing, not a full refactor.
 
-4. **Verify** — run `dotnet test src/` to confirm tests still pass after any changes.
+4. **Verify** — run `dotnet build src/ 2>&1 | grep -E 'warning (IDE|CS)'` to catch any style violations introduced by the refactor, then run `dotnet test src/` to confirm tests still pass.
 
 5. **Report** — summarise what was fixed, or confirm the code was already clean.
 

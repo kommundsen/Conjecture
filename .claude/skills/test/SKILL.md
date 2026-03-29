@@ -26,8 +26,10 @@ The behavior to test, e.g. `IntegerStrategy generates values within [min, max]`.
    - Use `[Fact]` for deterministic cases, `[Theory]` + `[InlineData]` for parameterised
    - Assert on observable output only — no implementation details
    - Do NOT create stub/fake implementations to make them compile; use `#pragma warning disable` or `// TODO: implement` comments if the type doesn't exist yet
-4. Run `dotnet build src/` — the build **must fail** or tests **must fail** (red). If they pass, the tests are not testing anything new; revise them.
-5. Report: which tests were added, which assertion checks what behavior, and what the build/test failure is.
+   - Follow the same code style rules as production code (file-scoped namespace, no `var`, braces on all control flow, `new()` when type is apparent, etc.) — see the **Code Style Quick Reference** in the `implement` skill.
+4. Run `dotnet build src/ 2>&1 | grep -E 'warning (IDE|CS)'` — fix any style warnings **in the test file itself** (the goal is red from missing production code, not from style violations in the tests).
+5. Run `dotnet build src/` — the build **must fail** or tests **must fail** (red). If they pass, the tests are not testing anything new; revise them.
+6. Report: which tests were added, which assertion checks what behavior, and what the build/test failure is.
 
 ## Guidelines
 
