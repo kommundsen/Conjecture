@@ -202,7 +202,7 @@ Extend `IRNodeKind` so specialized shrinker passes can identify float and string
     - Tier 2: FloatSimplification, StringAware, Adaptive
 
 #### Cycle 2.5.2 -- Shrink quality regression tests
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/Internal/Shrinker/ShrinkQualityAdvancedTests.cs`
     - Float > threshold shrinks to exactly threshold (not NaN, not huge number)
     - String containing "error" shrinks to shortest string still containing "error"
