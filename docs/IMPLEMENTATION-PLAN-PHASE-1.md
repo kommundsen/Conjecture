@@ -334,7 +334,7 @@ Phase 0 scope: `CounterexampleFormatter` with `ToString()`. Phase 1: full `IStra
   - Failure output shows "Falsifying example found after N examples", includes shrink count, values use registered formatters, custom formatter works
 
 #### Cycle 1.10.6 -- End-to-end: database regression
-- [ ] `/test` -- `src/Conjecture.Tests/EndToEnd/DatabaseRegressionE2ETests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/EndToEnd/DatabaseRegressionE2ETests.cs`
   - Full round-trip: fail → save → replay → fix → clean, DB file exists after failure, seed printed alongside DB storage
 
 ---
