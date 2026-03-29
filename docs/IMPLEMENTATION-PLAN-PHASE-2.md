@@ -255,7 +255,7 @@ Extend `IRNodeKind` so specialized shrinker passes can identify float and string
     - Update `PublicAPI.Unshipped.txt`
 
 #### Cycle 2.7.2 -- FromAttribute\<T\> + resolver integration
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/FromAttributeTests.cs`
     - `[From<PositiveInts>]` on parameter recognized by resolver
     - Resolver instantiates provider and uses its strategy

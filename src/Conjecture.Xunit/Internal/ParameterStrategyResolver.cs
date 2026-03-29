@@ -7,14 +7,64 @@ namespace Conjecture.Xunit.Internal;
 
 internal static class ParameterStrategyResolver
 {
+    private static readonly Type OpenFromAttribute = typeof(FromAttribute<>).GetGenericTypeDefinition();
+    private static readonly Type OpenStrategyProvider = typeof(IStrategyProvider<>);
+
     internal static object[] Resolve(ParameterInfo[] parameters, ConjectureData data)
     {
         object[] args = new object[parameters.Length];
         for (int i = 0; i < parameters.Length; i++)
         {
-            args[i] = DrawValue(parameters[i].ParameterType, data);
+            args[i] = TryDrawFromAttribute(parameters[i], data)
+                ?? DrawValue(parameters[i].ParameterType, data);
         }
         return args;
+    }
+
+    private static object? TryDrawFromAttribute(ParameterInfo parameter, ConjectureData data)
+    {
+        foreach (Attribute attr in parameter.GetCustomAttributes())
+        {
+            Type attrType = attr.GetType();
+            if (!attrType.IsGenericType || attrType.GetGenericTypeDefinition() != OpenFromAttribute)
+            {
+                continue;
+            }
+
+            Type providerType = attrType.GetGenericArguments()[0];
+            Type? providerInterface = providerType.GetInterfaces()
+                .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == OpenStrategyProvider);
+
+            if (providerInterface is null)
+            {
+                throw new InvalidOperationException(
+                    $"Provider '{providerType.Name}' does not implement IStrategyProvider<T>.");
+            }
+
+            Type strategyValueType = providerInterface.GetGenericArguments()[0];
+            if (strategyValueType != parameter.ParameterType)
+            {
+                throw new InvalidOperationException(
+                    $"Provider '{providerType.Name}' generates '{strategyValueType.Name}' " +
+                    $"but parameter '{parameter.Name}' has type '{parameter.ParameterType.Name}'.");
+            }
+
+            MethodInfo drawMethod = typeof(ParameterStrategyResolver)
+                .GetMethod(nameof(DrawFromProvider), BindingFlags.NonPublic | BindingFlags.Static)!
+                .MakeGenericMethod(providerType, strategyValueType);
+
+            return drawMethod.Invoke(null, [data])!;
+        }
+
+        return null;
+    }
+
+    private static object DrawFromProvider<TProvider, T>(ConjectureData data)
+        where TProvider : IStrategyProvider<T>, new()
+    {
+        TProvider provider = new();
+        Strategy<T> strategy = provider.Create();
+        return strategy.Next(data)!;
     }
 
     private static object DrawValue(Type type, ConjectureData data)
