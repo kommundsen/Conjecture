@@ -9,6 +9,7 @@ internal static class TestRunner
         var seed = settings.Seed ?? (ulong)Random.Shared.NextInt64();
         var rng = new SplittableRandom(seed);
         var valid = 0;
+        var unsatisfied = 0;
         var totalAttempts = 0;
         var maxAttempts = settings.MaxExamples * 200;
 
@@ -24,6 +25,11 @@ internal static class TestRunner
             catch (UnsatisfiedAssumptionException)
             {
                 data.MarkInvalid();
+                unsatisfied++;
+                if ((valid > 0 || settings.MaxUnsatisfiedRatio == 0) && unsatisfied > valid * settings.MaxUnsatisfiedRatio)
+                {
+                    throw new ConjectureException("too many unsatisfied assumptions");
+                }
             }
             catch
             {

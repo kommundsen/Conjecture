@@ -1,4 +1,6 @@
 #nullable enable
+Conjecture.Core.ConjectureException
+Conjecture.Core.ConjectureException.ConjectureException(string! message) -> void
 Conjecture.Core.Assume
 static Conjecture.Core.Assume.That(bool condition) -> void
 Conjecture.Core.ConjectureSettings

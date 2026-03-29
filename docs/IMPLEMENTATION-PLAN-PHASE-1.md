@@ -256,9 +256,9 @@ Phase 0 scope: `CounterexampleFormatter` with `ToString()`. Phase 1: full `IStra
 - [x] `/implement` -- `src/Conjecture.Core/Internal/SettingsResolver.cs`
 
 #### Cycle 1.8.5 -- Health check: too many unsatisfied assumptions (ADR-0020)
-- [ ] `/test` -- `src/Conjecture.Tests/Internal/HealthCheckTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Internal/HealthCheckTests.cs`
   - TestRunner fails with "too many unsatisfied assumptions" when ratio exceeds `MaxUnsatisfiedRatio`, passes when within budget, respects setting
-- [ ] `/implement` -- Modify `src/Conjecture.Core/Internal/TestRunner.cs` to track valid/unsatisfied ratio
+- [x] `/implement` -- Modify `src/Conjecture.Core/Internal/TestRunner.cs` to track valid/unsatisfied ratio
   - Add `src/Conjecture.Core/ConjectureException.cs` for non-counterexample failures
   - Update `PublicAPI.Unshipped.txt`
 
