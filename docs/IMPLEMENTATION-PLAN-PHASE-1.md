@@ -322,7 +322,7 @@ Phase 0 scope: `CounterexampleFormatter` with `ToString()`. Phase 1: full `IStra
   - `[Property]` with string param runs, failing test shrinks to minimal string, formatted output shows string in quotes
 
 #### Cycle 1.10.3 -- End-to-end: floating point property tests
-- [ ] `/test` -- `src/Conjecture.Tests/EndToEnd/FloatingPointPropertyE2ETests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/EndToEnd/FloatingPointPropertyE2ETests.cs`
   - `[Property]` with double param runs, `[Property]` with float param runs, special values (NaN) can be generated
 
 #### Cycle 1.10.4 -- End-to-end: collection property tests
