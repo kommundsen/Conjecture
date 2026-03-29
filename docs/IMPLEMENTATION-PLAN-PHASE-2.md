@@ -377,7 +377,7 @@ Extend `IRNodeKind` so specialized shrinker passes can identify float and string
     - [Property] with Deadline still shrinks correctly
 
 #### Cycle 2.11.2 -- [Example] + [From\<T\>] end-to-end
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/EndToEnd/AttributeE2ETests.cs`
     - `[Property]` with `[Example(0, 0)]` runs explicit case first, then generates
     - `[Property]` with `[From<PositiveInts>]` generates only positive ints
