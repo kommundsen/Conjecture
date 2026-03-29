@@ -37,14 +37,14 @@ ExampleDatabase (SQLite) ──────────────────�
 
 ## Pre-requisites
 
-- [ ] Verify `v0.1.0-alpha` git tag exists for MinVer (ADR-0001)
-- [ ] Add `Microsoft.CodeAnalysis.PublicApiAnalyzers` to `Conjecture.Core.csproj` and `Conjecture.Xunit.csproj`; create `PublicAPI.Shipped.txt` (empty) and `PublicAPI.Unshipped.txt` (populated with Phase 0 public API) in each project root (ADR-0002)
-- [ ] Configure `Microsoft.DotNet.ApiCompat` baseline from Phase 0 output (ADR-0003)
-- [ ] Confirm `LICENSE` file exists in repo root; add MPL-2.0 file headers to any code ported from Python Hypothesis (ADR-0005, ADR-0026)
-- [ ] Add `Microsoft.Data.Sqlite` to `Directory.Packages.props` and reference in `Conjecture.Core.csproj` (ADR-0012)
-- [ ] `/scaffold module Conjecture.Core Formatting` -- Create Formatting directory
-- [ ] `/scaffold module Conjecture.Core Internal/Database` -- Create Database directory
-- [ ] `/decision` -- IEEE 754 floating-point strategy design (extends ADR-0011 to `IFloatingPoint<T>`)
+- [x] Verify `v0.1.0-alpha` git tag exists for MinVer (ADR-0001)
+- [x] Add `Microsoft.CodeAnalysis.PublicApiAnalyzers` to `Conjecture.Core.csproj` and `Conjecture.Xunit.csproj`; create `PublicAPI.Shipped.txt` (empty) and `PublicAPI.Unshipped.txt` (populated with Phase 0 public API) in each project root (ADR-0002)
+- [x] Configure `Microsoft.DotNet.ApiCompat` baseline from Phase 0 output (ADR-0003)
+- [x] Confirm `LICENSE` file exists in repo root; add MPL-2.0 file headers to any code ported from Python Hypothesis (ADR-0005, ADR-0026)
+- [x] Add `Microsoft.Data.Sqlite` to `Directory.Packages.props` and reference in `Conjecture.Core.csproj` (ADR-0012)
+- [x] `/scaffold module Conjecture.Core Formatting` -- Create Formatting directory
+- [x] `/scaffold module Conjecture.Core Internal/Database` -- Create Database directory
+- [x] `/decision` -- IEEE 754 floating-point strategy design (extends ADR-0011 to `IFloatingPoint<T>`)
 
 ## TDD Execution Plan
 
@@ -341,8 +341,8 @@ Phase 0 scope: `CounterexampleFormatter` with `ToString()`. Phase 1: full `IStra
 
 ## Post-implementation
 
-- [ ] `/benchmark` -- Perf: FloatingPointStrategy, StringStrategy, ListStrategy generation, ExampleDatabase Save/Load, FormatterRegistry lookup; establish baselines (ADR-0025)
-- [ ] Full verification: `dotnet test src/`
+- [x] `/benchmark` -- Perf: FloatingPointStrategy, StringStrategy, ListStrategy generation, ExampleDatabase Save/Load, FormatterRegistry lookup; establish baselines (ADR-0025)
+- [x] Full verification: `dotnet test src/`
 
 ## Key Constraints
 
