@@ -84,7 +84,7 @@ internal sealed class StringAwarePass : IShrinkPass
         IRNode charNode = state.Nodes[charIndex];
         foreach (ulong target in CharTargets)
         {
-            if (charNode.Value == target || target < charNode.Min || target > charNode.Max)
+            if (target >= charNode.Value || target < charNode.Min || target > charNode.Max)
             {
                 continue;
             }

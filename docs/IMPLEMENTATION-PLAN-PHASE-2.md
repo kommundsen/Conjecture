@@ -189,7 +189,7 @@ Extend `IRNodeKind` so specialized shrinker passes can identify float and string
 ### 2.5 Wire Passes & Shrink Quality
 
 #### Cycle 2.5.1 -- Wire new passes into Shrinker with priority tiers
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/Internal/Shrinker/ShrinkerPassOrderTests.cs`
     - All 10 passes are registered
     - Cheap passes (tier 0: zero, delete, interval-delete) run before expensive (tier 2: adaptive, float, string)

@@ -2,29 +2,37 @@ namespace Conjecture.Core.Internal.Shrinker;
 
 internal static class Shrinker
 {
-    private static readonly IShrinkPass[] Passes =
+    private static readonly IShrinkPass[][] PassTiers =
     [
-        new ZeroBlocksPass(),
-        new DeleteBlocksPass(),
-        new LexMinimizePass(),
-        new IntegerReductionPass(),
+        [new ZeroBlocksPass(), new DeleteBlocksPass(), new IntervalDeletionPass()],
+        [new LexMinimizePass(), new IntegerReductionPass(), new BlockSwappingPass(), new RedistributionPass()],
+        [new FloatSimplificationPass(), new StringAwarePass(), new AdaptivePass(new IntegerReductionPass())],
     ];
 
     internal static (IReadOnlyList<IRNode> Nodes, int ShrinkCount) Shrink(
         IReadOnlyList<IRNode> nodes,
         Func<IReadOnlyList<IRNode>, Status> isInteresting)
     {
-        var state = new ShrinkState(nodes, isInteresting);
+        ShrinkState state = new(nodes, isInteresting);
 
-        bool progress;
+        bool outerProgress;
         do
         {
-            progress = false;
-            foreach (var pass in Passes)
+            outerProgress = false;
+            foreach (IShrinkPass[] tier in PassTiers)
             {
-                progress |= pass.TryReduce(state);
+                bool tierProgress;
+                do
+                {
+                    tierProgress = false;
+                    foreach (IShrinkPass pass in tier)
+                    {
+                        tierProgress |= pass.TryReduce(state);
+                    }
+                    outerProgress |= tierProgress;
+                } while (tierProgress);
             }
-        } while (progress);
+        } while (outerProgress);
 
         return (state.Nodes, state.ShrinkCount);
     }
