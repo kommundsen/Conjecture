@@ -251,9 +251,9 @@ Phase 0 scope: `CounterexampleFormatter` with `ToString()`. Phase 1: full `IStra
   - Update `PublicAPI.Unshipped.txt`
 
 #### Cycle 1.8.4 -- Settings resolution hierarchy
-- [ ] `/test` -- `src/Conjecture.Tests/Internal/SettingsResolverTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Internal/SettingsResolverTests.cs`
   - Three-layer resolution: defaults < JSON < assembly attribute < test-level, inner scope wins
-- [ ] `/implement` -- `src/Conjecture.Core/Internal/SettingsResolver.cs`
+- [x] `/implement` -- `src/Conjecture.Core/Internal/SettingsResolver.cs`
 
 #### Cycle 1.8.5 -- Health check: too many unsatisfied assumptions (ADR-0020)
 - [ ] `/test` -- `src/Conjecture.Tests/Internal/HealthCheckTests.cs`
