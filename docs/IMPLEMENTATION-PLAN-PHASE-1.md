@@ -239,9 +239,9 @@ Phase 0 scope: `CounterexampleFormatter` with `ToString()`. Phase 1: full `IStra
   - Update `PublicAPI.Unshipped.txt`
 
 #### Cycle 1.8.2 -- Settings JSON file loading (ADR-0016)
-- [ ] `/test` -- `src/Conjecture.Tests/Internal/SettingsLoaderTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Internal/SettingsLoaderTests.cs`
   - Loads `.conjecture/settings.json` and parses to `ConjectureSettings`, missing file returns defaults, malformed JSON throws clear error, partial overrides keep defaults
-- [ ] `/implement` -- `src/Conjecture.Core/Internal/SettingsLoader.cs`
+- [x] `/implement` -- `src/Conjecture.Core/Internal/SettingsLoader.cs`
   - Uses `System.Text.Json` (in BCL)
 
 #### Cycle 1.8.3 -- Assembly-level settings attribute (ADR-0016)
