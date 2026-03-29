@@ -43,9 +43,98 @@ internal static class TestRunner
         return RunGeneration(settings, test, dbContext);
     }
 
+    internal static Task<TestRunResult> RunAsync(
+        ConjectureSettings settings,
+        Func<ConjectureData, Task> test)
+    {
+        return RunGenerationAsync(settings, test, null);
+    }
+
     internal static TestRunResult Run(ConjectureSettings settings, Action<ConjectureData> test)
     {
         return RunGeneration(settings, test, null);
+    }
+
+    private static async Task<TestRunResult> RunGenerationAsync(
+        ConjectureSettings settings,
+        Func<ConjectureData, Task> test,
+        DbContext? dbContext)
+    {
+        ulong seed = settings.Seed ?? (ulong)Random.Shared.NextInt64();
+        SplittableRandom rng = new(seed);
+        int valid = 0;
+        int unsatisfied = 0;
+        int totalAttempts = 0;
+        int maxAttempts = settings.MaxExamples * 200;
+        TimeSpan? deadline = settings.Deadline;
+        Stopwatch? sw = deadline.HasValue ? Stopwatch.StartNew() : null;
+
+        while (valid < settings.MaxExamples && totalAttempts < maxAttempts)
+        {
+            totalAttempts++;
+            ConjectureData data = ConjectureData.ForGeneration(rng.Split());
+            try
+            {
+                await test(data);
+                valid++;
+                if (sw is not null && sw.Elapsed > deadline!.Value)
+                {
+                    throw new ConjectureException("deadline exceeded");
+                }
+            }
+            catch (UnsatisfiedAssumptionException)
+            {
+                data.MarkInvalid();
+                unsatisfied++;
+                if ((valid > 0 || settings.MaxUnsatisfiedRatio == 0) && unsatisfied > valid * settings.MaxUnsatisfiedRatio)
+                {
+                    throw new ConjectureException("too many unsatisfied assumptions");
+                }
+            }
+            catch (ConjectureException)
+            {
+                throw;
+            }
+            catch
+            {
+                data.MarkInteresting();
+                var (shrunk, shrinkCount) = ShrinkEngine.Shrink(data.IRNodes, nodes => Replay(nodes, test));
+                if (dbContext is DbContext ctx)
+                {
+                    ctx.Database.Save(ctx.TestIdHash, SerializeNodes(shrunk));
+                }
+
+                return TestRunResult.Fail(shrunk, seed, valid + 1, shrinkCount);
+            }
+            finally
+            {
+                data.Freeze();
+            }
+        }
+
+        return TestRunResult.Pass(seed, valid);
+    }
+
+    private static Status Replay(IReadOnlyList<IRNode> nodes, Func<ConjectureData, Task> test)
+    {
+        ConjectureData data = ConjectureData.ForRecord(nodes);
+        try
+        {
+            test(data).GetAwaiter().GetResult();
+            return Status.Valid;
+        }
+        catch (UnsatisfiedAssumptionException)
+        {
+            return Status.Invalid;
+        }
+        catch (InvalidOperationException) when (data.Status == Status.Overrun)
+        {
+            return Status.Overrun;
+        }
+        catch
+        {
+            return Status.Interesting;
+        }
     }
 
     private static TestRunResult RunGeneration(

@@ -288,7 +288,7 @@ Extend `IRNodeKind` so specialized shrinker passes can identify float and string
 ### 2.8 Async [Property] Support
 
 #### Cycle 2.8.1 -- Async test method detection and execution
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/AsyncPropertyTests.cs`
     - `[Property]` method returning `Task` executes and passes
     - `[Property]` async method that throws fails with counterexample
