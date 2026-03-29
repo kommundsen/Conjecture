@@ -180,7 +180,9 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
         ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
         object[] values = ParameterStrategyResolver.Resolve(parameters, replay);
         IEnumerable<(string name, object value)> pairs = parameters.Zip(values, (p, v) => (p.Name!, (object)v!));
-        return CounterexampleFormatter.Format(pairs, result.Seed!.Value, result.ExampleCount, result.ShrinkCount);
+        string message = CounterexampleFormatter.Format(pairs, result.Seed!.Value, result.ExampleCount, result.ShrinkCount);
+        string trimmedTrace = StackTraceTrimmer.Trim(result.FailureStackTrace);
+        return string.IsNullOrEmpty(trimmedTrace) ? message : message + Environment.NewLine + trimmedTrace;
     }
 
     private static bool IsAsyncReturnType(Type returnType)

@@ -330,7 +330,7 @@ Extend `IRNodeKind` so specialized shrinker passes can identify float and string
     - Modify `TestRunner` to capture original nodes before shrinking
 
 #### Cycle 2.9.2 -- Stack trace trimming
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/Internal/StackTraceTrimmerTests.cs`
     - Frames from `Conjecture.Core.Internal` are removed
     - Frames from `Conjecture.Xunit.Internal` are removed

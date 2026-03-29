@@ -148,9 +148,10 @@ internal static class TestRunner
             {
                 throw;
             }
-            catch
+            catch (Exception failureEx)
             {
                 data.MarkInteresting();
+                string? stackTrace = failureEx.StackTrace;
                 (IReadOnlyList<IRNode> shrunk, int shrinkCount) = await ShrinkEngine.ShrinkAsync(
                     data.IRNodes, n => ReplayAsync(n, test));
                 if (dbContext is DbContext ctx)
@@ -158,7 +159,7 @@ internal static class TestRunner
                     ctx.Database.Save(ctx.TestIdHash, SerializeNodes(shrunk));
                 }
 
-                return TestRunResult.Fail(shrunk, seed, valid + 1, shrinkCount);
+                return TestRunResult.Fail(shrunk, seed, valid + 1, shrinkCount, stackTrace);
             }
             finally
             {
@@ -231,16 +232,17 @@ internal static class TestRunner
             {
                 throw;
             }
-            catch
+            catch (Exception failureEx)
             {
                 data.MarkInteresting();
+                string? stackTrace = failureEx.StackTrace;
                 (IReadOnlyList<IRNode> shrunk, int shrinkCount) = await ShrinkEngine.ShrinkAsync(
                     data.IRNodes, nodes => new ValueTask<Status>(Replay(nodes, test)));
                 if (dbContext is DbContext ctx)
                 {
                     ctx.Database.Save(ctx.TestIdHash, SerializeNodes(shrunk));
                 }
-                return TestRunResult.Fail(shrunk, seed, valid + 1, shrinkCount);
+                return TestRunResult.Fail(shrunk, seed, valid + 1, shrinkCount, stackTrace);
             }
             finally
             {
