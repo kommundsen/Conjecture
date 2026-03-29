@@ -233,9 +233,9 @@ Phase 0 scope: `CounterexampleFormatter` with `ToString()`. Phase 1: full `IStra
 ### 1.8 Extended Settings (ADR-0016, ADR-0020)
 
 #### Cycle 1.8.1 -- ConjectureSettings extended properties
-- [ ] `/test` -- `src/Conjecture.Tests/ConjectureSettingsExtendedTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/ConjectureSettingsExtendedTests.cs`
   - `UseDatabase` defaults true, `Deadline` defaults null, `MaxStrategyRejections` defaults 5, `MaxUnsatisfiedRatio` defaults 200, `DatabasePath` defaults `.conjecture/examples/`, negative values throw
-- [ ] `/implement` -- Extend `src/Conjecture.Core/ConjectureSettings.cs`
+- [x] `/implement` -- Extend `src/Conjecture.Core/ConjectureSettings.cs`
   - Update `PublicAPI.Unshipped.txt`
 
 #### Cycle 1.8.2 -- Settings JSON file loading (ADR-0016)

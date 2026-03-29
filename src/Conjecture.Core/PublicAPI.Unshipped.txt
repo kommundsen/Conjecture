@@ -59,3 +59,13 @@ static Conjecture.Core.Formatting.BuiltInFormatters.Double.get -> Conjecture.Cor
 static Conjecture.Core.Formatting.BuiltInFormatters.Single.get -> Conjecture.Core.Formatting.IStrategyFormatter<float>!
 static Conjecture.Core.Formatting.BuiltInFormatters.String.get -> Conjecture.Core.Formatting.IStrategyFormatter<string!>!
 static Conjecture.Core.Formatting.BuiltInFormatters.ByteArray.get -> Conjecture.Core.Formatting.IStrategyFormatter<byte[]!>!
+Conjecture.Core.ConjectureSettings.UseDatabase.get -> bool
+Conjecture.Core.ConjectureSettings.UseDatabase.init -> void
+Conjecture.Core.ConjectureSettings.Deadline.get -> System.TimeSpan?
+Conjecture.Core.ConjectureSettings.Deadline.init -> void
+Conjecture.Core.ConjectureSettings.MaxStrategyRejections.get -> int
+Conjecture.Core.ConjectureSettings.MaxStrategyRejections.init -> void
+Conjecture.Core.ConjectureSettings.MaxUnsatisfiedRatio.get -> int
+Conjecture.Core.ConjectureSettings.MaxUnsatisfiedRatio.init -> void
+Conjecture.Core.ConjectureSettings.DatabasePath.get -> string!
+Conjecture.Core.ConjectureSettings.DatabasePath.init -> void
