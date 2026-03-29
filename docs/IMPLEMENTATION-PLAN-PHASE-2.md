@@ -173,7 +173,7 @@ Extend `IRNodeKind` so specialized shrinker passes can identify float and string
     - Try replacements: NaN→0, ±Inf→max_finite→0, large→small via binary search on float magnitude
 
 #### Cycle 2.4.2 -- StringAwarePass
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/Internal/Shrinker/StringAwarePassTests.cs`
     - Reduces string length node AND deletes corresponding character nodes atomically
     - Simplifies character nodes toward 'a' (codepoint 97) or space (32)
