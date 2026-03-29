@@ -289,9 +289,9 @@ Phase 0 scope: `CounterexampleFormatter` with `ToString()`. Phase 1: full `IStra
 - [x] `/implement` -- Add `Delete` method to `ExampleDatabase`
 
 #### Cycle 1.9.4 -- Test ID hashing (ADR-0024)
-- [ ] `/test` -- `src/Conjecture.Tests/Internal/Database/TestIdHasherTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/Internal/Database/TestIdHasherTests.cs`
   - Same fully-qualified name produces same hash, different names diverge, stable across runs, includes parameter types
-- [ ] `/implement` -- `src/Conjecture.Core/Internal/Database/TestIdHasher.cs`
+- [x] `/implement` -- `src/Conjecture.Core/Internal/Database/TestIdHasher.cs`
   - SHA256 of `namespace.class.method(paramType1,paramType2)`
 
 #### Cycle 1.9.5 -- Wire database into TestRunner (ADR-0024)
