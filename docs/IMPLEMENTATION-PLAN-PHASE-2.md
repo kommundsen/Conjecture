@@ -245,7 +245,7 @@ Extend `IRNodeKind` so specialized shrinker passes can identify float and string
 ### 2.7 [From\<T\>] and [FromFactory] Attributes
 
 #### Cycle 2.7.1 -- IStrategyProvider\<T\> interface
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/StrategyProviderTests.cs`
     - Custom `IStrategyProvider<int>` creates strategy, `Create()` returns working strategy
     - Strategy from provider generates values correctly via TestRunner
