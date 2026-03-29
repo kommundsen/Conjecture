@@ -2,8 +2,19 @@ using Conjecture.Core.Formatting;
 
 namespace Conjecture.Tests.Formatting;
 
-public class FormatterRegistryTests
+public class FormatterRegistryTests : IDisposable
 {
+    private readonly IStrategyFormatter<int>? originalInt = FormatterRegistry.Get<int>();
+    private readonly IStrategyFormatter<double>? originalDouble = FormatterRegistry.Get<double>();
+    private readonly IStrategyFormatter<string>? originalString = FormatterRegistry.Get<string>();
+
+    public void Dispose()
+    {
+        FormatterRegistry.Register(originalInt);
+        FormatterRegistry.Register(originalDouble);
+        FormatterRegistry.Register(originalString);
+    }
+
     [Fact]
     public void Get_AfterRegister_ReturnsRegisteredFormatter()
     {

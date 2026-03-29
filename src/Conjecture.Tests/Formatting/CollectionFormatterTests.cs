@@ -4,13 +4,6 @@ namespace Conjecture.Tests.Formatting;
 
 public class CollectionFormatterTests
 {
-    public CollectionFormatterTests()
-    {
-        // Re-register built-in formatters; other tests may overwrite registry entries.
-        FormatterRegistry.Register(BuiltInFormatters.Int32);
-        FormatterRegistry.Register(BuiltInFormatters.String);
-    }
-
     // --- List<int> ---
 
     [Fact]
