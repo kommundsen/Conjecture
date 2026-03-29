@@ -93,7 +93,7 @@ Extend `IRNodeKind` so specialized shrinker passes can identify float and string
     - Add factory methods that delegate to constructor with new kinds
 
 #### Cycle 2.1.2 -- Wire new kinds into strategies + serialization
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/Internal/IRNodeKindWiringTests.cs`
     - `FloatingPointStrategy<double>` records `Float64` kind nodes (not `Integer`)
     - `FloatingPointStrategy<float>` records `Float32` kind nodes
