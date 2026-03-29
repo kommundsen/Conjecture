@@ -245,9 +245,9 @@ Phase 0 scope: `CounterexampleFormatter` with `ToString()`. Phase 1: full `IStra
   - Uses `System.Text.Json` (in BCL)
 
 #### Cycle 1.8.3 -- Assembly-level settings attribute (ADR-0016)
-- [ ] `/test` -- `src/Conjecture.Tests/AssemblySettingsAttributeTests.cs`
+- [x] `/test` -- `src/Conjecture.Tests/AssemblySettingsAttributeTests.cs`
   - `[assembly: ConjectureSettings(MaxExamples = 500)]` recognized, overrides JSON, test-level overrides assembly-level
-- [ ] `/implement` -- `src/Conjecture.Core/ConjectureSettingsAttribute.cs`
+- [x] `/implement` -- `src/Conjecture.Core/ConjectureSettingsAttribute.cs`
   - Update `PublicAPI.Unshipped.txt`
 
 #### Cycle 1.8.4 -- Settings resolution hierarchy
