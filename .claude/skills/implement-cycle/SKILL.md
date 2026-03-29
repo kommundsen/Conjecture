@@ -49,6 +49,12 @@ Optional cycle specifier:
 8. **Report**
    - Cycle number completed, test file created, production files created/modified, test count, refactor changes made, any design decisions recorded.
 
+9. **Suggest commit**
+   - Invoke the `commit-message` skill to generate a suggested commit message for all changes made during this cycle.
+   - Ask the user: "Want me to commit with this message?"
+   - If yes, stage all new and modified files from this cycle and commit with the suggested message (no `Co-Authored-By` trailer).
+   - If no, do nothing — the user will commit manually.
+
 ## Guidelines
 
 - One cycle per invocation — do not cascade into the next cycle.
