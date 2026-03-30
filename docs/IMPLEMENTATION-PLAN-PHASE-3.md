@@ -266,7 +266,7 @@ The existing `Conjecture.Xunit` (v2, `xunit.extensibility.core` 2.9.3) is preser
 ### 3.7 NUnit Adapter
 
 #### Cycle 3.7.1 -- NUnit PropertyAttribute
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.NUnit.Tests/NUnitPropertyAttributeTests.cs`
     - `[Property]` exists in `Conjecture.NUnit`, has `MaxExamples`, `Seed`, `UseDatabase`, `MaxStrategyRejections`, `DeadlineMs` properties, defaults match xUnit variant
   - **Impl** -- `src/Conjecture.NUnit/PropertyAttribute.cs`
