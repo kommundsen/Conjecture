@@ -238,7 +238,7 @@ Extract strategy resolution logic into `Conjecture.Core` so all framework adapte
 The existing `Conjecture.Xunit` (v2, `xunit.extensibility.core` 2.9.3) is preserved. `Conjecture.Xunit.V3` is a new project using `xunit.v3.extensibility.core` APIs, matching the xUnit team's `xunit.v3.*` packaging convention. The v3 API has renamed types (e.g., `IXunitTestCase` -> `IXunitTestCase`, `XunitTestCaseRunner` changes, new `ITestOutputHelper`), so this is a separate implementation, not a refactor.
 
 #### Cycle 3.6.1 -- xUnit v3 PropertyAttribute
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Xunit.V3.Tests/XunitV3PropertyAttributeTests.cs`
     - `[Property]` exists in `Conjecture.Xunit.V3`, has `MaxExamples`, `Seed`, `UseDatabase`, `MaxStrategyRejections`, `DeadlineMs` properties, defaults match v2 variant
   - **Impl** -- `src/Conjecture.Xunit.V3/PropertyAttribute.cs`
