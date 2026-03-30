@@ -11,3 +11,4 @@ Conjecture.MSTest.PropertyAttribute.MaxStrategyRejections.get -> int
 Conjecture.MSTest.PropertyAttribute.MaxStrategyRejections.set -> void
 Conjecture.MSTest.PropertyAttribute.DeadlineMs.get -> int
 Conjecture.MSTest.PropertyAttribute.DeadlineMs.set -> void
+override Conjecture.MSTest.PropertyAttribute.ExecuteAsync(Microsoft.VisualStudio.TestTools.UnitTesting.ITestMethod! testMethod) -> System.Threading.Tasks.Task<Microsoft.VisualStudio.TestTools.UnitTesting.TestResult![]!>!

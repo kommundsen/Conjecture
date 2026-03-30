@@ -300,7 +300,7 @@ The existing `Conjecture.Xunit` (v2, `xunit.extensibility.core` 2.9.3) is preser
     - Update `PublicAPI.Unshipped.txt`
 
 #### Cycle 3.8.2 -- MSTest test execution
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.MSTest.Tests/MSTestPropertyExecutionTests.cs`
     - Same scenarios as NUnit 3.7.2 for MSTest
   - **Impl** -- `src/Conjecture.MSTest/Internal/PropertyTestMethodAttribute.cs`
