@@ -146,7 +146,7 @@ Generator targets `netstandard2.0` (Roslyn requirement) and ships as development
   - **Impl** -- Extend `StrategyEmitter` with full type map, nested type support, cross-type references
 
 #### Cycle 3.3.4 -- Diagnostic errors for unsupported shapes
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Generators.Tests/GeneratorDiagnosticTests.cs`
     - CON200 (Error): no accessible constructor
     - CON201 (Error): type not partial

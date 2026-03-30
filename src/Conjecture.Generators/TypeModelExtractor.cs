@@ -14,37 +14,13 @@ internal static class TypeModelExtractor
         genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
         miscellaneousOptions: SymbolDisplayMiscellaneousOptions.ExpandNullable);
 
-    private static readonly DiagnosticDescriptor Hyp200 = new(
-        id: "HYP200",
-        title: "No accessible constructor",
-        messageFormat: "Type '{0}' has no accessible constructor; cannot emit strategy",
-        category: "Conjecture",
-        defaultSeverity: DiagnosticSeverity.Error,
-        isEnabledByDefault: true);
-
-    private static readonly DiagnosticDescriptor Hyp201 = new(
-        id: "HYP201",
-        title: "Type is not partial",
-        messageFormat: "Type '{0}' decorated with [Arbitrary] must be partial",
-        category: "Conjecture",
-        defaultSeverity: DiagnosticSeverity.Error,
-        isEnabledByDefault: true);
-
-    private static readonly DiagnosticDescriptor Hyp202 = new(
-        id: "HYP202",
-        title: "Unsupported member type",
-        messageFormat: "Member '{0}' has unsupported type '{1}'; cannot auto-generate strategy. Use [From<T>] to provide one manually.",
-        category: "Conjecture",
-        defaultSeverity: DiagnosticSeverity.Warning,
-        isEnabledByDefault: true);
-
     internal static (TypeModel? Model, ImmutableArray<Diagnostic> Diagnostics) Extract(INamedTypeSymbol symbol)
     {
         Location location = symbol.Locations.Length > 0 ? symbol.Locations[0] : Location.None;
 
         if (!IsPartial(symbol))
         {
-            return (null, ImmutableArray.Create(Diagnostic.Create(Hyp201, location, symbol.Name)));
+            return (null, ImmutableArray.Create(Diagnostic.Create(DiagnosticDescriptors.Con201, location, symbol.Name)));
         }
 
         IMethodSymbol? bestCtor = FindBestConstructor(symbol);
@@ -69,7 +45,7 @@ internal static class TypeModelExtractor
             members = BuildInitPropertyMembers(symbol, warnings);
             if (members.IsEmpty)
             {
-                return (null, ImmutableArray.Create(Diagnostic.Create(Hyp200, location, symbol.Name)));
+                return (null, ImmutableArray.Create(Diagnostic.Create(DiagnosticDescriptors.Con200, location, symbol.Name)));
             }
 
             mode = ConstructionMode.ObjectInitializer;
@@ -158,7 +134,7 @@ internal static class TypeModelExtractor
             if (kind == MemberGenerationKind.Unsupported)
             {
                 Location loc = param.Locations.Length > 0 ? param.Locations[0] : Location.None;
-                warnings.Add(Diagnostic.Create(Hyp202, loc, param.Name, typeName));
+                warnings.Add(Diagnostic.Create(DiagnosticDescriptors.Con202, loc, param.Name, typeName));
             }
 
             builder.Add(new(param.Name, typeName, isNullable, kind, innerFqn));
@@ -194,7 +170,7 @@ internal static class TypeModelExtractor
             if (kind == MemberGenerationKind.Unsupported)
             {
                 Location loc = prop.Locations.Length > 0 ? prop.Locations[0] : Location.None;
-                warnings.Add(Diagnostic.Create(Hyp202, loc, prop.Name, typeName));
+                warnings.Add(Diagnostic.Create(DiagnosticDescriptors.Con202, loc, prop.Name, typeName));
             }
 
             builder.Add(new(prop.Name, typeName, isNullable, kind, innerFqn));
