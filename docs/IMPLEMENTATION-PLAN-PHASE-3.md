@@ -281,7 +281,7 @@ The existing `Conjecture.Xunit` (v2, `xunit.extensibility.core` 2.9.3) is preser
     - Invokes `TestRunner.Run`/`RunAsync` with `SharedParameterStrategyResolver`
 
 #### Cycle 3.7.3 -- NUnit failure reporting and database
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.NUnit.Tests/NUnitReportingTests.cs`
     - Failure message has "Falsifying example", seed, shrunk counterexample
     - Database stores/replays counterexamples
