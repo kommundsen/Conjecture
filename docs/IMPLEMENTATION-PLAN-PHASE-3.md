@@ -207,7 +207,7 @@ Generator targets `netstandard2.0` (Roslyn requirement) and ships as development
     - Heuristic: equality on unbounded strategies, `false` literals
 
 #### Cycle 3.4.6 -- CON105: [Arbitrary] exists but [From\<T\>] not used
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Analyzers.Tests/CON105Tests.cs`
     - `[Property]` param of type `Person` where `PersonArbitrary` exists -> CON105 info
     - Same with `[From<PersonArbitrary>]` -> no diagnostic
