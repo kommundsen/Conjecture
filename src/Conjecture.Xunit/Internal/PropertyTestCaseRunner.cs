@@ -177,12 +177,19 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
     [RequiresUnreferencedCode("Resolves parameter strategies by Type, which may be trimmed.")]
     internal static string BuildFailureMessage(TestRunResult result, ParameterInfo[] parameters)
     {
-        ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
-        object[] values = ParameterStrategyResolver.Resolve(parameters, replay);
-        IEnumerable<(string name, object value)> pairs = parameters.Zip(values, (p, v) => (p.Name!, (object)v!));
-        string message = CounterexampleFormatter.Format(pairs, result.Seed!.Value, result.ExampleCount, result.ShrinkCount);
+        IEnumerable<(string name, object value)> shrunkPairs = ResolvePairs(result.Counterexample!);
+        string message = result.OriginalCounterexample is not null
+            ? CounterexampleFormatter.Format(ResolvePairs(result.OriginalCounterexample), shrunkPairs, result.Seed!.Value, result.ExampleCount, result.ShrinkCount)
+            : CounterexampleFormatter.Format(shrunkPairs, result.Seed!.Value, result.ExampleCount, result.ShrinkCount);
         string trimmedTrace = StackTraceTrimmer.Trim(result.FailureStackTrace);
         return string.IsNullOrEmpty(trimmedTrace) ? message : message + Environment.NewLine + trimmedTrace;
+
+        IEnumerable<(string name, object value)> ResolvePairs(IReadOnlyList<IRNode> nodes)
+        {
+            ConjectureData replay = ConjectureData.ForRecord(nodes);
+            object[] values = ParameterStrategyResolver.Resolve(parameters, replay);
+            return parameters.Zip(values, (p, v) => (p.Name!, (object)v!));
+        }
     }
 
     private static bool IsAsyncReturnType(Type returnType)

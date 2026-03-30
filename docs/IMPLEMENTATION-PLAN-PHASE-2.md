@@ -394,7 +394,7 @@ Extend `IRNodeKind` so specialized shrinker passes can identify float and string
     - Async with `[From<T>]` generates from custom strategy
 
 #### Cycle 2.11.4 -- Reporting quality end-to-end
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/EndToEnd/ReportingQualityE2ETests.cs`
     - Failure output contains "Falsifying example" and "Minimal counterexample" sections
     - Failure output uses registered formatters (string in quotes, list in brackets)

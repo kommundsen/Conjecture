@@ -30,7 +30,7 @@ internal static class TestRunner
                         nodes, n => new ValueTask<Status>(Replay(n, test)));
                     db.Delete(testIdHash);
                     db.Save(testIdHash, SerializeNodes(shrunk));
-                    return TestRunResult.Fail(shrunk, 0UL, 1, shrinkCount);
+                    return TestRunResult.Fail(shrunk, nodes, 0UL, 1, shrinkCount);
                 }
             }
 
@@ -76,7 +76,7 @@ internal static class TestRunner
                     nodes, n => ReplayAsync(n, test));
                 dbContext.Database.Delete(dbContext.TestIdHash);
                 dbContext.Database.Save(dbContext.TestIdHash, SerializeNodes(shrunk));
-                return TestRunResult.Fail(shrunk, 0UL, 1, shrinkCount);
+                return TestRunResult.Fail(shrunk, nodes, 0UL, 1, shrinkCount);
             }
         }
 
@@ -152,14 +152,15 @@ internal static class TestRunner
             {
                 data.MarkInteresting();
                 string? stackTrace = failureEx.StackTrace;
+                IReadOnlyList<IRNode> firstFailureNodes = data.IRNodes;
                 (IReadOnlyList<IRNode> shrunk, int shrinkCount) = await ShrinkEngine.ShrinkAsync(
-                    data.IRNodes, n => ReplayAsync(n, test));
+                    firstFailureNodes, n => ReplayAsync(n, test));
                 if (dbContext is DbContext ctx)
                 {
                     ctx.Database.Save(ctx.TestIdHash, SerializeNodes(shrunk));
                 }
 
-                return TestRunResult.Fail(shrunk, seed, valid + 1, shrinkCount, stackTrace);
+                return TestRunResult.Fail(shrunk, firstFailureNodes, seed, valid + 1, shrinkCount, stackTrace);
             }
             finally
             {
@@ -236,13 +237,14 @@ internal static class TestRunner
             {
                 data.MarkInteresting();
                 string? stackTrace = failureEx.StackTrace;
+                IReadOnlyList<IRNode> firstFailureNodes = data.IRNodes;
                 (IReadOnlyList<IRNode> shrunk, int shrinkCount) = await ShrinkEngine.ShrinkAsync(
-                    data.IRNodes, nodes => new ValueTask<Status>(Replay(nodes, test)));
+                    firstFailureNodes, nodes => new ValueTask<Status>(Replay(nodes, test)));
                 if (dbContext is DbContext ctx)
                 {
                     ctx.Database.Save(ctx.TestIdHash, SerializeNodes(shrunk));
                 }
-                return TestRunResult.Fail(shrunk, seed, valid + 1, shrinkCount, stackTrace);
+                return TestRunResult.Fail(shrunk, firstFailureNodes, seed, valid + 1, shrinkCount, stackTrace);
             }
             finally
             {
