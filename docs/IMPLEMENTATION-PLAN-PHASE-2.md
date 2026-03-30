@@ -405,8 +405,8 @@ Extend `IRNodeKind` so specialized shrinker passes can identify float and string
 
 ## Post-implementation
 
-- [ ] `/benchmark` -- Perf: Shrinker total time for standard failing properties (compare Phase 1 baseline), individual pass contribution, async property overhead
-- [ ] Full verification: `dotnet test src/`
+- [x] `/benchmark` -- Perf: Shrinker total time for standard failing properties (compare Phase 1 baseline), individual pass contribution, async property overhead
+- [x] Full verification: `dotnet test src/`
 
 ## Key Constraints
 
