@@ -187,7 +187,7 @@ Generator targets `netstandard2.0` (Roslyn requirement) and ships as development
   - **Impl** -- `src/Conjecture.Analyzers/CON104Analyzer.cs`
 
 #### Cycle 3.4.4 -- CON102: Sync-over-async in [Property]
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Analyzers.Tests/CON102Tests.cs`
     - `.GetAwaiter().GetResult()` in `[Property]` -> CON102 info
     - `.Result` on Task in `[Property]` -> CON102 info
