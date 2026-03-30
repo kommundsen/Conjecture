@@ -1,12 +1,14 @@
+using Conjecture.NUnit.Internal;
 using NUnit.Framework.Interfaces;
 using NUnit.Framework.Internal;
 using NUnit.Framework.Internal.Builders;
+using NUnit.Framework.Internal.Commands;
 
 namespace Conjecture.NUnit;
 
 /// <summary>Marks a method as a Conjecture property-based test (NUnit).</summary>
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-public sealed class PropertyAttribute : global::NUnit.Framework.NUnitAttribute, ITestBuilder
+public sealed class PropertyAttribute : global::NUnit.Framework.NUnitAttribute, ITestBuilder, IWrapTestMethod
 {
     /// <summary>Maximum number of examples to generate. Defaults to 100.</summary>
     public int MaxExamples { get; set; } = 100;
@@ -27,6 +29,27 @@ public sealed class PropertyAttribute : global::NUnit.Framework.NUnitAttribute, 
     IEnumerable<TestMethod> ITestBuilder.BuildFrom(IMethodInfo method, Test? suite)
     {
         NUnitTestCaseBuilder builder = new();
-        yield return builder.BuildTestMethod(method, suite, new TestCaseParameters());
+        // Supply default args so NUnitTestCaseBuilder doesn't mark the test NotRunnable.
+        // PropertyTestCommand.Execute ignores these and generates values via strategy resolver.
+        IParameterInfo[] paramInfos = method.GetParameters();
+        object?[] dummyArgs = new object?[paramInfos.Length];
+        for (int i = 0; i < paramInfos.Length; i++)
+        {
+            Type paramType = paramInfos[i].ParameterInfo.ParameterType;
+            dummyArgs[i] = paramType.IsValueType ? Activator.CreateInstance(paramType) : null;
+        }
+        yield return builder.BuildTestMethod(method, suite, new TestCaseParameters(dummyArgs));
+    }
+
+    /// <inheritdoc/>
+    TestCommand ICommandWrapper.Wrap(TestCommand command)
+    {
+        return new PropertyTestCommand(
+            command,
+            MaxExamples,
+            Seed != 0 ? Seed : null,
+            UseDatabase,
+            MaxStrategyRejections,
+            DeadlineMs);
     }
 }

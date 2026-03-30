@@ -274,7 +274,7 @@ The existing `Conjecture.Xunit` (v2, `xunit.extensibility.core` 2.9.3) is preser
     - Update `PublicAPI.Unshipped.txt`
 
 #### Cycle 3.7.2 -- NUnit test execution
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.NUnit.Tests/NUnitPropertyExecutionTests.cs`
     - `[Property]` with `int` param runs/passes, failure reports counterexample, `MaxExamples` respected, seed determinism, `[From<T>]` resolved, `[Example]` runs first, async `Task` works
   - **Impl** -- `src/Conjecture.NUnit/Internal/PropertyTestBuilder.cs`
