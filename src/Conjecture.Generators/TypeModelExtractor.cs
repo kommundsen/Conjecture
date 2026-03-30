@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -29,13 +30,21 @@ internal static class TypeModelExtractor
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true);
 
-    internal static (TypeModel? Model, Diagnostic? Diagnostic) Extract(INamedTypeSymbol symbol)
+    private static readonly DiagnosticDescriptor Hyp202 = new(
+        id: "HYP202",
+        title: "Unsupported member type",
+        messageFormat: "Member '{0}' has unsupported type '{1}'; cannot auto-generate strategy. Use [From<T>] to provide one manually.",
+        category: "Conjecture",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true);
+
+    internal static (TypeModel? Model, ImmutableArray<Diagnostic> Diagnostics) Extract(INamedTypeSymbol symbol)
     {
         Location location = symbol.Locations.Length > 0 ? symbol.Locations[0] : Location.None;
 
         if (!IsPartial(symbol))
         {
-            return (null, Diagnostic.Create(Hyp201, location, symbol.Name));
+            return (null, ImmutableArray.Create(Diagnostic.Create(Hyp201, location, symbol.Name)));
         }
 
         IMethodSymbol? bestCtor = FindBestConstructor(symbol);
@@ -46,20 +55,21 @@ internal static class TypeModelExtractor
 
         ImmutableArray<string> typeParameters = BuildTypeParameters(symbol);
 
+        List<Diagnostic> warnings = [];
         ImmutableArray<MemberModel> members;
         ConstructionMode mode;
 
         if (bestCtor is not null)
         {
-            members = BuildMembers(bestCtor);
+            members = BuildMembers(bestCtor, warnings);
             mode = ConstructionMode.Constructor;
         }
         else
         {
-            members = BuildInitPropertyMembers(symbol);
+            members = BuildInitPropertyMembers(symbol, warnings);
             if (members.IsEmpty)
             {
-                return (null, Diagnostic.Create(Hyp200, location, symbol.Name));
+                return (null, ImmutableArray.Create(Diagnostic.Create(Hyp200, location, symbol.Name)));
             }
 
             mode = ConstructionMode.ObjectInitializer;
@@ -74,7 +84,7 @@ internal static class TypeModelExtractor
             Members: members,
             ConstructionMode: mode);
 
-        return (model, null);
+        return (model, warnings.ToImmutableArray());
     }
 
     private static bool IsPartial(INamedTypeSymbol symbol)
@@ -131,7 +141,7 @@ internal static class TypeModelExtractor
         return builder.ToImmutable();
     }
 
-    private static ImmutableArray<MemberModel> BuildMembers(IMethodSymbol ctor)
+    private static ImmutableArray<MemberModel> BuildMembers(IMethodSymbol ctor, List<Diagnostic> warnings)
     {
         if (ctor.Parameters.IsEmpty)
         {
@@ -143,13 +153,21 @@ internal static class TypeModelExtractor
         {
             string typeName = param.Type.ToDisplayString(TypeNameFormat);
             bool isNullable = param.NullableAnnotation == NullableAnnotation.Annotated;
-            builder.Add(new(param.Name, typeName, isNullable));
+            (MemberGenerationKind kind, string innerFqn) = ClassifyMemberType(param.Type);
+
+            if (kind == MemberGenerationKind.Unsupported)
+            {
+                Location loc = param.Locations.Length > 0 ? param.Locations[0] : Location.None;
+                warnings.Add(Diagnostic.Create(Hyp202, loc, param.Name, typeName));
+            }
+
+            builder.Add(new(param.Name, typeName, isNullable, kind, innerFqn));
         }
 
         return builder.ToImmutable();
     }
 
-    private static ImmutableArray<MemberModel> BuildInitPropertyMembers(INamedTypeSymbol symbol)
+    private static ImmutableArray<MemberModel> BuildInitPropertyMembers(INamedTypeSymbol symbol, List<Diagnostic> warnings)
     {
         ImmutableArray<MemberModel>.Builder builder = ImmutableArray.CreateBuilder<MemberModel>();
         foreach (ISymbol member in symbol.GetMembers())
@@ -171,9 +189,70 @@ internal static class TypeModelExtractor
 
             string typeName = prop.Type.ToDisplayString(TypeNameFormat);
             bool isNullable = prop.NullableAnnotation == NullableAnnotation.Annotated;
-            builder.Add(new(prop.Name, typeName, isNullable));
+            (MemberGenerationKind kind, string innerFqn) = ClassifyMemberType(prop.Type);
+
+            if (kind == MemberGenerationKind.Unsupported)
+            {
+                Location loc = prop.Locations.Length > 0 ? prop.Locations[0] : Location.None;
+                warnings.Add(Diagnostic.Create(Hyp202, loc, prop.Name, typeName));
+            }
+
+            builder.Add(new(prop.Name, typeName, isNullable, kind, innerFqn));
         }
 
         return builder.ToImmutable();
+    }
+
+    private static (MemberGenerationKind Kind, string InnerFqn) ClassifyMemberType(ITypeSymbol type)
+    {
+        if (IsPrimitive(type.SpecialType))
+        {
+            return (MemberGenerationKind.Primitive, "");
+        }
+
+        if (type.TypeKind == TypeKind.Enum)
+        {
+            return (MemberGenerationKind.Enum, "");
+        }
+
+        if (type is INamedTypeSymbol { OriginalDefinition.SpecialType: SpecialType.System_Nullable_T } nullableType)
+        {
+            string innerFqn = nullableType.TypeArguments[0].ToDisplayString(TypeNameFormat);
+            return (MemberGenerationKind.NullableValue, innerFqn);
+        }
+
+        if (type is INamedTypeSymbol { Name: "List", TypeArguments.Length: 1 } listType
+            && listType.ContainingNamespace is
+            {
+                Name: "Generic",
+                ContainingNamespace.Name: "Collections",
+                ContainingNamespace.ContainingNamespace.Name: "System"
+            })
+        {
+            string innerFqn = listType.TypeArguments[0].ToDisplayString(TypeNameFormat);
+            return (MemberGenerationKind.List, innerFqn);
+        }
+
+        foreach (AttributeData attr in type.GetAttributes())
+        {
+            if (attr.AttributeClass is
+                {
+                    Name: "ArbitraryAttribute",
+                    ContainingNamespace.Name: "Core",
+                    ContainingNamespace.ContainingNamespace.Name: "Conjecture"
+                })
+            {
+                return (MemberGenerationKind.ArbitraryReference, "");
+            }
+        }
+
+        return (MemberGenerationKind.Unsupported, "");
+    }
+
+    private static bool IsPrimitive(SpecialType st)
+    {
+        return st is SpecialType.System_Int32 or SpecialType.System_Int64 or SpecialType.System_Byte
+            or SpecialType.System_Boolean or SpecialType.System_String
+            or SpecialType.System_Double or SpecialType.System_Single;
     }
 }

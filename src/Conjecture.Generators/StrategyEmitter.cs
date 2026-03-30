@@ -5,15 +5,15 @@ namespace Conjecture.Generators;
 
 internal static class StrategyEmitter
 {
-    private static readonly Dictionary<string, string> TypeMap = new()
+    private static readonly Dictionary<string, (string GenExpr, string ShortName)> PrimitiveData = new()
     {
-        ["System.Int32"] = "global::Conjecture.Core.Gen.Integers<int>()",
-        ["System.Int64"] = "global::Conjecture.Core.Gen.Integers<long>()",
-        ["System.Byte"] = "global::Conjecture.Core.Gen.Integers<byte>()",
-        ["System.Boolean"] = "global::Conjecture.Core.Gen.Booleans()",
-        ["System.String"] = "global::Conjecture.Core.Gen.Strings()",
-        ["System.Double"] = "global::Conjecture.Core.Gen.Doubles()",
-        ["System.Single"] = "global::Conjecture.Core.Gen.Floats()",
+        ["System.Int32"]  = ("global::Conjecture.Core.Gen.Integers<int>()",  "int"),
+        ["System.Int64"]  = ("global::Conjecture.Core.Gen.Integers<long>()", "long"),
+        ["System.Byte"]   = ("global::Conjecture.Core.Gen.Integers<byte>()", "byte"),
+        ["System.Boolean"] = ("global::Conjecture.Core.Gen.Booleans()",      "bool"),
+        ["System.String"]  = ("global::Conjecture.Core.Gen.Strings()",       "string"),
+        ["System.Double"]  = ("global::Conjecture.Core.Gen.Doubles()",       "double"),
+        ["System.Single"]  = ("global::Conjecture.Core.Gen.Floats()",        "float"),
     };
 
     internal static string Emit(TypeModel model)
@@ -69,8 +69,29 @@ internal static class StrategyEmitter
         return sb.ToString();
     }
 
-    private static string ResolveGenExpr(MemberModel member) =>
-        TypeMap.TryGetValue(member.TypeFullName, out string? expr)
-            ? expr
-            : $"/* unsupported type: {member.TypeFullName} */";
+    private static string ResolveGenExpr(MemberModel member)
+    {
+        return member.Kind switch
+        {
+            MemberGenerationKind.Enum =>
+                "global::Conjecture.Core.Gen.Enums<global::" + member.TypeFullName + ">()",
+            MemberGenerationKind.NullableValue =>
+                BuildWrappedExpr(member.InnerTypeFullName, "Nullable"),
+            MemberGenerationKind.List =>
+                BuildWrappedExpr(member.InnerTypeFullName, "Lists"),
+            MemberGenerationKind.ArbitraryReference =>
+                "new global::" + member.TypeFullName + "Arbitrary().Create()",
+            MemberGenerationKind.Primitive =>
+                PrimitiveData.TryGetValue(member.TypeFullName, out (string GenExpr, string ShortName) d) ? d.GenExpr : $"/* unsupported type: {member.TypeFullName} */",
+            _ =>
+                $"/* unsupported type: {member.TypeFullName} */",
+        };
+    }
+
+    private static string BuildWrappedExpr(string innerFqn, string wrapper)
+    {
+        return PrimitiveData.TryGetValue(innerFqn, out (string GenExpr, string ShortName) data)
+            ? "global::Conjecture.Core.Gen." + wrapper + "<" + data.ShortName + ">(" + data.GenExpr + ")"
+            : $"/* unsupported {wrapper} inner type: {innerFqn} */";
+    }
 }

@@ -137,7 +137,7 @@ Generator targets `netstandard2.0` (Roslyn requirement) and ships as development
     - Init-property-based: `new T { Prop1 = ctx.Next(...), ... }`
 
 #### Cycle 3.3.3 -- Nested types and full type mapping
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Generators.Tests/NestedTypeGeneratorTests.cs`
     - All supported types map correctly: `string`, `bool`, `int`, `long`, `byte`, `float`, `double`, `List<int>`, enum, `int?`
     - Nested `[Arbitrary]` inside another class: fully qualified naming

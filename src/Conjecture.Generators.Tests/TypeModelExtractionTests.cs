@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using System.IO;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Conjecture.Generators;
@@ -15,9 +16,9 @@ public sealed class TypeModelExtractionTests
             "namespace MyApp; public partial record Point(int X, int Y);",
             "MyApp.Point");
 
-        (TypeModel? model, Diagnostic? diagnostic) = TypeModelExtractor.Extract(symbol);
+        (TypeModel? model, ImmutableArray<Diagnostic> diagnostics) = TypeModelExtractor.Extract(symbol);
 
-        Assert.Null(diagnostic);
+        Assert.Empty(diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error));
         Assert.NotNull(model);
         Assert.Equal(2, model.Members.Length);
         Assert.Equal("X", model.Members[0].Name);
@@ -33,9 +34,9 @@ public sealed class TypeModelExtractionTests
             "namespace MyApp; public partial class Person { public Person(string name, int age) { } }",
             "MyApp.Person");
 
-        (TypeModel? model, Diagnostic? diagnostic) = TypeModelExtractor.Extract(symbol);
+        (TypeModel? model, ImmutableArray<Diagnostic> diagnostics) = TypeModelExtractor.Extract(symbol);
 
-        Assert.Null(diagnostic);
+        Assert.Empty(diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error));
         Assert.NotNull(model);
         Assert.Equal(2, model.Members.Length);
         Assert.Equal("name", model.Members[0].Name);
@@ -51,11 +52,12 @@ public sealed class TypeModelExtractionTests
             "namespace MyApp; public partial class Hidden { private Hidden() { } }",
             "MyApp.Hidden");
 
-        (TypeModel? model, Diagnostic? diagnostic) = TypeModelExtractor.Extract(symbol);
+        (TypeModel? model, ImmutableArray<Diagnostic> diagnostics) = TypeModelExtractor.Extract(symbol);
 
         Assert.Null(model);
-        Assert.NotNull(diagnostic);
-        Assert.Equal("CON200", diagnostic.Id);
+        Diagnostic? diag = diagnostics.FirstOrDefault(d => d.Severity == DiagnosticSeverity.Error);
+        Assert.NotNull(diag);
+        Assert.Equal("CON200", diag.Id);
     }
 
     [Fact]
@@ -65,11 +67,12 @@ public sealed class TypeModelExtractionTests
             "namespace MyApp; public class Solid { public Solid(int x) { } }",
             "MyApp.Solid");
 
-        (TypeModel? model, Diagnostic? diagnostic) = TypeModelExtractor.Extract(symbol);
+        (TypeModel? model, ImmutableArray<Diagnostic> diagnostics) = TypeModelExtractor.Extract(symbol);
 
         Assert.Null(model);
-        Assert.NotNull(diagnostic);
-        Assert.Equal("CON201", diagnostic.Id);
+        Diagnostic? diag = diagnostics.FirstOrDefault(d => d.Severity == DiagnosticSeverity.Error);
+        Assert.NotNull(diag);
+        Assert.Equal("CON201", diag.Id);
     }
 
     [Fact]
@@ -79,9 +82,9 @@ public sealed class TypeModelExtractionTests
             "namespace MyApp; public partial class Box<T> { public Box(T value) { } }",
             "MyApp.Box`1");
 
-        (TypeModel? model, Diagnostic? diagnostic) = TypeModelExtractor.Extract(symbol);
+        (TypeModel? model, ImmutableArray<Diagnostic> diagnostics) = TypeModelExtractor.Extract(symbol);
 
-        Assert.Null(diagnostic);
+        Assert.Empty(diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error));
         Assert.NotNull(model);
         Assert.Single(model.TypeParameters);
         Assert.Equal("T", model.TypeParameters[0]);

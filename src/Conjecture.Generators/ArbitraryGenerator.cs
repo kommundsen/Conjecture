@@ -18,21 +18,25 @@ public sealed class ArbitraryGenerator : IIncrementalGenerator
 
         context.RegisterSourceOutput(types, static (ctx, symbol) =>
         {
-            (TypeModel? model, Diagnostic? diagnostic) = TypeModelExtractor.Extract(symbol);
+            (TypeModel? model, System.Collections.Immutable.ImmutableArray<Diagnostic> diagnostics) = TypeModelExtractor.Extract(symbol);
 
-            if (diagnostic is not null)
+            bool hasError = false;
+            foreach (Diagnostic d in diagnostics)
             {
-                ctx.ReportDiagnostic(diagnostic);
+                ctx.ReportDiagnostic(d);
+                if (d.Severity == DiagnosticSeverity.Error)
+                {
+                    hasError = true;
+                }
+            }
+
+            if (hasError)
+            {
                 return;
             }
 
-            if (model is null)
-            {
-                return;
-            }
-
-            string source = StrategyEmitter.Emit(model);
-            ctx.AddSource(model.TypeName + ".g", source);
+            string source = StrategyEmitter.Emit(model!);
+            ctx.AddSource(model!.TypeName + ".g", source);
         });
     }
 }
