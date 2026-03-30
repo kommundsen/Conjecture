@@ -292,7 +292,7 @@ The existing `Conjecture.Xunit` (v2, `xunit.extensibility.core` 2.9.3) is preser
 ### 3.8 MSTest Adapter
 
 #### Cycle 3.8.1 -- MSTest PropertyAttribute
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.MSTest.Tests/MSTestPropertyAttributeTests.cs`
     - `[Property]` exists in `Conjecture.MSTest`, inherits `TestMethodAttribute`, has same settings properties
   - **Impl** -- `src/Conjecture.MSTest/PropertyAttribute.cs`
