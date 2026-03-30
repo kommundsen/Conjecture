@@ -99,7 +99,7 @@ Generator targets `netstandard2.0` (Roslyn requirement) and ships as development
     - `[Generator(LanguageNames.CSharp)]`, `Initialize(IncrementalGeneratorInitializationContext)` with `SyntaxProvider.ForAttributeWithMetadataName` filtering for `[Arbitrary]`
 
 #### Cycle 3.2.2 -- Type model extraction
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Generators.Tests/TypeModelExtractionTests.cs`
     - Record with primary constructor: extracts param names/types
     - Class with single public constructor: extracts param names/types
@@ -115,7 +115,7 @@ Generator targets `netstandard2.0` (Roslyn requirement) and ships as development
 ### 3.3 Source Generator: Strategy Emission
 
 #### Cycle 3.3.1 -- Simple record generation
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Generators.Tests/SimpleRecordGeneratorTests.cs`
     - `[Arbitrary] partial record Point(int X, int Y)` generates `PointArbitrary : IStrategyProvider<Point>`
     - Generated `Create()` uses `Strategies.Compose<Point>(...)` with `Gen.Integers<int>()`
