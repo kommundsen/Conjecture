@@ -307,7 +307,7 @@ The existing `Conjecture.Xunit` (v2, `xunit.extensibility.core` 2.9.3) is preser
     - Override `Execute(ITestMethod)` returning `TestResult[]`
 
 #### Cycle 3.8.3 -- MSTest failure reporting and database
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.MSTest.Tests/MSTestReportingTests.cs`
     - Same scenarios as NUnit 3.7.3 for MSTest
   - **Impl** -- Wire formatting/database infrastructure
