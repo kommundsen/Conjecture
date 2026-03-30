@@ -4,6 +4,7 @@ using System.Reflection;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
 using Conjecture.Core.Internal.Database;
+using Xunit;
 using Xunit.Sdk;
 using Xunit.v3;
 
@@ -119,7 +120,17 @@ internal sealed class PropertyTestCase : XunitTestCase, ISelfExecutingXunitTestC
         try
         {
             MethodInfo methodInfo = TestMethod.Method;
-            object? testInstance = Activator.CreateInstance(TestMethod.TestClass.Class);
+            object? testInstance;
+            if (constructorArguments is { Length: > 0 })
+            {
+                TestOutputHelper outputHelper = new();
+                outputHelper.Initialize(messageBus, test);
+                testInstance = Activator.CreateInstance(TestMethod.TestClass.Class, ResolveConstructorArguments(constructorArguments, outputHelper));
+            }
+            else
+            {
+                testInstance = Activator.CreateInstance(TestMethod.TestClass.Class);
+            }
 
             ConjectureSettings settings = new()
             {
@@ -266,6 +277,18 @@ internal sealed class PropertyTestCase : XunitTestCase, ISelfExecutingXunitTestC
         }
 
         return summary;
+    }
+
+    // xUnit v3 passes Func<ITestOutputHelper> factory delegates in constructorArguments.
+    // Substitute the pre-initialized TestOutputHelper we created for this test execution.
+    private static object?[] ResolveConstructorArguments(object?[] args, ITestOutputHelper outputHelper)
+    {
+        object?[] resolved = new object?[args.Length];
+        for (int i = 0; i < args.Length; i++)
+        {
+            resolved[i] = args[i] is Func<ITestOutputHelper> ? outputHelper : args[i];
+        }
+        return resolved;
     }
 
     private static bool IsAsyncReturnType(Type returnType)
