@@ -222,7 +222,7 @@ Generator targets `netstandard2.0` (Roslyn requirement) and ships as development
 Extract strategy resolution logic into `Conjecture.Core` so all framework adapters share identical resolution.
 
 #### Cycle 3.5.1 -- Extract SharedParameterStrategyResolver to Core
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/Internal/SharedParameterStrategyResolverTests.cs`
     - `SharedParameterStrategyResolver.Resolve(parameters, data)` resolves `[From<T>]`, `[FromFactory]`, type-inference fallback
     - Identical behavior to current xUnit resolver
