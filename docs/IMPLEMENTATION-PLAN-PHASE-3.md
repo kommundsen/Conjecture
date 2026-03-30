@@ -92,7 +92,7 @@ Each cycle: `/implement-cycle` (Red -> Green -> Refactor -> Verify -> Mark done)
 Generator targets `netstandard2.0` (Roslyn requirement) and ships as development-time-only dependency.
 
 #### Cycle 3.2.1 -- Generator scaffold and empty pipeline
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Generators.Tests/GeneratorInfrastructureTests.cs`
     - Generator assembly loads, `ArbitraryGenerator` implements `IIncrementalGenerator`, empty compilation with no `[Arbitrary]` types produces no generated source, no throw on empty compilation
   - **Impl** -- `src/Conjecture.Generators/ArbitraryGenerator.cs`
