@@ -96,3 +96,5 @@ Conjecture.Core.FromAttribute<TProvider>.ProviderType.get -> System.Type!
 Conjecture.Core.FromFactoryAttribute
 Conjecture.Core.FromFactoryAttribute.FromFactoryAttribute(string! methodName) -> void
 Conjecture.Core.FromFactoryAttribute.MethodName.get -> string!
+Conjecture.Core.ArbitraryAttribute
+Conjecture.Core.ArbitraryAttribute.ArbitraryAttribute() -> void

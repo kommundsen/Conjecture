@@ -77,7 +77,7 @@ Each cycle: `/implement-cycle` (Red -> Green -> Refactor -> Verify -> Mark done)
 ### 3.1 ArbitraryAttribute (Core Foundation)
 
 #### Cycle 3.1.1 -- ArbitraryAttribute
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/ArbitraryAttributeTests.cs`
     - `[Arbitrary]` attribute targets classes/structs/records, `AllowMultiple = false`, marker only (no parameters), can be applied to `partial record`, `partial class`, `partial struct`
   - **Impl** -- `src/Conjecture.Core/ArbitraryAttribute.cs`
