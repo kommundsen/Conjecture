@@ -386,7 +386,7 @@ Extend `IRNodeKind` so specialized shrinker passes can identify float and string
     - Failing `[From]`-constrained test shrinks within strategy bounds
 
 #### Cycle 2.11.3 -- Async property end-to-end
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/EndToEnd/AsyncPropertyE2ETests.cs`
     - Async `[Property]` returning `Task` passes when logic is correct
     - Async `[Property]` that throws shrinks and reports counterexample
