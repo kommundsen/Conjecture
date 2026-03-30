@@ -4,4 +4,15 @@
   <Project Path="Conjecture.Tests/Conjecture.Tests.csproj" />
   <Project Path="Conjecture.Xunit.Tests/Conjecture.Xunit.Tests.csproj" />
   <Project Path="Conjecture.Benchmarks/Conjecture.Benchmarks.csproj" />
+  <Project Path="Conjecture.Generators/Conjecture.Generators.csproj" />
+  <Project Path="Conjecture.Generators.Tests/Conjecture.Generators.Tests.csproj" />
+  <Project Path="Conjecture.Analyzers/Conjecture.Analyzers.csproj" />
+  <Project Path="Conjecture.Analyzers.Tests/Conjecture.Analyzers.Tests.csproj" />
+  <Project Path="Conjecture.Xunit.V3/Conjecture.Xunit.V3.csproj" />
+  <Project Path="Conjecture.Xunit.V3.Tests/Conjecture.Xunit.V3.Tests.csproj" />
+  <Project Path="Conjecture.NUnit/Conjecture.NUnit.csproj" />
+  <Project Path="Conjecture.NUnit.Tests/Conjecture.NUnit.Tests.csproj" />
+  <Project Path="Conjecture.MSTest/Conjecture.MSTest.csproj" />
+  <Project Path="Conjecture.MSTest.Tests/Conjecture.MSTest.Tests.csproj" />
+  <Project Path="Conjecture.SelfTests/Conjecture.SelfTests.csproj" />
 </Solution>

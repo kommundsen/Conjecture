@@ -56,21 +56,21 @@ Each cycle: `/implement-cycle` (Red -> Green -> Refactor -> Verify -> Mark done)
 - [x] `/decision` -- ADR-0030: Framework Adapter Architecture -- adapter project structure, shared resolver extraction, test discovery pattern per framework (xUnit v3, NUnit, MSTest), xUnit v2 vs v3 coexistence strategy
 
 #### Cycle 3.0.2 -- Package references and project scaffolding
-- [ ] Add `Microsoft.CodeAnalysis.CSharp` to `Directory.Packages.props`
-- [ ] Add `xunit.v3`, `xunit.v3.extensibility.core`, `NUnit`, `MSTest.TestFramework` to `Directory.Packages.props`
-- [ ] `/scaffold` -- `Conjecture.Generators` (source generator, `netstandard2.0`)
-- [ ] `/scaffold` -- `Conjecture.Generators.Tests`
-- [ ] `/scaffold` -- `Conjecture.Analyzers` (analyzer, `netstandard2.0`)
-- [ ] `/scaffold` -- `Conjecture.Analyzers.Tests` (with `Microsoft.CodeAnalysis.CSharp.Analyzer.Testing`)
-- [ ] `/scaffold` -- `Conjecture.Xunit.V3` (xUnit v3 adapter, `net10.0`)
-- [ ] `/scaffold` -- `Conjecture.Xunit.V3.Tests`
-- [ ] `/scaffold` -- `Conjecture.NUnit` (`net10.0`)
-- [ ] `/scaffold` -- `Conjecture.NUnit.Tests`
-- [ ] `/scaffold` -- `Conjecture.MSTest` (`net10.0`)
-- [ ] `/scaffold` -- `Conjecture.MSTest.Tests`
-- [ ] `/scaffold` -- `Conjecture.SelfTests` (xUnit v3, dogfooding project)
-- [ ] Add `InternalsVisibleTo` for `Conjecture.Generators`, `Conjecture.Xunit.V3`, `Conjecture.NUnit`, `Conjecture.MSTest` in `Conjecture.Core.csproj`
-- [ ] Verify: `dotnet build src/` succeeds with all new empty projects
+- [x] Add `Microsoft.CodeAnalysis.CSharp` to `Directory.Packages.props`
+- [x] Add `xunit.v3`, `xunit.v3.extensibility.core`, `NUnit`, `MSTest.TestFramework` to `Directory.Packages.props`
+- [x] `/scaffold` -- `Conjecture.Generators` (source generator, `netstandard2.0`)
+- [x] `/scaffold` -- `Conjecture.Generators.Tests`
+- [x] `/scaffold` -- `Conjecture.Analyzers` (analyzer, `netstandard2.0`)
+- [x] `/scaffold` -- `Conjecture.Analyzers.Tests` (with `Microsoft.CodeAnalysis.CSharp.Analyzer.Testing`)
+- [x] `/scaffold` -- `Conjecture.Xunit.V3` (xUnit v3 adapter, `net10.0`)
+- [x] `/scaffold` -- `Conjecture.Xunit.V3.Tests`
+- [x] `/scaffold` -- `Conjecture.NUnit` (`net10.0`)
+- [x] `/scaffold` -- `Conjecture.NUnit.Tests`
+- [x] `/scaffold` -- `Conjecture.MSTest` (`net10.0`)
+- [x] `/scaffold` -- `Conjecture.MSTest.Tests`
+- [x] `/scaffold` -- `Conjecture.SelfTests` (xUnit v3, dogfooding project)
+- [x] Add `InternalsVisibleTo` for `Conjecture.Generators`, `Conjecture.Xunit.V3`, `Conjecture.NUnit`, `Conjecture.MSTest` in `Conjecture.Core.csproj`
+- [x] Verify: `dotnet build src/` succeeds with all new empty projects
 
 ---
 
