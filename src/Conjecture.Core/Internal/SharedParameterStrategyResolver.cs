@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Conjecture.Core.Generation;
@@ -8,6 +9,10 @@ internal static class SharedParameterStrategyResolver
 {
     private static readonly Type OpenFromAttribute = typeof(FromAttribute<>).GetGenericTypeDefinition();
     private static readonly Type OpenStrategyProvider = typeof(IStrategyProvider<>);
+    private static readonly MethodInfo DrawFromProviderOpenMethod =
+        typeof(SharedParameterStrategyResolver)
+            .GetMethod(nameof(DrawFromProvider), BindingFlags.NonPublic | BindingFlags.Static)!;
+    private static readonly ConcurrentDictionary<Type, MethodInfo?> ArbitraryProviderCache = new();
 
     [RequiresUnreferencedCode("Accesses parameter type metadata via reflection; not trim-safe.")]
     [RequiresDynamicCode("Uses MakeGenericMethod for typed strategy dispatch; not NativeAOT-safe.")]
@@ -18,6 +23,7 @@ internal static class SharedParameterStrategyResolver
         {
             args[i] = TryDrawFromAttribute(parameters[i], data)
                 ?? TryDrawFromFactory(parameters[i], data)
+                ?? TryDrawFromArbitraryProvider(parameters[i], data)
                 ?? DrawValue(parameters[i].ParameterType, data);
         }
         return args;
@@ -53,10 +59,7 @@ internal static class SharedParameterStrategyResolver
                     $"but parameter '{parameter.Name}' has type '{parameter.ParameterType.Name}'.");
             }
 
-            MethodInfo drawMethod = typeof(SharedParameterStrategyResolver)
-                .GetMethod(nameof(DrawFromProvider), BindingFlags.NonPublic | BindingFlags.Static)!
-                .MakeGenericMethod(providerType, strategyValueType);
-
+            MethodInfo drawMethod = DrawFromProviderOpenMethod.MakeGenericMethod(providerType, strategyValueType);
             return drawMethod.Invoke(null, [data])!;
         }
 
@@ -106,6 +109,59 @@ internal static class SharedParameterStrategyResolver
             .MakeGenericMethod(parameter.ParameterType);
 
         return drawMethod.Invoke(null, [method, data])!;
+    }
+
+    [RequiresUnreferencedCode("Scans loaded assemblies for provider types by name; not trim-safe.")]
+    [RequiresDynamicCode("Calls MakeGenericMethod to construct typed draw helper.")]
+    private static object? TryDrawFromArbitraryProvider(ParameterInfo parameter, ConjectureData data)
+    {
+        Type paramType = parameter.ParameterType;
+        MethodInfo? drawMethod = ArbitraryProviderCache.GetOrAdd(paramType, FindArbitraryDrawMethod);
+        return drawMethod?.Invoke(null, [data]);
+    }
+
+    [RequiresUnreferencedCode("Scans loaded assemblies for provider types by name; not trim-safe.")]
+    [RequiresDynamicCode("Calls MakeGenericMethod to construct typed draw helper.")]
+    private static MethodInfo? FindArbitraryDrawMethod(Type paramType)
+    {
+        string candidateName = paramType.Name + "Arbitrary";
+
+        foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+        {
+            Type[] types;
+            try
+            {
+                types = assembly.GetTypes();
+            }
+            catch (ReflectionTypeLoadException ex)
+            {
+                types = ex.Types.Where(t => t is not null).ToArray()!;
+            }
+
+            foreach (Type type in types)
+            {
+                if (type.Name != candidateName)
+                {
+                    continue;
+                }
+
+                if (type.GetCustomAttribute<ArbitraryAttribute>() is null)
+                {
+                    continue;
+                }
+
+                if (!type.GetInterfaces().Any(i => i.IsGenericType
+                        && i.GetGenericTypeDefinition() == OpenStrategyProvider
+                        && i.GetGenericArguments()[0] == paramType))
+                {
+                    continue;
+                }
+
+                return DrawFromProviderOpenMethod.MakeGenericMethod(type, paramType);
+            }
+        }
+
+        return null;
     }
 
     private static object DrawFromFactory<T>(MethodInfo factory, ConjectureData data)

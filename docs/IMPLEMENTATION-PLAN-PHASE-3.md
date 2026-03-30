@@ -317,7 +317,7 @@ The existing `Conjecture.Xunit` (v2, `xunit.extensibility.core` 2.9.3) is preser
 ### 3.9 Auto-Discovery of Generated Providers
 
 #### Cycle 3.9.1 -- Wire [Arbitrary] auto-discovery into resolver
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/ArbitraryAutoDiscoveryTests.cs`
     - `[Property]` with param type `Person` (has `[Arbitrary]`) auto-resolves without `[From<PersonArbitrary>]`
     - Explicit `[From<PersonArbitrary>]` takes precedence
