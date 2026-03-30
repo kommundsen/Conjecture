@@ -13,10 +13,10 @@ public class XunitV3PropertyAttributeTests
     }
 
     [Fact]
-    public void PropertyAttribute_DefaultSeed_IsNull()
+    public void PropertyAttribute_DefaultSeed_IsZero()
     {
         PropertyAttribute attr = new();
-        Assert.Null(attr.Seed);
+        Assert.Equal(0UL, attr.Seed);
     }
 
     [Fact]
@@ -34,10 +34,10 @@ public class XunitV3PropertyAttributeTests
     }
 
     [Fact]
-    public void PropertyAttribute_DefaultDeadlineMs_IsNull()
+    public void PropertyAttribute_DefaultDeadlineMs_IsZero()
     {
         PropertyAttribute attr = new();
-        Assert.Null(attr.DeadlineMs);
+        Assert.Equal(0, attr.DeadlineMs);
     }
 
     [Fact]
@@ -74,8 +74,8 @@ public class XunitV3PropertyAttributeTests
     [Fact]
     public void PropertyAttribute_Seed_CanBeSet()
     {
-        PropertyAttribute attr = new() { Seed = 42 };
-        Assert.Equal(42, attr.Seed);
+        PropertyAttribute attr = new() { Seed = 42UL };
+        Assert.Equal(42UL, attr.Seed);
     }
 
     [Fact]
