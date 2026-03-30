@@ -126,7 +126,7 @@ Generator targets `netstandard2.0` (Roslyn requirement) and ships as development
     - Emits `Strategies.Compose<T>(ctx => new T(ctx.Next(s1), ctx.Next(s2), ...))`
 
 #### Cycle 3.3.2 -- Class and struct generation
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Generators.Tests/ClassAndStructGeneratorTests.cs`
     - Class with constructor: generates strategy
     - Struct with init properties: generates strategy

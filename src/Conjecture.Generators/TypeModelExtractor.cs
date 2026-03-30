@@ -39,17 +39,31 @@ internal static class TypeModelExtractor
         }
 
         IMethodSymbol? bestCtor = FindBestConstructor(symbol);
-        if (bestCtor is null)
-        {
-            return (null, Diagnostic.Create(Hyp200, location, symbol.Name));
-        }
-
-        ImmutableArray<string> typeParameters = BuildTypeParameters(symbol);
-        ImmutableArray<MemberModel> members = BuildMembers(bestCtor);
 
         string ns = symbol.ContainingNamespace.IsGlobalNamespace
             ? string.Empty
             : symbol.ContainingNamespace.ToDisplayString();
+
+        ImmutableArray<string> typeParameters = BuildTypeParameters(symbol);
+
+        ImmutableArray<MemberModel> members;
+        ConstructionMode mode;
+
+        if (bestCtor is not null)
+        {
+            members = BuildMembers(bestCtor);
+            mode = ConstructionMode.Constructor;
+        }
+        else
+        {
+            members = BuildInitPropertyMembers(symbol);
+            if (members.IsEmpty)
+            {
+                return (null, Diagnostic.Create(Hyp200, location, symbol.Name));
+            }
+
+            mode = ConstructionMode.ObjectInitializer;
+        }
 
         TypeModel model = new(
             FullyQualifiedName: symbol.ToDisplayString(TypeNameFormat),
@@ -57,7 +71,8 @@ internal static class TypeModelExtractor
             TypeName: symbol.Name,
             TypeKind: symbol.TypeKind,
             TypeParameters: typeParameters,
-            Members: members);
+            Members: members,
+            ConstructionMode: mode);
 
         return (model, null);
     }
@@ -129,6 +144,34 @@ internal static class TypeModelExtractor
             string typeName = param.Type.ToDisplayString(TypeNameFormat);
             bool isNullable = param.NullableAnnotation == NullableAnnotation.Annotated;
             builder.Add(new(param.Name, typeName, isNullable));
+        }
+
+        return builder.ToImmutable();
+    }
+
+    private static ImmutableArray<MemberModel> BuildInitPropertyMembers(INamedTypeSymbol symbol)
+    {
+        ImmutableArray<MemberModel>.Builder builder = ImmutableArray.CreateBuilder<MemberModel>();
+        foreach (ISymbol member in symbol.GetMembers())
+        {
+            if (member is not IPropertySymbol prop)
+            {
+                continue;
+            }
+
+            if (prop.DeclaredAccessibility != Accessibility.Public)
+            {
+                continue;
+            }
+
+            if (prop.SetMethod is null || !prop.SetMethod.IsInitOnly)
+            {
+                continue;
+            }
+
+            string typeName = prop.Type.ToDisplayString(TypeNameFormat);
+            bool isNullable = prop.NullableAnnotation == NullableAnnotation.Annotated;
+            builder.Add(new(prop.Name, typeName, isNullable));
         }
 
         return builder.ToImmutable();

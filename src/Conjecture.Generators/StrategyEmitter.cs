@@ -40,6 +40,18 @@ internal static class StrategyEmitter
         {
             sb.AppendLine("        global::Conjecture.Core.Strategies.Compose<" + fqn + ">(_ => new " + fqn + "());");
         }
+        else if (model.ConstructionMode == ConstructionMode.ObjectInitializer)
+        {
+            sb.AppendLine("        global::Conjecture.Core.Strategies.Compose<" + fqn + ">(ctx => new " + fqn + " {");
+
+            for (int i = 0; i < model.Members.Length; i++)
+            {
+                MemberModel member = model.Members[i];
+                bool isLast = i == model.Members.Length - 1;
+                string suffix = isLast ? " });" : ",";
+                sb.AppendLine("            " + member.Name + " = ctx.Next(" + ResolveGenExpr(member) + ")" + suffix);
+            }
+        }
         else
         {
             sb.AppendLine("        global::Conjecture.Core.Strategies.Compose<" + fqn + ">(ctx => new " + fqn + "(");
@@ -48,17 +60,17 @@ internal static class StrategyEmitter
             {
                 MemberModel member = model.Members[i];
                 bool isLast = i == model.Members.Length - 1;
-                if (!TypeMap.TryGetValue(member.TypeFullName, out string? genExpr))
-                {
-                    genExpr = $"/* unsupported type: {member.TypeFullName} */";
-                }
-
                 string suffix = isLast ? "));" : ",";
-                sb.AppendLine("            ctx.Next(" + genExpr + ")" + suffix);
+                sb.AppendLine("            ctx.Next(" + ResolveGenExpr(member) + ")" + suffix);
             }
         }
 
         sb.AppendLine("}");
         return sb.ToString();
     }
+
+    private static string ResolveGenExpr(MemberModel member) =>
+        TypeMap.TryGetValue(member.TypeFullName, out string? expr)
+            ? expr
+            : $"/* unsupported type: {member.TypeFullName} */";
 }
