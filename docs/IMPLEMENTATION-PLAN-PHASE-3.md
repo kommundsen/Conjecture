@@ -197,7 +197,7 @@ Generator targets `netstandard2.0` (Roslyn requirement) and ships as development
   - **Impl** -- `src/Conjecture.Analyzers/CON102Analyzer.cs` + `src/Conjecture.Analyzers/CON102CodeFix.cs`
 
 #### Cycle 3.4.5 -- CON101: High-rejection .Where() predicate
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Analyzers.Tests/CON101Tests.cs`
     - `Gen.Integers<int>().Where(x => x == 42)` -> CON101 warning
     - `Gen.Booleans().Where(b => b == true)` -> CON101
