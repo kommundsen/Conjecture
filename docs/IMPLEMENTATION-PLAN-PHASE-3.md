@@ -346,7 +346,7 @@ The existing `Conjecture.Xunit` (v2, `xunit.extensibility.core` 2.9.3) is preser
     - Same scenarios as 3.10.1 with NUnit `[Property]`
 
 #### Cycle 3.10.4 -- Generator E2E with MSTest
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.MSTest.Tests/EndToEnd/SourceGeneratorMSTestE2ETests.cs`
     - Same scenarios as 3.10.1 with MSTest `[Property]`
 
