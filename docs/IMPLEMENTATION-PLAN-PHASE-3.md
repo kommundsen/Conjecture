@@ -394,7 +394,7 @@ The existing `Conjecture.Xunit` (v2, `xunit.extensibility.core` 2.9.3) is preser
     - Collection size bounds respected: `Gen.Lists(s, minSize, maxSize)` always produces within bounds
 
 #### Cycle 3.13.2 -- Shrinker invariant self-tests
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.SelfTests/ShrinkerInvariantTests.cs`
     - Shrinking is idempotent: shrinking a fully-shrunk result produces same result
     - Shrinking preserves failure status: shrunk counterexample still triggers original failure
