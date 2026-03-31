@@ -402,7 +402,7 @@ The existing `Conjecture.Xunit` (v2, `xunit.extensibility.core` 2.9.3) is preser
     - Bounds respected: shrunk integer values stay within strategy bounds
 
 #### Cycle 3.13.3 -- Source generator self-tests
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.SelfTests/GeneratorSelfTests.cs`
     - `[Arbitrary] partial record` used in `[Property]` tests that verify generation properties
     - Generated strategies compose correctly with LINQ combinators
