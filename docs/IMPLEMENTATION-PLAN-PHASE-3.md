@@ -385,7 +385,7 @@ The existing `Conjecture.Xunit` (v2, `xunit.extensibility.core` 2.9.3) is preser
 `Conjecture.SelfTests` uses Conjecture's own `[Property]` attribute (via `Conjecture.Xunit.V3`) to test itself. This creates a virtuous cycle: regressions in the engine break the self-tests, and improving the engine makes the self-tests more powerful.
 
 #### Cycle 3.13.1 -- Strategy law self-tests
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.SelfTests/StrategyLawTests.cs`
     - Functor identity: `strategy.Select(x => x)` produces same distribution as `strategy`
     - Filter true: `strategy.Where(_ => true)` produces same values as `strategy`

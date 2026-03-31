@@ -52,6 +52,9 @@
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>Conjecture.MSTest.Tests</_Parameter1>
     </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Conjecture.SelfTests</_Parameter1>
+    </AssemblyAttribute>
   </ItemGroup>
 
 </Project>
