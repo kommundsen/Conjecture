@@ -1,0 +1,357 @@
+using System.Reflection;
+using Conjecture.Core;
+using Conjecture.Core.Generation;
+using Conjecture.Core.Internal;
+using Conjecture.Core.Internal.Database;
+using Conjecture.MSTest.Internal;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace Conjecture.MSTest.Tests.EndToEnd;
+
+file sealed class BoundedPositiveInts : IStrategyProvider<int>
+{
+    public Strategy<int> Create() => Gen.Integers<int>(1, 100);
+}
+
+/// <summary>
+/// End-to-end tests for the MSTest adapter covering the full pipeline:
+/// basic [Property], failing + shrinking, [Example], [From&lt;T&gt;], [FromFactory],
+/// async, database round-trip, and settings propagation.
+/// </summary>
+[TestClass]
+public sealed class MSTestAdapterE2ETests
+{
+    private string tempDir = null!;
+
+    [TestInitialize]
+    public void Initialize()
+    {
+        tempDir = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+        Directory.CreateDirectory(tempDir);
+    }
+
+    [TestCleanup]
+    public void Cleanup()
+    {
+        try { Directory.Delete(tempDir, recursive: true); }
+        catch (IOException) { }
+    }
+
+    // ── Helpers for resolver-based tests ────────────────────────────────────────
+
+    private static Strategy<int> EvenPositiveInts() =>
+        Gen.Integers<int>(1, 50).Where(n => n % 2 == 0);
+
+#pragma warning disable IDE0060
+    private static void IntMethod(int x) { }
+    private static void TwoIntMethod(int x, int y) { }
+    private static void IntFromFactoryMethod([FromFactory(nameof(EvenPositiveInts))] int x) { }
+#pragma warning restore IDE0060
+
+    private static ParameterInfo[] Params(string name) =>
+        typeof(MSTestAdapterE2ETests)
+            .GetMethod(name, BindingFlags.NonPublic | BindingFlags.Static)!
+            .GetParameters();
+
+    // ── Basic [Property] ─────────────────────────────────────────────────────────
+
+#pragma warning disable IDE0060
+    [Property(MaxExamples = 20, Seed = 1)]
+    public void BasicProperty_IntParam_Passes(int x) { }
+
+    [Property(MaxExamples = 20, Seed = 2)]
+    public void BasicProperty_BoolParam_Passes(bool b) { }
+#pragma warning restore IDE0060
+
+    [TestMethod]
+    public async Task BasicProperty_MaxExamples_RunsExactCount()
+    {
+        int count = 0;
+        ConjectureSettings settings = new() { MaxExamples = 13, Seed = 1UL };
+        TestRunResult result = await TestRunner.Run(settings, _ => count++);
+
+        Assert.IsTrue(result.Passed);
+        Assert.AreEqual(13, count);
+    }
+
+    // ── Failing + shrinking ──────────────────────────────────────────────────────
+
+    [TestMethod]
+    public async Task FailingProperty_ProducesCounterexample()
+    {
+        ConjectureSettings settings = new() { MaxExamples = 20, Seed = 1UL };
+        TestRunResult result = await TestRunner.Run(settings, _ => throw new Exception("always fails"));
+
+        Assert.IsFalse(result.Passed);
+        Assert.IsNotNull(result.Counterexample);
+    }
+
+    [TestMethod]
+    public async Task FailingIntProperty_ShrinksToBoundary()
+    {
+        // Property fails when x > 5; minimal counterexample is x = 6.
+        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 1UL };
+        ParameterInfo[] parameters = Params(nameof(IntMethod));
+
+        TestRunResult result = await TestRunner.Run(settings, data =>
+        {
+            object[] args = SharedParameterStrategyResolver.Resolve(parameters, data);
+            if ((int)args[0] > 5) { throw new Exception("too large"); }
+        });
+
+        Assert.IsFalse(result.Passed);
+        ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
+        object[] shrunk = SharedParameterStrategyResolver.Resolve(parameters, replay);
+        Assert.AreEqual(6, (int)shrunk[0]);
+    }
+
+    [TestMethod]
+    public async Task FailingProperty_FailureMessage_ContainsParamNameAndSeed()
+    {
+        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 5UL };
+        ParameterInfo[] parameters = Params(nameof(IntMethod));
+
+        TestRunResult result = await TestRunner.Run(settings, data =>
+        {
+            object[] args = SharedParameterStrategyResolver.Resolve(parameters, data);
+            if ((int)args[0] > 5) { throw new Exception("too large"); }
+        });
+
+        Assert.IsFalse(result.Passed);
+        string message = PropertyTestMethodAttribute.BuildFailureMessage(result, parameters);
+        Assert.IsTrue(message.Contains("x ="), $"Expected 'x =' in: {message}");
+        Assert.IsTrue(
+            message.Contains("Reproduce with: [Property(Seed = 0x5)]"),
+            $"Expected seed line in: {message}");
+    }
+
+    [TestMethod]
+    public async Task FailingProperty_MultipleParams_AllInMessage()
+    {
+        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 7UL };
+        ParameterInfo[] parameters = Params(nameof(TwoIntMethod));
+
+        TestRunResult result = await TestRunner.Run(settings, data =>
+        {
+            object[] args = SharedParameterStrategyResolver.Resolve(parameters, data);
+            if ((int)args[0] + (int)args[1] > 10) { throw new Exception("sum too large"); }
+        });
+
+        Assert.IsFalse(result.Passed);
+        string message = PropertyTestMethodAttribute.BuildFailureMessage(result, parameters);
+        Assert.IsTrue(message.Contains("x ="), $"Expected 'x =' in: {message}");
+        Assert.IsTrue(message.Contains("y ="), $"Expected 'y =' in: {message}");
+    }
+
+    // ── [Example] ───────────────────────────────────────────────────────────────
+
+#pragma warning disable IDE0060
+    [Property(MaxExamples = 5, Seed = 1)]
+    [Example(42, true)]
+    [Example(0, false)]
+    public void ExampleAttribute_ExplicitCasesRunAlongGenerated(int x, bool flag) { }
+#pragma warning restore IDE0060
+
+    [TestMethod]
+    public async Task ExampleAttribute_ExplicitCountMergesWithGeneratedCount()
+    {
+        ConjectureSettings settings = new() { MaxExamples = 10, Seed = 1UL };
+        TestRunResult generated = await TestRunner.Run(settings, _ => { });
+
+        TestRunResult combined = TestRunResult.WithExtraExamples(generated, 3);
+
+        Assert.AreEqual(13, combined.ExampleCount);
+        Assert.IsTrue(combined.Passed);
+    }
+
+    // ── [From<T>] ───────────────────────────────────────────────────────────────
+
+    [Property(MaxExamples = 50, Seed = 1)]
+    public void FromAttribute_BoundedPositiveInts_AllValuesInRange([From<BoundedPositiveInts>] int x)
+    {
+        Assert.IsTrue(x >= 1 && x <= 100, $"Expected x in [1, 100], got {x}");
+    }
+
+    [TestMethod]
+    public async Task FromAttribute_ConstrainedStrategy_AllValuesPassPredicate()
+    {
+        Strategy<int> strategy = new BoundedPositiveInts().Create();
+        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 3UL };
+
+        TestRunResult result = await TestRunner.Run(settings, data =>
+        {
+            int v = strategy.Next(data);
+            if (v < 1 || v > 100) { throw new Exception($"Out of range: {v}"); }
+        });
+
+        Assert.IsTrue(result.Passed);
+    }
+
+    [TestMethod]
+    public async Task FromAttribute_ConstrainedStrategy_FailingShrinksToBoundary()
+    {
+        // [From<BoundedPositiveInts>] generates [1, 100]; property fails when v > 5 → shrinks to 6.
+        Strategy<int> strategy = new BoundedPositiveInts().Create();
+        ConjectureSettings settings = new() { MaxExamples = 200, Seed = 20UL, UseDatabase = false };
+
+        TestRunResult result = await TestRunner.Run(settings, data =>
+        {
+            int v = strategy.Next(data);
+            if (v > 5) { throw new Exception("too large"); }
+        });
+
+        Assert.IsFalse(result.Passed);
+        ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
+        Assert.AreEqual(6, strategy.Next(replay));
+    }
+
+    // ── [FromFactory] ────────────────────────────────────────────────────────────
+
+    [Property(MaxExamples = 20, Seed = 1)]
+    public void FromFactoryAttribute_EvenPositiveInts_AllValuesEvenAndInRange(
+        [FromFactory(nameof(EvenPositiveInts))] int x)
+    {
+        Assert.IsTrue(x >= 1 && x <= 50 && x % 2 == 0, $"Expected even in [1,50], got {x}");
+    }
+
+    [TestMethod]
+    public async Task FromFactoryAttribute_ViaResolver_ConstrainsValues()
+    {
+        ConjectureSettings settings = new() { MaxExamples = 50, Seed = 11UL };
+        ParameterInfo[] parameters = Params(nameof(IntFromFactoryMethod));
+
+        TestRunResult result = await TestRunner.Run(settings, data =>
+        {
+            object[] args = SharedParameterStrategyResolver.Resolve(parameters, data);
+            int x = (int)args[0];
+            if (x < 1 || x > 50 || x % 2 != 0) { throw new Exception($"Expected even in [1,50], got {x}"); }
+        });
+
+        Assert.IsTrue(result.Passed);
+    }
+
+    // ── Async ────────────────────────────────────────────────────────────────────
+
+#pragma warning disable IDE0060
+    [Property(MaxExamples = 20, Seed = 1)]
+    public async Task AsyncProperty_TaskReturn_Passes(int x)
+    {
+        await Task.Yield();
+        _ = x;
+    }
+#pragma warning restore IDE0060
+
+    [TestMethod]
+    public async Task AsyncProperty_RunsViaRunAsync_MaxExamplesRespected()
+    {
+        int count = 0;
+        ConjectureSettings settings = new() { MaxExamples = 12, Seed = 1UL };
+        TestRunResult result = await TestRunner.RunAsync(settings, async data =>
+        {
+            await Task.Yield();
+            _ = Gen.Integers<int>().Next(data);
+            count++;
+        });
+
+        Assert.IsTrue(result.Passed);
+        Assert.AreEqual(12, count);
+    }
+
+    [TestMethod]
+    public async Task AsyncProperty_Failing_FindsCounterexample()
+    {
+        ConjectureSettings settings = new() { MaxExamples = 10, Seed = 1UL };
+        TestRunResult result = await TestRunner.RunAsync(settings, async _ =>
+        {
+            await Task.Yield();
+            throw new InvalidOperationException("async always fails");
+        });
+
+        Assert.IsFalse(result.Passed);
+        Assert.IsNotNull(result.Counterexample);
+    }
+
+    // ── Database ─────────────────────────────────────────────────────────────────
+
+    [TestMethod]
+    public async Task Database_FailingRun_SavesCounterexampleBuffer()
+    {
+        string dbPath = Path.Combine(tempDir, "conjecture.db");
+        ConjectureSettings settings = new() { MaxExamples = 10, UseDatabase = true };
+        string testId = "mstest-e2e-fail-saves";
+
+        using ExampleDatabase db = new(dbPath);
+        await TestRunner.Run(settings, _ => throw new Exception("fail"), db, testId);
+
+        Assert.IsTrue(db.Load(testId).Count > 0);
+    }
+
+    [TestMethod]
+    public async Task Database_SecondRun_ReplaysStoredBuffer()
+    {
+        string dbPath = Path.Combine(tempDir, "conjecture.db");
+        ConjectureSettings settings = new() { MaxExamples = 10, UseDatabase = true };
+        string testId = "mstest-e2e-replay";
+        bool replayInvoked = false;
+
+        using ExampleDatabase db = new(dbPath);
+        await TestRunner.Run(settings, _ => throw new Exception("fail"), db, testId);
+
+        await TestRunner.Run(settings, data =>
+        {
+            if (data.IsReplay) { replayInvoked = true; }
+            throw new Exception("still failing");
+        }, db, testId);
+
+        Assert.IsTrue(replayInvoked);
+    }
+
+    [TestMethod]
+    public async Task Database_FixedProperty_RemovesStoredBuffer()
+    {
+        string dbPath = Path.Combine(tempDir, "conjecture.db");
+        ConjectureSettings settings = new() { MaxExamples = 10, UseDatabase = true };
+        string testId = "mstest-e2e-fix-clears";
+
+        using ExampleDatabase db = new(dbPath);
+        await TestRunner.Run(settings, _ => throw new Exception("fail"), db, testId);
+        Assert.IsTrue(db.Load(testId).Count > 0);
+
+        await TestRunner.Run(settings, _ => { }, db, testId);
+        Assert.AreEqual(0, db.Load(testId).Count);
+    }
+
+    // ── Settings ─────────────────────────────────────────────────────────────────
+
+    [TestMethod]
+    public async Task Settings_Seed_ProducesDeterministicCounterexample()
+    {
+        ConjectureSettings settings = new() { MaxExamples = 50, Seed = 42UL };
+
+        TestRunResult run1 = await TestRunner.Run(settings, data =>
+        {
+            ulong v = data.DrawInteger(0, 100);
+            if (v > 70) { throw new Exception("fail"); }
+        });
+
+        TestRunResult run2 = await TestRunner.Run(settings, data =>
+        {
+            ulong v = data.DrawInteger(0, 100);
+            if (v > 70) { throw new Exception("fail"); }
+        });
+
+        Assert.IsTrue(
+            run1.Counterexample!.Select(n => n.Value)
+                .SequenceEqual(run2.Counterexample!.Select(n => n.Value)));
+    }
+
+    [TestMethod]
+    public async Task Settings_MaxExamples_IsRespected()
+    {
+        int count = 0;
+        ConjectureSettings settings = new() { MaxExamples = 7, Seed = 1UL };
+        await TestRunner.Run(settings, _ => count++);
+
+        Assert.AreEqual(7, count);
+    }
+}

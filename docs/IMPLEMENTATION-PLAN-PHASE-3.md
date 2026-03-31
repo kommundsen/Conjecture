@@ -374,7 +374,7 @@ The existing `Conjecture.Xunit` (v2, `xunit.extensibility.core` 2.9.3) is preser
     - Same scenarios as 3.12.1
 
 #### Cycle 3.12.3 -- MSTest adapter E2E
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.MSTest.Tests/EndToEnd/MSTestAdapterE2ETests.cs`
     - Same scenarios as 3.12.1
 
