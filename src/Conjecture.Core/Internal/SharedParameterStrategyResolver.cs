@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 using Conjecture.Core.Generation;
 
 namespace Conjecture.Core.Internal;
@@ -117,52 +118,26 @@ internal static class SharedParameterStrategyResolver
     {
         Type paramType = parameter.ParameterType;
         MethodInfo? drawMethod = ArbitraryProviderCache.GetOrAdd(paramType, FindArbitraryDrawMethod);
-        return drawMethod?.Invoke(null, [data]);
+        if (drawMethod is null)
+        {
+            return null;
+        }
+
+        try
+        {
+            return drawMethod.Invoke(null, [data]);
+        }
+        catch (TargetInvocationException ex) when (ex.InnerException is not null)
+        {
+            ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
+            return null; // unreachable
+        }
     }
 
     [RequiresUnreferencedCode("Scans loaded assemblies for provider types by name; not trim-safe.")]
     [RequiresDynamicCode("Calls MakeGenericMethod to construct typed draw helper.")]
-    private static MethodInfo? FindArbitraryDrawMethod(Type paramType)
-    {
-        string candidateName = paramType.Name + "Arbitrary";
-
-        foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
-        {
-            Type[] types;
-            try
-            {
-                types = assembly.GetTypes();
-            }
-            catch (ReflectionTypeLoadException ex)
-            {
-                types = ex.Types.Where(t => t is not null).ToArray()!;
-            }
-
-            foreach (Type type in types)
-            {
-                if (type.Name != candidateName)
-                {
-                    continue;
-                }
-
-                if (type.GetCustomAttribute<ArbitraryAttribute>() is null)
-                {
-                    continue;
-                }
-
-                if (!type.GetInterfaces().Any(i => i.IsGenericType
-                        && i.GetGenericTypeDefinition() == OpenStrategyProvider
-                        && i.GetGenericArguments()[0] == paramType))
-                {
-                    continue;
-                }
-
-                return DrawFromProviderOpenMethod.MakeGenericMethod(type, paramType);
-            }
-        }
-
-        return null;
-    }
+    private static MethodInfo? FindArbitraryDrawMethod(Type paramType) =>
+        ArbitraryProviderScanner.FindDrawMethod(paramType, DrawFromProviderOpenMethod);
 
     private static object DrawFromFactory<T>(MethodInfo factory, ConjectureData data)
     {

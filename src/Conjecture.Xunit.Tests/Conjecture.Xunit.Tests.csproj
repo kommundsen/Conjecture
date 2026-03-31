@@ -16,6 +16,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Conjecture.Core\Conjecture.Core.csproj" />
     <ProjectReference Include="..\Conjecture.Xunit\Conjecture.Xunit.csproj" />
+    <ProjectReference Include="..\Conjecture.Generators\Conjecture.Generators.csproj"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <ItemGroup>

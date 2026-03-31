@@ -1,5 +1,7 @@
+using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 using Conjecture.Core;
 using Conjecture.Core.Generation;
 using Conjecture.Core.Internal;
@@ -10,6 +12,10 @@ internal static class ParameterStrategyResolver
 {
     private static readonly Type OpenFromAttribute = typeof(FromAttribute<>).GetGenericTypeDefinition();
     private static readonly Type OpenStrategyProvider = typeof(IStrategyProvider<>);
+    private static readonly MethodInfo DrawFromProviderOpenMethod =
+        typeof(ParameterStrategyResolver)
+            .GetMethod(nameof(DrawFromProvider), BindingFlags.NonPublic | BindingFlags.Static)!;
+    private static readonly ConcurrentDictionary<Type, MethodInfo?> ArbitraryProviderCache = new();
 
     [RequiresUnreferencedCode("Accesses parameter type metadata via reflection; not trim-safe.")]
     internal static object[] Resolve(ParameterInfo[] parameters, ConjectureData data)
@@ -19,6 +25,7 @@ internal static class ParameterStrategyResolver
         {
             args[i] = TryDrawFromAttribute(parameters[i], data)
                 ?? TryDrawFromFactory(parameters[i], data)
+                ?? TryDrawFromArbitraryProvider(parameters[i], data)
                 ?? DrawValue(parameters[i].ParameterType, data);
         }
         return args;
@@ -105,6 +112,33 @@ internal static class ParameterStrategyResolver
 
         return drawMethod.Invoke(null, [method, data])!;
     }
+
+    [RequiresUnreferencedCode("Scans loaded assemblies for provider types by name; not trim-safe.")]
+    [RequiresDynamicCode("Calls MakeGenericMethod to construct typed draw helper.")]
+    private static object? TryDrawFromArbitraryProvider(ParameterInfo parameter, ConjectureData data)
+    {
+        Type paramType = parameter.ParameterType;
+        MethodInfo? drawMethod = ArbitraryProviderCache.GetOrAdd(paramType, FindArbitraryDrawMethod);
+        if (drawMethod is null)
+        {
+            return null;
+        }
+
+        try
+        {
+            return drawMethod.Invoke(null, [data]);
+        }
+        catch (TargetInvocationException ex) when (ex.InnerException is not null)
+        {
+            ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
+            return null; // unreachable
+        }
+    }
+
+    [RequiresUnreferencedCode("Scans loaded assemblies for provider types by name; not trim-safe.")]
+    [RequiresDynamicCode("Calls MakeGenericMethod to construct typed draw helper.")]
+    private static MethodInfo? FindArbitraryDrawMethod(Type paramType) =>
+        ArbitraryProviderScanner.FindDrawMethod(paramType, DrawFromProviderOpenMethod);
 
     private static object DrawFromFactory<T>(MethodInfo factory, ConjectureData data)
     {

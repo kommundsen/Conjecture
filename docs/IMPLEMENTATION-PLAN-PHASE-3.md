@@ -331,7 +331,7 @@ The existing `Conjecture.Xunit` (v2, `xunit.extensibility.core` 2.9.3) is preser
 ### 3.10 End-to-End: Source Generator
 
 #### Cycle 3.10.1 -- Generator E2E with xUnit v2
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Xunit.Tests/EndToEnd/SourceGeneratorE2ETests.cs`
     - `[Arbitrary] partial record` + `[Property]` runs/passes, failing property shrinks, nested `[Arbitrary]` works, auto-discovery works
 
