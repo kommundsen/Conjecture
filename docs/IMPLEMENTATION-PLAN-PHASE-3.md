@@ -369,7 +369,7 @@ The existing `Conjecture.Xunit` (v2, `xunit.extensibility.core` 2.9.3) is preser
     - Basic `[Property]`, failing + shrinking, `[Example]` + `[From<T>]` + `[FromFactory]`, async, database, settings
 
 #### Cycle 3.12.2 -- NUnit adapter E2E
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.NUnit.Tests/EndToEnd/NUnitAdapterE2ETests.cs`
     - Same scenarios as 3.12.1
 
