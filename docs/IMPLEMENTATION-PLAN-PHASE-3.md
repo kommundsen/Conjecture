@@ -355,7 +355,7 @@ The existing `Conjecture.Xunit` (v2, `xunit.extensibility.core` 2.9.3) is preser
 ### 3.11 End-to-End: Analyzers
 
 #### Cycle 3.11.1 -- Analyzer integration E2E
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Analyzers.Tests/EndToEnd/AnalyzerIntegrationE2ETests.cs`
     - All 6 diagnostics fire on purpose-built code, code-fixes for CON103/CON102 produce compilable code, no false positives on existing test suite, no interference with source generator
 
