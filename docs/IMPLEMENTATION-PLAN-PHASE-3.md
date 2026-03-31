@@ -364,7 +364,7 @@ The existing `Conjecture.Xunit` (v2, `xunit.extensibility.core` 2.9.3) is preser
 ### 3.12 End-to-End: Framework Adapters
 
 #### Cycle 3.12.1 -- xUnit v3 adapter E2E
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Xunit.V3.Tests/EndToEnd/XunitV3AdapterE2ETests.cs`
     - Basic `[Property]`, failing + shrinking, `[Example]` + `[From<T>]` + `[FromFactory]`, async, database, settings
 
