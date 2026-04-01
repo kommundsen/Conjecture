@@ -113,7 +113,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
 ### 4.1 Core Interfaces
 
 #### Cycle 4.1.1 -- IStateMachine interface
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/StateMachine/IStateMachineTests.cs`
     - A concrete class implementing `IStateMachine<int, string>` compiles and satisfies the interface
     - `InitialState()` returns `TState`

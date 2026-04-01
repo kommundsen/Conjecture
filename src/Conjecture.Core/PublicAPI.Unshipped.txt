@@ -97,3 +97,8 @@ Conjecture.Core.FromFactoryAttribute.FromFactoryAttribute(string! methodName) ->
 Conjecture.Core.FromFactoryAttribute.MethodName.get -> string!
 Conjecture.Core.ArbitraryAttribute
 Conjecture.Core.ArbitraryAttribute.ArbitraryAttribute() -> void
+Conjecture.Core.IStateMachine<TState, TCommand>
+Conjecture.Core.IStateMachine<TState, TCommand>.Commands(TState state) -> System.Collections.Generic.IEnumerable<Conjecture.Core.Strategy<TCommand>!>!
+Conjecture.Core.IStateMachine<TState, TCommand>.InitialState() -> TState
+Conjecture.Core.IStateMachine<TState, TCommand>.Invariant(TState state) -> void
+Conjecture.Core.IStateMachine<TState, TCommand>.RunCommand(TState state, TCommand command) -> TState
