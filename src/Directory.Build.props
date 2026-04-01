@@ -12,5 +12,12 @@
 
     <!-- Versioning via MinVer (tag-based) -->
     <MinVerDefaultPreReleaseIdentifiers>alpha.0</MinVerDefaultPreReleaseIdentifiers>
+
+    <!-- NuGet packages are distributed under MIT (source is MPL-2.0; see ADR-0031) -->
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
+
+  <ItemGroup Condition="'$(IsPackable)' != 'false'">
+    <None Include="$(MSBuildThisFileDirectory)..\LICENSE-MIT.txt" Pack="true" PackagePath="\" Visible="false" />
+  </ItemGroup>
 </Project>

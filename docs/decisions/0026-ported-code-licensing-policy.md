@@ -1,7 +1,7 @@
 # 0026. Ported Code Licensing Policy
 
 **Date:** 2026-03-27
-**Status:** Accepted
+**Status:** Superseded by 0032
 
 ## Context
 

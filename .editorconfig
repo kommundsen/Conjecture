@@ -37,7 +37,7 @@ insert_final_newline = false
 # Organize usings
 dotnet_separate_import_directive_groups = true
 dotnet_sort_system_directives_first = true
-file_header_template = unset
+file_header_template = Copyright (c) 2026 Kim Ommundsen. Licensed under the MPL-2.0.\nSee LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
 # this. and Me. preferences
 dotnet_style_qualification_for_event = false:silent
@@ -88,6 +88,7 @@ dotnet_code_quality_unused_parameters = all:suggestion
 dotnet_remove_unnecessary_suppression_exclusions = none
 
 # Enforce naming rules at build time (requires EnforceCodeStyleInBuild=true in Directory.Build.props)
+dotnet_diagnostic.IDE0073.severity = warning  # File header
 dotnet_diagnostic.IDE1006.severity = warning
 
 # Enforce suggestion-level rules at build time

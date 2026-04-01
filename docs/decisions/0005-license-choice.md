@@ -1,7 +1,7 @@
 # 0005. License Choice
 
 **Date:** 2026-03-25
-**Status:** Accepted (supersedes MPL-2.0 decision)
+**Status:** Superseded by 0031
 
 ## Context
 

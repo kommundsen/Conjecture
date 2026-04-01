@@ -25,11 +25,13 @@ Path or module name from the Python Hypothesis repo (e.g., `hypothesis/strategie
    - Use file-scoped namespaces
    - Prefer `readonly struct` where appropriate
 4. Flag any areas requiring a design decision (e.g., no direct .NET equivalent exists). Suggest options with trade-offs.
-5. **Add the MPL-2.0 license header** at the top of every C# file derived from Hypothesis source (see ADR-0026):
+5. **Add the standard project header plus Hypothesis attribution** at the top of every C# file derived from Hypothesis source (see ADR-0032):
    ```csharp
+   // Copyright (c) 2026 Kim Ommundsen. Licensed under the MPL-2.0.
+   // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
+   //
    // This file is derived from the Python Hypothesis library.
    // Original copyright: Copyright (c) 2013-present, David R. MacIver and contributors.
-   // Licensed under the Mozilla Public License 2.0: https://mozilla.org/MPL/2.0/
    ```
 6. Write the C# file(s) into the appropriate location under `src/`.
 7. Write corresponding unit tests.
@@ -38,7 +40,7 @@ Path or module name from the Python Hypothesis repo (e.g., `hypothesis/strategie
 ## Guidelines
 
 - Prioritize idiomatic .NET over 1:1 translation — the API should feel native to C# developers.
-- Every file derived from Hypothesis source must carry the MPL-2.0 header and be distributed under MPL-2.0, not MIT (ADR-0026). Files that are original C# design are MIT as usual.
+- All source files are MPL-2.0 (ADR-0031). Files derived from Hypothesis must additionally include the attribution comment (ADR-0032).
 - Reference `Directory.Packages.props` for any new NuGet dependencies.
 - Check `docs/decisions/` for prior ADRs that constrain the design.
 - Keep the port minimal — don't add features the Python version doesn't have.

@@ -15,3 +15,7 @@ This project is a .NET port of [Hypothesis] for Python. The concept of this proj
 ```
 dotnet packages add Conjecture.NET
 ```
+
+## License
+
+Source code: [MPL-2.0](LICENSE.txt) | NuGet packages: [MIT](LICENSE-MIT.txt)
