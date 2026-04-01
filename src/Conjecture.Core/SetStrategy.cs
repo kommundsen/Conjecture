@@ -2,23 +2,15 @@ using Conjecture.Core.Internal;
 
 namespace Conjecture.Core;
 
-internal sealed class SetStrategy<T> : Strategy<IReadOnlySet<T>>
+internal sealed class SetStrategy<T>(Strategy<T> inner, int minSize, int maxSize) : Strategy<IReadOnlySet<T>>
 {
     private const int MaxAttemptsPerElement = 200;
-    private readonly Strategy<T> inner;
-    private readonly ulong minSize;
-    private readonly ulong maxSize;
-
-    internal SetStrategy(Strategy<T> inner, int minSize, int maxSize)
-    {
-        this.inner = inner;
-        this.minSize = (ulong)minSize;
-        this.maxSize = (ulong)maxSize;
-    }
+    private readonly ulong ulongMinSize = (ulong)minSize;
+    private readonly ulong ulongMaxSize = (ulong)maxSize;
 
     internal override IReadOnlySet<T> Generate(ConjectureData data)
     {
-        var size = (int)data.NextInteger(minSize, maxSize);
+        var size = (int)data.NextInteger(ulongMinSize, ulongMaxSize);
         var set = new HashSet<T>(size);
         for (var i = 0; i < size; i++)
         {

@@ -73,15 +73,15 @@ Conjecture.Core.ConjectureSettings.DatabasePath.init -> void
 Conjecture.Core.ConjectureSettingsAttribute
 Conjecture.Core.ConjectureSettingsAttribute.ConjectureSettingsAttribute() -> void
 Conjecture.Core.ConjectureSettingsAttribute.MaxExamples.get -> int
-Conjecture.Core.ConjectureSettingsAttribute.MaxExamples.set -> void
+Conjecture.Core.ConjectureSettingsAttribute.MaxExamples.init -> void
 Conjecture.Core.ConjectureSettingsAttribute.UseDatabase.get -> bool
-Conjecture.Core.ConjectureSettingsAttribute.UseDatabase.set -> void
+Conjecture.Core.ConjectureSettingsAttribute.UseDatabase.init -> void
 Conjecture.Core.ConjectureSettingsAttribute.MaxStrategyRejections.get -> int
-Conjecture.Core.ConjectureSettingsAttribute.MaxStrategyRejections.set -> void
+Conjecture.Core.ConjectureSettingsAttribute.MaxStrategyRejections.init -> void
 Conjecture.Core.ConjectureSettingsAttribute.MaxUnsatisfiedRatio.get -> int
-Conjecture.Core.ConjectureSettingsAttribute.MaxUnsatisfiedRatio.set -> void
+Conjecture.Core.ConjectureSettingsAttribute.MaxUnsatisfiedRatio.init -> void
 Conjecture.Core.ConjectureSettingsAttribute.DatabasePath.get -> string!
-Conjecture.Core.ConjectureSettingsAttribute.DatabasePath.set -> void
+Conjecture.Core.ConjectureSettingsAttribute.DatabasePath.init -> void
 Conjecture.Core.ConjectureSettingsAttribute.Apply(Conjecture.Core.ConjectureSettings! baseline) -> Conjecture.Core.ConjectureSettings!
 Conjecture.Core.ExampleAttribute
 Conjecture.Core.ExampleAttribute.ExampleAttribute(params object?[]! arguments) -> void

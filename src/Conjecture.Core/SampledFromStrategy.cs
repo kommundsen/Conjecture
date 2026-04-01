@@ -2,23 +2,11 @@ using Conjecture.Core.Internal;
 
 namespace Conjecture.Core;
 
-internal sealed class SampledFromStrategy<T> : Strategy<T>
+internal sealed class SampledFromStrategy<T>(IReadOnlyList<T> values) : Strategy<T>
 {
-    private readonly IReadOnlyList<T> values;
-    private readonly ulong lastIndex;
-
-    internal SampledFromStrategy(IReadOnlyList<T> values)
-    {
-        if (values.Count == 0)
-        {
-
-            throw new ArgumentException("At least one value is required.", nameof(values));
-        }
-
-
-        this.values = values;
-        lastIndex = (ulong)(values.Count - 1);
-    }
+    private readonly ulong lastIndex = values.Count > 0
+        ? (ulong)(values.Count - 1)
+        : throw new ArgumentException("At least one value is required.", nameof(values));
 
     internal override T Generate(ConjectureData data)
     {

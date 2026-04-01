@@ -14,7 +14,7 @@ internal sealed class BlockSwappingPass : IShrinkPass
                 continue;
             }
 
-            IRNode[] candidate = ShrinkHelper.CopyNodes(state.Nodes);
+            IRNode[] candidate = [..state.Nodes];
             candidate[i] = state.Nodes[i + 1];
             candidate[i + 1] = state.Nodes[i];
             if (await state.TryUpdate(candidate))

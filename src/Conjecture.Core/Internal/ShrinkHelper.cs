@@ -13,17 +13,6 @@ internal static class ShrinkHelper
         return arr;
     }
 
-    internal static IRNode[] CopyNodes(IReadOnlyList<IRNode> nodes)
-    {
-        IRNode[] arr = new IRNode[nodes.Count];
-        for (int i = 0; i < nodes.Count; i++)
-        {
-            arr[i] = nodes[i];
-        }
-
-        return arr;
-    }
-
     internal static IRNode[] Without(IReadOnlyList<IRNode> nodes, int index)
     {
         IRNode[] arr = new IRNode[nodes.Count - 1];

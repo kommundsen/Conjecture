@@ -2,11 +2,8 @@ using Conjecture.Core.Internal;
 
 namespace Conjecture.Core;
 
-internal sealed class GeneratorContext : IGeneratorContext
+internal sealed class GeneratorContext(ConjectureData data) : IGeneratorContext
 {
-    private readonly ConjectureData data;
-    internal GeneratorContext(ConjectureData data) => this.data = data;
-
     public T Generate<T>(Strategy<T> strategy) => strategy.Generate(data);
 
     // Does NOT call MarkInvalid — ComposeStrategy owns the retry budget.
@@ -20,11 +17,9 @@ internal sealed class GeneratorContext : IGeneratorContext
     }
 }
 
-internal sealed class ComposeStrategy<T> : Strategy<T>
+internal sealed class ComposeStrategy<T>(Func<IGeneratorContext, T> factory) : Strategy<T>
 {
     private const int MaxAttempts = 200;
-    private readonly Func<IGeneratorContext, T> factory;
-    internal ComposeStrategy(Func<IGeneratorContext, T> factory) => this.factory = factory;
 
     internal override T Generate(ConjectureData data)
     {

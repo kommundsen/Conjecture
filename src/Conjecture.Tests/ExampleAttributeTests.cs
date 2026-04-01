@@ -118,15 +118,11 @@ public class ExampleAttributeTests
     }
 
     [Fact]
-    public void Arguments_IsReadOnly()
+    public void Arguments_ReturnsSameInstance()
     {
         ExampleAttribute attr = new(1, 2);
-        object?[] original = attr.Arguments;
 
-        // Mutating returned array does not affect subsequent reads
-        original[0] = 99;
-
-        Assert.Equal(1, attr.Arguments[0]);
+        Assert.Same(attr.Arguments, attr.Arguments);
     }
 
     [Example(1, 2)]

@@ -2,12 +2,8 @@ using Conjecture.Core.Internal;
 
 namespace Conjecture.Core;
 
-internal sealed class NullableStrategy<T> : Strategy<T?> where T : struct
+internal sealed class NullableStrategy<T>(Strategy<T> inner) : Strategy<T?> where T : struct
 {
-    private readonly Strategy<T> inner;
-
-    internal NullableStrategy(Strategy<T> inner) => this.inner = inner;
-
     internal override T? Generate(ConjectureData data)
     {
         var isNull = data.NextInteger(0, 9) == 0;

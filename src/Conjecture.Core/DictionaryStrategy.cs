@@ -2,26 +2,18 @@ using Conjecture.Core.Internal;
 
 namespace Conjecture.Core;
 
-internal sealed class DictionaryStrategy<TKey, TValue> : Strategy<IReadOnlyDictionary<TKey, TValue>>
+internal sealed class DictionaryStrategy<TKey, TValue>(
+    Strategy<TKey> keyStrategy, Strategy<TValue> valueStrategy, int minSize, int maxSize)
+    : Strategy<IReadOnlyDictionary<TKey, TValue>>
     where TKey : notnull
 {
     private const int MaxAttemptsPerElement = 200;
-    private readonly Strategy<TKey> keyStrategy;
-    private readonly Strategy<TValue> valueStrategy;
-    private readonly ulong minSize;
-    private readonly ulong maxSize;
-
-    internal DictionaryStrategy(Strategy<TKey> keyStrategy, Strategy<TValue> valueStrategy, int minSize, int maxSize)
-    {
-        this.keyStrategy = keyStrategy;
-        this.valueStrategy = valueStrategy;
-        this.minSize = (ulong)minSize;
-        this.maxSize = (ulong)maxSize;
-    }
+    private readonly ulong ulongMinSize = (ulong)minSize;
+    private readonly ulong ulongMaxSize = (ulong)maxSize;
 
     internal override IReadOnlyDictionary<TKey, TValue> Generate(ConjectureData data)
     {
-        var size = (int)data.NextInteger(minSize, maxSize);
+        var size = (int)data.NextInteger(ulongMinSize, ulongMaxSize);
         var dict = new Dictionary<TKey, TValue>(size);
         for (var i = 0; i < size; i++)
         {

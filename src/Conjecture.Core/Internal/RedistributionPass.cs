@@ -18,7 +18,7 @@ internal sealed class RedistributionPass : IShrinkPass
 
             for (ulong delta = 1; delta <= maxShift; delta++)
             {
-                IRNode[] candidate = ShrinkHelper.CopyNodes(state.Nodes);
+                IRNode[] candidate = [..state.Nodes];
                 candidate[i] = IRNode.ForInteger(state.Nodes[i].Value - delta, state.Nodes[i].Min, state.Nodes[i].Max);
                 candidate[i + 1] = IRNode.ForInteger(state.Nodes[i + 1].Value + delta, state.Nodes[i + 1].Min, state.Nodes[i + 1].Max);
                 if (await state.TryUpdate(candidate))

@@ -14,35 +14,35 @@ public sealed class ConjectureSettingsAttribute : Attribute
     public int MaxExamples
     {
         get => maxExamples ?? 100;
-        set => maxExamples = value;
+        init => maxExamples = value;
     }
 
     /// <summary>Whether to use the example database.</summary>
     public bool UseDatabase
     {
         get => useDatabase ?? true;
-        set => useDatabase = value;
+        init => useDatabase = value;
     }
 
     /// <summary>Maximum number of times a strategy may reject a value.</summary>
     public int MaxStrategyRejections
     {
         get => maxStrategyRejections ?? 5;
-        set => maxStrategyRejections = value;
+        init => maxStrategyRejections = value;
     }
 
     /// <summary>Maximum ratio of unsatisfied assumptions.</summary>
     public int MaxUnsatisfiedRatio
     {
         get => maxUnsatisfiedRatio ?? 200;
-        set => maxUnsatisfiedRatio = value;
+        init => maxUnsatisfiedRatio = value;
     }
 
     /// <summary>Path to the example database directory.</summary>
     public string DatabasePath
     {
         get => databasePath ?? ".conjecture/examples/";
-        set => databasePath = value;
+        init => databasePath = value;
     }
 
     /// <summary>Returns a <see cref="ConjectureSettings"/> with explicitly-set values overriding <paramref name="baseline"/>.</summary>

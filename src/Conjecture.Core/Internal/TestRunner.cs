@@ -168,7 +168,7 @@ internal static class TestRunner
         {
             return Status.Overrun;
         }
-        catch
+        catch (Exception)
         {
             return Status.Interesting;
         }
@@ -232,7 +232,7 @@ internal static class TestRunner
             }
             return nodes;
         }
-        catch
+        catch (Exception)
         {
             // Corrupt or unrecognised buffer — treat as no stored example
             return [];

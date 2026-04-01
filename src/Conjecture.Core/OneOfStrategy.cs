@@ -2,20 +2,11 @@ using Conjecture.Core.Internal;
 
 namespace Conjecture.Core;
 
-internal sealed class OneOfStrategy<T> : Strategy<T>
+internal sealed class OneOfStrategy<T>(Strategy<T>[] strategies) : Strategy<T>
 {
-    private readonly Strategy<T>[] strategies;
-
-    internal OneOfStrategy(Strategy<T>[] strategies)
-    {
-        if (strategies.Length == 0)
-        {
-            throw new ArgumentException("At least one strategy is required.", nameof(strategies));
-        }
-
-
-        this.strategies = strategies;
-    }
+    private readonly Strategy<T>[] strategies = strategies.Length > 0
+        ? strategies
+        : throw new ArgumentException("At least one strategy is required.", nameof(strategies));
 
     internal override T Generate(ConjectureData data)
     {
