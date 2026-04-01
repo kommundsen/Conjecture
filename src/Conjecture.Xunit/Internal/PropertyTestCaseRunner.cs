@@ -75,7 +75,9 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
             {
                 try
                 {
-                    methodInfo.Invoke(testInstance, exampleAttr.Arguments);
+                    object? returnVal = methodInfo.Invoke(testInstance, exampleAttr.Arguments);
+                    if (returnVal is Task task) { await task; }
+                    else if (returnVal is ValueTask vt) { await vt; }
                     explicitCount++;
                 }
                 catch (TargetInvocationException ex) when (ex.InnerException is not null)
