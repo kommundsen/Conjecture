@@ -6,9 +6,39 @@ internal static class TestRunner
 {
     private readonly record struct DbContext(ExampleDatabase Database, string TestIdHash);
 
-    internal static async Task<TestRunResult> Run(
+    internal static Task<TestRunResult> Run(
         ConjectureSettings settings,
         Action<ConjectureData> test,
+        ExampleDatabase db,
+        string testIdHash)
+    {
+        return RunCore(settings, WrapSync(test), db, testIdHash);
+    }
+
+    internal static Task<TestRunResult> Run(ConjectureSettings settings, Action<ConjectureData> test)
+    {
+        return RunGenerationCore(settings, WrapSync(test), null);
+    }
+
+    internal static Task<TestRunResult> RunAsync(
+        ConjectureSettings settings,
+        Func<ConjectureData, Task> test,
+        ExampleDatabase db,
+        string testIdHash)
+    {
+        return RunCore(settings, test, db, testIdHash);
+    }
+
+    internal static Task<TestRunResult> RunAsync(
+        ConjectureSettings settings,
+        Func<ConjectureData, Task> test)
+    {
+        return RunGenerationCore(settings, test, null);
+    }
+
+    private static async Task<TestRunResult> RunCore(
+        ConjectureSettings settings,
+        Func<ConjectureData, Task> test,
         ExampleDatabase db,
         string testIdHash)
     {
@@ -20,11 +50,11 @@ internal static class TestRunner
             foreach (byte[] buffer in stored)
             {
                 List<IRNode> nodes = DeserializeNodes(buffer);
-                Status replayStatus = Replay(nodes, test);
+                Status replayStatus = await ReplayAsync(nodes, test);
                 if (replayStatus == Status.Interesting)
                 {
                     (IReadOnlyList<IRNode> shrunk, int shrinkCount) = await Shrinker.ShrinkAsync(
-                        nodes, n => new ValueTask<Status>(Replay(n, test)));
+                        nodes, n => ReplayAsync(n, test));
                     db.Delete(testIdHash);
                     db.Save(testIdHash, SerializeNodes(shrunk));
                     return TestRunResult.Fail(shrunk, nodes, 0UL, 1, shrinkCount);
@@ -38,66 +68,10 @@ internal static class TestRunner
         }
 
         DbContext? dbContext = useDb ? new(db, testIdHash) : null;
-        return await RunGeneration(settings, test, dbContext);
+        return await RunGenerationCore(settings, test, dbContext);
     }
 
-    internal static Task<TestRunResult> RunAsync(
-        ConjectureSettings settings,
-        Func<ConjectureData, Task> test,
-        ExampleDatabase db,
-        string testIdHash)
-    {
-        bool useDb = settings.UseDatabase && settings.Seed is null;
-
-        if (!useDb)
-        {
-            return RunGenerationAsync(settings, test, null);
-        }
-
-        return RunAsyncWithDatabase(settings, test, new(db, testIdHash));
-    }
-
-    private static async Task<TestRunResult> RunAsyncWithDatabase(
-        ConjectureSettings settings,
-        Func<ConjectureData, Task> test,
-        DbContext dbContext)
-    {
-        IReadOnlyList<byte[]> stored = dbContext.Database.Load(dbContext.TestIdHash);
-        foreach (byte[] buffer in stored)
-        {
-            List<IRNode> nodes = DeserializeNodes(buffer);
-            Status replayStatus = await ReplayAsync(nodes, test);
-            if (replayStatus == Status.Interesting)
-            {
-                (IReadOnlyList<IRNode> shrunk, int shrinkCount) = await Shrinker.ShrinkAsync(
-                    nodes, n => ReplayAsync(n, test));
-                dbContext.Database.Delete(dbContext.TestIdHash);
-                dbContext.Database.Save(dbContext.TestIdHash, SerializeNodes(shrunk));
-                return TestRunResult.Fail(shrunk, nodes, 0UL, 1, shrinkCount);
-            }
-        }
-
-        if (stored.Count > 0)
-        {
-            dbContext.Database.Delete(dbContext.TestIdHash);
-        }
-
-        return await RunGenerationAsync(settings, test, dbContext);
-    }
-
-    internal static Task<TestRunResult> RunAsync(
-        ConjectureSettings settings,
-        Func<ConjectureData, Task> test)
-    {
-        return RunGenerationAsync(settings, test, null);
-    }
-
-    internal static async Task<TestRunResult> Run(ConjectureSettings settings, Action<ConjectureData> test)
-    {
-        return await RunGeneration(settings, test, null);
-    }
-
-    private static async Task<TestRunResult> RunGenerationAsync(
+    private static async Task<TestRunResult> RunGenerationCore(
         ConjectureSettings settings,
         Func<ConjectureData, Task> test,
         DbContext? dbContext)
@@ -109,6 +83,7 @@ internal static class TestRunner
         int totalAttempts = 0;
         int maxAttempts = settings.MaxExamples * 200;
         TimeSpan? deadline = settings.Deadline;
+        Stopwatch? sw = deadline.HasValue ? Stopwatch.StartNew() : null;
 
         while (valid < settings.MaxExamples && totalAttempts < maxAttempts)
         {
@@ -127,6 +102,10 @@ internal static class TestRunner
                 }
 
                 valid++;
+                if (sw is not null && sw.Elapsed > deadline!.Value)
+                {
+                    throw new ConjectureException("deadline exceeded");
+                }
             }
             catch (TimeoutException)
             {
@@ -168,96 +147,17 @@ internal static class TestRunner
         return TestRunResult.Pass(seed, valid);
     }
 
+    private static Func<ConjectureData, Task> WrapSync(Action<ConjectureData> test)
+    {
+        return data => { test(data); return Task.CompletedTask; };
+    }
+
     private static async ValueTask<Status> ReplayAsync(IReadOnlyList<IRNode> nodes, Func<ConjectureData, Task> test)
     {
         ConjectureData data = ConjectureData.ForRecord(nodes);
         try
         {
             await test(data);
-            return Status.Valid;
-        }
-        catch (UnsatisfiedAssumptionException)
-        {
-            return Status.Invalid;
-        }
-        catch (InvalidOperationException) when (data.Status == Status.Overrun)
-        {
-            return Status.Overrun;
-        }
-        catch
-        {
-            return Status.Interesting;
-        }
-    }
-
-    private static async Task<TestRunResult> RunGeneration(
-        ConjectureSettings settings,
-        Action<ConjectureData> test,
-        DbContext? dbContext)
-    {
-        ulong seed = settings.Seed ?? (ulong)Random.Shared.NextInt64();
-        SplittableRandom rng = new(seed);
-        int valid = 0;
-        int unsatisfied = 0;
-        int totalAttempts = 0;
-        int maxAttempts = settings.MaxExamples * 200;
-        TimeSpan? deadline = settings.Deadline;
-        Stopwatch? sw = deadline.HasValue ? Stopwatch.StartNew() : null;
-
-        while (valid < settings.MaxExamples && totalAttempts < maxAttempts)
-        {
-            totalAttempts++;
-            ConjectureData data = ConjectureData.ForGeneration(rng.Split());
-            try
-            {
-                test(data);
-                valid++;
-                if (sw is not null && sw.Elapsed > deadline!.Value)
-                {
-                    throw new ConjectureException("deadline exceeded");
-                }
-            }
-            catch (UnsatisfiedAssumptionException)
-            {
-                data.MarkInvalid();
-                unsatisfied++;
-                if ((valid > 0 || settings.MaxUnsatisfiedRatio == 0) && unsatisfied > valid * settings.MaxUnsatisfiedRatio)
-                {
-                    throw new ConjectureException("too many unsatisfied assumptions");
-                }
-            }
-            catch (ConjectureException)
-            {
-                throw;
-            }
-            catch (Exception failureEx)
-            {
-                data.MarkInteresting();
-                string? stackTrace = failureEx.StackTrace;
-                IReadOnlyList<IRNode> firstFailureNodes = data.IRNodes;
-                (IReadOnlyList<IRNode> shrunk, int shrinkCount) = await Shrinker.ShrinkAsync(
-                    firstFailureNodes, nodes => new ValueTask<Status>(Replay(nodes, test)));
-                if (dbContext is DbContext ctx)
-                {
-                    ctx.Database.Save(ctx.TestIdHash, SerializeNodes(shrunk));
-                }
-                return TestRunResult.Fail(shrunk, firstFailureNodes, seed, valid + 1, shrinkCount, stackTrace);
-            }
-            finally
-            {
-                data.Freeze();
-            }
-        }
-
-        return TestRunResult.Pass(seed, valid);
-    }
-
-    private static Status Replay(IReadOnlyList<IRNode> nodes, Action<ConjectureData> test)
-    {
-        ConjectureData data = ConjectureData.ForRecord(nodes);
-        try
-        {
-            test(data);
             return Status.Valid;
         }
         catch (UnsatisfiedAssumptionException)

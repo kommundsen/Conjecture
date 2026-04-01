@@ -106,7 +106,8 @@ internal sealed class PropertyTestCommand : DelegatingTestCommand
                 }, db, testIdHash);
 
             // NUnit constraint: DelegatingTestCommand.Execute() has no async override.
-            // GetAwaiter().GetResult() is unavoidable here and safe on NUnit's thread-pool threads.
+            // TODO: revisit when NUnit provides an async test command API.
+            // GetAwaiter().GetResult() is unavoidable here; safe on NUnit's thread-pool threads.
             TestRunResult result = runTask.GetAwaiter().GetResult();
 
             if (explicitCount > 0)

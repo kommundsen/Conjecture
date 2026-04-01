@@ -5,41 +5,74 @@ public static class StrategyExtensions
 {
     /// <summary>Projects each generated value through <paramref name="selector"/>.</summary>
     public static Strategy<TResult> Select<TSource, TResult>(
-        this Strategy<TSource> source, Func<TSource, TResult> selector) =>
-        new SelectStrategy<TSource, TResult>(source, selector);
+        this Strategy<TSource> source, Func<TSource, TResult> selector)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(selector);
+        return new SelectStrategy<TSource, TResult>(source, selector);
+    }
 
     /// <summary>Filters generated values to those satisfying <paramref name="predicate"/>.</summary>
-    public static Strategy<T> Where<T>(this Strategy<T> source, Func<T, bool> predicate) =>
-        new WhereStrategy<T>(source, predicate);
+    public static Strategy<T> Where<T>(this Strategy<T> source, Func<T, bool> predicate)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(predicate);
+        return new WhereStrategy<T>(source, predicate);
+    }
 
     /// <summary>Projects each generated value to a strategy and flattens the result.</summary>
     public static Strategy<TResult> SelectMany<TSource, TResult>(
         this Strategy<TSource> source,
-        Func<TSource, Strategy<TResult>> selector) =>
-        new SelectManyStrategy<TSource, TResult, TResult>(source, selector, (_, r) => r);
+        Func<TSource, Strategy<TResult>> selector)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(selector);
+        return new SelectManyStrategy<TSource, TResult, TResult>(source, selector, (_, r) => r);
+    }
 
     /// <summary>Projects each generated value to a strategy, flattens, and applies a result selector (enables C# query syntax).</summary>
     public static Strategy<TResult> SelectMany<TSource, TCollection, TResult>(
         this Strategy<TSource> source,
         Func<TSource, Strategy<TCollection>> collectionSelector,
-        Func<TSource, TCollection, TResult> resultSelector) =>
-        new SelectManyStrategy<TSource, TCollection, TResult>(source, collectionSelector, resultSelector);
+        Func<TSource, TCollection, TResult> resultSelector)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(collectionSelector);
+        ArgumentNullException.ThrowIfNull(resultSelector);
+        return new SelectManyStrategy<TSource, TCollection, TResult>(source, collectionSelector, resultSelector);
+    }
 
     /// <summary>Combines two strategies into a strategy of tuples.</summary>
     public static Strategy<(TFirst, TSecond)> Zip<TFirst, TSecond>(
-        this Strategy<TFirst> first, Strategy<TSecond> second) =>
-        new ZipStrategy<TFirst, TSecond, (TFirst, TSecond)>(first, second, (a, b) => (a, b));
+        this Strategy<TFirst> first, Strategy<TSecond> second)
+    {
+        ArgumentNullException.ThrowIfNull(first);
+        ArgumentNullException.ThrowIfNull(second);
+        return new ZipStrategy<TFirst, TSecond, (TFirst, TSecond)>(first, second, (a, b) => (a, b));
+    }
 
     /// <summary>Combines two strategies using a result selector.</summary>
     public static Strategy<TResult> Zip<TFirst, TSecond, TResult>(
-        this Strategy<TFirst> first, Strategy<TSecond> second, Func<TFirst, TSecond, TResult> resultSelector) =>
-        new ZipStrategy<TFirst, TSecond, TResult>(first, second, resultSelector);
+        this Strategy<TFirst> first, Strategy<TSecond> second, Func<TFirst, TSecond, TResult> resultSelector)
+    {
+        ArgumentNullException.ThrowIfNull(first);
+        ArgumentNullException.ThrowIfNull(second);
+        ArgumentNullException.ThrowIfNull(resultSelector);
+        return new ZipStrategy<TFirst, TSecond, TResult>(first, second, resultSelector);
+    }
 
     /// <summary>Wraps the strategy so it may also produce null, with ~10% null probability.</summary>
-    public static Strategy<T?> OrNull<T>(this Strategy<T> source) where T : struct =>
-        new NullableStrategy<T>(source);
+    public static Strategy<T?> OrNull<T>(this Strategy<T> source) where T : struct
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        return new NullableStrategy<T>(source);
+    }
 
     /// <summary>Annotates the strategy with a label used in counterexample output.</summary>
-    public static Strategy<T> WithLabel<T>(this Strategy<T> source, string label) =>
-        new LabeledStrategy<T>(source, label);
+    public static Strategy<T> WithLabel<T>(this Strategy<T> source, string label)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(label);
+        return new LabeledStrategy<T>(source, label);
+    }
 }

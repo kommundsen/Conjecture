@@ -25,13 +25,13 @@ internal sealed class CON102CodeFix : CodeFixProvider
         context.RegisterCodeFix(
             CodeAction.Create(
                 title: "Convert to async/await",
-                createChangedDocument: ct => ConvertToAsyncAsync(context.Document, context.Diagnostics[0], ct),
+                createChangedDocument: ct => ApplyFixAsync(context.Document, context.Diagnostics[0], ct),
                 equivalenceKey: "CON102_ConvertToAsync"),
             context.Diagnostics[0]);
         return Task.CompletedTask;
     }
 
-    private static async Task<Document> ConvertToAsyncAsync(
+    private static async Task<Document> ApplyFixAsync(
         Document document,
         Diagnostic diagnostic,
         CancellationToken cancellationToken)

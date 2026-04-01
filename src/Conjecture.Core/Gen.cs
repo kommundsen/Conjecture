@@ -6,8 +6,11 @@ namespace Conjecture.Core;
 public static class Generate
 {
     /// <summary>Creates a strategy from an imperative factory function using <see cref="IGeneratorContext"/>.</summary>
-    public static Strategy<T> Compose<T>(Func<IGeneratorContext, T> factory) =>
-        new ComposeStrategy<T>(factory);
+    public static Strategy<T> Compose<T>(Func<IGeneratorContext, T> factory)
+    {
+        ArgumentNullException.ThrowIfNull(factory);
+        return new ComposeStrategy<T>(factory);
+    }
 
     /// <summary>Returns a strategy that generates random <see cref="bool"/> values.</summary>
     public static Strategy<bool> Booleans() => new BooleanStrategy();
@@ -27,10 +30,18 @@ public static class Generate
     public static Strategy<T> Just<T>(T value) => new JustStrategy<T>(value);
 
     /// <summary>Returns a strategy that picks uniformly among <paramref name="strategies"/>.</summary>
-    public static Strategy<T> OneOf<T>(params Strategy<T>[] strategies) => new OneOfStrategy<T>(strategies);
+    public static Strategy<T> OneOf<T>(params Strategy<T>[] strategies)
+    {
+        ArgumentNullException.ThrowIfNull(strategies);
+        return new OneOfStrategy<T>(strategies);
+    }
 
     /// <summary>Returns a strategy that picks uniformly from <paramref name="values"/>.</summary>
-    public static Strategy<T> SampledFrom<T>(IReadOnlyList<T> values) => new SampledFromStrategy<T>(values);
+    public static Strategy<T> SampledFrom<T>(IReadOnlyList<T> values)
+    {
+        ArgumentNullException.ThrowIfNull(values);
+        return new SampledFromStrategy<T>(values);
+    }
 
     /// <summary>Returns a strategy that generates random <typeparamref name="T"/> enum values.</summary>
     public static Strategy<T> Enums<T>() where T : struct, Enum => SampledFrom(Enum.GetValues<T>());
@@ -57,7 +68,11 @@ public static class Generate
     public static Strategy<string> Text(int minLength = 0, int maxLength = 20) => Strings(minLength, maxLength);
 
     /// <summary>Returns a strategy that produces nullable <typeparamref name="T"/> values, with ~10% null probability.</summary>
-    public static Strategy<T?> Nullable<T>(Strategy<T> inner) where T : struct => new NullableStrategy<T>(inner);
+    public static Strategy<T?> Nullable<T>(Strategy<T> inner) where T : struct
+    {
+        ArgumentNullException.ThrowIfNull(inner);
+        return new NullableStrategy<T>(inner);
+    }
 
     /// <summary>Returns a strategy that produces <see cref="ValueTuple{T1,T2}"/> tuples from two component strategies.</summary>
     public static Strategy<(T1, T2)> Tuples<T1, T2>(Strategy<T1> first, Strategy<T2> second) => first.Zip(second);
@@ -72,14 +87,24 @@ public static class Generate
 
     /// <summary>Returns a strategy that generates <see cref="List{T}"/> with size in [<paramref name="minSize"/>, <paramref name="maxSize"/>].</summary>
     public static Strategy<List<T>> Lists<T>(Strategy<T> inner, int minSize = 0, int maxSize = 100)
-        => new ListStrategy<T>(inner, minSize, maxSize);
+    {
+        ArgumentNullException.ThrowIfNull(inner);
+        return new ListStrategy<T>(inner, minSize, maxSize);
+    }
 
     /// <summary>Returns a strategy that generates <see cref="IReadOnlySet{T}"/> with unique elements and size in [<paramref name="minSize"/>, <paramref name="maxSize"/>].</summary>
     public static Strategy<IReadOnlySet<T>> Sets<T>(Strategy<T> inner, int minSize = 0, int maxSize = 100)
-        => new SetStrategy<T>(inner, minSize, maxSize);
+    {
+        ArgumentNullException.ThrowIfNull(inner);
+        return new SetStrategy<T>(inner, minSize, maxSize);
+    }
 
     /// <summary>Returns a strategy that generates <see cref="IReadOnlyDictionary{TKey,TValue}"/> with unique keys and size in [<paramref name="minSize"/>, <paramref name="maxSize"/>].</summary>
     public static Strategy<IReadOnlyDictionary<TKey, TValue>> Dictionaries<TKey, TValue>(Strategy<TKey> keyStrategy, Strategy<TValue> valueStrategy, int minSize = 0, int maxSize = 100)
         where TKey : notnull
-        => new DictionaryStrategy<TKey, TValue>(keyStrategy, valueStrategy, minSize, maxSize);
+    {
+        ArgumentNullException.ThrowIfNull(keyStrategy);
+        ArgumentNullException.ThrowIfNull(valueStrategy);
+        return new DictionaryStrategy<TKey, TValue>(keyStrategy, valueStrategy, minSize, maxSize);
+    }
 }
