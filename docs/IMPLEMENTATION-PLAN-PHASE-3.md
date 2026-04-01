@@ -458,7 +458,7 @@ Refactor the existing `Conjecture.Xunit` (v2) to delegate to `SharedParameterStr
 ### 3.17 Performance Baselines
 
 #### Cycle 3.17.1 -- Source generator compilation performance
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Benchmarks/GeneratorBenchmarks.cs`
     - Compilation time with 0/10/50 `[Arbitrary]` types, incremental rebuild, generated strategy throughput vs hand-written
   - **Impl** -- BenchmarkDotNet benchmarks

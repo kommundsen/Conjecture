@@ -1,0 +1,140 @@
+using System.IO;
+using System.Text;
+using BenchmarkDotNet.Attributes;
+using Conjecture.Core;
+using Conjecture.Core.Generation;
+using Conjecture.Core.Internal;
+using Conjecture.Generators;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+
+namespace Conjecture.Benchmarks;
+
+/// <summary>
+/// Measures ArbitraryGenerator compilation overhead: cold driver run vs incremental
+/// (cached) driver run with 0, 10, or 50 [Arbitrary] types in the compilation.
+/// </summary>
+[MemoryDiagnoser]
+[SimpleJob]
+public class GeneratorCompilationBenchmarks
+{
+    [Params(0, 10, 50)]
+    public int TypeCount { get; set; }
+
+    private CSharpCompilation compilation = null!;
+    private GeneratorDriver warmDriver = null!;
+
+    [GlobalSetup]
+    public void Setup()
+    {
+        compilation = CreateCompilation(BuildSource(TypeCount));
+        GeneratorDriver driver = CSharpGeneratorDriver.Create(new ArbitraryGenerator());
+        warmDriver = driver.RunGenerators(compilation);
+    }
+
+    /// <summary>New driver instance each call — no incremental cache.</summary>
+    [Benchmark(Baseline = true)]
+    public GeneratorDriverRunResult ColdRun()
+    {
+        GeneratorDriver driver = CSharpGeneratorDriver.Create(new ArbitraryGenerator());
+        return driver.RunGenerators(compilation).GetRunResult();
+    }
+
+    /// <summary>Reused driver — exercises the incremental/cached generator path.</summary>
+    [Benchmark]
+    public GeneratorDriverRunResult IncrementalRun()
+    {
+        return warmDriver.RunGenerators(compilation).GetRunResult();
+    }
+
+    private static string BuildSource(int typeCount)
+    {
+        StringBuilder sb = new();
+        sb.AppendLine("using Conjecture.Core; namespace Bench;");
+        for (int i = 0; i < typeCount; i++)
+        {
+            sb.AppendLine($"[Arbitrary] public partial record Type{i}(int X, int Y);");
+        }
+        return sb.ToString();
+    }
+
+    private static CSharpCompilation CreateCompilation(string source)
+    {
+        string runtimeDir = Path.GetDirectoryName(typeof(object).Assembly.Location)!;
+        return CSharpCompilation.Create(
+            assemblyName: "BenchAssembly",
+            syntaxTrees: [CSharpSyntaxTree.ParseText(source)],
+            references:
+            [
+                MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
+                MetadataReference.CreateFromFile(Path.Combine(runtimeDir, "System.Runtime.dll")),
+                MetadataReference.CreateFromFile(typeof(ArbitraryAttribute).Assembly.Location),
+            ],
+            options: new CSharpCompilationOptions(
+                OutputKind.DynamicallyLinkedLibrary,
+                nullableContextOptions: NullableContextOptions.Enable));
+    }
+}
+
+/// <summary>
+/// Throughput: Gen.Tuples (hand-written) vs Strategies.Compose (the pattern the source
+/// generator emits for every [Arbitrary] record). Each iteration draws 100 values so
+/// per-draw overhead dominates over ConjectureData setup cost.
+/// </summary>
+[MemoryDiagnoser]
+[SimpleJob]
+public class GeneratorThroughputBenchmarks
+{
+    private const int Draws = 100;
+
+    private SplittableRandom rng = null!;
+    private Strategy<(int, int)> handWritten = null!;
+    private Strategy<(int, int)> generated = null!;
+
+    [GlobalSetup]
+    public void Setup()
+    {
+        rng = new SplittableRandom(42UL);
+        handWritten = Gen.Tuples(Gen.Integers<int>(), Gen.Integers<int>());
+        generated = new PairArbitrary().Create();
+    }
+
+    /// <summary>Direct Gen.Tuples — hand-written strategy baseline.</summary>
+    [Benchmark(Baseline = true)]
+    public (int, int) HandWritten()
+    {
+        ConjectureData data = ConjectureData.ForGeneration(rng.Split());
+        (int, int) last = default;
+        for (int i = 0; i < Draws; i++)
+        {
+            last = handWritten.Next(data);
+        }
+        return last;
+    }
+
+    /// <summary>Strategies.Compose — mirrors the pattern every source-generated provider uses.</summary>
+    [Benchmark]
+    public (int, int) Generated()
+    {
+        ConjectureData data = ConjectureData.ForGeneration(rng.Split());
+        (int, int) last = default;
+        for (int i = 0; i < Draws; i++)
+        {
+            last = generated.Next(data);
+        }
+        return last;
+    }
+}
+
+/// <summary>
+/// Hand-written equivalent of what ArbitraryGenerator emits for a two-int record:
+/// Strategies.Compose composing two Gen.Integers draws.
+/// </summary>
+internal sealed class PairArbitrary : IStrategyProvider<(int, int)>
+{
+    public Strategy<(int, int)> Create()
+    {
+        return Strategies.Compose<(int, int)>(ctx =>
+            (ctx.Next(Gen.Integers<int>()), ctx.Next(Gen.Integers<int>())));
+    }
+}
