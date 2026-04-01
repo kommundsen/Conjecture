@@ -468,15 +468,15 @@ Refactor the existing `Conjecture.Xunit` (v2) to delegate to `SharedParameterStr
 ### 3.18 Post-Implementation Verification
 
 #### Cycle 3.18.1 -- Performance baselines
-- [ ] `/benchmark` -- Source generator compilation overhead, generated strategy throughput, adapter overhead per framework (xUnit v2/v3, NUnit, MSTest), analyzer analysis time
+- [x] `/benchmark` -- Source generator compilation overhead, generated strategy throughput, adapter overhead per framework (xUnit v2/v3, NUnit, MSTest), analyzer analysis time
 
 #### Cycle 3.18.2 -- Full verification
-- [ ] `dotnet test src/`
-- [ ] `dotnet test src/Conjecture.Xunit.V3.Tests/`
-- [ ] `dotnet test src/Conjecture.NUnit.Tests/`
-- [ ] `dotnet test src/Conjecture.MSTest.Tests/`
-- [ ] `dotnet test src/Conjecture.SelfTests/`
-- [ ] `dotnet build src/ -c Release`
+- [x] `dotnet test src/`
+- [x] `dotnet test src/Conjecture.Xunit.V3.Tests/`
+- [x] `dotnet test src/Conjecture.NUnit.Tests/`
+- [x] `dotnet test src/Conjecture.MSTest.Tests/`
+- [x] `dotnet test src/Conjecture.SelfTests/`
+- [x] `dotnet build src/ -c Release`
 
 ## Key Constraints
 
