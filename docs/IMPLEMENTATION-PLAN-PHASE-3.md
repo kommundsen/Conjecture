@@ -425,7 +425,7 @@ The existing `Conjecture.Xunit` (v2, `xunit.extensibility.core` 2.9.3) is preser
   - **Impl** -- Ensure generated code uses only trim-safe patterns (`Strategies.Compose<T>`, `Gen.*`)
 
 #### Cycle 3.14.2 -- Analyzer is dev-time only
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Analyzers.Tests/PackagingTests.cs`
     - `PrivateAssets="all"`, no analyzer DLL in published output, targets `netstandard2.0`
   - **Impl** -- Verify `.csproj` packaging
