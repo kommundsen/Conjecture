@@ -1,6 +1,5 @@
 using System.Reflection;
 using Conjecture.Core;
-using Conjecture.Core.Generation;
 using Conjecture.Core.Internal;
 using Conjecture.Xunit.V3;
 using Conjecture.Xunit.V3.Internal;
@@ -65,13 +64,13 @@ public class SourceGeneratorXunitV3E2ETests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            V3SourceCoord c = strategy.Next(data);
+            V3SourceCoord c = strategy.Generate(data);
             if (c.X > 5) { throw new Exception("X too large"); }
         });
 
         Assert.False(result.Passed);
         Assert.NotNull(result.Counterexample);
-        V3SourceCoord shrunk = strategy.Next(ConjectureData.ForRecord(result.Counterexample!));
+        V3SourceCoord shrunk = strategy.Generate(ConjectureData.ForRecord(result.Counterexample!));
         Assert.True(shrunk.X > 5, $"Shrunk {shrunk} does not trigger the failure condition");
     }
 

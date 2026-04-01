@@ -1,4 +1,4 @@
-using Conjecture.Core.Formatting;
+using Conjecture.Core;
 using Conjecture.Core.Internal;
 
 namespace Conjecture.Tests.Internal;

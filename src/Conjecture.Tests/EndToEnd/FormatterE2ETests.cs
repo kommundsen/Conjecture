@@ -1,6 +1,4 @@
 using Conjecture.Core;
-using Conjecture.Core.Formatting;
-using Conjecture.Core.Generation;
 using Conjecture.Core.Internal;
 
 namespace Conjecture.Tests.EndToEnd;
@@ -17,12 +15,12 @@ public class FormatterE2ETests
     [Fact]
     public async Task FailingProperty_ExampleCount_AppearsInFailureMessage()
     {
-        Strategy<int> strategy = Gen.Integers<int>(0, 100);
+        Strategy<int> strategy = Generate.Integers<int>(0, 100);
         ConjectureSettings settings = new() { MaxExamples = 50, Seed = 1UL };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            int x = strategy.Next(data);
+            int x = strategy.Generate(data);
             if (x > 5) { throw new Exception("fail"); }
         });
 
@@ -41,12 +39,12 @@ public class FormatterE2ETests
     [Fact]
     public async Task FailingProperty_ShrinkCount_AppearsInFailureMessage()
     {
-        Strategy<int> strategy = Gen.Integers<int>(0, 100);
+        Strategy<int> strategy = Generate.Integers<int>(0, 100);
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 2UL };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            int x = strategy.Next(data);
+            int x = strategy.Generate(data);
             if (x > 5) { throw new Exception("fail"); }
         });
 
@@ -64,12 +62,12 @@ public class FormatterE2ETests
     public async Task FailingProperty_WithLargeInitialValue_ShrinkCountIsPositive()
     {
         // min=50 forces values far above threshold; shrinker must make several passes to reach 50
-        Strategy<int> strategy = Gen.Integers<int>(50, 100);
+        Strategy<int> strategy = Generate.Integers<int>(50, 100);
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 3UL };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            int x = strategy.Next(data);
+            int x = strategy.Generate(data);
             if (x > 5) { throw new Exception("fail"); }
         });
 
@@ -94,18 +92,18 @@ public class FormatterE2ETests
     [Fact]
     public async Task FailureMessage_WithRunnerResult_IntValuesUseBuiltInFormatter()
     {
-        Strategy<int> strategy = Gen.Integers<int>(0, 100);
+        Strategy<int> strategy = Generate.Integers<int>(0, 100);
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 4UL };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            int x = strategy.Next(data);
+            int x = strategy.Generate(data);
             if (x > 5) { throw new Exception("fail"); }
         });
 
         Assert.False(result.Passed);
         ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
-        int shrunkValue = strategy.Next(replay);
+        int shrunkValue = strategy.Generate(replay);
 
         string msg = CounterexampleFormatter.Format(
             [("x", (object)shrunkValue)],
@@ -125,18 +123,18 @@ public class FormatterE2ETests
         FormatterRegistry.Register<CustomPoint>(new CustomPointFormatter());
         try
         {
-            Strategy<CustomPoint> strategy = Gen.Just(new CustomPoint(3, 7));
+            Strategy<CustomPoint> strategy = Generate.Just(new CustomPoint(3, 7));
             ConjectureSettings settings = new() { MaxExamples = 10, Seed = 5UL };
 
             TestRunResult result = await TestRunner.Run(settings, data =>
             {
-                CustomPoint pt = strategy.Next(data);
+                CustomPoint pt = strategy.Generate(data);
                 if (pt.X > 0) { throw new Exception("fail"); }
             });
 
             Assert.False(result.Passed);
             ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
-            CustomPoint shrunk = strategy.Next(replay);
+            CustomPoint shrunk = strategy.Generate(replay);
 
             string msg = CounterexampleFormatter.Format(
                 [("pt", (object)shrunk)],

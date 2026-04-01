@@ -1,6 +1,5 @@
 using System.Reflection;
 using Conjecture.Core;
-using Conjecture.Core.Generation;
 using Conjecture.Core.Internal;
 using Conjecture.Xunit.Internal;
 
@@ -10,12 +9,12 @@ public class FromAttributeResolverTests
 {
     private sealed class PositiveIntsProvider : IStrategyProvider<int>
     {
-        public Strategy<int> Create() => Gen.Integers<int>(1, int.MaxValue);
+        public Strategy<int> Create() => Generate.Integers<int>(1, int.MaxValue);
     }
 
     private sealed class StringProvider : IStrategyProvider<string>
     {
-        public Strategy<string> Create() => Gen.Strings();
+        public Strategy<string> Create() => Generate.Strings();
     }
 
     private static ConjectureData MakeData(ulong seed = 42UL) =>

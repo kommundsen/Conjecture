@@ -1,6 +1,5 @@
 using Conjecture.Core;
 using Conjecture.Core.Internal;
-using Conjecture.Core.Generation;
 
 namespace Conjecture.Tests.Strategies;
 
@@ -12,12 +11,12 @@ public class OneOfStrategyTests
     [Fact]
     public void OneOf_ReturnsOnlyValuesFromSuppliedStrategies()
     {
-        var strategy = Gen.OneOf(Gen.Just(1), Gen.Just(2));
+        var strategy = Generate.OneOf(Generate.Just(1), Generate.Just(2));
         var data = MakeData();
 
         for (var i = 0; i < 50; i++)
         {
-            var value = strategy.Next(data);
+            var value = strategy.Generate(data);
             Assert.True(value == 1 || value == 2, $"Unexpected value: {value}");
         }
     }
@@ -25,13 +24,13 @@ public class OneOfStrategyTests
     [Fact]
     public void OneOf_CoversAllBranchesOverManyDraws()
     {
-        var strategy = Gen.OneOf(Gen.Just(1), Gen.Just(2), Gen.Just(3));
+        var strategy = Generate.OneOf(Generate.Just(1), Generate.Just(2), Generate.Just(3));
         var data = MakeData();
         var seen = new HashSet<int>();
 
         for (var i = 0; i < 1000; i++)
         {
-            seen.Add(strategy.Next(data));
+            seen.Add(strategy.Generate(data));
         }
 
         Assert.Contains(1, seen);
@@ -42,18 +41,18 @@ public class OneOfStrategyTests
     [Fact]
     public void OneOf_SingleStrategy_DelegatesDirectly()
     {
-        var strategy = Gen.OneOf(Gen.Just(42));
+        var strategy = Generate.OneOf(Generate.Just(42));
         var data = MakeData();
 
         for (var i = 0; i < 10; i++)
         {
-            Assert.Equal(42, strategy.Next(data));
+            Assert.Equal(42, strategy.Generate(data));
         }
     }
 
     [Fact]
     public void OneOf_EmptyArray_ThrowsArgumentException()
     {
-        Assert.Throws<ArgumentException>(() => Gen.OneOf<int>());
+        Assert.Throws<ArgumentException>(() => Generate.OneOf<int>());
     }
 }

@@ -9,7 +9,7 @@ public class TrimAnnotationTests
     [Fact]
     public void ConjectureCore_Assembly_HasIsTrimmableMetadata()
     {
-        AssemblyMetadataAttribute? attr = typeof(Gen).Assembly
+        AssemblyMetadataAttribute? attr = typeof(Generate).Assembly
             .GetCustomAttributes<AssemblyMetadataAttribute>()
             .FirstOrDefault(a => a.Key == "IsTrimmable");
 
@@ -18,9 +18,9 @@ public class TrimAnnotationTests
     }
 
     [Fact]
-    public void Gen_PublicMethods_HaveNoTrimUnsafeAnnotations()
+    public void Generate_PublicMethods_HaveNoTrimUnsafeAnnotations()
     {
-        MethodInfo[] methods = typeof(Gen).GetMethods(BindingFlags.Public | BindingFlags.Static);
+        MethodInfo[] methods = typeof(Generate).GetMethods(BindingFlags.Public | BindingFlags.Static);
         MethodInfo[] trimUnsafe = methods
             .Where(m =>
                 m.GetCustomAttribute<RequiresUnreferencedCodeAttribute>() is not null ||

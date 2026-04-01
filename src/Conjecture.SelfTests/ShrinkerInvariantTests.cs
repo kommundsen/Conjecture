@@ -2,7 +2,7 @@ using Conjecture.Core;
 using Conjecture.Core.Internal;
 using Xunit;
 
-using ShrinkEngine = Conjecture.Core.Internal.Shrinker.Shrinker;
+using ShrinkEngine = Conjecture.Core.Internal.Shrinker;
 
 namespace Conjecture.SelfTests;
 
@@ -10,13 +10,13 @@ public class ShrinkerInvariantTests
 {
     private static void FailIfOver10(ConjectureData data)
     {
-        ulong v = data.DrawInteger(0, 1000);
+        ulong v = data.NextInteger(0, 1000);
         if (v > 10) throw new InvalidOperationException("too big");
     }
 
     private static void FailIfOver5(ConjectureData data)
     {
-        ulong v = data.DrawInteger(0, 500);
+        ulong v = data.NextInteger(0, 500);
         if (v > 5) throw new InvalidOperationException("too big");
     }
 
@@ -54,7 +54,7 @@ public class ShrinkerInvariantTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            ulong v = data.DrawInteger(0, 10000);
+            ulong v = data.NextInteger(0, 10000);
             if (v > 100) throw new InvalidOperationException("too big");
         });
 
@@ -71,7 +71,7 @@ public class ShrinkerInvariantTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            ulong v = data.DrawInteger(50, 200);
+            ulong v = data.NextInteger(50, 200);
             if (v > 75) throw new InvalidOperationException("too big");
         });
 

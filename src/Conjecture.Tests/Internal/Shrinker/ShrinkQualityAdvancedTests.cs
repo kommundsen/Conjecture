@@ -19,7 +19,7 @@ public class ShrinkQualityAdvancedTests
             ConjectureData data = ConjectureData.ForRecord(ns);
             try
             {
-                ulong raw = data.DrawFloat64(0UL, ulong.MaxValue);
+                ulong raw = data.NextFloat64(0UL, ulong.MaxValue);
                 double v = Unsafe.BitCast<ulong, double>(raw);
                 return v > 1.0 ? Status.Interesting : Status.Valid;
             }
@@ -29,7 +29,7 @@ public class ShrinkQualityAdvancedTests
             }
         }
 
-        (IReadOnlyList<IRNode> result, int _) = await Core.Internal.Shrinker.Shrinker.ShrinkAsync(
+        (IReadOnlyList<IRNode> result, int _) = await Core.Internal.Shrinker.ShrinkAsync(
             nodes, n => new ValueTask<Status>(FloatAboveOne(n)));
 
         ulong resultBits = result[0].Value;
@@ -65,11 +65,11 @@ public class ShrinkQualityAdvancedTests
             ConjectureData data = ConjectureData.ForRecord(ns);
             try
             {
-                int length = (int)data.DrawStringLength(0, 20);
+                int length = (int)data.NextStringLength(0, 20);
                 char[] chars = new char[length];
                 for (int i = 0; i < length; i++)
                 {
-                    chars[i] = (char)data.DrawStringChar(32, 126);
+                    chars[i] = (char)data.NextStringChar(32, 126);
                 }
                 return new string(chars).Contains("error") ? Status.Interesting : Status.Valid;
             }
@@ -79,15 +79,15 @@ public class ShrinkQualityAdvancedTests
             }
         }
 
-        (IReadOnlyList<IRNode> result, int _) = await Core.Internal.Shrinker.Shrinker.ShrinkAsync(
+        (IReadOnlyList<IRNode> result, int _) = await Core.Internal.Shrinker.ShrinkAsync(
             nodes, n => new ValueTask<Status>(ContainsError(n)));
 
         ConjectureData replay = ConjectureData.ForRecord(result);
-        int shrunkenLength = (int)replay.DrawStringLength(0, 20);
+        int shrunkenLength = (int)replay.NextStringLength(0, 20);
         char[] shrunkenChars = new char[shrunkenLength];
         for (int i = 0; i < shrunkenLength; i++)
         {
-            shrunkenChars[i] = (char)replay.DrawStringChar(32, 126);
+            shrunkenChars[i] = (char)replay.NextStringChar(32, 126);
         }
         string shrunken = new(shrunkenChars);
 
@@ -113,11 +113,11 @@ public class ShrinkQualityAdvancedTests
             ConjectureData data = ConjectureData.ForRecord(ns);
             try
             {
-                int size = (int)data.DrawInteger(0, 10);
+                int size = (int)data.NextInteger(0, 10);
                 ulong sum = 0;
                 for (int i = 0; i < size; i++)
                 {
-                    sum += data.DrawInteger(0, 200);
+                    sum += data.NextInteger(0, 200);
                 }
                 return sum > 100 ? Status.Interesting : Status.Valid;
             }
@@ -127,15 +127,15 @@ public class ShrinkQualityAdvancedTests
             }
         }
 
-        (IReadOnlyList<IRNode> result, int _) = await Core.Internal.Shrinker.Shrinker.ShrinkAsync(
+        (IReadOnlyList<IRNode> result, int _) = await Core.Internal.Shrinker.ShrinkAsync(
             nodes, n => new ValueTask<Status>(SumOver100(n)));
 
         ConjectureData replay = ConjectureData.ForRecord(result);
-        int shrunkenSize = (int)replay.DrawInteger(0, 10);
+        int shrunkenSize = (int)replay.NextInteger(0, 10);
         ulong shrunkenSum = 0;
         for (int i = 0; i < shrunkenSize; i++)
         {
-            shrunkenSum += replay.DrawInteger(0, 200);
+            shrunkenSum += replay.NextInteger(0, 200);
         }
 
         Assert.Equal(Status.Interesting, SumOver100(result));
@@ -160,8 +160,8 @@ public class ShrinkQualityAdvancedTests
             ConjectureData data = ConjectureData.ForRecord(ns);
             try
             {
-                ulong a = data.DrawInteger(0, 200);
-                ulong b = data.DrawInteger(0, 200);
+                ulong a = data.NextInteger(0, 200);
+                ulong b = data.NextInteger(0, 200);
                 return a > b ? Status.Interesting : Status.Valid;
             }
             catch
@@ -170,7 +170,7 @@ public class ShrinkQualityAdvancedTests
             }
         }
 
-        (IReadOnlyList<IRNode> result, int _) = await Core.Internal.Shrinker.Shrinker.ShrinkAsync(
+        (IReadOnlyList<IRNode> result, int _) = await Core.Internal.Shrinker.ShrinkAsync(
             nodes, n => new ValueTask<Status>(AGreaterThanB(n)));
 
         Assert.Equal(Status.Interesting, AGreaterThanB(result));
@@ -200,14 +200,14 @@ public class ShrinkQualityAdvancedTests
             ConjectureData data = ConjectureData.ForRecord(ns);
             try
             {
-                int outerSize = (int)data.DrawInteger(0, 5);
+                int outerSize = (int)data.NextInteger(0, 5);
                 for (int i = 0; i < outerSize; i++)
                 {
-                    int innerSize = (int)data.DrawInteger(0, 5);
+                    int innerSize = (int)data.NextInteger(0, 5);
                     ulong innerSum = 0;
                     for (int j = 0; j < innerSize; j++)
                     {
-                        innerSum += data.DrawInteger(0, 10);
+                        innerSum += data.NextInteger(0, 10);
                     }
                     if (innerSum > 3)
                     {
@@ -222,16 +222,16 @@ public class ShrinkQualityAdvancedTests
             }
         }
 
-        (IReadOnlyList<IRNode> result, int _) = await Core.Internal.Shrinker.Shrinker.ShrinkAsync(
+        (IReadOnlyList<IRNode> result, int _) = await Core.Internal.Shrinker.ShrinkAsync(
             nodes, n => new ValueTask<Status>(InnerSumOver3(n)));
 
         ConjectureData replay = ConjectureData.ForRecord(result);
-        int outerSize = (int)replay.DrawInteger(0, 5);
-        int firstInnerSize = (int)replay.DrawInteger(0, 5);
+        int outerSize = (int)replay.NextInteger(0, 5);
+        int firstInnerSize = (int)replay.NextInteger(0, 5);
         ulong firstInnerSum = 0;
         for (int i = 0; i < firstInnerSize; i++)
         {
-            firstInnerSum += replay.DrawInteger(0, 10);
+            firstInnerSum += replay.NextInteger(0, 10);
         }
 
         Assert.Equal(Status.Interesting, InnerSumOver3(result));

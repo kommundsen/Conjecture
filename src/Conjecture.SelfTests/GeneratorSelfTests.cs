@@ -1,5 +1,4 @@
 using Conjecture.Core;
-using Conjecture.Core.Generation;
 using Conjecture.Core.Internal;
 using Conjecture.Xunit.V3;
 using Xunit;
@@ -31,7 +30,7 @@ public class GeneratorSelfTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            _ = xStrategy.Next(data);
+            _ = xStrategy.Generate(data);
         });
 
         Assert.True(result.Passed);
@@ -46,7 +45,7 @@ public class GeneratorSelfTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            SelfPoint p = positivePoints.Next(data);
+            SelfPoint p = positivePoints.Generate(data);
             if (p.X <= 0 || p.Y <= 0) throw new InvalidOperationException("filter violated");
         });
 
@@ -73,7 +72,7 @@ public class GeneratorSelfTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            (SelfPoint point, SelfLabel label) = paired.Next(data);
+            (SelfPoint point, SelfLabel label) = paired.Generate(data);
             Assert.NotNull(point);
             Assert.NotNull(label);
         });

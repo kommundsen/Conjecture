@@ -1,6 +1,5 @@
 using System.Reflection;
 using Conjecture.Core;
-using Conjecture.Core.Generation;
 using Conjecture.Core.Internal;
 using Conjecture.Xunit.V3;
 using Conjecture.Xunit.V3.Internal;
@@ -10,7 +9,7 @@ namespace Conjecture.Xunit.V3.Tests;
 
 file sealed class PositiveInts : IStrategyProvider<int>
 {
-    public Strategy<int> Create() => Gen.Integers(1, int.MaxValue);
+    public Strategy<int> Create() => Generate.Integers(1, int.MaxValue);
 }
 
 /// <summary>
@@ -71,13 +70,13 @@ public class XunitV3PropertyExecutionTests
 
         TestRunResult run1 = await TestRunner.Run(settings, data =>
         {
-            ulong v = data.DrawInteger(0, 100);
+            ulong v = data.NextInteger(0, 100);
             if (v > 70) { throw new Exception("fail"); }
         });
 
         TestRunResult run2 = await TestRunner.Run(settings, data =>
         {
-            ulong v = data.DrawInteger(0, 100);
+            ulong v = data.NextInteger(0, 100);
             if (v > 70) { throw new Exception("fail"); }
         });
 
@@ -97,7 +96,7 @@ public class XunitV3PropertyExecutionTests
 
     // --- BuildFailureMessage tests ---
     // These verify that PropertyTestCaseRunner.BuildFailureMessage formats the output correctly.
-    // The test lambdas draw integers the same way the resolver does for int params (Gen.Integers<int>()),
+    // The test lambdas draw integers the same way the resolver does for int params (Generate.Integers<int>()),
     // so BuildFailureMessage can replay the counterexample through the resolver.
 
 #pragma warning disable IDE0060
@@ -118,7 +117,7 @@ public class XunitV3PropertyExecutionTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            int x = Gen.Integers<int>().Next(data);
+            int x = Generate.Integers<int>().Generate(data);
             if (x > 5) { throw new Exception("fail"); }
         });
 
@@ -135,7 +134,7 @@ public class XunitV3PropertyExecutionTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            int x = Gen.Integers<int>().Next(data);
+            int x = Generate.Integers<int>().Generate(data);
             if (x > 5) { throw new Exception("fail"); }
         });
 
@@ -152,8 +151,8 @@ public class XunitV3PropertyExecutionTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            _ = Gen.Integers<int>().Next(data);
-            _ = Gen.Booleans().Next(data);
+            _ = Generate.Integers<int>().Generate(data);
+            _ = Generate.Booleans().Generate(data);
             throw new Exception("always fail");
         });
 

@@ -12,7 +12,7 @@ public class AsyncPropertyTests
 
         TestRunResult result = await TestRunner.RunAsync(settings, async data =>
         {
-            int x = Gen.Integers<int>(0, 10).Next(data);
+            int x = Generate.Integers<int>(0, 10).Generate(data);
             await Task.Yield();
             if (x < 0) { throw new Exception("impossible"); }
         });
@@ -28,7 +28,7 @@ public class AsyncPropertyTests
 
         TestRunResult result = await TestRunner.RunAsync(settings, async data =>
         {
-            int x = Gen.Integers<int>(0, 100).Next(data);
+            int x = Generate.Integers<int>(0, 100).Generate(data);
             await Task.Yield();
             if (x > 5) { throw new Exception("too large"); }
         });
@@ -44,7 +44,7 @@ public class AsyncPropertyTests
 
         TestRunResult result = await TestRunner.RunAsync(settings, data =>
         {
-            int x = Gen.Integers<int>(0, 10).Next(data);
+            int x = Generate.Integers<int>(0, 10).Generate(data);
             if (x < 0) { throw new Exception("impossible"); }
             return Task.CompletedTask;
         });
@@ -62,14 +62,14 @@ public class AsyncPropertyTests
 
         await TestRunner.RunAsync(new ConjectureSettings { MaxExamples = 30, Seed = seed }, async data =>
         {
-            int x = Gen.Integers<int>(0, 100).Next(data);
+            int x = Generate.Integers<int>(0, 100).Generate(data);
             asyncValues.Add(x);
             await Task.Yield();
         });
 
         await TestRunner.Run(new ConjectureSettings { MaxExamples = 30, Seed = seed }, data =>
         {
-            int x = Gen.Integers<int>(0, 100).Next(data);
+            int x = Generate.Integers<int>(0, 100).Generate(data);
             syncValues.Add(x);
         });
 
@@ -83,14 +83,14 @@ public class AsyncPropertyTests
 
         TestRunResult first = await TestRunner.RunAsync(new ConjectureSettings { MaxExamples = 100, Seed = seed }, async data =>
         {
-            int x = Gen.Integers<int>(0, 100).Next(data);
+            int x = Generate.Integers<int>(0, 100).Generate(data);
             await Task.Yield();
             if (x > 10) { throw new Exception("too large"); }
         });
 
         TestRunResult second = await TestRunner.RunAsync(new ConjectureSettings { MaxExamples = 100, Seed = seed }, async data =>
         {
-            int x = Gen.Integers<int>(0, 100).Next(data);
+            int x = Generate.Integers<int>(0, 100).Generate(data);
             await Task.Yield();
             if (x > 10) { throw new Exception("too large"); }
         });

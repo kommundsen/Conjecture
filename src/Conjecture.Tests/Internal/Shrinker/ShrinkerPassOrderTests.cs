@@ -1,7 +1,6 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Conjecture.Core.Internal;
-using Conjecture.Core.Internal.Shrinker;
 
 namespace Conjecture.Tests.Internal.Shrinker;
 
@@ -11,7 +10,7 @@ public class ShrinkerPassOrderTests
     // grouping passes by priority tier (0 = cheap, 2 = expensive).
     private static IShrinkPass[][] GetPassTiers()
     {
-        FieldInfo? field = typeof(Core.Internal.Shrinker.Shrinker)
+        FieldInfo? field = typeof(Core.Internal.Shrinker)
             .GetField("PassTiers", BindingFlags.NonPublic | BindingFlags.Static);
         Assert.NotNull(field);
         return (IShrinkPass[][])field!.GetValue(null)!;
@@ -82,14 +81,14 @@ public class ShrinkerPassOrderTests
             ConjectureData data = ConjectureData.ForRecord(ns);
             try
             {
-                ulong a = data.DrawInteger(0, 10);
-                ulong b = data.DrawInteger(0, 10);
+                ulong a = data.NextInteger(0, 10);
+                ulong b = data.NextInteger(0, 10);
                 return a + b >= 10 ? Status.Interesting : Status.Valid;
             }
             catch { return Status.Overrun; }
         }
 
-        (IReadOnlyList<IRNode> result, int shrinkCount) = await Core.Internal.Shrinker.Shrinker.ShrinkAsync(
+        (IReadOnlyList<IRNode> result, int shrinkCount) = await Core.Internal.Shrinker.ShrinkAsync(
             nodes, n => new ValueTask<Status>(IsInteresting(n)));
 
         Assert.Equal(Status.Interesting, IsInteresting(result));
@@ -112,14 +111,14 @@ public class ShrinkerPassOrderTests
             ConjectureData data = ConjectureData.ForRecord(ns);
             try
             {
-                ulong raw = data.DrawFloat64(0UL, ulong.MaxValue);
+                ulong raw = data.NextFloat64(0UL, ulong.MaxValue);
                 double v = Unsafe.BitCast<ulong, double>(raw);
                 return v > 1.0 ? Status.Interesting : Status.Valid;
             }
             catch { return Status.Overrun; }
         }
 
-        (IReadOnlyList<IRNode> result, int _) = await Core.Internal.Shrinker.Shrinker.ShrinkAsync(
+        (IReadOnlyList<IRNode> result, int _) = await Core.Internal.Shrinker.ShrinkAsync(
             nodes, n => new ValueTask<Status>(IsInteresting(n)));
 
         Assert.Equal(Status.Interesting, IsInteresting(result));

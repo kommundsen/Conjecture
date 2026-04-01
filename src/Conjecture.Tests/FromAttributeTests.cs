@@ -1,6 +1,5 @@
 using System.Reflection;
 using Conjecture.Core;
-using Conjecture.Core.Generation;
 
 namespace Conjecture.Tests;
 
@@ -8,7 +7,7 @@ public class FromAttributeTests
 {
     private sealed class PositiveIntsProvider : IStrategyProvider<int>
     {
-        public Strategy<int> Create() => Gen.Integers<int>(1, int.MaxValue);
+        public Strategy<int> Create() => Generate.Integers<int>(1, int.MaxValue);
     }
 
     [Fact]

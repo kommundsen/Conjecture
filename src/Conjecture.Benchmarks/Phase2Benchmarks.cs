@@ -1,7 +1,6 @@
 using System.Runtime.CompilerServices;
 using BenchmarkDotNet.Attributes;
 using Conjecture.Core;
-using Conjecture.Core.Generation;
 using Conjecture.Core.Internal;
 
 namespace Conjecture.Benchmarks;
@@ -34,7 +33,7 @@ public class ShrinkingBenchmarks
     {
         await TestRunner.Run(settings, data =>
         {
-            ulong v = data.DrawInteger(0, 10_000);
+            ulong v = data.NextInteger(0, 10_000);
             if (v > 42) { throw new Exception("fail"); }
         });
     }
@@ -45,7 +44,7 @@ public class ShrinkingBenchmarks
     {
         await TestRunner.Run(settings, data =>
         {
-            ulong raw = data.DrawFloat64(0UL, ulong.MaxValue);
+            ulong raw = data.NextFloat64(0UL, ulong.MaxValue);
             double x = Unsafe.BitCast<ulong, double>(raw);
             if (x > 100.0) { throw new Exception("fail"); }
         });
@@ -55,10 +54,10 @@ public class ShrinkingBenchmarks
     [Benchmark]
     public async Task ShrinkString_ContainsSubstring()
     {
-        Strategy<string> strategy = Gen.Strings(alphabet: "er");
+        Strategy<string> strategy = Generate.Strings(alphabet: "er");
         await TestRunner.Run(settings, data =>
         {
-            string s = strategy.Next(data);
+            string s = strategy.Generate(data);
             if (s.Contains("err", StringComparison.Ordinal)) { throw new Exception("fail"); }
         });
     }
@@ -67,10 +66,10 @@ public class ShrinkingBenchmarks
     [Benchmark]
     public async Task ShrinkList_SumGreaterThanThreshold()
     {
-        Strategy<List<int>> strategy = Gen.Lists(Gen.Integers<int>(0, 200));
+        Strategy<List<int>> strategy = Generate.Lists(Generate.Integers<int>(0, 200));
         await TestRunner.Run(settings, data =>
         {
-            List<int> xs = strategy.Next(data);
+            List<int> xs = strategy.Generate(data);
             if (xs.Sum() > 100) { throw new Exception("fail"); }
         });
     }
@@ -81,8 +80,8 @@ public class ShrinkingBenchmarks
     {
         await TestRunner.Run(settings, data =>
         {
-            ulong a = data.DrawInteger(0, 500);
-            ulong b = data.DrawInteger(0, 500);
+            ulong a = data.NextInteger(0, 500);
+            ulong b = data.NextInteger(0, 500);
             if (a + b > 100) { throw new Exception("fail"); }
         });
     }
@@ -114,7 +113,7 @@ public class AsyncPropertyOverheadBenchmarks
     {
         await TestRunner.Run(settings, data =>
         {
-            int v = Gen.Integers<int>(0, 100).Next(data);
+            int v = Generate.Integers<int>(0, 100).Generate(data);
             _ = v;
         });
     }
@@ -124,7 +123,7 @@ public class AsyncPropertyOverheadBenchmarks
     {
         await TestRunner.RunAsync(settings, async data =>
         {
-            int v = Gen.Integers<int>(0, 100).Next(data);
+            int v = Generate.Integers<int>(0, 100).Generate(data);
             await Task.Yield();
             _ = v;
         });
@@ -135,7 +134,7 @@ public class AsyncPropertyOverheadBenchmarks
     {
         await TestRunner.Run(settings, data =>
         {
-            ulong v = data.DrawInteger(0, 10_000);
+            ulong v = data.NextInteger(0, 10_000);
             if (v > 5) { throw new Exception("fail"); }
         });
     }
@@ -145,7 +144,7 @@ public class AsyncPropertyOverheadBenchmarks
     {
         await TestRunner.RunAsync(settings, async data =>
         {
-            ulong v = data.DrawInteger(0, 10_000);
+            ulong v = data.NextInteger(0, 10_000);
             await Task.Yield();
             if (v > 5) { throw new Exception("fail"); }
         });

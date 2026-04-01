@@ -1,6 +1,5 @@
 using System.Reflection;
 using Conjecture.Core;
-using Conjecture.Core.Generation;
 using Conjecture.Core.Internal;
 using Conjecture.Xunit.Internal;
 
@@ -14,9 +13,9 @@ public class FromFactoryAttributeResolverTests
     // ─── Factory methods used by helper params below ──────────────────────────
 
     public static Strategy<int> EvenInts() =>
-        Gen.Integers<int>(0, 25).Select(n => n * 2);
+        Generate.Integers<int>(0, 25).Select(n => n * 2);
 
-    public Strategy<int> NonStaticFactory() => Gen.Integers<int>();
+    public Strategy<int> NonStaticFactory() => Generate.Integers<int>();
 
     public static string WrongReturnType() => "not a strategy";
 

@@ -20,9 +20,9 @@ internal sealed class ConjectureData
     internal static ConjectureData ForGeneration(IRandom rng) => new(rng);
     internal static ConjectureData ForRecord(IReadOnlyList<IRNode> nodes) => new(nodes);
 
-    internal ulong DrawInteger(ulong min, ulong max)
+    internal ulong NextInteger(ulong min, ulong max)
     {
-        CheckCanDraw();
+        ThrowIfNotActive();
         if (replayNodes is not null)
         {
             var node = ConsumeReplayNode();
@@ -34,9 +34,9 @@ internal sealed class ConjectureData
         return value;
     }
 
-    internal bool DrawBoolean()
+    internal bool NextBoolean()
     {
-        CheckCanDraw();
+        ThrowIfNotActive();
         if (replayNodes is not null)
         {
             var node = ConsumeReplayNode();
@@ -48,14 +48,14 @@ internal sealed class ConjectureData
         return value;
     }
 
-    internal ulong DrawFloat64(ulong min, ulong max) => DrawTyped(min, max, IRNodeKind.Float64);
-    internal ulong DrawFloat32(ulong min, ulong max) => DrawTyped(min, max, IRNodeKind.Float32);
-    internal ulong DrawStringLength(ulong min, ulong max) => DrawTyped(min, max, IRNodeKind.StringLength);
-    internal ulong DrawStringChar(ulong min, ulong max) => DrawTyped(min, max, IRNodeKind.StringChar);
+    internal ulong NextFloat64(ulong min, ulong max) => NextTyped(min, max, IRNodeKind.Float64);
+    internal ulong NextFloat32(ulong min, ulong max) => NextTyped(min, max, IRNodeKind.Float32);
+    internal ulong NextStringLength(ulong min, ulong max) => NextTyped(min, max, IRNodeKind.StringLength);
+    internal ulong NextStringChar(ulong min, ulong max) => NextTyped(min, max, IRNodeKind.StringChar);
 
-    private ulong DrawTyped(ulong min, ulong max, IRNodeKind kind)
+    private ulong NextTyped(ulong min, ulong max, IRNodeKind kind)
     {
-        CheckCanDraw();
+        ThrowIfNotActive();
         if (replayNodes is not null)
         {
             var node = ConsumeReplayNode();
@@ -74,9 +74,9 @@ internal sealed class ConjectureData
         return value;
     }
 
-    internal byte[] DrawBytes(int length)
+    internal byte[] NextBytes(int length)
     {
-        CheckCanDraw();
+        ThrowIfNotActive();
         if (replayNodes is not null)
         {
             var node = ConsumeReplayNode();
@@ -111,12 +111,11 @@ internal sealed class ConjectureData
         return replayNodes[cursor++];
     }
 
-    private void CheckCanDraw()
+    private void ThrowIfNotActive()
     {
         if (frozen || Status != Status.Valid)
         {
-            throw new InvalidOperationException("Cannot draw from a frozen or non-valid ConjectureData.");
+            throw new InvalidOperationException("Cannot generate from a frozen or non-valid ConjectureData.");
         }
-
     }
 }

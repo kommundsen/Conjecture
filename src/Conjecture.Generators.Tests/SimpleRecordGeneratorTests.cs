@@ -45,7 +45,7 @@ public sealed class SimpleRecordGeneratorTests
             "using Conjecture.Core; namespace MyApp; [Arbitrary] public partial record Point(int X, int Y);",
             "Point.g.cs");
 
-        Assert.Contains("Strategies.Compose<", text);
+        Assert.Contains("Generate.Compose<", text);
     }
 
     [Fact]
@@ -55,7 +55,7 @@ public sealed class SimpleRecordGeneratorTests
             "using Conjecture.Core; namespace MyApp; [Arbitrary] public partial record Point(int X, int Y);",
             "Point.g.cs");
 
-        Assert.Contains("Gen.Integers<int>()", text);
+        Assert.Contains("Generate.Integers<int>()", text);
     }
 
     [Fact]

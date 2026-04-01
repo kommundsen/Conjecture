@@ -17,8 +17,7 @@ public sealed class CON101Tests
     {
         string source = """
             using Conjecture.Core;
-            using Conjecture.Core.Generation;
-            class Test { void M() { var s = Gen.Integers<int>().Where(x => x == 42); } }
+            class Test { void M() { var s = Generate.Integers<int>().Where(x => x == 42); } }
             """;
 
         ImmutableArray<Diagnostic> diagnostics = await GetDiagnosticsAsync(source);
@@ -31,8 +30,7 @@ public sealed class CON101Tests
     {
         string source = """
             using Conjecture.Core;
-            using Conjecture.Core.Generation;
-            class Test { void M() { var s = Gen.Integers<int>().Where(x => x == 42); } }
+            class Test { void M() { var s = Generate.Integers<int>().Where(x => x == 42); } }
             """;
 
         ImmutableArray<Diagnostic> diagnostics = await GetDiagnosticsAsync(source);
@@ -49,8 +47,7 @@ public sealed class CON101Tests
     {
         string source = """
             using Conjecture.Core;
-            using Conjecture.Core.Generation;
-            class Test { void M() { var s = Gen.Booleans().Where(b => b == true); } }
+            class Test { void M() { var s = Generate.Booleans().Where(b => b == true); } }
             """;
 
         ImmutableArray<Diagnostic> diagnostics = await GetDiagnosticsAsync(source);
@@ -65,8 +62,7 @@ public sealed class CON101Tests
     {
         string source = """
             using Conjecture.Core;
-            using Conjecture.Core.Generation;
-            class Test { void M() { var s = Gen.Integers<int>().Where(x => false); } }
+            class Test { void M() { var s = Generate.Integers<int>().Where(x => false); } }
             """;
 
         ImmutableArray<Diagnostic> diagnostics = await GetDiagnosticsAsync(source);
@@ -81,8 +77,7 @@ public sealed class CON101Tests
     {
         string source = """
             using Conjecture.Core;
-            using Conjecture.Core.Generation;
-            class Test { void M() { var s = Gen.Integers<int>().Where(x => x > 0 && x < 100); } }
+            class Test { void M() { var s = Generate.Integers<int>().Where(x => x > 0 && x < 100); } }
             """;
 
         ImmutableArray<Diagnostic> diagnostics = await GetDiagnosticsAsync(source);
@@ -101,7 +96,7 @@ public sealed class CON101Tests
             MetadataReference.CreateFromFile(Path.Combine(runtimeDir, "System.Runtime.dll")),
             MetadataReference.CreateFromFile(Path.Combine(runtimeDir, "System.Collections.dll")),
             MetadataReference.CreateFromFile(Path.Combine(runtimeDir, "System.Numerics.dll")),
-            MetadataReference.CreateFromFile(typeof(Conjecture.Core.Gen).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(Conjecture.Core.Generate).Assembly.Location),
         ];
     }
 

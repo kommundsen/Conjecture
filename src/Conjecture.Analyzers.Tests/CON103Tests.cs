@@ -23,7 +23,7 @@ public sealed class CON103Tests
     {
         string source = """
             using Conjecture.Core;
-            class Test { void M() { var s = Gen.Integers(10, 5); } }
+            class Test { void M() { var s = Generate.Integers(10, 5); } }
             """;
 
         ImmutableArray<Diagnostic> diagnostics = await GetDiagnosticsAsync(source);
@@ -36,7 +36,7 @@ public sealed class CON103Tests
     {
         string source = """
             using Conjecture.Core;
-            class Test { void M() { var s = Gen.Integers(10, 5); } }
+            class Test { void M() { var s = Generate.Integers(10, 5); } }
             """;
 
         ImmutableArray<Diagnostic> diagnostics = await GetDiagnosticsAsync(source);
@@ -51,7 +51,7 @@ public sealed class CON103Tests
     {
         string source = """
             using Conjecture.Core;
-            class Test { void M() { var s = Gen.Integers(0, 100); } }
+            class Test { void M() { var s = Generate.Integers(0, 100); } }
             """;
 
         ImmutableArray<Diagnostic> diagnostics = await GetDiagnosticsAsync(source);
@@ -64,7 +64,7 @@ public sealed class CON103Tests
     {
         string source = """
             using Conjecture.Core;
-            class Test { void M(int a, int b) { var s = Gen.Integers(a, b); } }
+            class Test { void M(int a, int b) { var s = Generate.Integers(a, b); } }
             """;
 
         ImmutableArray<Diagnostic> diagnostics = await GetDiagnosticsAsync(source);
@@ -79,7 +79,7 @@ public sealed class CON103Tests
     {
         string source = """
             using Conjecture.Core;
-            class Test { void M() { var s = Gen.Doubles(1.0, 0.5); } }
+            class Test { void M() { var s = Generate.Doubles(1.0, 0.5); } }
             """;
 
         ImmutableArray<Diagnostic> diagnostics = await GetDiagnosticsAsync(source);
@@ -94,7 +94,7 @@ public sealed class CON103Tests
     {
         string source = """
             using Conjecture.Core;
-            class Test { void M() { var s = Gen.Floats(1f, 0f); } }
+            class Test { void M() { var s = Generate.Floats(1f, 0f); } }
             """;
 
         ImmutableArray<Diagnostic> diagnostics = await GetDiagnosticsAsync(source);
@@ -109,7 +109,7 @@ public sealed class CON103Tests
     {
         string source = """
             using Conjecture.Core;
-            class Test { void M() { var s = Gen.Strings(minLength: 10, maxLength: 5); } }
+            class Test { void M() { var s = Generate.Strings(minLength: 10, maxLength: 5); } }
             """;
 
         ImmutableArray<Diagnostic> diagnostics = await GetDiagnosticsAsync(source);
@@ -122,7 +122,7 @@ public sealed class CON103Tests
     {
         string source = """
             using Conjecture.Core;
-            class Test { void M() { var s = Gen.Strings(minLength: 0, maxLength: 20); } }
+            class Test { void M() { var s = Generate.Strings(minLength: 0, maxLength: 20); } }
             """;
 
         ImmutableArray<Diagnostic> diagnostics = await GetDiagnosticsAsync(source);
@@ -137,13 +137,13 @@ public sealed class CON103Tests
     {
         string source = """
             using Conjecture.Core;
-            class Test { void M() { var s = Gen.Integers(10, 5); } }
+            class Test { void M() { var s = Generate.Integers(10, 5); } }
             """;
 
         string? result = await ApplyCodeFixAsync(source);
 
         Assert.NotNull(result);
-        Assert.Contains("Gen.Integers(5, 10)", result);
+        Assert.Contains("Generate.Integers(5, 10)", result);
     }
 
     [Fact]
@@ -151,13 +151,13 @@ public sealed class CON103Tests
     {
         string source = """
             using Conjecture.Core;
-            class Test { void M() { var s = Gen.Doubles(1.0, 0.5); } }
+            class Test { void M() { var s = Generate.Doubles(1.0, 0.5); } }
             """;
 
         string? result = await ApplyCodeFixAsync(source);
 
         Assert.NotNull(result);
-        Assert.Contains("Gen.Doubles(0.5, 1.0)", result);
+        Assert.Contains("Generate.Doubles(0.5, 1.0)", result);
     }
 
     [Fact]
@@ -165,7 +165,7 @@ public sealed class CON103Tests
     {
         string source = """
             using Conjecture.Core;
-            class Test { void M() { var s = Gen.Strings(minLength: 10, maxLength: 5); } }
+            class Test { void M() { var s = Generate.Strings(minLength: 10, maxLength: 5); } }
             """;
 
         string? result = await ApplyCodeFixAsync(source);
@@ -185,7 +185,7 @@ public sealed class CON103Tests
             MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
             MetadataReference.CreateFromFile(Path.Combine(runtimeDir, "System.Runtime.dll")),
             MetadataReference.CreateFromFile(Path.Combine(runtimeDir, "System.Collections.dll")),
-            MetadataReference.CreateFromFile(typeof(Conjecture.Core.Gen).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(Conjecture.Core.Generate).Assembly.Location),
         ];
     }
 

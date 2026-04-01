@@ -1,5 +1,4 @@
 using Conjecture.Core.Internal;
-using Conjecture.Core.Internal.Shrinker;
 
 namespace Conjecture.Tests.Internal.Shrinker;
 
@@ -40,7 +39,7 @@ public class DeleteBlocksPassTests
         static Status NeedsDraw(IReadOnlyList<IRNode> ns)
         {
             ConjectureData data = ConjectureData.ForRecord(ns);
-            try { data.DrawInteger(0, 10); return Status.Interesting; }
+            try { data.NextInteger(0, 10); return Status.Interesting; }
             catch { return Status.Overrun; }
         }
         ShrinkState state = MakeState(nodes, NeedsDraw);

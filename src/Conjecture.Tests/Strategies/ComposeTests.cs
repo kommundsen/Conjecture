@@ -1,7 +1,6 @@
 using Conjecture.Core;
 using Conjecture.Core.Internal;
-using Conjecture.Core.Generation;
-using CoreStrategies = Conjecture.Core.Strategies;
+
 
 namespace Conjecture.Tests.Strategies;
 
@@ -13,27 +12,27 @@ public class ComposeTests
     [Fact]
     public void Compose_ImperativeDraw()
     {
-        var strategy = CoreStrategies.Compose(gen => gen.Next(Gen.Integers<int>(1, 10)));
+        var strategy = Generate.Compose(gen => gen.Generate(Generate.Integers<int>(1, 10)));
         var data = MakeData();
         for (var i = 0; i < 100; i++)
         {
-            Assert.InRange(strategy.Next(data), 1, 10);
+            Assert.InRange(strategy.Generate(data), 1, 10);
         }
     }
 
     [Fact]
     public void Compose_DependentDraws()
     {
-        var strategy = CoreStrategies.Compose(gen =>
+        var strategy = Generate.Compose(gen =>
         {
-            var x = gen.Next(Gen.Integers<int>(1, 5));
-            var y = gen.Next(Gen.Integers<int>(1, x));
+            var x = gen.Generate(Generate.Integers<int>(1, 5));
+            var y = gen.Generate(Generate.Integers<int>(1, x));
             return x * 10 + y;
         });
         var data = MakeData();
         for (var i = 0; i < 100; i++)
         {
-            var result = strategy.Next(data);
+            var result = strategy.Generate(data);
             var tens = result / 10;
             var ones = result % 10;
             Assert.InRange(tens, 1, 5);
@@ -44,25 +43,25 @@ public class ComposeTests
     [Fact]
     public void Compose_Assume_RejectsInvalid()
     {
-        var strategy = CoreStrategies.Compose(gen =>
+        var strategy = Generate.Compose(gen =>
         {
-            var x = gen.Next(Gen.Integers<int>(0, 10));
+            var x = gen.Generate(Generate.Integers<int>(0, 10));
             gen.Assume(x % 2 == 0);
             return x;
         });
         var data = MakeData();
         for (var i = 0; i < 20; i++)
         {
-            Assert.True(strategy.Next(data) % 2 == 0);
+            Assert.True(strategy.Generate(data) % 2 == 0);
         }
     }
 
     [Fact]
     public void Compose_Assume_False_MarksInvalid()
     {
-        var strategy = CoreStrategies.Compose(gen => { gen.Assume(false); return 0; });
+        var strategy = Generate.Compose(gen => { gen.Assume(false); return 0; });
         var data = MakeData();
-        Assert.ThrowsAny<Exception>((Action)(() => strategy.Next(data)));
+        Assert.ThrowsAny<Exception>((Action)(() => strategy.Generate(data)));
         Assert.Equal(Status.Invalid, data.Status);
     }
 }

@@ -16,7 +16,7 @@ public sealed class ClassAndStructGeneratorTests
             "Box.g.cs");
 
         Assert.Contains("new MyApp.Box(", text);
-        Assert.Contains("ctx.Next(", text);
+        Assert.Contains("ctx.Generate(", text);
     }
 
     [Fact]
@@ -27,8 +27,8 @@ public sealed class ClassAndStructGeneratorTests
             "Point.g.cs");
 
         Assert.Contains("new MyApp.Point {", text);
-        Assert.Contains("X = ctx.Next(", text);
-        Assert.Contains("Y = ctx.Next(", text);
+        Assert.Contains("X = ctx.Generate(", text);
+        Assert.Contains("Y = ctx.Generate(", text);
     }
 
     [Fact]
@@ -38,7 +38,7 @@ public sealed class ClassAndStructGeneratorTests
             "using Conjecture.Core; namespace MyApp; [Arbitrary] public partial class Box { public Box(int W) {} public Box(int W, int H) {} }",
             "Box.g.cs");
 
-        Assert.Equal(2, CountOccurrences(text, "ctx.Next("));
+        Assert.Equal(2, CountOccurrences(text, "ctx.Generate("));
     }
 
     [Fact]

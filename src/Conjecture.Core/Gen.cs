@@ -1,11 +1,14 @@
 using System.Numerics;
-using Conjecture.Core.Generation;
 
 namespace Conjecture.Core;
 
-/// <summary>Factory methods for creating built-in Conjecture strategies.</summary>
-public static class Gen
+/// <summary>Factory methods for creating and composing Conjecture strategies.</summary>
+public static class Generate
 {
+    /// <summary>Creates a strategy from an imperative factory function using <see cref="IGeneratorContext"/>.</summary>
+    public static Strategy<T> Compose<T>(Func<IGeneratorContext, T> factory) =>
+        new ComposeStrategy<T>(factory);
+
     /// <summary>Returns a strategy that generates random <see cref="bool"/> values.</summary>
     public static Strategy<bool> Booleans() => new BooleanStrategy();
 

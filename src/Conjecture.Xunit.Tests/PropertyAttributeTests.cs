@@ -48,13 +48,13 @@ public class PropertyAttributeTests
 
         TestRunResult run1 = await TestRunner.Run(settings, data =>
         {
-            ulong v = data.DrawInteger(0, 100);
+            ulong v = data.NextInteger(0, 100);
             if (v > 70) { throw new Exception("fail"); }
         });
 
         TestRunResult run2 = await TestRunner.Run(settings, data =>
         {
-            ulong v = data.DrawInteger(0, 100);
+            ulong v = data.NextInteger(0, 100);
             if (v > 70) { throw new Exception("fail"); }
         });
 

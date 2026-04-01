@@ -1,8 +1,5 @@
 using System.Diagnostics;
 
-using Conjecture.Core.Internal.Database;
-using ShrinkEngine = Conjecture.Core.Internal.Shrinker.Shrinker;
-
 namespace Conjecture.Core.Internal;
 
 internal static class TestRunner
@@ -26,7 +23,7 @@ internal static class TestRunner
                 Status replayStatus = Replay(nodes, test);
                 if (replayStatus == Status.Interesting)
                 {
-                    (IReadOnlyList<IRNode> shrunk, int shrinkCount) = await ShrinkEngine.ShrinkAsync(
+                    (IReadOnlyList<IRNode> shrunk, int shrinkCount) = await Shrinker.ShrinkAsync(
                         nodes, n => new ValueTask<Status>(Replay(n, test)));
                     db.Delete(testIdHash);
                     db.Save(testIdHash, SerializeNodes(shrunk));
@@ -72,7 +69,7 @@ internal static class TestRunner
             Status replayStatus = await ReplayAsync(nodes, test);
             if (replayStatus == Status.Interesting)
             {
-                (IReadOnlyList<IRNode> shrunk, int shrinkCount) = await ShrinkEngine.ShrinkAsync(
+                (IReadOnlyList<IRNode> shrunk, int shrinkCount) = await Shrinker.ShrinkAsync(
                     nodes, n => ReplayAsync(n, test));
                 dbContext.Database.Delete(dbContext.TestIdHash);
                 dbContext.Database.Save(dbContext.TestIdHash, SerializeNodes(shrunk));
@@ -153,7 +150,7 @@ internal static class TestRunner
                 data.MarkInteresting();
                 string? stackTrace = failureEx.StackTrace;
                 IReadOnlyList<IRNode> firstFailureNodes = data.IRNodes;
-                (IReadOnlyList<IRNode> shrunk, int shrinkCount) = await ShrinkEngine.ShrinkAsync(
+                (IReadOnlyList<IRNode> shrunk, int shrinkCount) = await Shrinker.ShrinkAsync(
                     firstFailureNodes, n => ReplayAsync(n, test));
                 if (dbContext is DbContext ctx)
                 {
@@ -238,7 +235,7 @@ internal static class TestRunner
                 data.MarkInteresting();
                 string? stackTrace = failureEx.StackTrace;
                 IReadOnlyList<IRNode> firstFailureNodes = data.IRNodes;
-                (IReadOnlyList<IRNode> shrunk, int shrinkCount) = await ShrinkEngine.ShrinkAsync(
+                (IReadOnlyList<IRNode> shrunk, int shrinkCount) = await Shrinker.ShrinkAsync(
                     firstFailureNodes, nodes => new ValueTask<Status>(Replay(nodes, test)));
                 if (dbContext is DbContext ctx)
                 {

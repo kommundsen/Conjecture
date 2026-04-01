@@ -1,5 +1,4 @@
 using Conjecture.Core;
-using Conjecture.Core.Generation;
 using Conjecture.Core.Internal;
 
 namespace Conjecture.Tests.Strategies;
@@ -12,7 +11,7 @@ public class BooleanStrategyTests
     [Fact]
     public void Booleans_ReturnsStrategy()
     {
-        var strategy = Gen.Booleans();
+        var strategy = Generate.Booleans();
         Assert.NotNull(strategy);
         Assert.IsAssignableFrom<Strategy<bool>>(strategy);
     }
@@ -20,14 +19,14 @@ public class BooleanStrategyTests
     [Fact]
     public void Booleans_ReturnsBothValues()
     {
-        var strategy = Gen.Booleans();
+        var strategy = Generate.Booleans();
         var data = MakeData();
         var seenTrue = false;
         var seenFalse = false;
 
         for (var i = 0; i < 1000; i++)
         {
-            if (strategy.Next(data)) { seenTrue = true; }
+            if (strategy.Generate(data)) { seenTrue = true; }
             else { seenFalse = true; }
             if (seenTrue && seenFalse) { break; }
         }
@@ -39,10 +38,10 @@ public class BooleanStrategyTests
     [Fact]
     public void BooleanStrategy_Next_RecordsIRNode()
     {
-        var strategy = Gen.Booleans();
+        var strategy = Generate.Booleans();
         var data = MakeData();
 
-        strategy.Next(data);
+        strategy.Generate(data);
 
         var node = Assert.Single(data.IRNodes);
         Assert.Equal(IRNodeKind.Boolean, node.Kind);

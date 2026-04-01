@@ -1,5 +1,4 @@
 using Conjecture.Core;
-using Conjecture.Core.Generation;
 using Conjecture.Core.Internal;
 
 namespace Conjecture.Tests.EndToEnd;
@@ -10,18 +9,18 @@ public sealed class AttributeE2ETests
 
     private sealed class PositiveIntsProvider : IStrategyProvider<int>
     {
-        public Strategy<int> Create() => Gen.Integers<int>(1, int.MaxValue);
+        public Strategy<int> Create() => Generate.Integers<int>(1, int.MaxValue);
     }
 
     private sealed class PositiveBoundedProvider : IStrategyProvider<int>
     {
-        public Strategy<int> Create() => Gen.Integers<int>(1, 100);
+        public Strategy<int> Create() => Generate.Integers<int>(1, 100);
     }
 
     // ── Factory method (mirrors [FromFactory(nameof(EvenInts))]) ──────────────
 
     private static Strategy<int> EvenInts() =>
-        Gen.Integers<int>(0, 50).Where(n => n % 2 == 0);
+        Generate.Integers<int>(0, 50).Where(n => n % 2 == 0);
 
     // ── [Example] before generated: explicit count merges with TestRunner count ─
 
@@ -35,7 +34,7 @@ public sealed class AttributeE2ETests
         ConjectureSettings settings = new() { MaxExamples = 10, Seed = 1UL };
         TestRunResult generated = await TestRunner.Run(settings, data =>
         {
-            _ = Gen.Integers<int>(0, 5).Next(data);
+            _ = Generate.Integers<int>(0, 5).Generate(data);
         });
 
         Assert.True(generated.Passed);
@@ -54,7 +53,7 @@ public sealed class AttributeE2ETests
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 2UL, UseDatabase = false };
         TestRunResult generated = await TestRunner.Run(settings, data =>
         {
-            int v = Gen.Integers<int>(0, 100).Next(data);
+            int v = Generate.Integers<int>(0, 100).Generate(data);
             if (v > 5) { throw new Exception("too large"); }
         });
 
@@ -75,7 +74,7 @@ public sealed class AttributeE2ETests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            int v = strategy.Next(data);
+            int v = strategy.Generate(data);
             if (v <= 0) { throw new Exception($"Expected positive, got {v}"); }
         });
 
@@ -92,7 +91,7 @@ public sealed class AttributeE2ETests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            int v = strategy.Next(data);
+            int v = strategy.Generate(data);
             if (v < 0 || v > 50) { throw new Exception($"Out of bounds: {v}"); }
             if (v % 2 != 0) { throw new Exception($"Expected even, got {v}"); }
         });
@@ -106,13 +105,13 @@ public sealed class AttributeE2ETests
     public async Task Mixed_ProviderAndInferred_BothStrategiesWork()
     {
         Strategy<int> fromProvider = new PositiveIntsProvider().Create();
-        Strategy<bool> inferred = Gen.Booleans();
+        Strategy<bool> inferred = Generate.Booleans();
         ConjectureSettings settings = new() { MaxExamples = 50, Seed = 40UL };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            int v = fromProvider.Next(data);
-            inferred.Next(data);
+            int v = fromProvider.Generate(data);
+            inferred.Generate(data);
             if (v <= 0) { throw new Exception($"Expected positive int, got {v}"); }
         });
 
@@ -130,13 +129,13 @@ public sealed class AttributeE2ETests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            int v = strategy.Next(data);
+            int v = strategy.Generate(data);
             if (v > 5) { throw new Exception("too large"); }
         });
 
         Assert.False(result.Passed);
         ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
-        int shrunk = strategy.Next(replay);
+        int shrunk = strategy.Generate(replay);
 
         Assert.Equal(6, shrunk);
     }
@@ -149,13 +148,13 @@ public sealed class AttributeE2ETests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            int v = strategy.Next(data);
+            int v = strategy.Generate(data);
             if (v > 0) { throw new Exception("always fails"); }
         });
 
         Assert.False(result.Passed);
         ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
-        int shrunk = strategy.Next(replay);
+        int shrunk = strategy.Generate(replay);
 
         Assert.True(shrunk >= 1 && shrunk <= 100, $"Shrunk value {shrunk} must be in [1, 100]");
     }

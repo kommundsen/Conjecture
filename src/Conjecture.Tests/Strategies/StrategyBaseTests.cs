@@ -1,5 +1,5 @@
+using Conjecture.Core;
 using Conjecture.Core.Internal;
-using Conjecture.Core.Generation;
 
 namespace Conjecture.Tests.Strategies;
 
@@ -7,13 +7,13 @@ public class StrategyBaseTests
 {
     private sealed class ConstantStrategy<T>(T value) : Strategy<T>
     {
-        internal override T Next(ConjectureData data) => value;
+        internal override T Generate(ConjectureData data) => value;
     }
 
     private sealed class TrackingStrategy : Strategy<int>
     {
         public bool WasCalled { get; private set; }
-        internal override int Next(ConjectureData data) { WasCalled = true; return 0; }
+        internal override int Generate(ConjectureData data) { WasCalled = true; return 0; }
     }
 
     private static ConjectureData MakeData() =>
@@ -29,7 +29,7 @@ public class StrategyBaseTests
     public void Next_IsCalled_WithConjectureData()
     {
         var strategy = new TrackingStrategy();
-        strategy.Next(MakeData());
+        strategy.Generate(MakeData());
         Assert.True(strategy.WasCalled);
     }
 
@@ -37,7 +37,7 @@ public class StrategyBaseTests
     public void Next_ReturnsSubclassValue()
     {
         var strategy = new ConstantStrategy<string>("hello");
-        var result = strategy.Next(MakeData());
+        var result = strategy.Generate(MakeData());
         Assert.Equal("hello", result);
     }
 }

@@ -1,6 +1,5 @@
 using System.Runtime.CompilerServices;
 using Conjecture.Core;
-using Conjecture.Core.Generation;
 using Conjecture.Core.Internal;
 
 namespace Conjecture.Tests.EndToEnd;
@@ -16,7 +15,7 @@ public class AdvancedShrinkingE2ETests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            ulong raw = data.DrawFloat64(0UL, ulong.MaxValue);
+            ulong raw = data.NextFloat64(0UL, ulong.MaxValue);
             double x = Unsafe.BitCast<ulong, double>(raw);
             if (x > 100.0)
             {
@@ -39,12 +38,12 @@ public class AdvancedShrinkingE2ETests
     [Fact]
     public async Task String_ContainsErr_ShrinksToExactlyErr()
     {
-        Strategy<string> strategy = Gen.Strings(alphabet: "er");
+        Strategy<string> strategy = Generate.Strings(alphabet: "er");
         ConjectureSettings settings = new() { MaxExamples = 50, Seed = 2UL, UseDatabase = false };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            string s = strategy.Next(data);
+            string s = strategy.Generate(data);
             if (s.Contains("err", StringComparison.Ordinal))
             {
                 throw new Exception("contains err");
@@ -53,7 +52,7 @@ public class AdvancedShrinkingE2ETests
 
         Assert.False(result.Passed);
         ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
-        string shrunk = strategy.Next(replay);
+        string shrunk = strategy.Generate(replay);
 
         Assert.Equal("err", shrunk);
     }
@@ -63,12 +62,12 @@ public class AdvancedShrinkingE2ETests
     [Fact]
     public async Task List_SumGreaterThan100_ShrinksToSingleElementList()
     {
-        Strategy<List<int>> strategy = Gen.Lists(Gen.Integers<int>(0, 200));
+        Strategy<List<int>> strategy = Generate.Lists(Generate.Integers<int>(0, 200));
         ConjectureSettings settings = new() { MaxExamples = 200, Seed = 3UL, UseDatabase = false };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            List<int> xs = strategy.Next(data);
+            List<int> xs = strategy.Generate(data);
             if (xs.Sum() > 100)
             {
                 throw new Exception("sum too large");
@@ -77,7 +76,7 @@ public class AdvancedShrinkingE2ETests
 
         Assert.False(result.Passed);
         ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
-        List<int> shrunk = strategy.Next(replay);
+        List<int> shrunk = strategy.Generate(replay);
 
         int single = Assert.Single(shrunk);
         Assert.Equal(101, single);
@@ -92,8 +91,8 @@ public class AdvancedShrinkingE2ETests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            ulong a = data.DrawInteger(0, 200);
-            ulong b = data.DrawInteger(0, 200);
+            ulong a = data.NextInteger(0, 200);
+            ulong b = data.NextInteger(0, 200);
             if (a + b > 100)
             {
                 throw new Exception("sum too large");
@@ -124,7 +123,7 @@ public class AdvancedShrinkingE2ETests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            ulong v = data.DrawInteger(0, 10000);
+            ulong v = data.NextInteger(0, 10000);
             if (v >= 42)
             {
                 throw new Exception("too large");

@@ -2,7 +2,6 @@ using System.IO;
 using System.Text;
 using BenchmarkDotNet.Attributes;
 using Conjecture.Core;
-using Conjecture.Core.Generation;
 using Conjecture.Core.Internal;
 using Conjecture.Generators;
 using Microsoft.CodeAnalysis;
@@ -77,7 +76,7 @@ public class GeneratorCompilationBenchmarks
 }
 
 /// <summary>
-/// Throughput: Gen.Tuples (hand-written) vs Strategies.Compose (the pattern the source
+/// Throughput: Generate.Tuples (hand-written) vs Generate.Compose (the pattern the source
 /// generator emits for every [Arbitrary] record). Each iteration draws 100 values so
 /// per-draw overhead dominates over ConjectureData setup cost.
 /// </summary>
@@ -95,11 +94,11 @@ public class GeneratorThroughputBenchmarks
     public void Setup()
     {
         rng = new SplittableRandom(42UL);
-        handWritten = Gen.Tuples(Gen.Integers<int>(), Gen.Integers<int>());
+        handWritten = Generate.Tuples(Generate.Integers<int>(), Generate.Integers<int>());
         generated = new PairArbitrary().Create();
     }
 
-    /// <summary>Direct Gen.Tuples — hand-written strategy baseline.</summary>
+    /// <summary>Direct Generate.Tuples — hand-written strategy baseline.</summary>
     [Benchmark(Baseline = true)]
     public (int, int) HandWritten()
     {
@@ -107,12 +106,12 @@ public class GeneratorThroughputBenchmarks
         (int, int) last = default;
         for (int i = 0; i < Draws; i++)
         {
-            last = handWritten.Next(data);
+            last = handWritten.Generate(data);
         }
         return last;
     }
 
-    /// <summary>Strategies.Compose — mirrors the pattern every source-generated provider uses.</summary>
+    /// <summary>Generate.Compose — mirrors the pattern every source-generated provider uses.</summary>
     [Benchmark]
     public (int, int) Generated()
     {
@@ -120,7 +119,7 @@ public class GeneratorThroughputBenchmarks
         (int, int) last = default;
         for (int i = 0; i < Draws; i++)
         {
-            last = generated.Next(data);
+            last = generated.Generate(data);
         }
         return last;
     }
@@ -128,13 +127,13 @@ public class GeneratorThroughputBenchmarks
 
 /// <summary>
 /// Hand-written equivalent of what ArbitraryGenerator emits for a two-int record:
-/// Strategies.Compose composing two Gen.Integers draws.
+/// Generate.Compose composing two Generate.Integers draws.
 /// </summary>
 internal sealed class PairArbitrary : IStrategyProvider<(int, int)>
 {
     public Strategy<(int, int)> Create()
     {
-        return Strategies.Compose<(int, int)>(ctx =>
-            (ctx.Next(Gen.Integers<int>()), ctx.Next(Gen.Integers<int>())));
+        return Generate.Compose<(int, int)>(ctx =>
+            (ctx.Generate(Generate.Integers<int>()), ctx.Generate(Generate.Integers<int>())));
     }
 }

@@ -1,6 +1,5 @@
 using Conjecture.Core;
 using Conjecture.Core.Internal;
-using Conjecture.Core.Generation;
 
 namespace Conjecture.Tests.Strategies;
 
@@ -12,20 +11,20 @@ public class StringStrategyTests
     [Fact]
     public void Strings_ProducesString()
     {
-        var strategy = Gen.Strings();
-        var value = strategy.Next(MakeData());
+        var strategy = Generate.Strings();
+        var value = strategy.Generate(MakeData());
         Assert.IsType<string>(value);
     }
 
     [Fact]
     public void Strings_DefaultCharset_IsPrintableAscii()
     {
-        var strategy = Gen.Strings();
+        var strategy = Generate.Strings();
         var data = MakeData();
 
         for (var i = 0; i < 200; i++)
         {
-            var s = strategy.Next(data);
+            var s = strategy.Generate(data);
             foreach (var c in s)
             {
                 Assert.InRange((int)c, 32, 126);
@@ -36,10 +35,10 @@ public class StringStrategyTests
     [Fact]
     public void Strings_DeterministicWithSeed()
     {
-        var strategy = Gen.Strings();
+        var strategy = Generate.Strings();
 
-        var results1 = Enumerable.Range(0, 20).Select(_ => strategy.Next(MakeData(99UL))).ToList();
-        var results2 = Enumerable.Range(0, 20).Select(_ => strategy.Next(MakeData(99UL))).ToList();
+        var results1 = Enumerable.Range(0, 20).Select(_ => strategy.Generate(MakeData(99UL))).ToList();
+        var results2 = Enumerable.Range(0, 20).Select(_ => strategy.Generate(MakeData(99UL))).ToList();
 
         Assert.Equal(results1, results2);
     }
@@ -47,12 +46,12 @@ public class StringStrategyTests
     [Fact]
     public void Strings_RespectsBoundsWhenMinAndMaxLengthSet()
     {
-        var strategy = Gen.Strings(minLength: 5, maxLength: 10);
+        var strategy = Generate.Strings(minLength: 5, maxLength: 10);
         var data = MakeData();
 
         for (var i = 0; i < 100; i++)
         {
-            var s = strategy.Next(data);
+            var s = strategy.Generate(data);
             Assert.InRange(s.Length, 5, 10);
         }
     }
@@ -60,12 +59,12 @@ public class StringStrategyTests
     [Fact]
     public void Strings_MinLengthZero_CanProduceEmptyString()
     {
-        var strategy = Gen.Strings(minLength: 0, maxLength: 5);
+        var strategy = Generate.Strings(minLength: 0, maxLength: 5);
         var sawEmpty = false;
 
         for (var seed = 0UL; seed < 1000UL && !sawEmpty; seed++)
         {
-            var s = strategy.Next(MakeData(seed));
+            var s = strategy.Generate(MakeData(seed));
             if (s.Length == 0)
             {
                 sawEmpty = true;
@@ -78,9 +77,9 @@ public class StringStrategyTests
     [Fact]
     public void Text_IsAliasForStrings()
     {
-        var textStrategy = Gen.Text();
+        var textStrategy = Generate.Text();
         var data = MakeData(77UL);
-        var s = textStrategy.Next(data);
+        var s = textStrategy.Generate(data);
         Assert.IsType<string>(s);
         foreach (var c in s)
         {

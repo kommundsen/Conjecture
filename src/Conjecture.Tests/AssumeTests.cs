@@ -27,7 +27,7 @@ public class AssumeTests
         await TestRunner.Run(settings, data =>
         {
             totalCalls++;
-            int x = (int)data.DrawInteger(0, 10);
+            int x = (int)data.NextInteger(0, 10);
             Assume.That(x % 2 == 0); // skip odd values
             validCount++;
         });

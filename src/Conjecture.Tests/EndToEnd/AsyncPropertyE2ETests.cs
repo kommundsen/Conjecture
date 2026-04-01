@@ -1,5 +1,4 @@
 using Conjecture.Core;
-using Conjecture.Core.Generation;
 using Conjecture.Core.Internal;
 
 namespace Conjecture.Tests.EndToEnd;
@@ -10,7 +9,7 @@ public sealed class AsyncPropertyE2ETests
 
     private sealed class PositiveIntsProvider : IStrategyProvider<int>
     {
-        public Strategy<int> Create() => Gen.Integers<int>(1, 50);
+        public Strategy<int> Create() => Generate.Integers<int>(1, 50);
     }
 
     // ── Async [Property] returning Task passes ────────────────────────────────
@@ -22,7 +21,7 @@ public sealed class AsyncPropertyE2ETests
 
         TestRunResult result = await TestRunner.RunAsync(settings, async data =>
         {
-            int x = Gen.Integers<int>(0, 100).Next(data);
+            int x = Generate.Integers<int>(0, 100).Generate(data);
             await Task.Yield();
             if (x < 0) { throw new Exception("impossible"); }
         });
@@ -52,11 +51,11 @@ public sealed class AsyncPropertyE2ETests
     public async Task AsyncTask_FailingProperty_ShrinksToMinimalCounterexample()
     {
         ConjectureSettings settings = new() { MaxExamples = 200, Seed = 1UL, UseDatabase = false };
-        Strategy<int> strategy = Gen.Integers<int>(0, 100);
+        Strategy<int> strategy = Generate.Integers<int>(0, 100);
 
         TestRunResult result = await TestRunner.RunAsync(settings, async data =>
         {
-            int v = strategy.Next(data);
+            int v = strategy.Generate(data);
             await Task.Yield();
             if (v > 5) { throw new Exception("too large"); }
         });
@@ -66,7 +65,7 @@ public sealed class AsyncPropertyE2ETests
         Assert.True(result.ShrinkCount > 0);
 
         ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
-        int shrunk = strategy.Next(replay);
+        int shrunk = strategy.Generate(replay);
         Assert.Equal(6, shrunk);
     }
 
@@ -74,11 +73,11 @@ public sealed class AsyncPropertyE2ETests
     public async Task AsyncTask_FailingProperty_ShrunkCounterexampleStillFails()
     {
         ConjectureSettings settings = new() { MaxExamples = 200, Seed = 5UL, UseDatabase = false };
-        Strategy<int> strategy = Gen.Integers<int>(0, 200);
+        Strategy<int> strategy = Generate.Integers<int>(0, 200);
 
         TestRunResult result = await TestRunner.RunAsync(settings, async data =>
         {
-            int v = strategy.Next(data);
+            int v = strategy.Generate(data);
             await Task.Yield();
             if (v > 10) { throw new Exception("too large"); }
         });
@@ -87,7 +86,7 @@ public sealed class AsyncPropertyE2ETests
 
         // Replaying the shrunk counterexample must reproduce the failure.
         ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
-        int shrunk = strategy.Next(replay);
+        int shrunk = strategy.Generate(replay);
         Assert.True(shrunk > 10, $"Shrunk value {shrunk} should still violate the property");
     }
 
@@ -109,7 +108,7 @@ public sealed class AsyncPropertyE2ETests
 
         TestRunResult generated = await TestRunner.RunAsync(settings, async data =>
         {
-            int v = Gen.Integers<int>(0, 10).Next(data);
+            int v = Generate.Integers<int>(0, 10).Generate(data);
             await Task.Yield();
             if (v < 0) { throw new Exception("impossible"); }
         });
@@ -146,7 +145,7 @@ public sealed class AsyncPropertyE2ETests
             generationPhaseReached = true;
             await TestRunner.RunAsync(new ConjectureSettings { MaxExamples = 10 }, async data =>
             {
-                Gen.Integers<int>().Next(data);
+                Generate.Integers<int>().Generate(data);
                 await Task.Yield();
             });
         }
@@ -165,7 +164,7 @@ public sealed class AsyncPropertyE2ETests
 
         TestRunResult result = await TestRunner.RunAsync(settings, async data =>
         {
-            int v = strategy.Next(data);
+            int v = strategy.Generate(data);
             await Task.Yield();
             if (v <= 0) { throw new Exception($"Expected positive, got {v}"); }
             if (v > 50) { throw new Exception($"Out of bounds: {v}"); }
@@ -183,14 +182,14 @@ public sealed class AsyncPropertyE2ETests
 
         TestRunResult result = await TestRunner.RunAsync(settings, async data =>
         {
-            int v = strategy.Next(data);
+            int v = strategy.Generate(data);
             await Task.Yield();
             if (v > 5) { throw new Exception("too large"); }
         });
 
         Assert.False(result.Passed);
         ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
-        int shrunk = strategy.Next(replay);
+        int shrunk = strategy.Generate(replay);
         Assert.Equal(6, shrunk);
     }
 
@@ -198,13 +197,13 @@ public sealed class AsyncPropertyE2ETests
     public async Task AsyncTask_MixedFromProviderAndInferred_BothWorkTogether()
     {
         Strategy<int> fromProvider = new PositiveIntsProvider().Create();
-        Strategy<bool> inferred = Gen.Booleans();
+        Strategy<bool> inferred = Generate.Booleans();
         ConjectureSettings settings = new() { MaxExamples = 50, Seed = 40UL };
 
         TestRunResult result = await TestRunner.RunAsync(settings, async data =>
         {
-            int v = fromProvider.Next(data);
-            bool flag = inferred.Next(data);
+            int v = fromProvider.Generate(data);
+            bool flag = inferred.Generate(data);
             await Task.Yield();
             if (v <= 0) { throw new Exception($"Expected positive, got {v}"); }
             _ = flag; // consumed

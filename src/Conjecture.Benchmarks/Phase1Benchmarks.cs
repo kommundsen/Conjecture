@@ -1,9 +1,6 @@
 using BenchmarkDotNet.Attributes;
 using Conjecture.Core;
-using Conjecture.Core.Formatting;
-using Conjecture.Core.Generation;
 using Conjecture.Core.Internal;
-using Conjecture.Core.Internal.Database;
 
 namespace Conjecture.Benchmarks;
 
@@ -24,31 +21,31 @@ public class Phase1GenerationBenchmarks
     public void Setup()
     {
         rng = new SplittableRandom(42UL);
-        doubles = Gen.Doubles();
-        floats = Gen.Floats();
-        strings = Gen.Strings();
-        lists = Gen.Lists(Gen.Integers<int>());
+        doubles = Generate.Doubles();
+        floats = Generate.Floats();
+        strings = Generate.Strings();
+        lists = Generate.Lists(Generate.Integers<int>());
     }
 
     [Benchmark]
     public double FloatingPointDoubleNext()
     {
         var data = ConjectureData.ForGeneration(rng.Split());
-        return doubles.Next(data);
+        return doubles.Generate(data);
     }
 
     [Benchmark]
     public float FloatingPointFloatNext()
     {
         var data = ConjectureData.ForGeneration(rng.Split());
-        return floats.Next(data);
+        return floats.Generate(data);
     }
 
     [Benchmark]
     public string StringNext()
     {
         var data = ConjectureData.ForGeneration(rng.Split());
-        return strings.Next(data);
+        return strings.Generate(data);
     }
 
     [Params(5, 20)]
@@ -57,9 +54,9 @@ public class Phase1GenerationBenchmarks
     [Benchmark]
     public List<int> ListNext()
     {
-        var bounded = Gen.Lists(Gen.Integers<int>(), minSize: ListSize, maxSize: ListSize);
+        var bounded = Generate.Lists(Generate.Integers<int>(), minSize: ListSize, maxSize: ListSize);
         var data = ConjectureData.ForGeneration(rng.Split());
-        return bounded.Next(data);
+        return bounded.Generate(data);
     }
 }
 

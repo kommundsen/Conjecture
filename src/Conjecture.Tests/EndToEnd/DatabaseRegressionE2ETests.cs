@@ -1,7 +1,5 @@
 using Conjecture.Core;
-using Conjecture.Core.Generation;
 using Conjecture.Core.Internal;
-using Conjecture.Core.Internal.Database;
 
 namespace Conjecture.Tests.EndToEnd;
 
@@ -126,14 +124,14 @@ public sealed class DatabaseRegressionE2ETests : IDisposable
     [Fact]
     public async Task FailureMessage_IncludesSeed_ForReproduction()
     {
-        Strategy<int> strategy = Gen.Integers<int>(0, 100);
+        Strategy<int> strategy = Generate.Integers<int>(0, 100);
         ConjectureSettings settings = new() { MaxExamples = 50, UseDatabase = true };
         string testId = "e2e-seed-in-message";
 
         using ExampleDatabase db = new(dbPath);
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            int x = strategy.Next(data);
+            int x = strategy.Generate(data);
             if (x > 5) { throw new Exception("too large"); }
         }, db, testId);
 
@@ -152,14 +150,14 @@ public sealed class DatabaseRegressionE2ETests : IDisposable
     [Fact]
     public async Task FailureMessage_SeedAllowsReproduction_ReplayProducesSameCounterexample()
     {
-        Strategy<int> strategy = Gen.Integers<int>(0, 100);
+        Strategy<int> strategy = Generate.Integers<int>(0, 100);
 
         // First run: no seed, find a failing example
         ConjectureSettings settings1 = new() { MaxExamples = 50, UseDatabase = false };
         using ExampleDatabase db = new(dbPath);
         TestRunResult first = await TestRunner.Run(settings1, data =>
         {
-            int x = strategy.Next(data);
+            int x = strategy.Generate(data);
             if (x > 5) { throw new Exception("too large"); }
         }, db, "e2e-seed-reproduce-1");
 
@@ -175,7 +173,7 @@ public sealed class DatabaseRegressionE2ETests : IDisposable
         };
         TestRunResult second = await TestRunner.Run(settings2, data =>
         {
-            int x = strategy.Next(data);
+            int x = strategy.Generate(data);
             if (x > 5) { throw new Exception("too large"); }
         }, db, "e2e-seed-reproduce-2");
 

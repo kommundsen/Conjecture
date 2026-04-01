@@ -1,16 +1,15 @@
 using BenchmarkDotNet.Attributes;
 using Conjecture.Core;
-using Conjecture.Core.Generation;
 using Conjecture.Core.Internal;
 
 namespace Conjecture.Benchmarks;
 
 /// <summary>
-/// Baseline throughput for ConjectureData draws and strategy generation.
+/// Baseline throughput for ConjectureData primitive generation and strategy generation.
 /// </summary>
 [MemoryDiagnoser]
 [SimpleJob]
-public class CoreDrawBenchmarks
+public class CoreGenerationBenchmarks
 {
     private SplittableRandom rng = null!;
     private Strategy<int> integers = null!;
@@ -20,49 +19,49 @@ public class CoreDrawBenchmarks
     public void Setup()
     {
         rng = new SplittableRandom(42UL);
-        integers = Gen.Integers<int>();
-        booleans = Gen.Booleans();
+        integers = Generate.Integers<int>();
+        booleans = Generate.Booleans();
     }
 
-    // --- ConjectureData raw draws ---
+    // --- ConjectureData raw generation ---
 
     [Benchmark]
-    public ulong DrawInteger()
+    public ulong NextInteger()
     {
         var data = ConjectureData.ForGeneration(rng.Split());
-        return data.DrawInteger(0, ulong.MaxValue);
+        return data.NextInteger(0, ulong.MaxValue);
     }
 
     [Benchmark]
-    public bool DrawBoolean()
+    public bool NextBoolean()
     {
         var data = ConjectureData.ForGeneration(rng.Split());
-        return data.DrawBoolean();
+        return data.NextBoolean();
     }
 
     [Params(8, 64)]
     public int ByteLength { get; set; }
 
     [Benchmark]
-    public byte[] DrawBytes()
+    public byte[] NextBytes()
     {
         var data = ConjectureData.ForGeneration(rng.Split());
-        return data.DrawBytes(ByteLength);
+        return data.NextBytes(ByteLength);
     }
 
     // --- Strategy<T> generation ---
 
     [Benchmark]
-    public int IntegerStrategyNext()
+    public int IntegerStrategyGenerate()
     {
         var data = ConjectureData.ForGeneration(rng.Split());
-        return integers.Next(data);
+        return integers.Generate(data);
     }
 
     [Benchmark]
-    public bool BooleanStrategyNext()
+    public bool BooleanStrategyGenerate()
     {
         var data = ConjectureData.ForGeneration(rng.Split());
-        return booleans.Next(data);
+        return booleans.Generate(data);
     }
 }

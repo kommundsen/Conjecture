@@ -1,5 +1,4 @@
 using System.Text;
-using Conjecture.Core.Formatting;
 
 namespace Conjecture.Core.Internal;
 

@@ -1,6 +1,5 @@
 using Conjecture.Core;
 using Conjecture.Core.Internal;
-using Conjecture.Core.Generation;
 
 namespace Conjecture.Tests.Strategies;
 
@@ -12,12 +11,12 @@ public class FloatingPointStrategyTests
     [Fact]
     public void Doubles_GeneratesFiniteAndNonFiniteValues_WithinDoubleRange()
     {
-        var strategy = Gen.Doubles();
+        var strategy = Generate.Doubles();
         var data = MakeData();
 
         for (var i = 0; i < 100; i++)
         {
-            var value = strategy.Next(data);
+            var value = strategy.Generate(data);
             Assert.True(!double.IsNaN(value) || double.IsNaN(value)); // any double bit pattern is valid
             Assert.True(value >= double.MinValue || double.IsNaN(value) || double.IsInfinity(value));
         }
@@ -26,14 +25,14 @@ public class FloatingPointStrategyTests
     [Fact]
     public void Doubles_IncludesPositiveAndNegativeValues()
     {
-        var strategy = Gen.Doubles();
+        var strategy = Generate.Doubles();
         var data = MakeData();
         var hasPositive = false;
         var hasNegative = false;
 
         for (var i = 0; i < 1000; i++)
         {
-            var value = strategy.Next(data);
+            var value = strategy.Generate(data);
             if (value > 0) { hasPositive = true; }
             if (value < 0) { hasNegative = true; }
             if (hasPositive && hasNegative) { break; }
@@ -46,13 +45,13 @@ public class FloatingPointStrategyTests
     [Fact]
     public void Doubles_DeterministicWithSeed()
     {
-        var strategy = Gen.Doubles();
+        var strategy = Generate.Doubles();
 
         var results1 = Enumerable.Range(0, 20)
-            .Select(_ => strategy.Next(MakeData(77UL)))
+            .Select(_ => strategy.Generate(MakeData(77UL)))
             .ToList();
         var results2 = Enumerable.Range(0, 20)
-            .Select(_ => strategy.Next(MakeData(77UL)))
+            .Select(_ => strategy.Generate(MakeData(77UL)))
             .ToList();
 
         Assert.Equal(results1, results2);
@@ -61,12 +60,12 @@ public class FloatingPointStrategyTests
     [Fact]
     public void Floats_GeneratesFloatValues()
     {
-        var strategy = Gen.Floats();
+        var strategy = Generate.Floats();
         var data = MakeData();
 
         for (var i = 0; i < 100; i++)
         {
-            var value = strategy.Next(data);
+            var value = strategy.Generate(data);
             Assert.IsType<float>(value);
         }
     }
@@ -74,14 +73,14 @@ public class FloatingPointStrategyTests
     [Fact]
     public void Floats_IncludesPositiveAndNegativeValues()
     {
-        var strategy = Gen.Floats();
+        var strategy = Generate.Floats();
         var data = MakeData();
         var hasPositive = false;
         var hasNegative = false;
 
         for (var i = 0; i < 1000; i++)
         {
-            var value = strategy.Next(data);
+            var value = strategy.Generate(data);
             if (value > 0) { hasPositive = true; }
             if (value < 0) { hasNegative = true; }
             if (hasPositive && hasNegative) { break; }
@@ -94,13 +93,13 @@ public class FloatingPointStrategyTests
     [Fact]
     public void Floats_DeterministicWithSeed()
     {
-        var strategy = Gen.Floats();
+        var strategy = Generate.Floats();
 
         var results1 = Enumerable.Range(0, 20)
-            .Select(_ => strategy.Next(MakeData(77UL)))
+            .Select(_ => strategy.Generate(MakeData(77UL)))
             .ToList();
         var results2 = Enumerable.Range(0, 20)
-            .Select(_ => strategy.Next(MakeData(77UL)))
+            .Select(_ => strategy.Generate(MakeData(77UL)))
             .ToList();
 
         Assert.Equal(results1, results2);
@@ -109,18 +108,18 @@ public class FloatingPointStrategyTests
     [Fact]
     public void Doubles_ProducesDistinctValues()
     {
-        var strategy = Gen.Doubles();
+        var strategy = Generate.Doubles();
         var data = MakeData();
-        var values = Enumerable.Range(0, 50).Select(_ => strategy.Next(data)).ToList();
+        var values = Enumerable.Range(0, 50).Select(_ => strategy.Generate(data)).ToList();
         Assert.True(values.Distinct().Count() > 1, "Expected multiple distinct doubles");
     }
 
     [Fact]
     public void Floats_ProducesDistinctValues()
     {
-        var strategy = Gen.Floats();
+        var strategy = Generate.Floats();
         var data = MakeData();
-        var values = Enumerable.Range(0, 50).Select(_ => strategy.Next(data)).ToList();
+        var values = Enumerable.Range(0, 50).Select(_ => strategy.Generate(data)).ToList();
         Assert.True(values.Distinct().Count() > 1, "Expected multiple distinct floats");
     }
 }

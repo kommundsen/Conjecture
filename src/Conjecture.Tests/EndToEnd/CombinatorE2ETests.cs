@@ -1,7 +1,6 @@
 using Conjecture.Core;
-using Conjecture.Core.Generation;
 using Conjecture.Core.Internal;
-using CoreStrategies = Conjecture.Core.Strategies;
+
 
 namespace Conjecture.Tests.EndToEnd;
 
@@ -18,30 +17,30 @@ public class CombinatorE2ETests
     {
         // Strategy maps x -> x*2. Property fails when x*2 > 10.
         // Minimal x*2 > 10 is 12 (x=6).
-        Strategy<int> strategy = Gen.Integers<int>(0, 50).Select(x => x * 2);
+        Strategy<int> strategy = Generate.Integers<int>(0, 50).Select(x => x * 2);
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 1UL };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            int v = strategy.Next(data);
+            int v = strategy.Generate(data);
             if (v > 10) { throw new Exception("fail"); }
         });
 
         Assert.False(result.Passed);
         ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
-        int shrunk = strategy.Next(replay);
+        int shrunk = strategy.Generate(replay);
         Assert.Equal(12, shrunk);
     }
 
     [Fact]
     public async Task Select_PassingProperty_NoCounterexample()
     {
-        Strategy<int> strategy = Gen.Integers<int>(0, 5).Select(x => x * 2); // max = 10, never > 20
+        Strategy<int> strategy = Generate.Integers<int>(0, 5).Select(x => x * 2); // max = 10, never > 20
         ConjectureSettings settings = new() { MaxExamples = 50, Seed = 1UL };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            int v = strategy.Next(data);
+            int v = strategy.Generate(data);
             if (v > 20) { throw new Exception("impossible"); }
         });
 
@@ -56,18 +55,18 @@ public class CombinatorE2ETests
     {
         // Only values > 0 are admitted. Property fails when value > 5.
         // Minimal counterexample must be 6 (smallest positive int > 5).
-        Strategy<int> strategy = Gen.Integers<int>(0, 50).Where(x => x > 0);
+        Strategy<int> strategy = Generate.Integers<int>(0, 50).Where(x => x > 0);
         ConjectureSettings settings = new() { MaxExamples = 200, Seed = 2UL };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            int v = strategy.Next(data);
+            int v = strategy.Generate(data);
             if (v > 5) { throw new Exception("fail"); }
         });
 
         Assert.False(result.Passed);
         ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
-        int shrunk = strategy.Next(replay);
+        int shrunk = strategy.Generate(replay);
         Assert.Equal(6, shrunk);
     }
 
@@ -76,12 +75,12 @@ public class CombinatorE2ETests
     {
         // All values produced by the strategy satisfy x % 2 == 0.
         // If property also checks this, it always passes.
-        Strategy<int> strategy = Gen.Integers<int>(0, 20).Where(x => x % 2 == 0);
+        Strategy<int> strategy = Generate.Integers<int>(0, 20).Where(x => x % 2 == 0);
         ConjectureSettings settings = new() { MaxExamples = 50, Seed = 3UL };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            int v = strategy.Next(data);
+            int v = strategy.Generate(data);
             if (v % 2 != 0) { throw new Exception("odd value slipped through"); }
         });
 
@@ -96,20 +95,20 @@ public class CombinatorE2ETests
         // Generates (x, y) where y in [0, x]. Property fails when x > 5.
         // Shrinks to x=6, y=0 (minimal outer; inner collapses to 0).
         Strategy<(int, int)> strategy =
-            from x in Gen.Integers<int>(0, 20)
-            from y in Gen.Integers<int>(0, x)
+            from x in Generate.Integers<int>(0, 20)
+            from y in Generate.Integers<int>(0, x)
             select (x, y);
         ConjectureSettings settings = new() { MaxExamples = 200, Seed = 5UL };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            (int x, int _) = strategy.Next(data);
+            (int x, int _) = strategy.Generate(data);
             if (x > 5) { throw new Exception("fail"); }
         });
 
         Assert.False(result.Passed);
         ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
-        (int sx, int sy) = strategy.Next(replay);
+        (int sx, int sy) = strategy.Generate(replay);
         Assert.Equal(6, sx);
         Assert.InRange(sy, 0, sx); // y is still valid relative to x
     }
@@ -121,23 +120,23 @@ public class CombinatorE2ETests
     {
         // Generates (x, y) where y in [0, x]. Property fails when x + y > 10.
         // Minimal sum > 10 is 11; shrinker finds minimal (x, y) pair.
-        Strategy<(int, int)> strategy = CoreStrategies.Compose(gen =>
+        Strategy<(int, int)> strategy = Generate.Compose(gen =>
         {
-            int x = gen.Next(Gen.Integers<int>(0, 100));
-            int y = gen.Next(Gen.Integers<int>(0, x));
+            int x = gen.Generate(Generate.Integers<int>(0, 100));
+            int y = gen.Generate(Generate.Integers<int>(0, x));
             return (x, y);
         });
         ConjectureSettings settings = new() { MaxExamples = 200, Seed = 7UL };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            (int x, int y) = strategy.Next(data);
+            (int x, int y) = strategy.Generate(data);
             if (x + y > 10) { throw new Exception("fail"); }
         });
 
         Assert.False(result.Passed);
         ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
-        (int sx, int sy) = strategy.Next(replay);
+        (int sx, int sy) = strategy.Generate(replay);
         Assert.Equal(11, sx + sy);
     }
 
@@ -146,10 +145,10 @@ public class CombinatorE2ETests
     {
         // Only considers (x, y) where x > y. Property fails when x > 5.
         // Minimal x > y && x > 5 is x=6, y=0.
-        Strategy<(int, int)> strategy = CoreStrategies.Compose(gen =>
+        Strategy<(int, int)> strategy = Generate.Compose(gen =>
         {
-            int x = gen.Next(Gen.Integers<int>(0, 20));
-            int y = gen.Next(Gen.Integers<int>(0, 20));
+            int x = gen.Generate(Generate.Integers<int>(0, 20));
+            int y = gen.Generate(Generate.Integers<int>(0, 20));
             gen.Assume(x > y);
             return (x, y);
         });
@@ -157,13 +156,13 @@ public class CombinatorE2ETests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            (int x, int _) = strategy.Next(data);
+            (int x, int _) = strategy.Generate(data);
             if (x > 5) { throw new Exception("fail"); }
         });
 
         Assert.False(result.Passed);
         ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
-        (int sx, int sy) = strategy.Next(replay);
+        (int sx, int sy) = strategy.Generate(replay);
         Assert.True(sx > sy, $"Constraint x > y violated in shrunk result: x={sx}, y={sy}");
         Assert.Equal(6, sx);
     }

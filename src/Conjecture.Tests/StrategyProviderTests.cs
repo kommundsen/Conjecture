@@ -1,5 +1,4 @@
 using Conjecture.Core;
-using Conjecture.Core.Generation;
 using Conjecture.Core.Internal;
 
 namespace Conjecture.Tests;
@@ -11,12 +10,12 @@ public class StrategyProviderTests
 
     private sealed class PositiveIntsProvider : IStrategyProvider<int>
     {
-        public Strategy<int> Create() => Gen.Integers<int>(1, int.MaxValue);
+        public Strategy<int> Create() => Generate.Integers<int>(1, int.MaxValue);
     }
 
     private sealed class EvenIntsProvider : IStrategyProvider<int>
     {
-        public Strategy<int> Create() => Gen.Integers<int>(0, 50).Where(n => n % 2 == 0);
+        public Strategy<int> Create() => Generate.Integers<int>(0, 50).Where(n => n % 2 == 0);
     }
 
     [Fact]
@@ -38,7 +37,7 @@ public class StrategyProviderTests
 
         for (int i = 0; i < 100; i++)
         {
-            int value = strategy.Next(data);
+            int value = strategy.Generate(data);
             Assert.True(value >= 1, $"Expected positive value, got {value}");
         }
     }
@@ -52,7 +51,7 @@ public class StrategyProviderTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            int value = strategy.Next(data);
+            int value = strategy.Generate(data);
             if (value <= 0)
             {
                 throw new InvalidOperationException($"Expected positive, got {value}");
@@ -71,7 +70,7 @@ public class StrategyProviderTests
 
         for (int i = 0; i < 50; i++)
         {
-            int value = strategy.Next(data);
+            int value = strategy.Generate(data);
             Assert.Equal(0, value % 2);
         }
     }

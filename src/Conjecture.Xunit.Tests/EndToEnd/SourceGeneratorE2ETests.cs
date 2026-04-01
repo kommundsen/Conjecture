@@ -57,18 +57,18 @@ public class SourceGeneratorE2ETests
     {
         // Use SourceCoord (byte fields, range [0,255]) so RedistributionPass stays
         // O(max 255 iterations) rather than O(2 billion) for full int range.
-        Core.Generation.Strategy<SourceCoord> strategy = new SourceCoordArbitrary().Create();
+        Core.Strategy<SourceCoord> strategy = new SourceCoordArbitrary().Create();
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 1UL, UseDatabase = false };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            SourceCoord c = strategy.Next(data);
+            SourceCoord c = strategy.Generate(data);
             if (c.X > 5) { throw new Exception("X too large"); }
         });
 
         Assert.False(result.Passed);
         Assert.NotNull(result.Counterexample);
-        SourceCoord shrunk = strategy.Next(ConjectureData.ForRecord(result.Counterexample!));
+        SourceCoord shrunk = strategy.Generate(ConjectureData.ForRecord(result.Counterexample!));
         Assert.True(shrunk.X > 5, $"Shrunk {shrunk} does not trigger the failure condition");
     }
 

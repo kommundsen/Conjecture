@@ -1,5 +1,4 @@
 using Conjecture.Core;
-using Conjecture.Core.Generation;
 using Conjecture.Core.Internal;
 
 namespace Conjecture.Tests.Strategies;
@@ -13,18 +12,18 @@ public class StringShrinkingTests
     {
         // Property fails when string length >= 3.
         // Shrunk string must have length exactly 3 (shortest failing string).
-        Strategy<string> strategy = Gen.Strings(minLength: 0, maxLength: 20);
+        Strategy<string> strategy = Generate.Strings(minLength: 0, maxLength: 20);
         ConjectureSettings settings = new() { MaxExamples = 200, Seed = 1UL };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            string s = strategy.Next(data);
+            string s = strategy.Generate(data);
             if (s.Length >= 3) { throw new Exception("too long"); }
         });
 
         Assert.False(result.Passed);
         ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
-        string shrunk = strategy.Next(replay);
+        string shrunk = strategy.Generate(replay);
         Assert.Equal(3, shrunk.Length);
     }
 
@@ -34,18 +33,18 @@ public class StringShrinkingTests
         // Property fails for any non-empty string.
         // Minimum failing example is the empty string — length 0 doesn't fail,
         // so minimum is length 1. This verifies the shrinker reduces length as far as possible.
-        Strategy<string> strategy = Gen.Strings(minLength: 0, maxLength: 10);
+        Strategy<string> strategy = Generate.Strings(minLength: 0, maxLength: 10);
         ConjectureSettings settings = new() { MaxExamples = 200, Seed = 2UL };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            string s = strategy.Next(data);
+            string s = strategy.Generate(data);
             if (s.Length > 0) { throw new Exception("non-empty"); }
         });
 
         Assert.False(result.Passed);
         ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
-        string shrunk = strategy.Next(replay);
+        string shrunk = strategy.Generate(replay);
         Assert.Equal(1, shrunk.Length);
     }
 
@@ -59,18 +58,18 @@ public class StringShrinkingTests
         // the character code toward the minimum (first char in alphabet = 'a'),
         // but 'a' does not make the property fail any differently — so the shrunk
         // string should be a single character that is as early in the alphabet as possible.
-        Strategy<string> strategy = Gen.Strings(alphabet: "abcdefghijklmnopqrstuvwxyz", minLength: 0, maxLength: 10);
+        Strategy<string> strategy = Generate.Strings(alphabet: "abcdefghijklmnopqrstuvwxyz", minLength: 0, maxLength: 10);
         ConjectureSettings settings = new() { MaxExamples = 200, Seed = 3UL };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            string s = strategy.Next(data);
+            string s = strategy.Generate(data);
             if (s.Length >= 1) { throw new Exception("non-empty"); }
         });
 
         Assert.False(result.Passed);
         ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
-        string shrunk = strategy.Next(replay);
+        string shrunk = strategy.Generate(replay);
         Assert.Equal(1, shrunk.Length);
         Assert.Equal('a', shrunk[0]);
     }
@@ -80,18 +79,18 @@ public class StringShrinkingTests
     {
         // Property fails when string contains a char >= 'e'.
         // Shrunk string should be exactly "e" (length 1, earliest failing char).
-        Strategy<string> strategy = Gen.Strings(alphabet: "abcdefghijklmnopqrstuvwxyz", minLength: 0, maxLength: 20);
+        Strategy<string> strategy = Generate.Strings(alphabet: "abcdefghijklmnopqrstuvwxyz", minLength: 0, maxLength: 20);
         ConjectureSettings settings = new() { MaxExamples = 500, Seed = 5UL };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            string s = strategy.Next(data);
+            string s = strategy.Generate(data);
             if (s.Any(c => c >= 'e')) { throw new Exception("char too late"); }
         });
 
         Assert.False(result.Passed);
         ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
-        string shrunk = strategy.Next(replay);
+        string shrunk = strategy.Generate(replay);
         Assert.Equal(1, shrunk.Length);
         Assert.Equal('e', shrunk[0]);
     }
@@ -103,13 +102,13 @@ public class StringShrinkingTests
     {
         // Whatever the shrinker produces, replaying the counterexample must still
         // trigger the original exception.
-        Strategy<string> strategy = Gen.Strings(minLength: 0, maxLength: 15);
+        Strategy<string> strategy = Generate.Strings(minLength: 0, maxLength: 15);
         ConjectureSettings settings = new() { MaxExamples = 200, Seed = 7UL };
         Exception? captured = null;
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            string s = strategy.Next(data);
+            string s = strategy.Generate(data);
             if (s.Length >= 4) { throw new InvalidOperationException($"too long: '{s}'"); }
         });
 
@@ -117,7 +116,7 @@ public class StringShrinkingTests
         ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
         try
         {
-            string shrunk = strategy.Next(replay);
+            string shrunk = strategy.Generate(replay);
             if (shrunk.Length >= 4) { throw new InvalidOperationException($"too long: '{shrunk}'"); }
         }
         catch (Exception ex)

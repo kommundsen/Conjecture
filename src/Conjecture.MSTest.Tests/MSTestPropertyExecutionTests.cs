@@ -1,6 +1,5 @@
 using System.Reflection;
 using Conjecture.Core;
-using Conjecture.Core.Generation;
 using Conjecture.Core.Internal;
 using Conjecture.MSTest;
 using Conjecture.MSTest.Internal;
@@ -10,7 +9,7 @@ namespace Conjecture.MSTest.Tests;
 
 file sealed class PositiveInts : IStrategyProvider<int>
 {
-    public Strategy<int> Create() => Gen.Integers(1, int.MaxValue);
+    public Strategy<int> Create() => Generate.Integers(1, int.MaxValue);
 }
 
 /// <summary>
@@ -109,13 +108,13 @@ public class MSTestPropertyExecutionTests
 
         TestRunResult run1 = await TestRunner.Run(settings, data =>
         {
-            ulong v = data.DrawInteger(0, 100);
+            ulong v = data.NextInteger(0, 100);
             if (v > 70) { throw new Exception("fail"); }
         });
 
         TestRunResult run2 = await TestRunner.Run(settings, data =>
         {
-            ulong v = data.DrawInteger(0, 100);
+            ulong v = data.NextInteger(0, 100);
             if (v > 70) { throw new Exception("fail"); }
         });
 
@@ -153,7 +152,7 @@ public class MSTestPropertyExecutionTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            int x = Gen.Integers<int>().Next(data);
+            int x = Generate.Integers<int>().Generate(data);
             if (x > 5) { throw new Exception("fail"); }
         });
 
@@ -170,7 +169,7 @@ public class MSTestPropertyExecutionTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            int x = Gen.Integers<int>().Next(data);
+            int x = Generate.Integers<int>().Generate(data);
             if (x > 5) { throw new Exception("fail"); }
         });
 
@@ -189,8 +188,8 @@ public class MSTestPropertyExecutionTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            _ = Gen.Integers<int>().Next(data);
-            _ = Gen.Booleans().Next(data);
+            _ = Generate.Integers<int>().Generate(data);
+            _ = Generate.Booleans().Generate(data);
             throw new Exception("always fail");
         });
 

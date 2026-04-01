@@ -2,7 +2,6 @@ using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
-using Conjecture.Core.Generation;
 
 namespace Conjecture.Core.Internal;
 
@@ -10,9 +9,9 @@ internal static class SharedParameterStrategyResolver
 {
     private static readonly Type OpenFromAttribute = typeof(FromAttribute<>).GetGenericTypeDefinition();
     private static readonly Type OpenStrategyProvider = typeof(IStrategyProvider<>);
-    private static readonly MethodInfo DrawFromProviderOpenMethod =
+    private static readonly MethodInfo GenerateFromProviderOpenMethod =
         typeof(SharedParameterStrategyResolver)
-            .GetMethod(nameof(DrawFromProvider), BindingFlags.NonPublic | BindingFlags.Static)!;
+            .GetMethod(nameof(GenerateFromProvider), BindingFlags.NonPublic | BindingFlags.Static)!;
     private static readonly ConcurrentDictionary<Type, MethodInfo?> ArbitraryProviderCache = new();
 
     [RequiresUnreferencedCode("Accesses parameter type metadata via reflection; not trim-safe.")]
@@ -22,17 +21,17 @@ internal static class SharedParameterStrategyResolver
         object[] args = new object[parameters.Length];
         for (int i = 0; i < parameters.Length; i++)
         {
-            args[i] = TryDrawFromAttribute(parameters[i], data)
-                ?? TryDrawFromFactory(parameters[i], data)
-                ?? TryDrawFromArbitraryProvider(parameters[i], data)
-                ?? DrawValue(parameters[i].ParameterType, data);
+            args[i] = TryGenerateFromAttribute(parameters[i], data)
+                ?? TryGenerateFromFactory(parameters[i], data)
+                ?? TryGenerateFromArbitraryProvider(parameters[i], data)
+                ?? GenerateValue(parameters[i].ParameterType, data);
         }
         return args;
     }
 
     [RequiresUnreferencedCode("Accesses provider type interfaces via reflection.")]
-    [RequiresDynamicCode("Calls MakeGenericMethod to construct typed draw helper.")]
-    private static object? TryDrawFromAttribute(ParameterInfo parameter, ConjectureData data)
+    [RequiresDynamicCode("Calls MakeGenericMethod to construct typed generate helper.")]
+    private static object? TryGenerateFromAttribute(ParameterInfo parameter, ConjectureData data)
     {
         foreach (Attribute attr in parameter.GetCustomAttributes())
         {
@@ -60,7 +59,7 @@ internal static class SharedParameterStrategyResolver
                     $"but parameter '{parameter.Name}' has type '{parameter.ParameterType.Name}'.");
             }
 
-            MethodInfo drawMethod = DrawFromProviderOpenMethod.MakeGenericMethod(providerType, strategyValueType);
+            MethodInfo drawMethod = GenerateFromProviderOpenMethod.MakeGenericMethod(providerType, strategyValueType);
             return drawMethod.Invoke(null, [data])!;
         }
 
@@ -68,8 +67,8 @@ internal static class SharedParameterStrategyResolver
     }
 
     [RequiresUnreferencedCode("Accesses declaring type methods via reflection.")]
-    [RequiresDynamicCode("Calls MakeGenericMethod to construct typed draw helper.")]
-    private static object? TryDrawFromFactory(ParameterInfo parameter, ConjectureData data)
+    [RequiresDynamicCode("Calls MakeGenericMethod to construct typed generate helper.")]
+    private static object? TryGenerateFromFactory(ParameterInfo parameter, ConjectureData data)
     {
         FromFactoryAttribute? attr = parameter.GetCustomAttribute<FromFactoryAttribute>();
         if (attr is null)
@@ -106,18 +105,18 @@ internal static class SharedParameterStrategyResolver
         }
 
         MethodInfo drawMethod = typeof(SharedParameterStrategyResolver)
-            .GetMethod(nameof(DrawFromFactory), BindingFlags.NonPublic | BindingFlags.Static)!
+            .GetMethod(nameof(GenerateFromFactory), BindingFlags.NonPublic | BindingFlags.Static)!
             .MakeGenericMethod(parameter.ParameterType);
 
         return drawMethod.Invoke(null, [method, data])!;
     }
 
     [RequiresUnreferencedCode("Scans loaded assemblies for provider types by name; not trim-safe.")]
-    [RequiresDynamicCode("Calls MakeGenericMethod to construct typed draw helper.")]
-    private static object? TryDrawFromArbitraryProvider(ParameterInfo parameter, ConjectureData data)
+    [RequiresDynamicCode("Calls MakeGenericMethod to construct typed generate helper.")]
+    private static object? TryGenerateFromArbitraryProvider(ParameterInfo parameter, ConjectureData data)
     {
         Type paramType = parameter.ParameterType;
-        MethodInfo? drawMethod = ArbitraryProviderCache.GetOrAdd(paramType, FindArbitraryDrawMethod);
+        MethodInfo? drawMethod = ArbitraryProviderCache.GetOrAdd(paramType, FindArbitraryGenerateMethod);
         if (drawMethod is null)
         {
             return null;
@@ -135,47 +134,47 @@ internal static class SharedParameterStrategyResolver
     }
 
     [RequiresUnreferencedCode("Scans loaded assemblies for provider types by name; not trim-safe.")]
-    [RequiresDynamicCode("Calls MakeGenericMethod to construct typed draw helper.")]
-    private static MethodInfo? FindArbitraryDrawMethod(Type paramType) =>
-        ArbitraryProviderScanner.FindDrawMethod(paramType, DrawFromProviderOpenMethod);
+    [RequiresDynamicCode("Calls MakeGenericMethod to construct typed generate helper.")]
+    private static MethodInfo? FindArbitraryGenerateMethod(Type paramType) =>
+        ArbitraryProviderScanner.FindGenerateMethod(paramType, GenerateFromProviderOpenMethod);
 
-    private static object DrawFromFactory<T>(MethodInfo factory, ConjectureData data)
+    private static object GenerateFromFactory<T>(MethodInfo factory, ConjectureData data)
     {
         Strategy<T> strategy = (Strategy<T>)factory.Invoke(null, [])!;
-        return strategy.Next(data)!;
+        return strategy.Generate(data)!;
     }
 
-    private static object DrawFromProvider<TProvider, T>(ConjectureData data)
+    private static object GenerateFromProvider<TProvider, T>(ConjectureData data)
         where TProvider : IStrategyProvider<T>, new()
     {
         TProvider provider = new();
         Strategy<T> strategy = provider.Create();
-        return strategy.Next(data)!;
+        return strategy.Generate(data)!;
     }
 
-    private static object DrawValue(Type type, ConjectureData data)
+    private static object GenerateValue(Type type, ConjectureData data)
     {
         return type switch
         {
-            _ when type == typeof(int)       => Gen.Integers<int>().Next(data),
-            _ when type == typeof(long)      => Gen.Integers<long>().Next(data),
-            _ when type == typeof(byte)      => Gen.Integers<byte>().Next(data),
-            _ when type == typeof(bool)      => Gen.Booleans().Next(data),
-            _ when type == typeof(string)    => Gen.Strings().Next(data),
-            _ when type == typeof(float)     => Gen.Floats().Next(data),
-            _ when type == typeof(double)    => Gen.Doubles().Next(data),
-            _ when type == typeof(List<int>) => Gen.Lists(Gen.Integers<int>()).Next(data),
-            { IsEnum: true }                 => DrawEnum(type, data),
+            _ when type == typeof(int)       => Generate.Integers<int>().Generate(data),
+            _ when type == typeof(long)      => Generate.Integers<long>().Generate(data),
+            _ when type == typeof(byte)      => Generate.Integers<byte>().Generate(data),
+            _ when type == typeof(bool)      => Generate.Booleans().Generate(data),
+            _ when type == typeof(string)    => Generate.Strings().Generate(data),
+            _ when type == typeof(float)     => Generate.Floats().Generate(data),
+            _ when type == typeof(double)    => Generate.Doubles().Generate(data),
+            _ when type == typeof(List<int>) => Generate.Lists(Generate.Integers<int>()).Generate(data),
+            { IsEnum: true }                 => GenerateEnum(type, data),
             _ when Nullable.GetUnderlyingType(type) is { } u
-                                             => data.DrawInteger(0, 9) == 0 ? null! : DrawValue(u, data),
+                                             => data.NextInteger(0, 9) == 0 ? null! : GenerateValue(u, data),
             _                                => throw new NotSupportedException($"No strategy registered for parameter type '{type.FullName}'.")
         };
     }
 
-    private static object DrawEnum(Type type, ConjectureData data)
+    private static object GenerateEnum(Type type, ConjectureData data)
     {
         Array values = Enum.GetValues(type);
-        int idx = (int)data.DrawInteger(0, (ulong)(values.Length - 1));
+        int idx = (int)data.NextInteger(0, (ulong)(values.Length - 1));
         return values.GetValue(idx)!;
     }
 }

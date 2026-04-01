@@ -1,6 +1,5 @@
 using Conjecture.Core;
 using Conjecture.Core.Internal;
-using Conjecture.Core.Generation;
 
 namespace Conjecture.Tests.Strategies;
 
@@ -12,22 +11,22 @@ public class WhereStrategyTests
     [Fact]
     public void Where_FiltersOutput()
     {
-        var strategy = Gen.Integers<int>(0, 10).Where(x => x % 2 == 0);
+        var strategy = Generate.Integers<int>(0, 10).Where(x => x % 2 == 0);
         var data = MakeData();
         for (var i = 0; i < 50; i++)
         {
-            Assert.True(strategy.Next(data) % 2 == 0, "Where() returned a value that didn't satisfy the predicate");
+            Assert.True(strategy.Generate(data) % 2 == 0, "Where() returned a value that didn't satisfy the predicate");
         }
     }
 
     [Fact]
     public void Where_AllowsValuesMatchingPredicate()
     {
-        var strategy = Gen.Booleans().Where(x => x);
+        var strategy = Generate.Booleans().Where(x => x);
         var data = MakeData();
         for (var i = 0; i < 20; i++)
         {
-            Assert.True(strategy.Next(data));
+            Assert.True(strategy.Generate(data));
         }
     }
 
@@ -35,8 +34,8 @@ public class WhereStrategyTests
     public void Where_ExhaustedBudget_MarksInvalid()
     {
         var data = MakeData();
-        var strategy = Gen.Integers<int>(0, 10).Where(_ => false);
-        Assert.ThrowsAny<Exception>((Action)(() => strategy.Next(data)));
+        var strategy = Generate.Integers<int>(0, 10).Where(_ => false);
+        Assert.ThrowsAny<Exception>((Action)(() => strategy.Generate(data)));
         Assert.Equal(Status.Invalid, data.Status);
     }
 }

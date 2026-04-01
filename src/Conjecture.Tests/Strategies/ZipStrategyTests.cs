@@ -1,6 +1,5 @@
 using Conjecture.Core;
 using Conjecture.Core.Internal;
-using Conjecture.Core.Generation;
 
 namespace Conjecture.Tests.Strategies;
 
@@ -12,11 +11,11 @@ public class ZipStrategyTests
     [Fact]
     public void Zip_ProducesTuple()
     {
-        var strategy = Gen.Integers<int>(1, 5).Zip(Gen.Booleans());
+        var strategy = Generate.Integers<int>(1, 5).Zip(Generate.Booleans());
         var data = MakeData();
         for (var i = 0; i < 50; i++)
         {
-            var (n, b) = strategy.Next(data);
+            var (n, b) = strategy.Generate(data);
             Assert.InRange(n, 1, 5);
             Assert.IsType<bool>(b);
         }
@@ -25,11 +24,11 @@ public class ZipStrategyTests
     [Fact]
     public void Zip_WithResultSelector()
     {
-        var strategy = Gen.Integers<int>(1, 10).Zip(Gen.Integers<int>(1, 10), (a, b) => a + b);
+        var strategy = Generate.Integers<int>(1, 10).Zip(Generate.Integers<int>(1, 10), (a, b) => a + b);
         var data = MakeData();
         for (var i = 0; i < 100; i++)
         {
-            Assert.InRange(strategy.Next(data), 2, 20);
+            Assert.InRange(strategy.Generate(data), 2, 20);
         }
     }
 
@@ -37,16 +36,16 @@ public class ZipStrategyTests
     public void Zip_DrawsBothStrategies()
     {
         var data = MakeData();
-        Gen.Integers<int>(1, 5).Zip(Gen.Booleans()).Next(data);
+        Generate.Integers<int>(1, 5).Zip(Generate.Booleans()).Generate(data);
         Assert.Equal(2, data.IRNodes.Count);
     }
 
     [Fact]
     public void Zip_IndependentStrategies()
     {
-        var strategy = Gen.Integers<int>(0, 99).Zip(Gen.Integers<int>(0, 99));
+        var strategy = Generate.Integers<int>(0, 99).Zip(Generate.Integers<int>(0, 99));
         var data = MakeData();
-        var (a, b) = strategy.Next(data);
+        var (a, b) = strategy.Generate(data);
         // Both sides are drawn independently so they can differ
         // (with high probability over 99x99 space, a != b for most seeds)
         // We verify both are valid rather than asserting inequality (avoids rare flakiness)

@@ -1,4 +1,4 @@
-using Conjecture.Core.Internal.Database;
+using Conjecture.Core.Internal;
 
 namespace Conjecture.Tests.Internal.Database;
 

@@ -13,7 +13,7 @@ public class TestRunnerShrinkingTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            ulong v = data.DrawInteger(0, 1000);
+            ulong v = data.NextInteger(0, 1000);
             if (v > 5) { throw new Exception("too big"); }
         });
 
@@ -29,7 +29,7 @@ public class TestRunnerShrinkingTests
         // Passing run — no shrinking should occur, no counterexample stored.
         ConjectureSettings settings = new() { MaxExamples = 20, Seed = 1UL };
 
-        TestRunResult result = await TestRunner.Run(settings, data => data.DrawInteger(0, 100));
+        TestRunResult result = await TestRunner.Run(settings, data => data.NextInteger(0, 100));
 
         Assert.True(result.Passed);
         Assert.Null(result.Counterexample);
@@ -44,7 +44,7 @@ public class TestRunnerShrinkingTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            ulong v = data.DrawInteger(0, 500);
+            ulong v = data.NextInteger(0, 500);
             if (v > 3) { throw new InvalidOperationException($"fail at {v}"); }
         });
 
@@ -55,7 +55,7 @@ public class TestRunnerShrinkingTests
         ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
         try
         {
-            ulong v = replay.DrawInteger(0, 500);
+            ulong v = replay.NextInteger(0, 500);
             if (v > 3) { throw new InvalidOperationException($"fail at {v}"); }
         }
         catch (Exception ex)
@@ -74,8 +74,8 @@ public class TestRunnerShrinkingTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            ulong a = data.DrawInteger(0, 200);
-            ulong b = data.DrawInteger(0, 200);
+            ulong a = data.NextInteger(0, 200);
+            ulong b = data.NextInteger(0, 200);
             if (a + b > 10) { throw new Exception("sum too big"); }
         });
 

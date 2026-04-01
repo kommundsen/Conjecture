@@ -1,8 +1,6 @@
 using System.Reflection;
 using Conjecture.Core;
-using Conjecture.Core.Generation;
 using Conjecture.Core.Internal;
-using Conjecture.Core.Internal.Database;
 using Conjecture.MSTest.Internal;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -10,7 +8,7 @@ namespace Conjecture.MSTest.Tests.EndToEnd;
 
 file sealed class BoundedPositiveInts : IStrategyProvider<int>
 {
-    public Strategy<int> Create() => Gen.Integers<int>(1, 100);
+    public Strategy<int> Create() => Generate.Integers<int>(1, 100);
 }
 
 /// <summary>
@@ -40,7 +38,7 @@ public sealed class MSTestAdapterE2ETests
     // ── Helpers for resolver-based tests ────────────────────────────────────────
 
     private static Strategy<int> EvenPositiveInts() =>
-        Gen.Integers<int>(1, 50).Where(n => n % 2 == 0);
+        Generate.Integers<int>(1, 50).Where(n => n % 2 == 0);
 
 #pragma warning disable IDE0060
     private static void IntMethod(int x) { }
@@ -180,7 +178,7 @@ public sealed class MSTestAdapterE2ETests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            int v = strategy.Next(data);
+            int v = strategy.Generate(data);
             if (v < 1 || v > 100) { throw new Exception($"Out of range: {v}"); }
         });
 
@@ -196,13 +194,13 @@ public sealed class MSTestAdapterE2ETests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            int v = strategy.Next(data);
+            int v = strategy.Generate(data);
             if (v > 5) { throw new Exception("too large"); }
         });
 
         Assert.IsFalse(result.Passed);
         ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
-        Assert.AreEqual(6, strategy.Next(replay));
+        Assert.AreEqual(6, strategy.Generate(replay));
     }
 
     // ── [FromFactory] ────────────────────────────────────────────────────────────
@@ -249,7 +247,7 @@ public sealed class MSTestAdapterE2ETests
         TestRunResult result = await TestRunner.RunAsync(settings, async data =>
         {
             await Task.Yield();
-            _ = Gen.Integers<int>().Next(data);
+            _ = Generate.Integers<int>().Generate(data);
             count++;
         });
 
@@ -330,13 +328,13 @@ public sealed class MSTestAdapterE2ETests
 
         TestRunResult run1 = await TestRunner.Run(settings, data =>
         {
-            ulong v = data.DrawInteger(0, 100);
+            ulong v = data.NextInteger(0, 100);
             if (v > 70) { throw new Exception("fail"); }
         });
 
         TestRunResult run2 = await TestRunner.Run(settings, data =>
         {
-            ulong v = data.DrawInteger(0, 100);
+            ulong v = data.NextInteger(0, 100);
             if (v > 70) { throw new Exception("fail"); }
         });
 

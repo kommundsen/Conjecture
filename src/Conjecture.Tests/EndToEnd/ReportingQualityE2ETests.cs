@@ -1,5 +1,4 @@
 using Conjecture.Core;
-using Conjecture.Core.Generation;
 using Conjecture.Core.Internal;
 
 namespace Conjecture.Tests.EndToEnd;
@@ -16,12 +15,12 @@ public class ReportingQualityE2ETests
     [Fact]
     public async Task FailingProperty_WithShrinks_MessageContainsBothFalsifyingAndMinimalSections()
     {
-        Strategy<int> strategy = Gen.Integers<int>(0, 1000);
+        Strategy<int> strategy = Generate.Integers<int>(0, 1000);
         ConjectureSettings settings = new() { MaxExamples = 200, Seed = 1UL, UseDatabase = false };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            int x = strategy.Next(data);
+            int x = strategy.Generate(data);
             if (x > 5) { throw new Exception("too large"); }
         });
 
@@ -30,10 +29,10 @@ public class ReportingQualityE2ETests
         Assert.NotNull(result.OriginalCounterexample);
 
         ConjectureData shrunkReplay = ConjectureData.ForRecord(result.Counterexample!);
-        int shrunkValue = strategy.Next(shrunkReplay);
+        int shrunkValue = strategy.Generate(shrunkReplay);
 
         ConjectureData originalReplay = ConjectureData.ForRecord(result.OriginalCounterexample!);
-        int originalValue = strategy.Next(originalReplay);
+        int originalValue = strategy.Generate(originalReplay);
 
         (string, object)[] originalParams = [("x", (object)originalValue)];
         (string, object)[] shrunkParams = [("x", (object)shrunkValue)];
@@ -57,7 +56,7 @@ public class ReportingQualityE2ETests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            ulong v = data.DrawInteger(42, 42);
+            ulong v = data.NextInteger(42, 42);
             if (v == 42) { throw new Exception("always fails"); }
         });
 
@@ -82,19 +81,19 @@ public class ReportingQualityE2ETests
     [Fact]
     public async Task FailingProperty_StringValue_AppearsInQuotesInMessage()
     {
-        Strategy<string> strategy = Gen.Strings(minLength: 3, maxLength: 5);
+        Strategy<string> strategy = Generate.Strings(minLength: 3, maxLength: 5);
         ConjectureSettings settings = new() { MaxExamples = 50, Seed = 10UL, UseDatabase = false };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            string s = strategy.Next(data);
+            string s = strategy.Generate(data);
             if (s.Length >= 3) { throw new Exception("too long"); }
         });
 
         Assert.False(result.Passed);
 
         ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
-        string shrunkValue = strategy.Next(replay);
+        string shrunkValue = strategy.Generate(replay);
 
         string message = CounterexampleFormatter.Format(
             [("s", (object)shrunkValue)],
@@ -110,19 +109,19 @@ public class ReportingQualityE2ETests
     [Fact]
     public async Task FailingProperty_ListValue_AppearsInBracketsInMessage()
     {
-        Strategy<List<int>> strategy = Gen.Lists(Gen.Integers<int>(0, 5), minSize: 2, maxSize: 4);
+        Strategy<List<int>> strategy = Generate.Lists(Generate.Integers<int>(0, 5), minSize: 2, maxSize: 4);
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 20UL, UseDatabase = false };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            List<int> xs = strategy.Next(data);
+            List<int> xs = strategy.Generate(data);
             if (xs.Count >= 2) { throw new Exception("too many"); }
         });
 
         Assert.False(result.Passed);
 
         ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
-        List<int> shrunkValue = strategy.Next(replay);
+        List<int> shrunkValue = strategy.Generate(replay);
 
         string message = CounterexampleFormatter.Format(
             [("xs", (object)shrunkValue)],
@@ -176,11 +175,11 @@ public class ReportingQualityE2ETests
     public async Task FailingProperty_SeedInMessage_ReproducesSameCounterexample()
     {
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 40UL, UseDatabase = false };
-        Strategy<int> strategy = Gen.Integers<int>(0, 1000);
+        Strategy<int> strategy = Generate.Integers<int>(0, 1000);
 
         TestRunResult result1 = await TestRunner.Run(settings, data =>
         {
-            int x = strategy.Next(data);
+            int x = strategy.Generate(data);
             if (x > 42) { throw new Exception("fail"); }
         });
 
@@ -199,7 +198,7 @@ public class ReportingQualityE2ETests
         ConjectureSettings reproSettings = new() { MaxExamples = 100, Seed = seed, UseDatabase = false };
         TestRunResult result2 = await TestRunner.Run(reproSettings, data =>
         {
-            int x = strategy.Next(data);
+            int x = strategy.Generate(data);
             if (x > 42) { throw new Exception("fail"); }
         });
 

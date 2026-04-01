@@ -7,13 +7,13 @@ internal static class StrategyEmitter
 {
     private static readonly Dictionary<string, (string GenExpr, string ShortName)> PrimitiveData = new()
     {
-        ["System.Int32"]  = ("global::Conjecture.Core.Gen.Integers<int>()",  "int"),
-        ["System.Int64"]  = ("global::Conjecture.Core.Gen.Integers<long>()", "long"),
-        ["System.Byte"]   = ("global::Conjecture.Core.Gen.Integers<byte>()", "byte"),
-        ["System.Boolean"] = ("global::Conjecture.Core.Gen.Booleans()",      "bool"),
-        ["System.String"]  = ("global::Conjecture.Core.Gen.Strings()",       "string"),
-        ["System.Double"]  = ("global::Conjecture.Core.Gen.Doubles()",       "double"),
-        ["System.Single"]  = ("global::Conjecture.Core.Gen.Floats()",        "float"),
+        ["System.Int32"]  = ("global::Conjecture.Core.Generate.Integers<int>()",  "int"),
+        ["System.Int64"]  = ("global::Conjecture.Core.Generate.Integers<long>()", "long"),
+        ["System.Byte"]   = ("global::Conjecture.Core.Generate.Integers<byte>()", "byte"),
+        ["System.Boolean"] = ("global::Conjecture.Core.Generate.Booleans()",      "bool"),
+        ["System.String"]  = ("global::Conjecture.Core.Generate.Strings()",       "string"),
+        ["System.Double"]  = ("global::Conjecture.Core.Generate.Doubles()",       "double"),
+        ["System.Single"]  = ("global::Conjecture.Core.Generate.Floats()",        "float"),
     };
 
     internal static string Emit(TypeModel model)
@@ -34,34 +34,34 @@ internal static class StrategyEmitter
 
         sb.AppendLine("internal sealed class " + className + " : global::Conjecture.Core.IStrategyProvider<" + fqn + ">");
         sb.AppendLine("{");
-        sb.AppendLine("    public global::Conjecture.Core.Generation.Strategy<" + fqn + "> Create() =>");
+        sb.AppendLine("    public global::Conjecture.Core.Strategy<" + fqn + "> Create() =>");
 
         if (model.Members.IsEmpty)
         {
-            sb.AppendLine("        global::Conjecture.Core.Strategies.Compose<" + fqn + ">(_ => new " + fqn + "());");
+            sb.AppendLine("        global::Conjecture.Core.Generate.Compose<" + fqn + ">(_ => new " + fqn + "());");
         }
         else if (model.ConstructionMode == ConstructionMode.ObjectInitializer)
         {
-            sb.AppendLine("        global::Conjecture.Core.Strategies.Compose<" + fqn + ">(ctx => new " + fqn + " {");
+            sb.AppendLine("        global::Conjecture.Core.Generate.Compose<" + fqn + ">(ctx => new " + fqn + " {");
 
             for (int i = 0; i < model.Members.Length; i++)
             {
                 MemberModel member = model.Members[i];
                 bool isLast = i == model.Members.Length - 1;
                 string suffix = isLast ? " });" : ",";
-                sb.AppendLine("            " + member.Name + " = ctx.Next(" + ResolveGenExpr(member) + ")" + suffix);
+                sb.AppendLine("            " + member.Name + " = ctx.Generate(" + ResolveGenExpr(member) + ")" + suffix);
             }
         }
         else
         {
-            sb.AppendLine("        global::Conjecture.Core.Strategies.Compose<" + fqn + ">(ctx => new " + fqn + "(");
+            sb.AppendLine("        global::Conjecture.Core.Generate.Compose<" + fqn + ">(ctx => new " + fqn + "(");
 
             for (int i = 0; i < model.Members.Length; i++)
             {
                 MemberModel member = model.Members[i];
                 bool isLast = i == model.Members.Length - 1;
                 string suffix = isLast ? "));" : ",";
-                sb.AppendLine("            ctx.Next(" + ResolveGenExpr(member) + ")" + suffix);
+                sb.AppendLine("            ctx.Generate(" + ResolveGenExpr(member) + ")" + suffix);
             }
         }
 
@@ -74,7 +74,7 @@ internal static class StrategyEmitter
         return member.Kind switch
         {
             MemberGenerationKind.Enum =>
-                "global::Conjecture.Core.Gen.Enums<global::" + member.TypeFullName + ">()",
+                "global::Conjecture.Core.Generate.Enums<global::" + member.TypeFullName + ">()",
             MemberGenerationKind.NullableValue =>
                 BuildWrappedExpr(member.InnerTypeFullName, "Nullable"),
             MemberGenerationKind.List =>
@@ -91,7 +91,7 @@ internal static class StrategyEmitter
     private static string BuildWrappedExpr(string innerFqn, string wrapper)
     {
         return PrimitiveData.TryGetValue(innerFqn, out (string GenExpr, string ShortName) data)
-            ? "global::Conjecture.Core.Gen." + wrapper + "<" + data.ShortName + ">(" + data.GenExpr + ")"
+            ? "global::Conjecture.Core.Generate." + wrapper + "<" + data.ShortName + ">(" + data.GenExpr + ")"
             : $"/* unsupported {wrapper} inner type: {innerFqn} */";
     }
 }

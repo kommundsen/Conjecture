@@ -1,6 +1,5 @@
 using System.Reflection;
 using Conjecture.Core;
-using Conjecture.Core.Generation;
 using Conjecture.Core.Internal;
 
 namespace Conjecture.Tests;
@@ -17,7 +16,7 @@ public class ArbitraryAutoDiscoveryTests
     public sealed class PersonArbitrary : IStrategyProvider<Person>
     {
         public Strategy<Person> Create() =>
-            Gen.Strings().Zip(Gen.Integers<int>(0, 120), (name, age) => new Person(name, age));
+            Generate.Strings().Zip(Generate.Integers<int>(0, 120), (name, age) => new Person(name, age));
     }
 
     // ─── Sentinel provider (no [Arbitrary]) used in precedence test ───────────
@@ -25,7 +24,7 @@ public class ArbitraryAutoDiscoveryTests
     public sealed class SentinelPersonArbitrary : IStrategyProvider<Person>
     {
         public Strategy<Person> Create() =>
-            Gen.Integers<int>().Select(_ => new Person("SENTINEL", -999));
+            Generate.Integers<int>().Select(_ => new Person("SENTINEL", -999));
     }
 
     // ─── Helper stubs ─────────────────────────────────────────────────────────

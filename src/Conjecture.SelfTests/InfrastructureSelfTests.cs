@@ -1,11 +1,9 @@
 using Conjecture.Core;
-using Conjecture.Core.Generation;
 using Conjecture.Core.Internal;
-using Conjecture.Core.Internal.Database;
 using Conjecture.Xunit.V3;
 using Xunit;
 
-using ShrinkEngine = Conjecture.Core.Internal.Shrinker.Shrinker;
+using ShrinkEngine = Conjecture.Core.Internal.Shrinker;
 
 namespace Conjecture.SelfTests;
 
@@ -14,18 +12,18 @@ public class InfrastructureSelfTests
     private sealed class RandomBuffer : IStrategyProvider<byte[]>
     {
         public Strategy<byte[]> Create() =>
-            Gen.Lists(Gen.Integers<byte>(), minSize: 1, maxSize: 64)
+            Generate.Lists(Generate.Integers<byte>(), minSize: 1, maxSize: 64)
                .Select(list => list.ToArray());
     }
 
     private sealed class PositiveInt : IStrategyProvider<int>
     {
-        public Strategy<int> Create() => Gen.Integers<int>(1, 10_000);
+        public Strategy<int> Create() => Generate.Integers<int>(1, 10_000);
     }
 
     private sealed class NonNegativeInt : IStrategyProvider<int>
     {
-        public Strategy<int> Create() => Gen.Integers<int>(0, 1_000);
+        public Strategy<int> Create() => Generate.Integers<int>(0, 1_000);
     }
 
     [Property(MaxExamples = 30)]
@@ -69,7 +67,7 @@ public class InfrastructureSelfTests
 
         static void Predicate(ConjectureData data)
         {
-            ulong v = data.DrawInteger(0, 1000);
+            ulong v = data.NextInteger(0, 1000);
             if (v > 10) throw new InvalidOperationException("too big");
         }
 

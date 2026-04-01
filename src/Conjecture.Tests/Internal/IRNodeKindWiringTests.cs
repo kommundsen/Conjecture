@@ -1,7 +1,5 @@
 using Conjecture.Core;
-using Conjecture.Core.Generation;
 using Conjecture.Core.Internal;
-using Conjecture.Core.Internal.Database;
 
 namespace Conjecture.Tests.Internal;
 
@@ -40,7 +38,7 @@ public sealed class IRNodeKindWiringTests : IDisposable
         FloatingPointStrategy<double> strategy = new(0.0, 1.0);
         ConjectureData data = MakeData();
 
-        strategy.Next(data);
+        strategy.Generate(data);
 
         Assert.Contains(data.IRNodes, n => n.Kind == IRNodeKind.Float64);
     }
@@ -51,7 +49,7 @@ public sealed class IRNodeKindWiringTests : IDisposable
         FloatingPointStrategy<double> strategy = new(0.0, 1.0);
         ConjectureData data = MakeData();
 
-        strategy.Next(data);
+        strategy.Generate(data);
 
         Assert.DoesNotContain(data.IRNodes, n => n.Kind == IRNodeKind.Integer);
     }
@@ -62,7 +60,7 @@ public sealed class IRNodeKindWiringTests : IDisposable
         FloatingPointStrategy<float> strategy = new(0f, 1f);
         ConjectureData data = MakeData();
 
-        strategy.Next(data);
+        strategy.Generate(data);
 
         Assert.Contains(data.IRNodes, n => n.Kind == IRNodeKind.Float32);
     }
@@ -73,7 +71,7 @@ public sealed class IRNodeKindWiringTests : IDisposable
         FloatingPointStrategy<float> strategy = new(0f, 1f);
         ConjectureData data = MakeData();
 
-        strategy.Next(data);
+        strategy.Generate(data);
 
         Assert.DoesNotContain(data.IRNodes, n => n.Kind == IRNodeKind.Integer);
     }
@@ -84,7 +82,7 @@ public sealed class IRNodeKindWiringTests : IDisposable
         StringStrategy strategy = new(minLength: 1, maxLength: 5);
         ConjectureData data = MakeData();
 
-        strategy.Next(data);
+        strategy.Generate(data);
 
         Assert.Contains(data.IRNodes, n => n.Kind == IRNodeKind.StringLength);
     }
@@ -95,7 +93,7 @@ public sealed class IRNodeKindWiringTests : IDisposable
         StringStrategy strategy = new(minLength: 2, maxLength: 5);
         ConjectureData data = MakeData();
 
-        strategy.Next(data);
+        strategy.Generate(data);
 
         Assert.Equal(1, data.IRNodes.Count(n => n.Kind == IRNodeKind.StringLength));
     }
@@ -106,7 +104,7 @@ public sealed class IRNodeKindWiringTests : IDisposable
         StringStrategy strategy = new(minLength: 2, maxLength: 5);
         ConjectureData data = MakeData();
 
-        string result = strategy.Next(data);
+        string result = strategy.Generate(data);
 
         Assert.Equal(result.Length, data.IRNodes.Count(n => n.Kind == IRNodeKind.StringChar));
     }
@@ -117,7 +115,7 @@ public sealed class IRNodeKindWiringTests : IDisposable
         StringStrategy strategy = new(minLength: 1, maxLength: 5);
         ConjectureData data = MakeData();
 
-        strategy.Next(data);
+        strategy.Generate(data);
 
         Assert.DoesNotContain(data.IRNodes, n => n.Kind == IRNodeKind.Integer);
     }
@@ -133,14 +131,14 @@ public sealed class IRNodeKindWiringTests : IDisposable
 
         await TestRunner.Run(settings, data =>
         {
-            strategy.Next(data);
+            strategy.Generate(data);
             throw new InvalidOperationException("fail");
         }, db, testId);
 
         IReadOnlyList<IRNode>? replayNodes = null;
         await TestRunner.Run(settings, data =>
         {
-            strategy.Next(data);
+            strategy.Generate(data);
             if (data.IsReplay)
             {
                 replayNodes = data.IRNodes;
@@ -161,14 +159,14 @@ public sealed class IRNodeKindWiringTests : IDisposable
 
         await TestRunner.Run(settings, data =>
         {
-            strategy.Next(data);
+            strategy.Generate(data);
             throw new InvalidOperationException("fail");
         }, db, testId);
 
         IReadOnlyList<IRNode>? replayNodes = null;
         await TestRunner.Run(settings, data =>
         {
-            strategy.Next(data);
+            strategy.Generate(data);
             if (data.IsReplay)
             {
                 replayNodes = data.IRNodes;
@@ -189,14 +187,14 @@ public sealed class IRNodeKindWiringTests : IDisposable
 
         await TestRunner.Run(settings, data =>
         {
-            strategy.Next(data);
+            strategy.Generate(data);
             throw new InvalidOperationException("fail");
         }, db, testId);
 
         IReadOnlyList<IRNode>? replayNodes = null;
         await TestRunner.Run(settings, data =>
         {
-            strategy.Next(data);
+            strategy.Generate(data);
             if (data.IsReplay)
             {
                 replayNodes = data.IRNodes;
@@ -226,7 +224,7 @@ public sealed class IRNodeKindWiringTests : IDisposable
         {
             if (data.IsReplay)
             {
-                replayed = data.DrawInteger(min, max);
+                replayed = data.NextInteger(min, max);
             }
         }, db, testId);
 

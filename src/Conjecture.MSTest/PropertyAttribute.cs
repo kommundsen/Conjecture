@@ -4,7 +4,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
-using Conjecture.Core.Internal.Database;
 using Conjecture.MSTest.Internal;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

@@ -59,7 +59,7 @@ public class TestRunnerTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            data.DrawBoolean();
+            data.NextBoolean();
             throw new InvalidOperationException("fail");
         });
 
@@ -77,7 +77,7 @@ public class TestRunnerTests
 
         async Task<TestRunResult> RunOnce() => await TestRunner.Run(settings, data =>
         {
-            ulong v = data.DrawInteger(0, 100);
+            ulong v = data.NextInteger(0, 100);
             callCount++;
             if (callCount == failOn) { throw new InvalidOperationException("fail"); }
         });

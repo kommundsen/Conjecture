@@ -1,3 +1,4 @@
+using Conjecture.Core;
 namespace Conjecture.Tests.Formatting;
 
 public class IStrategyFormatterTests

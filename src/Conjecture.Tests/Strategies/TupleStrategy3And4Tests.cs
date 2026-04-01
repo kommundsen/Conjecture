@@ -1,6 +1,5 @@
 using Conjecture.Core;
 using Conjecture.Core.Internal;
-using Conjecture.Core.Generation;
 
 namespace Conjecture.Tests.Strategies;
 
@@ -12,9 +11,9 @@ public class TupleStrategy3And4Tests
     [Fact]
     public void Tuples3_ProducesTupleWithCorrectTypes()
     {
-        var strategy = Gen.Tuples(Gen.Integers<int>(), Gen.Booleans(), Gen.Integers<byte>());
+        var strategy = Generate.Tuples(Generate.Integers<int>(), Generate.Booleans(), Generate.Integers<byte>());
         var data = MakeData();
-        var (n, b, bt) = strategy.Next(data);
+        var (n, b, bt) = strategy.Generate(data);
         Assert.IsType<int>(n);
         Assert.IsType<bool>(b);
         Assert.IsType<byte>(bt);
@@ -23,14 +22,14 @@ public class TupleStrategy3And4Tests
     [Fact]
     public void Tuples3_AllComponentsVary()
     {
-        var strategy = Gen.Tuples(Gen.Integers<int>(), Gen.Booleans(), Gen.Integers<short>());
+        var strategy = Generate.Tuples(Generate.Integers<int>(), Generate.Booleans(), Generate.Integers<short>());
         var ints = new HashSet<int>();
         var bools = new HashSet<bool>();
         var shorts = new HashSet<short>();
         for (var i = 0; i < 100; i++)
         {
             var data = MakeData((ulong)i);
-            var (n, b, s) = strategy.Next(data);
+            var (n, b, s) = strategy.Generate(data);
             ints.Add(n);
             bools.Add(b);
             shorts.Add(s);
@@ -43,9 +42,9 @@ public class TupleStrategy3And4Tests
     [Fact]
     public void Tuples3_DeterministicWithSameSeed()
     {
-        var strategy = Gen.Tuples(Gen.Integers<int>(), Gen.Booleans(), Gen.Integers<short>());
-        var (n1, b1, s1) = strategy.Next(MakeData(99UL));
-        var (n2, b2, s2) = strategy.Next(MakeData(99UL));
+        var strategy = Generate.Tuples(Generate.Integers<int>(), Generate.Booleans(), Generate.Integers<short>());
+        var (n1, b1, s1) = strategy.Generate(MakeData(99UL));
+        var (n2, b2, s2) = strategy.Generate(MakeData(99UL));
         Assert.Equal(n1, n2);
         Assert.Equal(b1, b2);
         Assert.Equal(s1, s2);
@@ -54,9 +53,9 @@ public class TupleStrategy3And4Tests
     [Fact]
     public void Tuples4_ProducesTupleWithCorrectTypes()
     {
-        var strategy = Gen.Tuples(Gen.Integers<int>(), Gen.Booleans(), Gen.Integers<byte>(), Gen.Integers<short>());
+        var strategy = Generate.Tuples(Generate.Integers<int>(), Generate.Booleans(), Generate.Integers<byte>(), Generate.Integers<short>());
         var data = MakeData();
-        var (n, b, bt, s) = strategy.Next(data);
+        var (n, b, bt, s) = strategy.Generate(data);
         Assert.IsType<int>(n);
         Assert.IsType<bool>(b);
         Assert.IsType<byte>(bt);
@@ -66,7 +65,7 @@ public class TupleStrategy3And4Tests
     [Fact]
     public void Tuples4_AllComponentsVary()
     {
-        var strategy = Gen.Tuples(Gen.Integers<int>(), Gen.Booleans(), Gen.Integers<short>(), Gen.Integers<long>());
+        var strategy = Generate.Tuples(Generate.Integers<int>(), Generate.Booleans(), Generate.Integers<short>(), Generate.Integers<long>());
         var ints = new HashSet<int>();
         var bools = new HashSet<bool>();
         var shorts = new HashSet<short>();
@@ -74,7 +73,7 @@ public class TupleStrategy3And4Tests
         for (var i = 0; i < 100; i++)
         {
             var data = MakeData((ulong)i);
-            var (n, b, s, l) = strategy.Next(data);
+            var (n, b, s, l) = strategy.Generate(data);
             ints.Add(n);
             bools.Add(b);
             shorts.Add(s);
@@ -89,9 +88,9 @@ public class TupleStrategy3And4Tests
     [Fact]
     public void Tuples4_DeterministicWithSameSeed()
     {
-        var strategy = Gen.Tuples(Gen.Integers<int>(), Gen.Booleans(), Gen.Integers<short>(), Gen.Integers<long>());
-        var (n1, b1, s1, l1) = strategy.Next(MakeData(99UL));
-        var (n2, b2, s2, l2) = strategy.Next(MakeData(99UL));
+        var strategy = Generate.Tuples(Generate.Integers<int>(), Generate.Booleans(), Generate.Integers<short>(), Generate.Integers<long>());
+        var (n1, b1, s1, l1) = strategy.Generate(MakeData(99UL));
+        var (n2, b2, s2, l2) = strategy.Generate(MakeData(99UL));
         Assert.Equal(n1, n2);
         Assert.Equal(b1, b2);
         Assert.Equal(s1, s2);

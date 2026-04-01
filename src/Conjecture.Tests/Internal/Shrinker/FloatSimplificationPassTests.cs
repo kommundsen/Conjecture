@@ -1,6 +1,5 @@
 using System.Runtime.CompilerServices;
 using Conjecture.Core.Internal;
-using Conjecture.Core.Internal.Shrinker;
 
 namespace Conjecture.Tests.Internal.Shrinker;
 

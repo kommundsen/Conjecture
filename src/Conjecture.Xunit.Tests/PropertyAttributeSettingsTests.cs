@@ -66,7 +66,7 @@ public class PropertyAttributeSettingsTests
         await Assert.ThrowsAsync<ConjectureException>(() =>
             TestRunner.Run(settings, data =>
             {
-                _ = data.DrawInteger(0, 100);
+                _ = data.NextInteger(0, 100);
                 Thread.Sleep(10);
             }));
     }

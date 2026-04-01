@@ -1,5 +1,4 @@
 using Conjecture.Core.Internal;
-using Conjecture.Core.Internal.Shrinker;
 
 namespace Conjecture.Tests.Internal.Shrinker;
 
@@ -16,7 +15,7 @@ public class ShrinkerTests
             ConjectureData data = ConjectureData.ForRecord(nodes);
             try
             {
-                ulong v = data.DrawInteger(0, ulong.MaxValue);
+                ulong v = data.NextInteger(0, ulong.MaxValue);
                 return v >= threshold ? Status.Interesting : Status.Valid;
             }
             catch
@@ -36,11 +35,11 @@ public class ShrinkerTests
         static Status IsInteresting(IReadOnlyList<IRNode> ns)
         {
             ConjectureData data = ConjectureData.ForRecord(ns);
-            try { data.DrawInteger(0, 100); return Status.Interesting; }
+            try { data.NextInteger(0, 100); return Status.Interesting; }
             catch { return Status.Overrun; }
         }
 
-        (IReadOnlyList<IRNode> result, int _) = await Core.Internal.Shrinker.Shrinker.ShrinkAsync(
+        (IReadOnlyList<IRNode> result, int _) = await Core.Internal.Shrinker.ShrinkAsync(
             nodes, n => new ValueTask<Status>(IsInteresting(n)));
 
         IRNode single = Assert.Single(result);
@@ -55,7 +54,7 @@ public class ShrinkerTests
         // Interesting when value >= 5.
         Func<IReadOnlyList<IRNode>, Status> isInteresting = InterestingWhenAtLeast(5);
 
-        (IReadOnlyList<IRNode> result, int _) = await Core.Internal.Shrinker.Shrinker.ShrinkAsync(
+        (IReadOnlyList<IRNode> result, int _) = await Core.Internal.Shrinker.ShrinkAsync(
             nodes, n => new ValueTask<Status>(isInteresting(n)));
 
         Assert.Single(result);
@@ -70,7 +69,7 @@ public class ShrinkerTests
         IReadOnlyList<IRNode> nodes = SingleIntegerNodes(500, 0, 1000);
         Func<IReadOnlyList<IRNode>, Status> isInteresting = InterestingWhenAtLeast(10);
 
-        (IReadOnlyList<IRNode> result, int _) = await Core.Internal.Shrinker.Shrinker.ShrinkAsync(
+        (IReadOnlyList<IRNode> result, int _) = await Core.Internal.Shrinker.ShrinkAsync(
             nodes, n => new ValueTask<Status>(isInteresting(n)));
 
         Status status = isInteresting(result);
@@ -90,7 +89,7 @@ public class ShrinkerTests
             ConjectureData data = ConjectureData.ForRecord(ns);
             try
             {
-                ulong v = data.DrawInteger(0, 100);
+                ulong v = data.NextInteger(0, 100);
                 return v == 1 ? Status.Interesting : Status.Valid;
             }
             catch
@@ -99,7 +98,7 @@ public class ShrinkerTests
             }
         }
 
-        (IReadOnlyList<IRNode> result, int _) = await Core.Internal.Shrinker.Shrinker.ShrinkAsync(
+        (IReadOnlyList<IRNode> result, int _) = await Core.Internal.Shrinker.ShrinkAsync(
             nodes, n => new ValueTask<Status>(IsInteresting(n)));
 
         Assert.Single(result);
@@ -122,8 +121,8 @@ public class ShrinkerTests
             ConjectureData data = ConjectureData.ForRecord(ns);
             try
             {
-                ulong a = data.DrawInteger(0, 100);
-                ulong b = data.DrawInteger(0, 100);
+                ulong a = data.NextInteger(0, 100);
+                ulong b = data.NextInteger(0, 100);
                 return a + b >= 10 ? Status.Interesting : Status.Valid;
             }
             catch
@@ -132,7 +131,7 @@ public class ShrinkerTests
             }
         }
 
-        (IReadOnlyList<IRNode> result, int _) = await Core.Internal.Shrinker.Shrinker.ShrinkAsync(
+        (IReadOnlyList<IRNode> result, int _) = await Core.Internal.Shrinker.ShrinkAsync(
             nodes, n => new ValueTask<Status>(IsInteresting(n)));
 
         Assert.Equal(2, result.Count);

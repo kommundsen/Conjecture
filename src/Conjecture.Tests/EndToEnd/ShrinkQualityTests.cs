@@ -20,7 +20,7 @@ public class ShrinkQualityTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            ulong v = data.DrawInteger(0, 10000);
+            ulong v = data.NextInteger(0, 10000);
             if (v >= 42) { throw new Exception("fail"); }
         });
 
@@ -38,7 +38,7 @@ public class ShrinkQualityTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            ulong v = data.DrawInteger(0, 10000);
+            ulong v = data.NextInteger(0, 10000);
             if (v >= 100) { throw new Exception("fail"); }
         });
 
@@ -56,8 +56,8 @@ public class ShrinkQualityTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            ulong a = data.DrawInteger(0, 200);
-            ulong b = data.DrawInteger(0, 200);
+            ulong a = data.NextInteger(0, 200);
+            ulong b = data.NextInteger(0, 200);
             if (a + b > 100) { throw new Exception("fail"); }
         });
 
@@ -78,7 +78,7 @@ public class ShrinkQualityTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            bool v = data.DrawBoolean();
+            bool v = data.NextBoolean();
             if (v) { throw new Exception("fail"); }
         });
 
@@ -96,7 +96,7 @@ public class ShrinkQualityTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            bool v = data.DrawBoolean();
+            bool v = data.NextBoolean();
             if (!v) { throw new Exception("fail"); }
         });
 
@@ -116,7 +116,7 @@ public class ShrinkQualityTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            ulong v = data.DrawInteger(500, 10000);
+            ulong v = data.NextInteger(500, 10000);
             if (v >= 1000) { throw new Exception("fail"); }
         });
 
@@ -132,7 +132,7 @@ public class ShrinkQualityTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            ulong v = data.DrawInteger(200, 5000);
+            ulong v = data.NextInteger(200, 5000);
             if (v > 300) { throw new Exception("fail"); }
         });
 

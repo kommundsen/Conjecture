@@ -1,6 +1,5 @@
 using System.Reflection;
 using Conjecture.Core;
-using Conjecture.Core.Generation;
 using Conjecture.Core.Internal;
 
 namespace Conjecture.Tests.Internal;
@@ -9,12 +8,12 @@ public class SharedParameterStrategyResolverTests
 {
     private sealed class PositiveIntsProvider : IStrategyProvider<int>
     {
-        public Strategy<int> Create() => Gen.Integers<int>(1, int.MaxValue);
+        public Strategy<int> Create() => Generate.Integers<int>(1, int.MaxValue);
     }
 
     private sealed class StringProvider : IStrategyProvider<string>
     {
-        public Strategy<string> Create() => Gen.Strings();
+        public Strategy<string> Create() => Generate.Strings();
     }
 
     private static ConjectureData MakeData(ulong seed = 42UL) =>
@@ -23,9 +22,9 @@ public class SharedParameterStrategyResolverTests
     // ─── Factory methods used as [FromFactory] targets ───────────────────────
 
     public static Strategy<int> EvenInts() =>
-        Gen.Integers<int>(0, 25).Select(n => n * 2);
+        Generate.Integers<int>(0, 25).Select(n => n * 2);
 
-    public Strategy<int> NonStaticFactory() => Gen.Integers<int>();
+    public Strategy<int> NonStaticFactory() => Generate.Integers<int>();
 
     public static string WrongReturnTypeFactory() => "not a strategy";
 

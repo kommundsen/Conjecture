@@ -1,5 +1,4 @@
 using Conjecture.Core;
-using Conjecture.Core.Generation;
 using Conjecture.Core.Internal;
 
 namespace Conjecture.Tests.Strategies;
@@ -12,7 +11,7 @@ public class WithLabelTests
     [Fact]
     public void WithLabel_ReturnsStrategyWithCorrectLabel()
     {
-        var labeled = Gen.Integers<int>().WithLabel("age");
+        var labeled = Generate.Integers<int>().WithLabel("age");
 
         Assert.Equal("age", labeled.Label);
     }
@@ -20,7 +19,7 @@ public class WithLabelTests
     [Fact]
     public void WithLabel_UnlabeledStrategyHasNullLabel()
     {
-        Strategy<int> strategy = Gen.Integers<int>();
+        Strategy<int> strategy = Generate.Integers<int>();
 
         Assert.Null(strategy.Label);
     }
@@ -28,10 +27,10 @@ public class WithLabelTests
     [Fact]
     public void WithLabel_GenerationProducesValues()
     {
-        var labeled = Gen.Integers<int>(0, 100).WithLabel("age");
+        var labeled = Generate.Integers<int>(0, 100).WithLabel("age");
         var data = MakeData();
 
-        var value = labeled.Next(data);
+        var value = labeled.Generate(data);
 
         Assert.InRange(value, 0, 100);
     }
@@ -39,7 +38,7 @@ public class WithLabelTests
     [Fact]
     public void WithLabel_ProducesSameValuesAsUnlabeled()
     {
-        var inner = Gen.Integers<int>();
+        var inner = Generate.Integers<int>();
         var labeled = inner.WithLabel("x");
 
         var dataA = MakeData(seed: 99UL);
@@ -47,14 +46,14 @@ public class WithLabelTests
 
         for (var i = 0; i < 50; i++)
         {
-            Assert.Equal(inner.Next(dataA), labeled.Next(dataB));
+            Assert.Equal(inner.Generate(dataA), labeled.Generate(dataB));
         }
     }
 
     [Fact]
     public void WithLabel_LabelCanBeOverriddenByChaining()
     {
-        var labeled = Gen.Integers<int>().WithLabel("first").WithLabel("second");
+        var labeled = Generate.Integers<int>().WithLabel("first").WithLabel("second");
 
         Assert.Equal("second", labeled.Label);
     }

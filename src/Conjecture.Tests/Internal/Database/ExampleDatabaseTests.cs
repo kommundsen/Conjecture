@@ -1,3 +1,4 @@
+using Conjecture.Core.Internal;
 namespace Conjecture.Tests.Internal.Database;
 
 public class ExampleDatabaseTests

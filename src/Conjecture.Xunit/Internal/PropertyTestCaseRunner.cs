@@ -4,7 +4,6 @@ using System.Reflection;
 using System.Text;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
-using Conjecture.Core.Internal.Database;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 

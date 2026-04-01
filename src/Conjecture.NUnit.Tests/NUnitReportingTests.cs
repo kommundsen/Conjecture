@@ -1,8 +1,6 @@
 using System.Reflection;
 using Conjecture.Core;
-using Conjecture.Core.Generation;
 using Conjecture.Core.Internal;
-using Conjecture.Core.Internal.Database;
 using Conjecture.NUnit.Internal;
 using NUnit.Framework;
 
@@ -51,7 +49,7 @@ public sealed class NUnitReportingTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            int x = Gen.Integers<int>().Next(data);
+            int x = Generate.Integers<int>().Generate(data);
             if (x > 5) { throw new Exception("fail"); }
         });
 
@@ -68,7 +66,7 @@ public sealed class NUnitReportingTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            int x = Gen.Integers<int>().Next(data);
+            int x = Generate.Integers<int>().Generate(data);
             if (x > 5) { throw new Exception("fail"); }
         });
 
@@ -87,7 +85,7 @@ public sealed class NUnitReportingTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            int x = Gen.Integers<int>().Next(data);
+            int x = Generate.Integers<int>().Generate(data);
             if (x > 5) { throw new Exception("fail"); }
         });
 

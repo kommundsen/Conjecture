@@ -1,5 +1,4 @@
 using Conjecture.Core;
-using Conjecture.Core.Generation;
 using Conjecture.Core.Internal;
 using Conjecture.Xunit.V3;
 using Xunit;
@@ -17,12 +16,12 @@ public class StrategyLawTests
 
         await TestRunner.Run(settings, data =>
         {
-            baseline = Gen.Integers<int>().Next(data);
+            baseline = Generate.Integers<int>().Generate(data);
         });
 
         await TestRunner.Run(settings, data =>
         {
-            mapped = Gen.Integers<int>().Select(x => x).Next(data);
+            mapped = Generate.Integers<int>().Select(x => x).Generate(data);
         });
 
         Assert.Equal(baseline, mapped);
@@ -37,12 +36,12 @@ public class StrategyLawTests
 
         await TestRunner.Run(settings, data =>
         {
-            baseline = Gen.Integers<int>(0, 1000).Next(data);
+            baseline = Generate.Integers<int>(0, 1000).Generate(data);
         });
 
         await TestRunner.Run(settings, data =>
         {
-            filtered = Gen.Integers<int>(0, 1000).Where(_ => true).Next(data);
+            filtered = Generate.Integers<int>(0, 1000).Where(_ => true).Generate(data);
         });
 
         Assert.Equal(baseline, filtered);
@@ -56,7 +55,7 @@ public class StrategyLawTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            _ = Gen.Integers<int>().Where(_ => false).Next(data);
+            _ = Generate.Integers<int>().Where(_ => false).Generate(data);
         });
 
         Assert.True(result.Passed, "Runner should pass vacuously — no valid examples exist.");
@@ -72,19 +71,19 @@ public class StrategyLawTests
         int left = 0;
         await TestRunner.Run(settings, data =>
         {
-            left = Gen.Integers<int>(3, 3)
-                      .SelectMany(x => Gen.Integers<int>(x * 3, x * 3))
-                      .SelectMany(y => Gen.Integers<int>(y + 1, y + 1))
-                      .Next(data);
+            left = Generate.Integers<int>(3, 3)
+                      .SelectMany(x => Generate.Integers<int>(x * 3, x * 3))
+                      .SelectMany(y => Generate.Integers<int>(y + 1, y + 1))
+                      .Generate(data);
         });
 
         int right = 0;
         await TestRunner.Run(settings, data =>
         {
-            right = Gen.Integers<int>(3, 3)
-                       .SelectMany(x => Gen.Integers<int>(x * 3, x * 3)
-                                           .SelectMany(y => Gen.Integers<int>(y + 1, y + 1)))
-                       .Next(data);
+            right = Generate.Integers<int>(3, 3)
+                       .SelectMany(x => Generate.Integers<int>(x * 3, x * 3)
+                                           .SelectMany(y => Generate.Integers<int>(y + 1, y + 1)))
+                       .Generate(data);
         });
 
         Assert.Equal(10, left);
@@ -93,7 +92,7 @@ public class StrategyLawTests
 
     private sealed class ListsOf2To8 : IStrategyProvider<List<int>>
     {
-        public Strategy<List<int>> Create() => Gen.Lists(Gen.Integers<int>(), minSize: 2, maxSize: 8);
+        public Strategy<List<int>> Create() => Generate.Lists(Generate.Integers<int>(), minSize: 2, maxSize: 8);
     }
 
     [Property(MaxExamples = 500)]

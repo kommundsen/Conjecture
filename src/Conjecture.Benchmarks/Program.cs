@@ -1,3 +1,3 @@
 using BenchmarkDotNet.Running;
 
-BenchmarkSwitcher.FromAssembly(typeof(Conjecture.Benchmarks.CoreDrawBenchmarks).Assembly).Run(args);
+BenchmarkSwitcher.FromAssembly(typeof(Conjecture.Benchmarks.CoreGenerationBenchmarks).Assembly).Run(args);

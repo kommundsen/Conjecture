@@ -1,6 +1,5 @@
 using System.Reflection;
 using Conjecture.Core;
-using Conjecture.Core.Generation;
 using Conjecture.Core.Internal;
 using Conjecture.MSTest.Internal;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -66,13 +65,13 @@ public class SourceGeneratorMSTestE2ETests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            MsSourceCoord c = strategy.Next(data);
+            MsSourceCoord c = strategy.Generate(data);
             if (c.X > 5) { throw new Exception("X too large"); }
         });
 
         Assert.IsFalse(result.Passed);
         Assert.IsNotNull(result.Counterexample);
-        MsSourceCoord shrunk = strategy.Next(ConjectureData.ForRecord(result.Counterexample!));
+        MsSourceCoord shrunk = strategy.Generate(ConjectureData.ForRecord(result.Counterexample!));
         Assert.IsTrue(shrunk.X > 5, $"Shrunk {shrunk} does not trigger the failure condition");
     }
 

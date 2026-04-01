@@ -1,6 +1,5 @@
 using Conjecture.Core;
 using Conjecture.Core.Internal;
-using Conjecture.Core.Generation;
 
 namespace Conjecture.Tests.Strategies;
 
@@ -14,26 +13,26 @@ public class EnumStrategyTests
     [Fact]
     public void Enums_ReturnsOnlyValidDayOfWeekValues()
     {
-        var strategy = Gen.Enums<DayOfWeek>();
+        var strategy = Generate.Enums<DayOfWeek>();
         var data = MakeData();
         var valid = Enum.GetValues<DayOfWeek>();
 
         for (var i = 0; i < 100; i++)
         {
-            Assert.Contains(strategy.Next(data), valid);
+            Assert.Contains(strategy.Generate(data), valid);
         }
     }
 
     [Fact]
     public void Enums_CoversAllDayOfWeekMembersOverManyDraws()
     {
-        var strategy = Gen.Enums<DayOfWeek>();
+        var strategy = Generate.Enums<DayOfWeek>();
         var data = MakeData();
         var seen = new HashSet<DayOfWeek>();
 
         for (var i = 0; i < 1000; i++)
         {
-            seen.Add(strategy.Next(data));
+            seen.Add(strategy.Generate(data));
         }
 
         foreach (var member in Enum.GetValues<DayOfWeek>())
@@ -45,26 +44,26 @@ public class EnumStrategyTests
     [Fact]
     public void Enums_WorksWithCustomEnum_ReturnsOnlyValidMembers()
     {
-        var strategy = Gen.Enums<Colour>();
+        var strategy = Generate.Enums<Colour>();
         var data = MakeData();
         var valid = Enum.GetValues<Colour>();
 
         for (var i = 0; i < 100; i++)
         {
-            Assert.Contains(strategy.Next(data), valid);
+            Assert.Contains(strategy.Generate(data), valid);
         }
     }
 
     [Fact]
     public void Enums_CustomEnum_CoversAllMembersOverManyDraws()
     {
-        var strategy = Gen.Enums<Colour>();
+        var strategy = Generate.Enums<Colour>();
         var data = MakeData();
         var seen = new HashSet<Colour>();
 
         for (var i = 0; i < 500; i++)
         {
-            seen.Add(strategy.Next(data));
+            seen.Add(strategy.Generate(data));
         }
 
         foreach (var member in Enum.GetValues<Colour>())
@@ -76,13 +75,13 @@ public class EnumStrategyTests
     [Fact]
     public void Enums_DeterministicWithSeed()
     {
-        var strategy = Gen.Enums<DayOfWeek>();
+        var strategy = Generate.Enums<DayOfWeek>();
 
         var results1 = Enumerable.Range(0, 20)
-            .Select(_ => strategy.Next(MakeData(99UL)))
+            .Select(_ => strategy.Generate(MakeData(99UL)))
             .ToList();
         var results2 = Enumerable.Range(0, 20)
-            .Select(_ => strategy.Next(MakeData(99UL)))
+            .Select(_ => strategy.Generate(MakeData(99UL)))
             .ToList();
 
         Assert.Equal(results1, results2);

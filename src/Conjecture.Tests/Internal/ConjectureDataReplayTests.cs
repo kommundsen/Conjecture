@@ -8,10 +8,10 @@ public class ConjectureDataReplayTests
     public void ForRecord_ReplayProducesSameInteger()
     {
         var gen = ConjectureData.ForGeneration(new SplittableRandom(1UL));
-        var original = gen.DrawInteger(0UL, 99UL);
+        var original = gen.NextInteger(0UL, 99UL);
 
         var replay = ConjectureData.ForRecord(gen.IRNodes);
-        var replayed = replay.DrawInteger(0UL, 99UL);
+        var replayed = replay.NextInteger(0UL, 99UL);
 
         Assert.Equal(original, replayed);
     }
@@ -20,10 +20,10 @@ public class ConjectureDataReplayTests
     public void ForRecord_ReplayProducesSameBoolean()
     {
         var gen = ConjectureData.ForGeneration(new SplittableRandom(2UL));
-        var original = gen.DrawBoolean();
+        var original = gen.NextBoolean();
 
         var replay = ConjectureData.ForRecord(gen.IRNodes);
-        var replayed = replay.DrawBoolean();
+        var replayed = replay.NextBoolean();
 
         Assert.Equal(original, replayed);
     }
@@ -32,10 +32,10 @@ public class ConjectureDataReplayTests
     public void ForRecord_ReplayProducesSameBytes()
     {
         var gen = ConjectureData.ForGeneration(new SplittableRandom(3UL));
-        var original = gen.DrawBytes(8);
+        var original = gen.NextBytes(8);
 
         var replay = ConjectureData.ForRecord(gen.IRNodes);
-        var replayed = replay.DrawBytes(8);
+        var replayed = replay.NextBytes(8);
 
         Assert.Equal(original, replayed);
     }
@@ -44,12 +44,12 @@ public class ConjectureDataReplayTests
     public void ForRecord_Overrun_SetsStatusAndThrows()
     {
         var gen = ConjectureData.ForGeneration(new SplittableRandom(4UL));
-        gen.DrawInteger(0UL, 9UL);
+        gen.NextInteger(0UL, 9UL);
 
         var replay = ConjectureData.ForRecord(gen.IRNodes);
-        replay.DrawInteger(0UL, 9UL); // consumes the one node
+        replay.NextInteger(0UL, 9UL); // consumes the one node
 
-        Assert.Throws<InvalidOperationException>((Action)(() => replay.DrawInteger(0UL, 9UL)));
+        Assert.Throws<InvalidOperationException>((Action)(() => replay.NextInteger(0UL, 9UL)));
         Assert.Equal(Status.Overrun, replay.Status);
     }
 }

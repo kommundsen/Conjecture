@@ -29,7 +29,7 @@ public class PropertyAttributeFailureMessageTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            data.DrawInteger(0, 100);
+            data.NextInteger(0, 100);
             throw new Exception("fail");
         });
 
@@ -43,7 +43,7 @@ public class PropertyAttributeFailureMessageTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            data.DrawInteger(0, 100);
+            data.NextInteger(0, 100);
             throw new Exception("fail");
         });
 

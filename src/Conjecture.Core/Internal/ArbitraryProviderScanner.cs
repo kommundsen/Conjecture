@@ -10,13 +10,13 @@ internal static class ArbitraryProviderScanner
     /// <summary>
     /// Scans all loaded assemblies for a type named <c>{paramType.Name}Arbitrary</c> that
     /// implements <see cref="IStrategyProvider{T}"/> for <paramref name="paramType"/>, and
-    /// returns a closed <paramref name="drawFromProviderOpenMethod"/> ready to invoke.
+    /// returns a closed <paramref name="generateFromProviderOpenMethod"/> ready to invoke.
     /// Returns <see langword="null"/> when no matching provider is found.
     /// The caller is responsible for caching the result.
     /// </summary>
     [RequiresUnreferencedCode("Scans loaded assemblies for provider types by name; not trim-safe.")]
-    [RequiresDynamicCode("Calls MakeGenericMethod to construct typed draw helper.")]
-    internal static MethodInfo? FindDrawMethod(Type paramType, MethodInfo drawFromProviderOpenMethod)
+    [RequiresDynamicCode("Calls MakeGenericMethod to construct typed generate helper.")]
+    internal static MethodInfo? FindGenerateMethod(Type paramType, MethodInfo generateFromProviderOpenMethod)
     {
         string candidateName = paramType.Name + "Arbitrary";
         // Source-generated providers put [Arbitrary] on the record, not the provider class.
@@ -53,7 +53,7 @@ internal static class ArbitraryProviderScanner
                     continue;
                 }
 
-                return drawFromProviderOpenMethod.MakeGenericMethod(type, paramType);
+                return generateFromProviderOpenMethod.MakeGenericMethod(type, paramType);
             }
         }
 
