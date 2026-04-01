@@ -420,7 +420,7 @@ The existing `Conjecture.Xunit` (v2, `xunit.extensibility.core` 2.9.3) is preser
 ### 3.14 Trim/NativeAOT Validation
 
 #### Cycle 3.14.1 -- Trim validation for generator output
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `dotnet publish` with `<PublishTrimmed>true</PublishTrimmed>` produces zero trim warnings from generated code
   - **Impl** -- Ensure generated code uses only trim-safe patterns (`Strategies.Compose<T>`, `Gen.*`)
 
