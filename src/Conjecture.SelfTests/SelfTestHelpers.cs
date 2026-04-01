@@ -35,8 +35,15 @@ internal static class SelfTestHelpers
         int minLen = Math.Min(a.Count, b.Count);
         for (int i = 0; i < minLen; i++)
         {
-            if (a[i].Value < b[i].Value) return true;
-            if (a[i].Value > b[i].Value) return false;
+            if (a[i].Value < b[i].Value)
+            {
+                return true;
+            }
+
+            if (a[i].Value > b[i].Value)
+            {
+                return false;
+            }
         }
         return a.Count <= b.Count;
     }

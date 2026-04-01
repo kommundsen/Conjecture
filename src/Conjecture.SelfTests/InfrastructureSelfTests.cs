@@ -71,7 +71,10 @@ public class InfrastructureSelfTests
         static void Predicate(ConjectureData data)
         {
             ulong v = data.NextInteger(0, 1000);
-            if (v > 10) throw new InvalidOperationException("too big");
+            if (v > 10)
+            {
+                throw new InvalidOperationException("too big");
+            }
         }
 
         TestRunResult result = await TestRunner.Run(settings, Predicate);

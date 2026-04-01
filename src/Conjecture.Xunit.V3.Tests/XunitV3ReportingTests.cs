@@ -129,14 +129,9 @@ public sealed class XunitV3ReportingTests : IDisposable
 /// without passing constructorArguments, causing a MissingMethodException for a
 /// class that has no parameterless constructor.
 /// </summary>
-public sealed class XunitV3ReportingOutputHelperTests
+public sealed class XunitV3ReportingOutputHelperTests(ITestOutputHelper output)
 {
-    private readonly ITestOutputHelper output;
-
-    public XunitV3ReportingOutputHelperTests(ITestOutputHelper output)
-    {
-        this.output = output;
-    }
+    private readonly ITestOutputHelper output = output;
 
     [Property(MaxExamples = 1, Seed = 1)]
     public void Property_WithOutputHelper_OutputHelperInjected_WritesWithoutThrowing(int x)

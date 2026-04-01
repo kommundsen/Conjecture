@@ -21,10 +21,10 @@ public class FloatingPointPropertyE2ETests
 
     [Property(MaxExamples = 20, Seed = 1UL)]
     public void FloatParameter_NoAssertion_Passes(float f) { }
-#pragma warning restore IDE0060
 
     private static void DoubleMethod(double d) { }
     private static void FloatMethod(float f) { }
+#pragma warning restore IDE0060
 
     private static ParameterInfo[] Params(string methodName) =>
         typeof(FloatingPointPropertyE2ETests)

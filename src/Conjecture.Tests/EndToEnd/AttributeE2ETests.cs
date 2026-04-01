@@ -35,10 +35,7 @@ public sealed class AttributeE2ETests
         int explicitCount = 2;
 
         ConjectureSettings settings = new() { MaxExamples = 10, Seed = 1UL };
-        TestRunResult generated = await TestRunner.Run(settings, data =>
-        {
-            _ = Generate.Integers<int>(0, 5).Generate(data);
-        });
+        TestRunResult generated = await TestRunner.Run(settings, data => _ = Generate.Integers<int>(0, 5).Generate(data));
 
         Assert.True(generated.Passed);
         Assert.Equal(10, generated.ExampleCount);

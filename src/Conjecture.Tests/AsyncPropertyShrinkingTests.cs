@@ -34,7 +34,10 @@ public sealed class AsyncPropertyShrinkingTests : IDisposable
             {
                 int x = Generate.Integers<int>(0, 100).Generate(data);
                 await Task.Yield();
-                if (x > 5) throw new InvalidOperationException("too large");
+                if (x > 5)
+                {
+                    throw new InvalidOperationException("too large");
+                }
             });
 
         Assert.False(result.Passed);
@@ -72,7 +75,10 @@ public sealed class AsyncPropertyShrinkingTests : IDisposable
             {
                 int x = Generate.Integers<int>(0, 500).Generate(data);
                 await Task.Delay(0); // forces a real thread-pool continuation
-                if (x > 10) throw new InvalidOperationException("too large");
+                if (x > 10)
+                {
+                    throw new InvalidOperationException("too large");
+                }
             });
 
         Assert.False(result.Passed);
@@ -107,7 +113,11 @@ public sealed class AsyncPropertyShrinkingTests : IDisposable
         // Second run: replays stored buffer first
         await TestRunner.RunAsync(settings, async data =>
         {
-            if (data.IsReplay) replayInvoked = true;
+            if (data.IsReplay)
+            {
+                replayInvoked = true;
+            }
+
             await Task.Yield();
             throw new InvalidOperationException("fail");
         }, db, testId);

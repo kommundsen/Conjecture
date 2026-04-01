@@ -318,7 +318,10 @@ public sealed class AnalyzerIntegrationE2ETests
             ImmutableArray.Create(analyzer));
         ImmutableArray<Diagnostic> mapped = await cwAnalyzers.GetAnalyzerDiagnosticsAsync();
         Diagnostic? target = mapped.FirstOrDefault(d => d.Id == diagnosticId);
-        if (target is null) return null;
+        if (target is null)
+        {
+            return null;
+        }
 
         var actions = new List<CodeAction>();
         CodeFixContext context = new(
@@ -327,12 +330,17 @@ public sealed class AnalyzerIntegrationE2ETests
             CancellationToken.None);
         await fix.RegisterCodeFixesAsync(context);
 
-        if (!actions.Any()) return null;
+        if (!actions.Any())
+        {
+            return null;
+        }
 
         ImmutableArray<CodeActionOperation> operations =
             await actions[0].GetOperationsAsync(CancellationToken.None);
         foreach (CodeActionOperation op in operations)
+        {
             op.Apply(workspace, CancellationToken.None);
+        }
 
         Document updated = workspace.CurrentSolution.GetDocument(documentId)!;
         SourceText text = await updated.GetTextAsync();

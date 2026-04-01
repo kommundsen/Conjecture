@@ -144,10 +144,7 @@ public class ReportingQualityE2ETests
     {
         ConjectureSettings settings = new() { MaxExamples = 10, Seed = 30UL, UseDatabase = false };
 
-        TestRunResult result = await TestRunner.Run(settings, _ =>
-        {
-            throw new Exception("always fails");
-        });
+        TestRunResult result = await TestRunner.Run(settings, _ => throw new Exception("always fails"));
 
         Assert.False(result.Passed);
 
@@ -220,10 +217,7 @@ public class ReportingQualityE2ETests
         const ulong testSeed = 0xA7F3B2E1UL;
         ConjectureSettings settings = new() { MaxExamples = 5, Seed = testSeed, UseDatabase = false };
 
-        TestRunResult result = await TestRunner.Run(settings, _ =>
-        {
-            throw new Exception("always fails");
-        });
+        TestRunResult result = await TestRunner.Run(settings, _ => throw new Exception("always fails"));
 
         string message = CounterexampleFormatter.Format(
             [("x", (object)1)],

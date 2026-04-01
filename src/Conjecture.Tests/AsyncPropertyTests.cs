@@ -48,8 +48,7 @@ public class AsyncPropertyTests
         TestRunResult result = await TestRunner.RunAsync(settings, data =>
         {
             int x = Generate.Integers<int>(0, 10).Generate(data);
-            if (x < 0) { throw new Exception("impossible"); }
-            return Task.CompletedTask;
+            return x < 0 ? throw new Exception("impossible") : Task.CompletedTask;
         });
 
         Assert.True(result.Passed);

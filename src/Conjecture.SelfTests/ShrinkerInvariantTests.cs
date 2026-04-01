@@ -14,13 +14,19 @@ public class ShrinkerInvariantTests
     private static void FailIfOver10(ConjectureData data)
     {
         ulong v = data.NextInteger(0, 1000);
-        if (v > 10) throw new InvalidOperationException("too big");
+        if (v > 10)
+        {
+            throw new InvalidOperationException("too big");
+        }
     }
 
     private static void FailIfOver5(ConjectureData data)
     {
         ulong v = data.NextInteger(0, 500);
-        if (v > 5) throw new InvalidOperationException("too big");
+        if (v > 5)
+        {
+            throw new InvalidOperationException("too big");
+        }
     }
 
     [Fact]
@@ -58,7 +64,10 @@ public class ShrinkerInvariantTests
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
             ulong v = data.NextInteger(0, 10000);
-            if (v > 100) throw new InvalidOperationException("too big");
+            if (v > 100)
+            {
+                throw new InvalidOperationException("too big");
+            }
         });
 
         Assert.False(result.Passed);
@@ -75,7 +84,10 @@ public class ShrinkerInvariantTests
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
             ulong v = data.NextInteger(50, 200);
-            if (v > 75) throw new InvalidOperationException("too big");
+            if (v > 75)
+            {
+                throw new InvalidOperationException("too big");
+            }
         });
 
         Assert.False(result.Passed);

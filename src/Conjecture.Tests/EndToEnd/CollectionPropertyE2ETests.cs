@@ -20,10 +20,7 @@ public class CollectionPropertyE2ETests
         Strategy<List<int>> strategy = Generate.Lists(Generate.Integers<int>(0, 100));
         ConjectureSettings settings = new() { MaxExamples = 50, Seed = 1UL };
 
-        TestRunResult result = await TestRunner.Run(settings, data =>
-        {
-            _ = strategy.Generate(data);
-        });
+        TestRunResult result = await TestRunner.Run(settings, data => _ = strategy.Generate(data));
 
         Assert.True(result.Passed);
     }
@@ -39,7 +36,10 @@ public class CollectionPropertyE2ETests
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
             List<int> list = strategy.Generate(data);
-            if (list.Count > 0) throw new Exception("non-empty");
+            if (list.Count > 0)
+            {
+                throw new Exception("non-empty");
+            }
         });
 
         Assert.False(result.Passed);
@@ -58,7 +58,10 @@ public class CollectionPropertyE2ETests
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
             List<int> list = strategy.Generate(data);
-            if (list.Any(x => x > 5)) throw new Exception("element too large");
+            if (list.Any(x => x > 5))
+            {
+                throw new Exception("element too large");
+            }
         });
 
         Assert.False(result.Passed);

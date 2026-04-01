@@ -286,7 +286,10 @@ public sealed class CON102Tests
     {
         ImmutableArray<Diagnostic> diagnostics = await GetDiagnosticsAsync(source);
         Diagnostic? target = diagnostics.FirstOrDefault(d => d.Id == "CON102");
-        if (target is null) return null;
+        if (target is null)
+        {
+            return null;
+        }
 
         CSharpCompilation compilation = CreateCompilation(source);
 
@@ -312,7 +315,10 @@ public sealed class CON102Tests
             ImmutableArray.Create<DiagnosticAnalyzer>(new CON102Analyzer()));
         ImmutableArray<Diagnostic> mapped = await cwAnalyzers.GetAnalyzerDiagnosticsAsync();
         Diagnostic? mappedDiagnostic = mapped.FirstOrDefault(d => d.Id == "CON102");
-        if (mappedDiagnostic is null) return null;
+        if (mappedDiagnostic is null)
+        {
+            return null;
+        }
 
         var fix = new CON102CodeFix();
         var actions = new List<CodeAction>();
@@ -322,12 +328,17 @@ public sealed class CON102Tests
             CancellationToken.None);
         await fix.RegisterCodeFixesAsync(context);
 
-        if (!actions.Any()) return null;
+        if (!actions.Any())
+        {
+            return null;
+        }
 
         ImmutableArray<CodeActionOperation> operations =
             await actions[0].GetOperationsAsync(CancellationToken.None);
         foreach (CodeActionOperation op in operations)
+        {
             op.Apply(workspace, CancellationToken.None);
+        }
 
         Document updated = workspace.CurrentSolution.GetDocument(documentId)!;
         SourceText text = await updated.GetTextAsync();

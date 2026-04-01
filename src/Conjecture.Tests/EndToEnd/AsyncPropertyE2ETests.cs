@@ -39,10 +39,7 @@ public sealed class AsyncPropertyE2ETests
     {
         ConjectureSettings settings = new() { MaxExamples = 20, Seed = 2UL };
 
-        TestRunResult result = await TestRunner.RunAsync(settings, async _ =>
-        {
-            await Task.Yield();
-        });
+        TestRunResult result = await TestRunner.RunAsync(settings, async _ => await Task.Yield());
 
         Assert.True(result.Passed);
         Assert.Null(result.Counterexample);

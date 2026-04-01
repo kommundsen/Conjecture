@@ -107,11 +107,22 @@ public class ExampleDatabaseBenchmarks : IDisposable
     public void Cleanup()
     {
         db.Dispose();
-        if (File.Exists(dbPath)) File.Delete(dbPath);
+        if (File.Exists(dbPath))
+        {
+            File.Delete(dbPath);
+        }
+
         string? walPath = dbPath + "-wal";
         string? shmPath = dbPath + "-shm";
-        if (File.Exists(walPath)) File.Delete(walPath);
-        if (File.Exists(shmPath)) File.Delete(shmPath);
+        if (File.Exists(walPath))
+        {
+            File.Delete(walPath);
+        }
+
+        if (File.Exists(shmPath))
+        {
+            File.Delete(shmPath);
+        }
     }
 
     [Benchmark]

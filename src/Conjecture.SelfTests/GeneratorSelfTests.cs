@@ -31,10 +31,7 @@ public class GeneratorSelfTests
         Strategy<int> xStrategy = new SelfPointArbitrary().Create().Select(p => p.X);
         ConjectureSettings settings = new() { Seed = 2UL, MaxExamples = 20, UseDatabase = false };
 
-        TestRunResult result = await TestRunner.Run(settings, data =>
-        {
-            _ = xStrategy.Generate(data);
-        });
+        TestRunResult result = await TestRunner.Run(settings, data => _ = xStrategy.Generate(data));
 
         Assert.True(result.Passed);
     }
@@ -49,7 +46,10 @@ public class GeneratorSelfTests
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
             SelfPoint p = positivePoints.Generate(data);
-            if (p.X <= 0 || p.Y <= 0) throw new InvalidOperationException("filter violated");
+            if (p.X <= 0 || p.Y <= 0)
+            {
+                throw new InvalidOperationException("filter violated");
+            }
         });
 
         Assert.True(result.Passed);

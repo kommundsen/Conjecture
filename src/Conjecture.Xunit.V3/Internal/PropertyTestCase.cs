@@ -186,22 +186,17 @@ internal sealed class PropertyTestCase : XunitTestCase, ISelfExecutingXunitTestC
             else
             {
                 using ExampleDatabase db = new(dbPath);
-                if (TestCaseHelper.IsAsyncReturnType(methodInfo.ReturnType))
-                {
-                    result = await TestRunner.RunAsync(settings, async data =>
+                result = TestCaseHelper.IsAsyncReturnType(methodInfo.ReturnType)
+                    ? await TestRunner.RunAsync(settings, async data =>
                     {
                         object[] args = SharedParameterStrategyResolver.Resolve(methodParams, data);
                         await TestCaseHelper.InvokeAsync(methodInfo, testInstance, args);
-                    }, db, testIdHash);
-                }
-                else
-                {
-                    result = await TestRunner.Run(settings, data =>
+                    }, db, testIdHash)
+                    : await TestRunner.Run(settings, data =>
                     {
                         object[] args = SharedParameterStrategyResolver.Resolve(methodParams, data);
                         TestCaseHelper.InvokeSync(methodInfo, testInstance, args);
                     }, db, testIdHash);
-                }
 
                 if (explicitCount > 0)
                 {

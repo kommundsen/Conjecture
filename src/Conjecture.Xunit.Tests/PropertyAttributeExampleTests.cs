@@ -50,7 +50,7 @@ public class PropertyAttributeExampleTests
     {
         ParameterInfo[] parameters = GetParams(nameof(TwoIntHelper));
         ExampleAttribute example = new(0, 0);
-        Exception failure = new Exception("fail");
+        Exception failure = new("fail");
 
         string message = TestCaseHelper.BuildExampleFailureMessage(example, parameters, failure);
 

@@ -12,14 +12,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Conjecture.MSTest;
 
 /// <summary>Marks a method as a Conjecture property-based test (MSTest).</summary>
+/// <inheritdoc/>
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-public sealed class PropertyAttribute : TestMethodAttribute
+public sealed class PropertyAttribute(
+    [CallerFilePath] string sourceFile = "",
+    [CallerLineNumber] int sourceLine = -1) : TestMethodAttribute(sourceFile, sourceLine)
 {
-    /// <inheritdoc/>
-    public PropertyAttribute(
-        [CallerFilePath] string sourceFile = "",
-        [CallerLineNumber] int sourceLine = -1)
-        : base(sourceFile, sourceLine) { }
 
     /// <summary>Maximum number of examples to generate. Defaults to 100.</summary>
     public int MaxExamples { get; set; } = 100;
@@ -106,13 +104,9 @@ public sealed class PropertyAttribute : TestMethodAttribute
             result = TestRunResult.WithExtraExamples(result, explicitCount);
         }
 
-        if (result.Passed)
-        {
-            return [new TestResult { Outcome = UnitTestOutcome.Passed }];
-        }
-
-        return
-        [
+        return result.Passed
+            ? [new TestResult { Outcome = UnitTestOutcome.Passed }]
+            : [
             new TestResult
             {
                 Outcome = UnitTestOutcome.Failed,

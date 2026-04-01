@@ -18,9 +18,9 @@ public class StringPropertyE2ETests
 #pragma warning disable IDE0060
     [Property(MaxExamples = 20, Seed = 1UL)]
     public void StringParameter_NoAssertion_Passes(string s) { }
-#pragma warning restore IDE0060
 
     private static void StringMethod(string s) { }
+#pragma warning restore IDE0060
 
     private static ParameterInfo[] Params(string methodName) =>
         typeof(StringPropertyE2ETests)
