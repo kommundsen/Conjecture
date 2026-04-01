@@ -8,39 +8,6 @@ namespace Conjecture.SelfTests;
 
 public class ShrinkerInvariantTests
 {
-    private static Status Replay(IReadOnlyList<IRNode> nodes, Action<ConjectureData> predicate)
-    {
-        ConjectureData data = ConjectureData.ForRecord(nodes);
-        try
-        {
-            predicate(data);
-            return Status.Valid;
-        }
-        catch (UnsatisfiedAssumptionException)
-        {
-            return Status.Invalid;
-        }
-        catch (InvalidOperationException) when (data.Status == Status.Overrun)
-        {
-            return Status.Overrun;
-        }
-        catch
-        {
-            return Status.Interesting;
-        }
-    }
-
-    private static bool IsLexicographicallyLeq(IReadOnlyList<IRNode> a, IReadOnlyList<IRNode> b)
-    {
-        int minLen = Math.Min(a.Count, b.Count);
-        for (int i = 0; i < minLen; i++)
-        {
-            if (a[i].Value < b[i].Value) return true;
-            if (a[i].Value > b[i].Value) return false;
-        }
-        return a.Count <= b.Count;
-    }
-
     private static void FailIfOver10(ConjectureData data)
     {
         ulong v = data.DrawInteger(0, 1000);
@@ -64,7 +31,7 @@ public class ShrinkerInvariantTests
 
         (IReadOnlyList<IRNode> _, int additionalShrinks) = await ShrinkEngine.ShrinkAsync(
             result.Counterexample!,
-            nodes => new ValueTask<Status>(Replay(nodes, FailIfOver10)));
+            nodes => new ValueTask<Status>(SelfTestHelpers.Replay(nodes, FailIfOver10)));
 
         Assert.Equal(0, additionalShrinks);
     }
@@ -77,7 +44,7 @@ public class ShrinkerInvariantTests
         TestRunResult result = await TestRunner.Run(settings, FailIfOver5);
 
         Assert.False(result.Passed);
-        Assert.Equal(Status.Interesting, Replay(result.Counterexample!, FailIfOver5));
+        Assert.Equal(Status.Interesting, SelfTestHelpers.Replay(result.Counterexample!, FailIfOver5));
     }
 
     [Fact]
@@ -93,7 +60,7 @@ public class ShrinkerInvariantTests
 
         Assert.False(result.Passed);
         Assert.True(
-            IsLexicographicallyLeq(result.Counterexample!, result.OriginalCounterexample!),
+            SelfTestHelpers.IsLexicographicallyLeq(result.Counterexample!, result.OriginalCounterexample!),
             "Shrunk counterexample must be lexicographically <= the original failing example.");
     }
 

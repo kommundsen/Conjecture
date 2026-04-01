@@ -409,7 +409,7 @@ The existing `Conjecture.Xunit` (v2, `xunit.extensibility.core` 2.9.3) is preser
     - Generated nested types resolve cross-references
 
 #### Cycle 3.13.4 -- Database and settings self-tests
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.SelfTests/InfrastructureSelfTests.cs`
     - Database round-trips: save then load returns same buffer (as property test)
     - Settings validation: random valid settings always parse correctly
