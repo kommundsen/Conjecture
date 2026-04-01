@@ -14,24 +14,14 @@ internal sealed class BlockSwappingPass : IShrinkPass
                 continue;
             }
 
-            IRNode[] candidate = BuildSwapped(state.Nodes, i);
+            IRNode[] candidate = ShrinkHelper.CopyNodes(state.Nodes);
+            candidate[i] = state.Nodes[i + 1];
+            candidate[i + 1] = state.Nodes[i];
             if (await state.TryUpdate(candidate))
             {
                 return true;
             }
         }
         return false;
-    }
-
-    private static IRNode[] BuildSwapped(IReadOnlyList<IRNode> nodes, int i)
-    {
-        IRNode[] arr = new IRNode[nodes.Count];
-        for (int j = 0; j < nodes.Count; j++)
-        {
-            arr[j] = nodes[j];
-        }
-        arr[i] = nodes[i + 1];
-        arr[i + 1] = nodes[i];
-        return arr;
     }
 }

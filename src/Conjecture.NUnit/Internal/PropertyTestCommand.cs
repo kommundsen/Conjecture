@@ -105,8 +105,8 @@ internal sealed class PropertyTestCommand : DelegatingTestCommand
                     InvokeSync(methodInfo, testInstance, args);
                 }, db, testIdHash);
 
-            // Execute is synchronous by NUnit contract; .GetAwaiter().GetResult() is safe
-            // because NUnit runs tests on thread-pool threads (no captured SynchronizationContext).
+            // NUnit constraint: DelegatingTestCommand.Execute() has no async override.
+            // GetAwaiter().GetResult() is unavoidable here and safe on NUnit's thread-pool threads.
             TestRunResult result = runTask.GetAwaiter().GetResult();
 
             if (explicitCount > 0)
@@ -142,7 +142,7 @@ internal sealed class PropertyTestCommand : DelegatingTestCommand
                 || returnType.GetGenericTypeDefinition() == typeof(ValueTask<>)));
     }
 
-    // Synchronous wait required because NUnit's Execute() signature is sync.
+    // NUnit constraint: Execute() is sync-only; no async alternative exists.
     private static void RunTask(Task task)
     {
         task.GetAwaiter().GetResult();

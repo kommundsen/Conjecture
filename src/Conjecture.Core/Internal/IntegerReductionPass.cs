@@ -22,7 +22,7 @@ internal sealed class IntegerReductionPass : IShrinkPass
             while (lo < hi)
             {
                 ulong mid = lo + (hi - lo) / 2;
-                IRNode[] candidate = Replace(state.Nodes, i, node.WithValue(mid));
+                IRNode[] candidate = ShrinkHelper.Replace(state.Nodes, i, node.WithValue(mid));
                 if (await state.TryUpdate(candidate))
                 {
                     hi = mid;
@@ -39,16 +39,5 @@ internal sealed class IntegerReductionPass : IShrinkPass
             }
         }
         return progress;
-    }
-
-    private static IRNode[] Replace(IReadOnlyList<IRNode> nodes, int index, IRNode replacement)
-    {
-        IRNode[] arr = new IRNode[nodes.Count];
-        for (int i = 0; i < nodes.Count; i++)
-        {
-            arr[i] = i == index ? replacement : nodes[i];
-        }
-
-        return arr;
     }
 }

@@ -11,7 +11,7 @@ internal sealed class IntervalDeletionPass : IShrinkPass
             int limit = state.Nodes.Count - size;
             for (int i = 0; i <= limit; i++)
             {
-                IRNode[] candidate = WithoutInterval(state.Nodes, i, size);
+                IRNode[] candidate = ShrinkHelper.WithoutInterval(state.Nodes, i, size);
                 if (await state.TryUpdate(candidate))
                 {
                     return true;
@@ -19,19 +19,5 @@ internal sealed class IntervalDeletionPass : IShrinkPass
             }
         }
         return false;
-    }
-
-    private static IRNode[] WithoutInterval(IReadOnlyList<IRNode> nodes, int start, int length)
-    {
-        IRNode[] arr = new IRNode[nodes.Count - length];
-        int dst = 0;
-        for (int i = 0; i < nodes.Count; i++)
-        {
-            if (i < start || i >= start + length)
-            {
-                arr[dst++] = nodes[i];
-            }
-        }
-        return arr;
     }
 }

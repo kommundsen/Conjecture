@@ -18,7 +18,9 @@ internal sealed class RedistributionPass : IShrinkPass
 
             for (ulong delta = 1; delta <= maxShift; delta++)
             {
-                IRNode[] candidate = BuildRedistributed(state.Nodes, i, delta);
+                IRNode[] candidate = ShrinkHelper.CopyNodes(state.Nodes);
+                candidate[i] = IRNode.ForInteger(state.Nodes[i].Value - delta, state.Nodes[i].Min, state.Nodes[i].Max);
+                candidate[i + 1] = IRNode.ForInteger(state.Nodes[i + 1].Value + delta, state.Nodes[i + 1].Min, state.Nodes[i + 1].Max);
                 if (await state.TryUpdate(candidate))
                 {
                     return true;
@@ -26,17 +28,5 @@ internal sealed class RedistributionPass : IShrinkPass
             }
         }
         return false;
-    }
-
-    private static IRNode[] BuildRedistributed(IReadOnlyList<IRNode> nodes, int i, ulong delta)
-    {
-        IRNode[] arr = new IRNode[nodes.Count];
-        for (int j = 0; j < nodes.Count; j++)
-        {
-            arr[j] = nodes[j];
-        }
-        arr[i] = IRNode.ForInteger(nodes[i].Value - delta, nodes[i].Min, nodes[i].Max);
-        arr[i + 1] = IRNode.ForInteger(nodes[i + 1].Value + delta, nodes[i + 1].Min, nodes[i + 1].Max);
-        return arr;
     }
 }

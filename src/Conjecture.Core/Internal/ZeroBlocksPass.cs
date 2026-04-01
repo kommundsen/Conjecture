@@ -21,23 +21,12 @@ internal sealed class ZeroBlocksPass : IShrinkPass
                 continue;
             }
 
-            IRNode[] candidate = Replace(state.Nodes, i, node.WithValue(node.Min));
+            IRNode[] candidate = ShrinkHelper.Replace(state.Nodes, i, node.WithValue(node.Min));
             if (await state.TryUpdate(candidate))
             {
                 progress = true;
             }
         }
         return progress;
-    }
-
-    private static IRNode[] Replace(IReadOnlyList<IRNode> nodes, int index, IRNode replacement)
-    {
-        IRNode[] arr = new IRNode[nodes.Count];
-        for (int i = 0; i < nodes.Count; i++)
-        {
-            arr[i] = i == index ? replacement : nodes[i];
-        }
-
-        return arr;
     }
 }

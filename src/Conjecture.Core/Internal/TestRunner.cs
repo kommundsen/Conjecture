@@ -311,36 +311,24 @@ internal static class TestRunner
                 ulong value = reader.ReadUInt64();
                 ulong min = reader.ReadUInt64();
                 ulong max = reader.ReadUInt64();
+                byte[]? rawBytes = null;
+                int rawLen = 0;
                 if (kind == IRNodeKind.Bytes)
                 {
-                    int rawLen = reader.ReadInt32();
-                    byte[] rawBytes = reader.ReadBytes(rawLen);
-                    nodes.Add(IRNode.ForBytes(rawLen, rawBytes));
+                    rawLen = reader.ReadInt32();
+                    rawBytes = reader.ReadBytes(rawLen);
                 }
-                else if (kind == IRNodeKind.Boolean)
+
+                nodes.Add(kind switch
                 {
-                    nodes.Add(IRNode.ForBoolean(value == 1UL));
-                }
-                else if (kind == IRNodeKind.Float64)
-                {
-                    nodes.Add(IRNode.ForFloat64(value, min, max));
-                }
-                else if (kind == IRNodeKind.Float32)
-                {
-                    nodes.Add(IRNode.ForFloat32(value, min, max));
-                }
-                else if (kind == IRNodeKind.StringLength)
-                {
-                    nodes.Add(IRNode.ForStringLength(value, min, max));
-                }
-                else if (kind == IRNodeKind.StringChar)
-                {
-                    nodes.Add(IRNode.ForStringChar(value, min, max));
-                }
-                else
-                {
-                    nodes.Add(IRNode.ForInteger(value, min, max));
-                }
+                    IRNodeKind.Bytes => IRNode.ForBytes(rawLen, rawBytes),
+                    IRNodeKind.Boolean => IRNode.ForBoolean(value == 1UL),
+                    IRNodeKind.Float64 => IRNode.ForFloat64(value, min, max),
+                    IRNodeKind.Float32 => IRNode.ForFloat32(value, min, max),
+                    IRNodeKind.StringLength => IRNode.ForStringLength(value, min, max),
+                    IRNodeKind.StringChar => IRNode.ForStringChar(value, min, max),
+                    _ => IRNode.ForInteger(value, min, max),
+                });
             }
             return nodes;
         }
