@@ -435,7 +435,7 @@ The existing `Conjecture.Xunit` (v2, `xunit.extensibility.core` 2.9.3) is preser
 ### 3.15 API Surface Tracking
 
 #### Cycle 3.15.1 -- PublicAPI tracking for all new projects
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `dotnet build src/ -c Release` with no PublicAPI warnings
   - **Impl** -- Update `PublicAPI.Unshipped.txt` for Core (`ArbitraryAttribute`), xUnit v3 (`PropertyAttribute`), NUnit (`PropertyAttribute`), MSTest (`PropertyAttribute`)
 
