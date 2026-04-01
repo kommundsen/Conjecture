@@ -446,7 +446,7 @@ The existing `Conjecture.Xunit` (v2, `xunit.extensibility.core` 2.9.3) is preser
 Refactor the existing `Conjecture.Xunit` (v2) to delegate to `SharedParameterStrategyResolver`, ensuring identical resolution behavior across all four framework adapters.
 
 #### Cycle 3.16.1 -- Refactor xUnit v2 to use shared resolver
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Xunit.Tests/XunitV2SharedResolverTests.cs`
     - Existing xUnit v2 tests still pass after refactor
     - `[From<T>]`, `[FromFactory]`, type inference all work identically
