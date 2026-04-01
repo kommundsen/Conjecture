@@ -1,0 +1,13 @@
+items:
+  - name: Your First Property Test
+    href: 01-your-first-property-test.md
+  - name: Strategies and Composition
+    href: 02-strategies-and-composition.md
+  - name: Custom Strategies
+    href: 03-custom-strategies.md
+  - name: Shrinking Explained
+    href: 04-shrinking-explained.md
+  - name: Framework Adapters
+    href: 05-framework-adapters.md
+  - name: Advanced Patterns
+    href: 06-advanced-patterns.md
