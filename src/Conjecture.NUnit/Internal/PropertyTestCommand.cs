@@ -47,7 +47,7 @@ internal sealed class PropertyTestCommand : DelegatingTestCommand
 
         foreach (ExampleAttribute ea in exampleAttrs)
         {
-            PropertyTestBuilder.ValidateExampleArgs(ea, methodParams);
+            TestCaseHelper.ValidateExampleArgs(ea, methodParams);
         }
 
         ConjectureSettings settings = new()
@@ -60,8 +60,8 @@ internal sealed class PropertyTestCommand : DelegatingTestCommand
         };
 
         string dbPath = Path.Combine(settings.DatabasePath, "conjecture.db");
-        string testIdHash = PropertyTestBuilder.ComputeTestId(methodInfo);
-        bool isAsync = IsAsyncReturnType(methodInfo.ReturnType);
+        string testIdHash = TestCaseHelper.ComputeTestId(methodInfo);
+        bool isAsync = TestCaseHelper.IsAsyncReturnType(methodInfo.ReturnType);
 
         try
         {
@@ -80,7 +80,7 @@ internal sealed class PropertyTestCommand : DelegatingTestCommand
                 catch (TargetInvocationException ex) when (ex.InnerException is not null)
                 {
                     explicitFailure = new Exception(
-                        PropertyTestBuilder.BuildExampleFailureMessage(ea, methodParams, ex.InnerException),
+                        TestCaseHelper.BuildExampleFailureMessage(ea, methodParams, ex.InnerException),
                         ex.InnerException);
                     break;
                 }
@@ -97,12 +97,12 @@ internal sealed class PropertyTestCommand : DelegatingTestCommand
                 ? TestRunner.RunAsync(settings, async data =>
                 {
                     object[] args = SharedParameterStrategyResolver.Resolve(methodParams, data);
-                    await InvokeAsync(methodInfo, testInstance, args);
+                    await TestCaseHelper.InvokeAsync(methodInfo, testInstance, args);
                 }, db, testIdHash)
                 : TestRunner.Run(settings, data =>
                 {
                     object[] args = SharedParameterStrategyResolver.Resolve(methodParams, data);
-                    InvokeSync(methodInfo, testInstance, args);
+                    TestCaseHelper.InvokeSync(methodInfo, testInstance, args);
                 }, db, testIdHash);
 
             // NUnit constraint: DelegatingTestCommand.Execute() has no async override.
@@ -122,7 +122,7 @@ internal sealed class PropertyTestCommand : DelegatingTestCommand
             {
                 context.CurrentResult.SetResult(
                     ResultState.Failure,
-                    PropertyTestBuilder.BuildFailureMessage(result, methodParams));
+                    TestCaseHelper.BuildFailureMessage(result, methodParams));
             }
         }
         catch (Exception ex)
@@ -133,47 +133,9 @@ internal sealed class PropertyTestCommand : DelegatingTestCommand
         return context.CurrentResult;
     }
 
-    private static bool IsAsyncReturnType(Type returnType)
-    {
-        return returnType == typeof(Task)
-            || returnType == typeof(ValueTask)
-            || (returnType.IsGenericType && (
-                returnType.GetGenericTypeDefinition() == typeof(Task<>)
-                || returnType.GetGenericTypeDefinition() == typeof(ValueTask<>)));
-    }
-
     // NUnit constraint: Execute() is sync-only; no async alternative exists.
     private static void RunTask(Task task)
     {
         task.GetAwaiter().GetResult();
-    }
-
-    private static void InvokeSync(MethodInfo method, object? instance, object[] args)
-    {
-        try
-        {
-            method.Invoke(instance, args);
-        }
-        catch (TargetInvocationException ex) when (ex.InnerException is not null)
-        {
-            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
-        }
-    }
-
-    private static async Task InvokeAsync(MethodInfo method, object? instance, object[] args)
-    {
-        object? returnVal;
-        try
-        {
-            returnVal = method.Invoke(instance, args);
-        }
-        catch (TargetInvocationException ex) when (ex.InnerException is not null)
-        {
-            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
-            return;
-        }
-
-        if (returnVal is Task task) { await task; }
-        else if (returnVal is ValueTask vt) { await vt; }
     }
 }

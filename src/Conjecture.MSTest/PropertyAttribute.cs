@@ -4,7 +4,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
-using Conjecture.MSTest.Internal;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Conjecture.MSTest;
@@ -49,7 +48,7 @@ public sealed class PropertyAttribute : TestMethodAttribute
 
         foreach (ExampleAttribute ea in exampleAttrs)
         {
-            PropertyTestMethodAttribute.ValidateExampleArgs(ea, methodParams);
+            TestCaseHelper.ValidateExampleArgs(ea, methodParams);
         }
 
         ConjectureSettings settings = new()
@@ -62,7 +61,7 @@ public sealed class PropertyAttribute : TestMethodAttribute
         };
 
         string dbPath = Path.Combine(settings.DatabasePath, "conjecture.db");
-        string testIdHash = PropertyTestMethodAttribute.ComputeTestId(methodInfo);
+        string testIdHash = TestCaseHelper.ComputeTestId(methodInfo);
 
         int explicitCount = 0;
         Exception? explicitFailure = null;
@@ -74,7 +73,7 @@ public sealed class PropertyAttribute : TestMethodAttribute
             if (invResult.Outcome != UnitTestOutcome.Passed)
             {
                 explicitFailure = invResult.TestFailureException
-                    ?? new Exception(PropertyTestMethodAttribute.BuildExampleFailureMessage(
+                    ?? new Exception(TestCaseHelper.BuildExampleFailureMessage(
                         ea, methodParams, new Exception($"Example failed with outcome: {invResult.Outcome}")));
                 break;
             }
@@ -115,7 +114,7 @@ public sealed class PropertyAttribute : TestMethodAttribute
             {
                 Outcome = UnitTestOutcome.Failed,
                 TestFailureException = new AssertFailedException(
-                    PropertyTestMethodAttribute.BuildFailureMessage(result, methodParams)),
+                    TestCaseHelper.BuildFailureMessage(result, methodParams)),
             }
         ];
     }

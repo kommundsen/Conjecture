@@ -2,7 +2,6 @@ using System.Reflection;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
 using Conjecture.NUnit;
-using Conjecture.NUnit.Internal;
 using NUnit.Framework;
 
 namespace Conjecture.NUnit.Tests;
@@ -20,7 +19,7 @@ file sealed class PositiveInts : IStrategyProvider<int>
 [TestFixture]
 public class NUnitPropertyExecutionTests
 {
-    // --- Self-exercising [Property] tests (meaningful once PropertyTestBuilder is wired) ---
+    // --- Self-exercising [Property] tests (meaningful once TestCaseHelper is wired) ---
 
 #pragma warning disable IDE0060
     [Property(MaxExamples = 20, Seed = 1)]
@@ -48,7 +47,7 @@ public class NUnitPropertyExecutionTests
     }
 #pragma warning restore IDE0060
 
-    // --- Unit tests for PropertyTestBuilder helper methods ---
+    // --- Unit tests for TestCaseHelper helper methods ---
 
     [Test]
     public void ComputeTestId_ReturnsNonNullHash()
@@ -56,7 +55,7 @@ public class NUnitPropertyExecutionTests
         MethodInfo method = typeof(NUnitPropertyExecutionTests)
             .GetMethod(nameof(IntParameter_NoAssertion_Passes))!;
 
-        string hash = PropertyTestBuilder.ComputeTestId(method);
+        string hash = TestCaseHelper.ComputeTestId(method);
 
         Assert.That(hash, Is.Not.Null);
         Assert.That(hash, Is.Not.Empty);
@@ -68,8 +67,8 @@ public class NUnitPropertyExecutionTests
         MethodInfo method = typeof(NUnitPropertyExecutionTests)
             .GetMethod(nameof(IntParameter_NoAssertion_Passes))!;
 
-        string hash1 = PropertyTestBuilder.ComputeTestId(method);
-        string hash2 = PropertyTestBuilder.ComputeTestId(method);
+        string hash1 = TestCaseHelper.ComputeTestId(method);
+        string hash2 = TestCaseHelper.ComputeTestId(method);
 
         Assert.That(hash1, Is.EqualTo(hash2));
     }
@@ -82,8 +81,8 @@ public class NUnitPropertyExecutionTests
         MethodInfo method2 = typeof(NUnitPropertyExecutionTests)
             .GetMethod(nameof(AsyncTaskReturn_NoAssertion_Passes))!;
 
-        string hash1 = PropertyTestBuilder.ComputeTestId(method1);
-        string hash2 = PropertyTestBuilder.ComputeTestId(method2);
+        string hash1 = TestCaseHelper.ComputeTestId(method1);
+        string hash2 = TestCaseHelper.ComputeTestId(method2);
 
         Assert.That(hash1, Is.Not.EqualTo(hash2));
     }
@@ -157,7 +156,7 @@ public class NUnitPropertyExecutionTests
         });
 
         Assert.That(result.Passed, Is.False);
-        string message = PropertyTestBuilder.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.That(message, Does.Contain("x ="));
     }
 
@@ -174,7 +173,7 @@ public class NUnitPropertyExecutionTests
         });
 
         Assert.That(result.Passed, Is.False);
-        string message = PropertyTestBuilder.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.That(message, Does.Contain("Reproduce with: [Property(Seed = 0xDEADBEEF)]"));
     }
 
@@ -192,7 +191,7 @@ public class NUnitPropertyExecutionTests
         });
 
         Assert.That(result.Passed, Is.False);
-        string message = PropertyTestBuilder.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.That(message, Does.Contain("x ="));
         Assert.That(message, Does.Contain("flag ="));
     }

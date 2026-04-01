@@ -2,7 +2,6 @@ using System.Reflection;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
 using Conjecture.Xunit.V3;
-using Conjecture.Xunit.V3.Internal;
 using Xunit;
 
 namespace Conjecture.Xunit.V3.Tests.EndToEnd;
@@ -112,7 +111,7 @@ public sealed class XunitV3AdapterE2ETests : IDisposable
         });
 
         Assert.False(result.Passed);
-        string message = PropertyTestCaseRunner.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.Contains("x =", message);
         Assert.Contains("Reproduce with: [Property(Seed = 0x5)]", message);
     }
@@ -130,7 +129,7 @@ public sealed class XunitV3AdapterE2ETests : IDisposable
         });
 
         Assert.False(result.Passed);
-        string message = PropertyTestCaseRunner.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.Contains("x =", message);
         Assert.Contains("y =", message);
     }

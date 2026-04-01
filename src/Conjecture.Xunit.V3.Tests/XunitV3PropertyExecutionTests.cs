@@ -2,7 +2,6 @@ using System.Reflection;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
 using Conjecture.Xunit.V3;
-using Conjecture.Xunit.V3.Internal;
 using Xunit;
 
 namespace Conjecture.Xunit.V3.Tests;
@@ -95,7 +94,7 @@ public class XunitV3PropertyExecutionTests
     }
 
     // --- BuildFailureMessage tests ---
-    // These verify that PropertyTestCaseRunner.BuildFailureMessage formats the output correctly.
+    // These verify that TestCaseHelper.BuildFailureMessage formats the output correctly.
     // The test lambdas draw integers the same way the resolver does for int params (Generate.Integers<int>()),
     // so BuildFailureMessage can replay the counterexample through the resolver.
 
@@ -122,7 +121,7 @@ public class XunitV3PropertyExecutionTests
         });
 
         Assert.False(result.Passed);
-        string message = PropertyTestCaseRunner.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.Contains("x =", message);
     }
 
@@ -139,7 +138,7 @@ public class XunitV3PropertyExecutionTests
         });
 
         Assert.False(result.Passed);
-        string message = PropertyTestCaseRunner.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.Contains("Reproduce with: [Property(Seed = 0xDEADBEEF)]", message);
     }
 
@@ -157,7 +156,7 @@ public class XunitV3PropertyExecutionTests
         });
 
         Assert.False(result.Passed);
-        string message = PropertyTestCaseRunner.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.Contains("x =", message);
         Assert.Contains("flag =", message);
     }

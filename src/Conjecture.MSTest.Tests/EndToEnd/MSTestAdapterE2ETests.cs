@@ -1,7 +1,6 @@
 using System.Reflection;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
-using Conjecture.MSTest.Internal;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Conjecture.MSTest.Tests.EndToEnd;
@@ -116,7 +115,7 @@ public sealed class MSTestAdapterE2ETests
         });
 
         Assert.IsFalse(result.Passed);
-        string message = PropertyTestMethodAttribute.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.IsTrue(message.Contains("x ="), $"Expected 'x =' in: {message}");
         Assert.IsTrue(
             message.Contains("Reproduce with: [Property(Seed = 0x5)]"),
@@ -136,7 +135,7 @@ public sealed class MSTestAdapterE2ETests
         });
 
         Assert.IsFalse(result.Passed);
-        string message = PropertyTestMethodAttribute.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.IsTrue(message.Contains("x ="), $"Expected 'x =' in: {message}");
         Assert.IsTrue(message.Contains("y ="), $"Expected 'y =' in: {message}");
     }

@@ -1,7 +1,7 @@
 using System.Reflection;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
-using Conjecture.Xunit.Internal;
+
 
 namespace Conjecture.Xunit.Tests.EndToEnd;
 
@@ -81,13 +81,13 @@ public class SourceGeneratorE2ETests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            object[] args = ParameterStrategyResolver.Resolve(parameters, data);
+            object[] args = SharedParameterStrategyResolver.Resolve(parameters, data);
             SourceCoord c = (SourceCoord)args[0];
             if (c.X > 5) { throw new Exception("X too large"); }
         });
 
         Assert.False(result.Passed);
-        string message = PropertyTestCaseRunner.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.Contains("c =", message);
         Assert.Contains("Reproduce with: [Property(Seed = 0x3)]", message);
     }
@@ -107,7 +107,7 @@ public class SourceGeneratorE2ETests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            object[] args = ParameterStrategyResolver.Resolve(parameters, data);
+            object[] args = SharedParameterStrategyResolver.Resolve(parameters, data);
             SourceEvent e = (SourceEvent)args[0];
             if (e.Tag is null) { throw new Exception("Tag must not be null"); }
         });
@@ -125,7 +125,7 @@ public class SourceGeneratorE2ETests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            object[] args = ParameterStrategyResolver.Resolve(parameters, data);
+            object[] args = SharedParameterStrategyResolver.Resolve(parameters, data);
             Assert.IsType<SourcePoint>(args[0]);
         });
 
@@ -140,7 +140,7 @@ public class SourceGeneratorE2ETests
         SourcePoint First()
         {
             ConjectureData data = ConjectureData.ForGeneration(new SplittableRandom(7UL));
-            object[] args = ParameterStrategyResolver.Resolve(parameters, data);
+            object[] args = SharedParameterStrategyResolver.Resolve(parameters, data);
             return (SourcePoint)args[0];
         }
 

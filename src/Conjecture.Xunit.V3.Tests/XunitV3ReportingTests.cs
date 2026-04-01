@@ -2,7 +2,6 @@ using System.Reflection;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
 using Conjecture.Xunit.V3;
-using Conjecture.Xunit.V3.Internal;
 using Xunit;
 
 namespace Conjecture.Xunit.V3.Tests;
@@ -58,7 +57,7 @@ public sealed class XunitV3ReportingTests : IDisposable
         });
 
         Assert.False(result.Passed);
-        string message = PropertyTestCaseRunner.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.Contains("Falsifying example", message);
     }
 
@@ -79,7 +78,7 @@ public sealed class XunitV3ReportingTests : IDisposable
 
         Assert.False(result.Passed);
         Assert.True(result.ShrinkCount > 0, "Expected shrinking to occur; initial failing value should not be minimal.");
-        string message = PropertyTestCaseRunner.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.Contains("Falsifying example", message);
         Assert.Contains("Minimal counterexample", message);
     }
@@ -91,7 +90,7 @@ public sealed class XunitV3ReportingTests : IDisposable
         ConjectureSettings settings = new() { MaxExamples = 10, UseDatabase = true };
         MethodInfo method = typeof(XunitV3ReportingTests)
             .GetMethod(nameof(Database_FailingRun_BufferSavedToDatabase))!;
-        string testId = PropertyTestCaseRunner.ComputeTestId(method);
+        string testId = TestCaseHelper.ComputeTestId(method);
 
         await TestRunner.Run(settings, _ => throw new InvalidOperationException("fail"), db, testId);
 
@@ -105,7 +104,7 @@ public sealed class XunitV3ReportingTests : IDisposable
         ConjectureSettings settings = new() { MaxExamples = 10, UseDatabase = true };
         MethodInfo method = typeof(XunitV3ReportingTests)
             .GetMethod(nameof(Database_SecondRun_ReplaysStoredBuffer))!;
-        string testId = PropertyTestCaseRunner.ComputeTestId(method);
+        string testId = TestCaseHelper.ComputeTestId(method);
         bool replayInvoked = false;
 
         await TestRunner.Run(settings, _ => throw new InvalidOperationException("fail"), db, testId);

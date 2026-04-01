@@ -1,7 +1,7 @@
 using System.Reflection;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
-using Conjecture.Xunit.Internal;
+
 
 namespace Conjecture.Xunit.Tests.EndToEnd;
 
@@ -34,12 +34,12 @@ public class PropertyShrinkingE2ETests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            object[] args = ParameterStrategyResolver.Resolve(parameters, data);
+            object[] args = SharedParameterStrategyResolver.Resolve(parameters, data);
             if ((int)args[0] > 5) { throw new Exception("fail"); }
         });
 
         Assert.False(result.Passed);
-        string message = PropertyTestCaseRunner.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.Contains("x = 6", message);
     }
 
@@ -51,12 +51,12 @@ public class PropertyShrinkingE2ETests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            object[] args = ParameterStrategyResolver.Resolve(parameters, data);
+            object[] args = SharedParameterStrategyResolver.Resolve(parameters, data);
             if ((int)args[0] > 5) { throw new Exception("fail"); }
         });
 
         Assert.False(result.Passed);
-        string message = PropertyTestCaseRunner.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.Contains("Reproduce with: [Property(Seed = 0x2A)]", message);
     }
 
@@ -71,12 +71,12 @@ public class PropertyShrinkingE2ETests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            object[] args = ParameterStrategyResolver.Resolve(parameters, data);
+            object[] args = SharedParameterStrategyResolver.Resolve(parameters, data);
             if ((int)args[0] + (int)args[1] > 10) { throw new Exception("fail"); }
         });
 
         Assert.False(result.Passed);
-        string message = PropertyTestCaseRunner.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         // Both param names must appear in the message on separate lines
         Assert.Contains("x =", message);
         Assert.Contains("y =", message);
@@ -84,7 +84,7 @@ public class PropertyShrinkingE2ETests
         Assert.True(lines.Length >= 3, $"Expected at least 3 lines (x, y, seed), got: {message}");
         // Reconstruct values from the message to check the sum is minimal (11)
         ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
-        object[] args = ParameterStrategyResolver.Resolve(parameters, replay);
+        object[] args = SharedParameterStrategyResolver.Resolve(parameters, replay);
         Assert.Equal(11, (int)args[0] + (int)args[1]);
     }
 
@@ -99,7 +99,7 @@ public class PropertyShrinkingE2ETests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            ParameterStrategyResolver.Resolve(parameters, data);
+            SharedParameterStrategyResolver.Resolve(parameters, data);
             count++;
         });
 
@@ -120,7 +120,7 @@ public class PropertyShrinkingE2ETests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            object[] args = ParameterStrategyResolver.Resolve(parameters, data);
+            object[] args = SharedParameterStrategyResolver.Resolve(parameters, data);
             int x = (int)args[0];
             Assume.That(x > 0);
             if (x > 5) { throw new Exception("fail"); }
@@ -129,10 +129,10 @@ public class PropertyShrinkingE2ETests
         Assert.False(result.Passed);
         // Replay shrunk nodes to confirm value is 6
         ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
-        object[] shrunkArgs = ParameterStrategyResolver.Resolve(parameters, replay);
+        object[] shrunkArgs = SharedParameterStrategyResolver.Resolve(parameters, replay);
         Assert.Equal(6, (int)shrunkArgs[0]);
         // And it appears in the message
-        string message = PropertyTestCaseRunner.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.Contains("x = 6", message);
     }
 

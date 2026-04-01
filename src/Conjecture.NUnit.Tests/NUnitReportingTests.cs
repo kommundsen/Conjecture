@@ -1,7 +1,6 @@
 using System.Reflection;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
-using Conjecture.NUnit.Internal;
 using NUnit.Framework;
 
 namespace Conjecture.NUnit.Tests;
@@ -54,7 +53,7 @@ public sealed class NUnitReportingTests
         });
 
         Assert.That(result.Passed, Is.False);
-        string message = PropertyTestBuilder.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.That(message, Does.Contain("Falsifying example"));
     }
 
@@ -72,7 +71,7 @@ public sealed class NUnitReportingTests
 
         Assert.That(result.Passed, Is.False);
         Assert.That(result.ShrinkCount, Is.GreaterThan(0), "Expected shrinking to occur; initial value should not already be minimal.");
-        string message = PropertyTestBuilder.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.That(message, Does.Contain("Falsifying example"));
         Assert.That(message, Does.Contain("Minimal counterexample"));
     }
@@ -90,7 +89,7 @@ public sealed class NUnitReportingTests
         });
 
         Assert.That(result.Passed, Is.False);
-        string message = PropertyTestBuilder.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.That(message, Does.Contain("Reproduce with: [Property(Seed = 0xDEADBEEF)]"));
     }
 
@@ -100,7 +99,7 @@ public sealed class NUnitReportingTests
         ConjectureSettings settings = new() { MaxExamples = 10, UseDatabase = true };
         MethodInfo method = typeof(NUnitReportingTests)
             .GetMethod(nameof(Database_FailingRun_BufferSavedToDatabase))!;
-        string testId = PropertyTestBuilder.ComputeTestId(method);
+        string testId = TestCaseHelper.ComputeTestId(method);
 
         await TestRunner.Run(settings, _ => throw new InvalidOperationException("fail"), db, testId);
 
@@ -113,7 +112,7 @@ public sealed class NUnitReportingTests
         ConjectureSettings settings = new() { MaxExamples = 10, UseDatabase = true };
         MethodInfo method = typeof(NUnitReportingTests)
             .GetMethod(nameof(Database_SecondRun_ReplaysStoredBuffer))!;
-        string testId = PropertyTestBuilder.ComputeTestId(method);
+        string testId = TestCaseHelper.ComputeTestId(method);
         bool replayInvoked = false;
 
         await TestRunner.Run(settings, _ => throw new InvalidOperationException("fail"), db, testId);

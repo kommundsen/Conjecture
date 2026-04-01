@@ -1,7 +1,7 @@
 using System.Reflection;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
-using Conjecture.Xunit.Internal;
+
 
 namespace Conjecture.Xunit.Tests;
 
@@ -45,7 +45,7 @@ public class FromFactoryAttributeResolverTests
 
         for (int i = 0; i < 20; i++)
         {
-            object[] args = ParameterStrategyResolver.Resolve(parameters, MakeData((ulong)i));
+            object[] args = SharedParameterStrategyResolver.Resolve(parameters, MakeData((ulong)i));
             int value = Assert.IsType<int>(args[0]);
             Assert.Equal(0, value % 2);
             Assert.InRange(value, 0, 50);
@@ -60,7 +60,7 @@ public class FromFactoryAttributeResolverTests
         ParameterInfo[] parameters = ParamsOf(nameof(WithMissingMethod));
 
         InvalidOperationException ex = Assert.Throws<InvalidOperationException>(
-            () => ParameterStrategyResolver.Resolve(parameters, MakeData()));
+            () => SharedParameterStrategyResolver.Resolve(parameters, MakeData()));
 
         Assert.Contains("NoSuchMethod", ex.Message);
     }
@@ -73,7 +73,7 @@ public class FromFactoryAttributeResolverTests
         ParameterInfo[] parameters = ParamsOf(nameof(WithNonStaticFactory));
 
         InvalidOperationException ex = Assert.Throws<InvalidOperationException>(
-            () => ParameterStrategyResolver.Resolve(parameters, MakeData()));
+            () => SharedParameterStrategyResolver.Resolve(parameters, MakeData()));
 
         Assert.Contains("static", ex.Message, StringComparison.OrdinalIgnoreCase);
     }
@@ -86,7 +86,7 @@ public class FromFactoryAttributeResolverTests
         ParameterInfo[] parameters = ParamsOf(nameof(WithWrongReturnType));
 
         InvalidOperationException ex = Assert.Throws<InvalidOperationException>(
-            () => ParameterStrategyResolver.Resolve(parameters, MakeData()));
+            () => SharedParameterStrategyResolver.Resolve(parameters, MakeData()));
 
         Assert.Contains("Strategy<", ex.Message);
     }

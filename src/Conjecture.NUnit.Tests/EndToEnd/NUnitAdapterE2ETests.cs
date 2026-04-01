@@ -1,7 +1,6 @@
 using System.Reflection;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
-using Conjecture.NUnit.Internal;
 using NUnit.Framework;
 
 namespace Conjecture.NUnit.Tests.EndToEnd;
@@ -116,7 +115,7 @@ public sealed class NUnitAdapterE2ETests
         });
 
         Assert.That(result.Passed, Is.False);
-        string message = PropertyTestBuilder.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.That(message, Does.Contain("x ="));
         Assert.That(message, Does.Contain("Reproduce with: [Property(Seed = 0x5)]"));
     }
@@ -134,7 +133,7 @@ public sealed class NUnitAdapterE2ETests
         });
 
         Assert.That(result.Passed, Is.False);
-        string message = PropertyTestBuilder.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.That(message, Does.Contain("x ="));
         Assert.That(message, Does.Contain("y ="));
     }

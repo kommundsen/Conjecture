@@ -1,7 +1,7 @@
 using System.Reflection;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
-using Conjecture.Xunit.Internal;
+
 
 namespace Conjecture.Xunit.Tests;
 
@@ -78,7 +78,7 @@ public class XunitV2SharedResolverTests
     {
         ParameterInfo[] parameters = ParamsOf(methodName);
 
-        object[] args = ParameterStrategyResolver.Resolve(parameters, MakeData());
+        object[] args = SharedParameterStrategyResolver.Resolve(parameters, MakeData());
 
         Assert.Single(args);
         Assert.NotNull(args[0]);
@@ -93,7 +93,7 @@ public class XunitV2SharedResolverTests
 
         for (int i = 0; i < 20; i++)
         {
-            object[] args = ParameterStrategyResolver.Resolve(parameters, MakeData((ulong)i));
+            object[] args = SharedParameterStrategyResolver.Resolve(parameters, MakeData((ulong)i));
             int value = Assert.IsType<int>(args[0]);
             Assert.Equal(0, value % 2);
         }
@@ -108,7 +108,7 @@ public class XunitV2SharedResolverTests
 
         for (int i = 0; i < 20; i++)
         {
-            object[] args = ParameterStrategyResolver.Resolve(parameters, MakeData((ulong)i));
+            object[] args = SharedParameterStrategyResolver.Resolve(parameters, MakeData((ulong)i));
             int value = Assert.IsType<int>(args[0]);
             Assert.Equal(0, value % 2);
             Assert.InRange(value, 0, 20);
@@ -122,7 +122,7 @@ public class XunitV2SharedResolverTests
     {
         ParameterInfo[] parameters = ParamsOf(nameof(TakesPoint));
 
-        object[] args = ParameterStrategyResolver.Resolve(parameters, MakeData());
+        object[] args = SharedParameterStrategyResolver.Resolve(parameters, MakeData());
 
         Point p = Assert.IsType<Point>(args[0]);
         Assert.InRange(p.X, -100, 100);

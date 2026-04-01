@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using System.Text;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
 using Xunit.Abstractions;
@@ -34,29 +33,6 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
         };
     }
 
-    [RequiresUnreferencedCode("Accesses type and parameter metadata via reflection; not trim-safe.")]
-    internal static string ComputeTestId(MethodInfo method)
-    {
-        StringBuilder sb = new();
-        sb.Append(method.DeclaringType?.FullName ?? method.DeclaringType?.Name ?? "Unknown");
-        sb.Append('.');
-        sb.Append(method.Name);
-        sb.Append('(');
-        ParameterInfo[] parameters = method.GetParameters();
-        for (int i = 0; i < parameters.Length; i++)
-        {
-            if (i > 0)
-            {
-                sb.Append(',');
-            }
-
-            sb.Append(parameters[i].ParameterType.FullName ?? parameters[i].ParameterType.Name);
-        }
-
-        sb.Append(')');
-        return TestIdHasher.Hash(sb.ToString());
-    }
-
     [RequiresDynamicCode("xUnit test execution invokes test methods and creates instances via reflection.")]
     [RequiresUnreferencedCode("xUnit test execution accesses type and method metadata that may be trimmed.")]
     protected override async Task<RunSummary> RunTestAsync()
@@ -78,7 +54,7 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
             object? testInstance = Activator.CreateInstance(TestClass);
             MethodInfo methodInfo = TestMethod;
             string dbPath = Path.Combine(settings.DatabasePath, "conjecture.db");
-            string testIdHash = ComputeTestId(methodInfo);
+            string testIdHash = TestCaseHelper.ComputeTestId(methodInfo);
 
             ParameterInfo[] methodParams = methodInfo.GetParameters();
 
@@ -89,7 +65,7 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
 
             foreach (ExampleAttribute exampleAttr in exampleAttrs)
             {
-                ValidateExampleArgs(exampleAttr, methodParams);
+                TestCaseHelper.ValidateExampleArgs(exampleAttr, methodParams);
             }
 
             int explicitCount = 0;
@@ -104,7 +80,7 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
                 }
                 catch (TargetInvocationException ex) when (ex.InnerException is not null)
                 {
-                    explicitFailure = new Exception(BuildExampleFailureMessage(exampleAttr, methodParams, ex.InnerException), ex.InnerException);
+                    explicitFailure = new Exception(TestCaseHelper.BuildExampleFailureMessage(exampleAttr, methodParams, ex.InnerException), ex.InnerException);
                     break;
                 }
             }
@@ -116,20 +92,20 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
             else
             {
                 using ExampleDatabase db = new(dbPath);
-                if (IsAsyncReturnType(methodInfo.ReturnType))
+                if (TestCaseHelper.IsAsyncReturnType(methodInfo.ReturnType))
                 {
                     result = await TestRunner.RunAsync(settings, async data =>
                     {
-                        object[] args = ParameterStrategyResolver.Resolve(methodParams, data);
-                        await InvokeAsync(methodInfo, testInstance, args);
+                        object[] args = SharedParameterStrategyResolver.Resolve(methodParams, data);
+                        await TestCaseHelper.InvokeAsync(methodInfo, testInstance, args);
                     }, db, testIdHash);
                 }
                 else
                 {
                     result = await TestRunner.Run(settings, data =>
                     {
-                        object[] args = ParameterStrategyResolver.Resolve(methodParams, data);
-                        InvokeSync(methodInfo, testInstance, args);
+                        object[] args = SharedParameterStrategyResolver.Resolve(methodParams, data);
+                        TestCaseHelper.InvokeSync(methodInfo, testInstance, args);
                     }, db, testIdHash);
                 }
 
@@ -158,7 +134,7 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
         {
             summary.Failed = 1;
             Exception failure = setupFailure
-                ?? new Exception(BuildFailureMessage(result!, TestMethod.GetParameters()));
+                ?? new Exception(TestCaseHelper.BuildFailureMessage(result!, TestMethod.GetParameters()));
             if (!MessageBus.QueueMessage(new TestFailed(test, elapsed, null, failure)))
             {
                 CancellationTokenSource.Cancel();
@@ -171,82 +147,5 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
         }
 
         return summary;
-    }
-
-    [RequiresUnreferencedCode("Resolves parameter strategies by Type, which may be trimmed.")]
-    internal static string BuildFailureMessage(TestRunResult result, ParameterInfo[] parameters)
-    {
-        IEnumerable<(string name, object value)> shrunkPairs = ResolvePairs(result.Counterexample!);
-        string message = result.OriginalCounterexample is not null
-            ? CounterexampleFormatter.Format(ResolvePairs(result.OriginalCounterexample), shrunkPairs, result.Seed!.Value, result.ExampleCount, result.ShrinkCount)
-            : CounterexampleFormatter.Format(shrunkPairs, result.Seed!.Value, result.ExampleCount, result.ShrinkCount);
-        string trimmedTrace = StackTraceTrimmer.Trim(result.FailureStackTrace);
-        return string.IsNullOrEmpty(trimmedTrace) ? message : message + Environment.NewLine + trimmedTrace;
-
-        IEnumerable<(string name, object value)> ResolvePairs(IReadOnlyList<IRNode> nodes)
-        {
-            ConjectureData replay = ConjectureData.ForRecord(nodes);
-            object[] values = ParameterStrategyResolver.Resolve(parameters, replay);
-            return parameters.Zip(values, (p, v) => (p.Name!, (object)v!));
-        }
-    }
-
-    private static bool IsAsyncReturnType(Type returnType)
-    {
-        return returnType == typeof(Task)
-            || returnType == typeof(ValueTask)
-            || (returnType.IsGenericType && (
-                returnType.GetGenericTypeDefinition() == typeof(Task<>)
-                || returnType.GetGenericTypeDefinition() == typeof(ValueTask<>)));
-    }
-
-    private static void InvokeSync(MethodInfo method, object? instance, object[] args)
-    {
-        try
-        {
-            method.Invoke(instance, args);
-        }
-        catch (TargetInvocationException ex) when (ex.InnerException is not null)
-        {
-            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
-        }
-    }
-
-    private static async Task InvokeAsync(MethodInfo method, object? instance, object[] args)
-    {
-        object? result;
-        try
-        {
-            result = method.Invoke(instance, args);
-        }
-        catch (TargetInvocationException ex) when (ex.InnerException is not null)
-        {
-            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
-            return;
-        }
-
-        if (result is Task task)
-        {
-            await task;
-        }
-        else if (result is ValueTask valueTask)
-        {
-            await valueTask;
-        }
-    }
-
-    internal static void ValidateExampleArgs(ExampleAttribute example, ParameterInfo[] parameters)
-    {
-        if (example.Arguments.Length != parameters.Length)
-        {
-            throw new ArgumentException(
-                $"[Example] provides {example.Arguments.Length} argument(s) but the method expects {parameters.Length}.");
-        }
-    }
-
-    internal static string BuildExampleFailureMessage(ExampleAttribute example, ParameterInfo[] parameters, Exception failure)
-    {
-        IEnumerable<(string name, object? value)> pairs = parameters.Zip(example.Arguments, (p, a) => (p.Name!, a));
-        return CounterexampleFormatter.FormatExplicit(pairs, failure);
     }
 }

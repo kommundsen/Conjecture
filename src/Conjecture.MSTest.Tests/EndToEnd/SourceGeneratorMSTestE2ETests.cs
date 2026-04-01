@@ -1,7 +1,6 @@
 using System.Reflection;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
-using Conjecture.MSTest.Internal;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ConjectureProperty = Conjecture.MSTest.PropertyAttribute;
 
@@ -90,7 +89,7 @@ public class SourceGeneratorMSTestE2ETests
         });
 
         Assert.IsFalse(result.Passed);
-        string message = PropertyTestMethodAttribute.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.IsTrue(message.Contains("c ="), $"Expected 'c =' in: {message}");
         Assert.IsTrue(message.Contains("Reproduce with: [Property(Seed = 0x3)]"), $"Expected seed line in: {message}");
     }

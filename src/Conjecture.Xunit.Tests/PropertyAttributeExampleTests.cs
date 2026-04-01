@@ -2,7 +2,7 @@ using System.Reflection;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
 using Conjecture.Xunit;
-using Conjecture.Xunit.Internal;
+
 
 namespace Conjecture.Xunit.Tests;
 
@@ -34,7 +34,7 @@ public class PropertyAttributeExampleTests
         ExampleAttribute example = new(3, 7);
         Exception failure = new InvalidOperationException("bad value");
 
-        string message = PropertyTestCaseRunner.BuildExampleFailureMessage(example, parameters, failure);
+        string message = TestCaseHelper.BuildExampleFailureMessage(example, parameters, failure);
 
         Assert.Contains("x =", message);
         Assert.Contains("y =", message);
@@ -49,7 +49,7 @@ public class PropertyAttributeExampleTests
         ExampleAttribute example = new(0, 0);
         Exception failure = new Exception("fail");
 
-        string message = PropertyTestCaseRunner.BuildExampleFailureMessage(example, parameters, failure);
+        string message = TestCaseHelper.BuildExampleFailureMessage(example, parameters, failure);
 
         Assert.Contains("explicit", message, StringComparison.OrdinalIgnoreCase);
     }
@@ -61,7 +61,7 @@ public class PropertyAttributeExampleTests
         ExampleAttribute example = new(1, 2);
         Exception failure = new InvalidOperationException("specific failure reason");
 
-        string message = PropertyTestCaseRunner.BuildExampleFailureMessage(example, parameters, failure);
+        string message = TestCaseHelper.BuildExampleFailureMessage(example, parameters, failure);
 
         Assert.Contains("specific failure reason", message);
     }
@@ -75,7 +75,7 @@ public class PropertyAttributeExampleTests
         ExampleAttribute wrongCount = new(1); // 1 arg for 2-param method
 
         ArgumentException ex = Assert.Throws<ArgumentException>(
-            () => PropertyTestCaseRunner.ValidateExampleArgs(wrongCount, twoParams));
+            () => TestCaseHelper.ValidateExampleArgs(wrongCount, twoParams));
 
         Assert.Contains("2", ex.Message);
     }
@@ -87,7 +87,7 @@ public class PropertyAttributeExampleTests
         ExampleAttribute correct = new(1, 2);
 
         // Should not throw
-        PropertyTestCaseRunner.ValidateExampleArgs(correct, twoParams);
+        TestCaseHelper.ValidateExampleArgs(correct, twoParams);
     }
 
     [Fact]
@@ -97,7 +97,7 @@ public class PropertyAttributeExampleTests
         ExampleAttribute tooMany = new(1, 2, 3); // 3 args for 2-param method
 
         Assert.Throws<ArgumentException>(
-            () => PropertyTestCaseRunner.ValidateExampleArgs(tooMany, twoParams));
+            () => TestCaseHelper.ValidateExampleArgs(tooMany, twoParams));
     }
 
     // ── Explicit examples contribute to ExampleCount ─────────────────────────

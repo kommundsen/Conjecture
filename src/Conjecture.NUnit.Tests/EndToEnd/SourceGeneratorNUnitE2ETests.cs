@@ -1,7 +1,6 @@
 using System.Reflection;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
-using Conjecture.NUnit.Internal;
 using NUnit.Framework;
 using ConjectureProperty = Conjecture.NUnit.PropertyAttribute;
 
@@ -90,7 +89,7 @@ public class SourceGeneratorNUnitE2ETests
         });
 
         Assert.That(result.Passed, Is.False);
-        string message = PropertyTestBuilder.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.That(message, Does.Contain("c ="));
         Assert.That(message, Does.Contain("Reproduce with: [Property(Seed = 0x3)]"));
     }

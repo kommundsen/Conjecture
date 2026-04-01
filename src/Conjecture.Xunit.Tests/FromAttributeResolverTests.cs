@@ -1,7 +1,7 @@
 using System.Reflection;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
-using Conjecture.Xunit.Internal;
+
 
 namespace Conjecture.Xunit.Tests;
 
@@ -39,7 +39,7 @@ public class FromAttributeResolverTests
 
         for (int i = 0; i < 50; i++)
         {
-            object[] args = ParameterStrategyResolver.Resolve(parameters, MakeData((ulong)i));
+            object[] args = SharedParameterStrategyResolver.Resolve(parameters, MakeData((ulong)i));
             int value = Assert.IsType<int>(args[0]);
             Assert.True(value >= 1, $"Expected positive int from provider, got {value}");
         }
@@ -49,7 +49,7 @@ public class FromAttributeResolverTests
     public void Resolve_FromAttribute_InstantiatesProviderAndDrawsValue()
     {
         ParameterInfo[] parameters = ParamsOf(nameof(FromPositiveInts));
-        object[] args = ParameterStrategyResolver.Resolve(parameters, MakeData());
+        object[] args = SharedParameterStrategyResolver.Resolve(parameters, MakeData());
 
         Assert.Single(args);
         Assert.IsType<int>(args[0]);
@@ -61,7 +61,7 @@ public class FromAttributeResolverTests
         ParameterInfo[] parameters = ParamsOf(nameof(WrongType));
 
         InvalidOperationException ex = Assert.Throws<InvalidOperationException>(
-            () => ParameterStrategyResolver.Resolve(parameters, MakeData()));
+            () => SharedParameterStrategyResolver.Resolve(parameters, MakeData()));
 
         Assert.Contains("string", ex.Message, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("int", ex.Message, StringComparison.OrdinalIgnoreCase);
@@ -71,7 +71,7 @@ public class FromAttributeResolverTests
     public void Resolve_NoFromAttribute_FallsBackToTypeInference()
     {
         ParameterInfo[] parameters = ParamsOf(nameof(PlainInt));
-        object[] args = ParameterStrategyResolver.Resolve(parameters, MakeData());
+        object[] args = SharedParameterStrategyResolver.Resolve(parameters, MakeData());
 
         Assert.Single(args);
         Assert.IsType<int>(args[0]);
@@ -81,7 +81,7 @@ public class FromAttributeResolverTests
     public void Resolve_MixedParams_FromAndInferred_BothResolved()
     {
         ParameterInfo[] parameters = ParamsOf(nameof(MixedParams));
-        object[] args = ParameterStrategyResolver.Resolve(parameters, MakeData());
+        object[] args = SharedParameterStrategyResolver.Resolve(parameters, MakeData());
 
         Assert.Equal(2, args.Length);
         int n = Assert.IsType<int>(args[0]);

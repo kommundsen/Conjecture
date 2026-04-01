@@ -1,13 +1,13 @@
 using System.Reflection;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
-using Conjecture.Xunit.Internal;
+
 
 namespace Conjecture.Xunit.Tests;
 
 /// <summary>
-/// Tests that PropertyTestCaseRunner wires ExampleDatabase and TestIdHasher into TestRunner.
-/// Drives: PropertyTestCaseRunner.ComputeTestId(MethodInfo).
+/// Tests that TestCaseHelper wires ExampleDatabase and TestIdHasher into TestRunner.
+/// Drives: TestCaseHelper.ComputeTestId(MethodInfo).
 /// </summary>
 public sealed class PropertyAttributeDatabaseTests : IDisposable
 {
@@ -89,7 +89,7 @@ public sealed class PropertyAttributeDatabaseTests : IDisposable
         MethodInfo method = typeof(PropertyAttributeDatabaseTests)
             .GetMethod(nameof(ComputeTestId_ReturnsNonEmptyString))!;
 
-        string testId = PropertyTestCaseRunner.ComputeTestId(method);
+        string testId = TestCaseHelper.ComputeTestId(method);
 
         Assert.NotEmpty(testId);
     }
@@ -100,8 +100,8 @@ public sealed class PropertyAttributeDatabaseTests : IDisposable
         MethodInfo method = typeof(PropertyAttributeDatabaseTests)
             .GetMethod(nameof(ComputeTestId_SameMethod_SameHash))!;
 
-        string id1 = PropertyTestCaseRunner.ComputeTestId(method);
-        string id2 = PropertyTestCaseRunner.ComputeTestId(method);
+        string id1 = TestCaseHelper.ComputeTestId(method);
+        string id2 = TestCaseHelper.ComputeTestId(method);
 
         Assert.Equal(id1, id2);
     }
@@ -114,8 +114,8 @@ public sealed class PropertyAttributeDatabaseTests : IDisposable
         MethodInfo method2 = typeof(PropertyAttributeDatabaseTests)
             .GetMethod(nameof(ComputeTestId_DifferentMethods_DifferentHashes))!;
 
-        string id1 = PropertyTestCaseRunner.ComputeTestId(method1);
-        string id2 = PropertyTestCaseRunner.ComputeTestId(method2);
+        string id1 = TestCaseHelper.ComputeTestId(method1);
+        string id2 = TestCaseHelper.ComputeTestId(method2);
 
         Assert.NotEqual(id1, id2);
     }

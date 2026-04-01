@@ -1,7 +1,7 @@
 using System.Reflection;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
-using Conjecture.Xunit.Internal;
+
 
 namespace Conjecture.Xunit.Tests;
 
@@ -28,35 +28,35 @@ public class ParameterStrategyResolverExtendedTests
     [Fact]
     public void Resolve_StringParam_ReturnsString()
     {
-        object[] args = ParameterStrategyResolver.Resolve(ParamsOf(nameof(StringParamMethod)), MakeData());
+        object[] args = SharedParameterStrategyResolver.Resolve(ParamsOf(nameof(StringParamMethod)), MakeData());
         Assert.IsType<string>(args[0]);
     }
 
     [Fact]
     public void Resolve_FloatParam_ReturnsFloat()
     {
-        object[] args = ParameterStrategyResolver.Resolve(ParamsOf(nameof(FloatParamMethod)), MakeData());
+        object[] args = SharedParameterStrategyResolver.Resolve(ParamsOf(nameof(FloatParamMethod)), MakeData());
         Assert.IsType<float>(args[0]);
     }
 
     [Fact]
     public void Resolve_DoubleParam_ReturnsDouble()
     {
-        object[] args = ParameterStrategyResolver.Resolve(ParamsOf(nameof(DoubleParamMethod)), MakeData());
+        object[] args = SharedParameterStrategyResolver.Resolve(ParamsOf(nameof(DoubleParamMethod)), MakeData());
         Assert.IsType<double>(args[0]);
     }
 
     [Fact]
     public void Resolve_ListIntParam_ReturnsListOfInt()
     {
-        object[] args = ParameterStrategyResolver.Resolve(ParamsOf(nameof(ListIntParamMethod)), MakeData());
+        object[] args = SharedParameterStrategyResolver.Resolve(ParamsOf(nameof(ListIntParamMethod)), MakeData());
         Assert.IsType<List<int>>(args[0]);
     }
 
     [Fact]
     public void Resolve_EnumParam_ReturnsValidEnumValue()
     {
-        object[] args = ParameterStrategyResolver.Resolve(ParamsOf(nameof(DayOfWeekParamMethod)), MakeData());
+        object[] args = SharedParameterStrategyResolver.Resolve(ParamsOf(nameof(DayOfWeekParamMethod)), MakeData());
         Assert.IsType<DayOfWeek>(args[0]);
         Assert.Contains((DayOfWeek)args[0], Enum.GetValues<DayOfWeek>());
     }
@@ -69,7 +69,7 @@ public class ParameterStrategyResolverExtendedTests
 
         for (int i = 0; i < 200 && !seenNull; i++)
         {
-            object[] args = ParameterStrategyResolver.Resolve(parameters, MakeData((ulong)i));
+            object[] args = SharedParameterStrategyResolver.Resolve(parameters, MakeData((ulong)i));
             if (args[0] is null) { seenNull = true; }
         }
 
@@ -84,7 +84,7 @@ public class ParameterStrategyResolverExtendedTests
 
         for (int i = 0; i < 200 && !seenNonNull; i++)
         {
-            object[] args = ParameterStrategyResolver.Resolve(parameters, MakeData((ulong)i));
+            object[] args = SharedParameterStrategyResolver.Resolve(parameters, MakeData((ulong)i));
             if (args[0] is not null)
             {
                 Assert.IsType<int>(args[0]);
@@ -99,7 +99,7 @@ public class ParameterStrategyResolverExtendedTests
     public void Resolve_UnsupportedType_ThrowsNotSupportedExceptionWithTypeName()
     {
         NotSupportedException ex = Assert.Throws<NotSupportedException>(
-            () => ParameterStrategyResolver.Resolve(ParamsOf(nameof(GuidParamMethod)), MakeData()));
+            () => SharedParameterStrategyResolver.Resolve(ParamsOf(nameof(GuidParamMethod)), MakeData()));
         Assert.Contains("Guid", ex.Message);
     }
 }

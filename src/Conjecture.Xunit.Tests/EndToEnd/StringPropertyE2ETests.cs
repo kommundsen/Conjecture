@@ -1,7 +1,7 @@
 using System.Reflection;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
-using Conjecture.Xunit.Internal;
+
 
 namespace Conjecture.Xunit.Tests.EndToEnd;
 
@@ -35,7 +35,7 @@ public class StringPropertyE2ETests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            ParameterStrategyResolver.Resolve(parameters, data);
+            SharedParameterStrategyResolver.Resolve(parameters, data);
             count++;
         });
 
@@ -56,14 +56,14 @@ public class StringPropertyE2ETests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            object[] args = ParameterStrategyResolver.Resolve(parameters, data);
+            object[] args = SharedParameterStrategyResolver.Resolve(parameters, data);
             string s = (string)args[0];
             if (s.Length > 3) { throw new Exception("too long"); }
         });
 
         Assert.False(result.Passed);
         ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
-        object[] shrunkArgs = ParameterStrategyResolver.Resolve(parameters, replay);
+        object[] shrunkArgs = SharedParameterStrategyResolver.Resolve(parameters, replay);
         string shrunk = (string)shrunkArgs[0];
         Assert.Equal(4, shrunk.Length);
     }
@@ -76,14 +76,14 @@ public class StringPropertyE2ETests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            object[] args = ParameterStrategyResolver.Resolve(parameters, data);
+            object[] args = SharedParameterStrategyResolver.Resolve(parameters, data);
             string s = (string)args[0];
             if (s.Length > 3) { throw new Exception("too long"); }
         });
 
         Assert.False(result.Passed);
         ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
-        object[] shrunkArgs = ParameterStrategyResolver.Resolve(parameters, replay);
+        object[] shrunkArgs = SharedParameterStrategyResolver.Resolve(parameters, replay);
         string shrunk = (string)shrunkArgs[0];
         Assert.True(shrunk.Length > 3, $"Replayed shrunk string '{shrunk}' does not trigger the failure condition");
     }
@@ -98,13 +98,13 @@ public class StringPropertyE2ETests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            object[] args = ParameterStrategyResolver.Resolve(parameters, data);
+            object[] args = SharedParameterStrategyResolver.Resolve(parameters, data);
             string s = (string)args[0];
             if (s.Length > 3) { throw new Exception("too long"); }
         });
 
         Assert.False(result.Passed);
-        string message = PropertyTestCaseRunner.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.Contains("s = \"", message);
     }
 
@@ -116,13 +116,13 @@ public class StringPropertyE2ETests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            object[] args = ParameterStrategyResolver.Resolve(parameters, data);
+            object[] args = SharedParameterStrategyResolver.Resolve(parameters, data);
             string s = (string)args[0];
             if (s.Length > 3) { throw new Exception("too long"); }
         });
 
         Assert.False(result.Passed);
-        string message = PropertyTestCaseRunner.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.Contains("s =", message);
         Assert.Contains("Reproduce with: [Property(Seed = 0x7)]", message);
     }

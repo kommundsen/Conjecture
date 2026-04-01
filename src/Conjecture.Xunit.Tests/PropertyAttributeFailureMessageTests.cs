@@ -1,13 +1,13 @@
 using System.Reflection;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
-using Conjecture.Xunit.Internal;
+
 
 namespace Conjecture.Xunit.Tests;
 
 /// <summary>
 /// Tests that [Property] failure messages include formatted parameter values and the seed.
-/// Drives: TestRunResult.Seed, PropertyTestCaseRunner.BuildFailureMessage.
+/// Drives: TestRunResult.Seed, TestCaseHelper.BuildFailureMessage.
 /// </summary>
 public class PropertyAttributeFailureMessageTests
 {
@@ -58,12 +58,12 @@ public class PropertyAttributeFailureMessageTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            object[] args = ParameterStrategyResolver.Resolve(parameters, data);
+            object[] args = SharedParameterStrategyResolver.Resolve(parameters, data);
             if ((int)args[0] > 5) { throw new Exception("fail"); }
         });
 
         Assert.False(result.Passed);
-        string message = PropertyTestCaseRunner.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.Contains("x =", message);
     }
 
@@ -75,12 +75,12 @@ public class PropertyAttributeFailureMessageTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            object[] args = ParameterStrategyResolver.Resolve(parameters, data);
+            object[] args = SharedParameterStrategyResolver.Resolve(parameters, data);
             if ((int)args[0] > 5) { throw new Exception("fail"); }
         });
 
         Assert.False(result.Passed);
-        string message = PropertyTestCaseRunner.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.Contains("Reproduce with: [Property(Seed = 0xDEADBEEF)]", message);
     }
 
@@ -92,12 +92,12 @@ public class PropertyAttributeFailureMessageTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            object[] args = ParameterStrategyResolver.Resolve(parameters, data);
+            object[] args = SharedParameterStrategyResolver.Resolve(parameters, data);
             throw new Exception("always fail");
         });
 
         Assert.False(result.Passed);
-        string message = PropertyTestCaseRunner.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.Contains("x =", message);
         Assert.Contains("flag =", message);
     }

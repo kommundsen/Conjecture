@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using Conjecture.Core.Internal;
 using Conjecture.Xunit.Internal;
 
 namespace Conjecture.Xunit.Tests;
@@ -7,9 +8,9 @@ namespace Conjecture.Xunit.Tests;
 public class TrimAnnotationTests
 {
     [Fact]
-    public void ParameterStrategyResolver_Resolve_HasRequiresUnreferencedCode()
+    public void SharedParameterStrategyResolver_Resolve_HasRequiresUnreferencedCode()
     {
-        MethodInfo? method = typeof(ParameterStrategyResolver)
+        MethodInfo? method = typeof(SharedParameterStrategyResolver)
             .GetMethod("Resolve", BindingFlags.NonPublic | BindingFlags.Static);
 
         Assert.NotNull(method);

@@ -1,7 +1,7 @@
 using System.Reflection;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
-using Conjecture.Xunit.Internal;
+
 
 namespace Conjecture.Xunit.Tests.EndToEnd;
 
@@ -39,7 +39,7 @@ public class FloatingPointPropertyE2ETests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            ParameterStrategyResolver.Resolve(parameters, data);
+            SharedParameterStrategyResolver.Resolve(parameters, data);
             count++;
         });
 
@@ -59,7 +59,7 @@ public class FloatingPointPropertyE2ETests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            ParameterStrategyResolver.Resolve(parameters, data);
+            SharedParameterStrategyResolver.Resolve(parameters, data);
             count++;
         });
 
@@ -81,7 +81,7 @@ public class FloatingPointPropertyE2ETests
             ConjectureSettings settings = new() { MaxExamples = 1, Seed = seed };
             await TestRunner.Run(settings, data =>
             {
-                object[] args = ParameterStrategyResolver.Resolve(parameters, data);
+                object[] args = SharedParameterStrategyResolver.Resolve(parameters, data);
                 if (double.IsNaN((double)args[0])) { foundNaN = true; }
             });
         }
@@ -100,7 +100,7 @@ public class FloatingPointPropertyE2ETests
             ConjectureSettings settings = new() { MaxExamples = 1, Seed = seed };
             await TestRunner.Run(settings, data =>
             {
-                object[] args = ParameterStrategyResolver.Resolve(parameters, data);
+                object[] args = SharedParameterStrategyResolver.Resolve(parameters, data);
                 if (float.IsNaN((float)args[0])) { foundNaN = true; }
             });
         }
@@ -118,7 +118,7 @@ public class FloatingPointPropertyE2ETests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            object[] args = ParameterStrategyResolver.Resolve(parameters, data);
+            object[] args = SharedParameterStrategyResolver.Resolve(parameters, data);
             double d = (double)args[0];
             // Fails when value is finite and > 0 — should find a counterexample quickly.
             if (double.IsFinite(d) && d > 0) { throw new Exception("positive finite"); }
@@ -138,13 +138,13 @@ public class FloatingPointPropertyE2ETests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            object[] args = ParameterStrategyResolver.Resolve(parameters, data);
+            object[] args = SharedParameterStrategyResolver.Resolve(parameters, data);
             double d = (double)args[0];
             if (double.IsFinite(d) && d > 0) { throw new Exception("positive finite"); }
         });
 
         Assert.False(result.Passed);
-        string message = PropertyTestCaseRunner.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.Contains("d =", message);
         Assert.Contains("Reproduce with: [Property(Seed = 0x5)]", message);
     }

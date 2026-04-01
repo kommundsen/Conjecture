@@ -1,7 +1,6 @@
 using System.Reflection;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
-using Conjecture.MSTest.Internal;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Conjecture.MSTest.Tests;
@@ -54,7 +53,7 @@ public sealed class MSTestReportingTests
         });
 
         Assert.IsFalse(result.Passed);
-        string message = PropertyTestMethodAttribute.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.IsTrue(message.Contains("Falsifying example"), $"Expected 'Falsifying example' in: {message}");
     }
 
@@ -72,7 +71,7 @@ public sealed class MSTestReportingTests
 
         Assert.IsFalse(result.Passed);
         Assert.IsTrue(result.ShrinkCount > 0, "Expected shrinking to occur; initial value should not already be minimal.");
-        string message = PropertyTestMethodAttribute.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.IsTrue(message.Contains("Falsifying example"), $"Expected 'Falsifying example' in: {message}");
         Assert.IsTrue(message.Contains("Minimal counterexample"), $"Expected 'Minimal counterexample' in: {message}");
     }
@@ -90,7 +89,7 @@ public sealed class MSTestReportingTests
         });
 
         Assert.IsFalse(result.Passed);
-        string message = PropertyTestMethodAttribute.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.IsTrue(
             message.Contains("Reproduce with: [Property(Seed = 0xDEADBEEF)]"),
             $"Expected seed line in: {message}");
@@ -102,7 +101,7 @@ public sealed class MSTestReportingTests
         ConjectureSettings settings = new() { MaxExamples = 10, UseDatabase = true };
         MethodInfo method = typeof(MSTestReportingTests)
             .GetMethod(nameof(Database_FailingRun_BufferSavedToDatabase))!;
-        string testId = PropertyTestMethodAttribute.ComputeTestId(method);
+        string testId = TestCaseHelper.ComputeTestId(method);
 
         await TestRunner.Run(settings, _ => throw new InvalidOperationException("fail"), db, testId);
 
@@ -115,7 +114,7 @@ public sealed class MSTestReportingTests
         ConjectureSettings settings = new() { MaxExamples = 10, UseDatabase = true };
         MethodInfo method = typeof(MSTestReportingTests)
             .GetMethod(nameof(Database_SecondRun_ReplaysStoredBuffer))!;
-        string testId = PropertyTestMethodAttribute.ComputeTestId(method);
+        string testId = TestCaseHelper.ComputeTestId(method);
         bool replayInvoked = false;
 
         await TestRunner.Run(settings, _ => throw new InvalidOperationException("fail"), db, testId);

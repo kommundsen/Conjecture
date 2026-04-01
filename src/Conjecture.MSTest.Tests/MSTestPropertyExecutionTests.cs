@@ -2,7 +2,6 @@ using System.Reflection;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
 using Conjecture.MSTest;
-using Conjecture.MSTest.Internal;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Conjecture.MSTest.Tests;
@@ -56,7 +55,7 @@ public class MSTestPropertyExecutionTests
         MethodInfo method = typeof(MSTestPropertyExecutionTests)
             .GetMethod(nameof(IntParameter_NoAssertion_Passes))!;
 
-        string hash = PropertyTestMethodAttribute.ComputeTestId(method);
+        string hash = TestCaseHelper.ComputeTestId(method);
 
         Assert.IsNotNull(hash);
         Assert.AreNotEqual(string.Empty, hash);
@@ -68,8 +67,8 @@ public class MSTestPropertyExecutionTests
         MethodInfo method = typeof(MSTestPropertyExecutionTests)
             .GetMethod(nameof(IntParameter_NoAssertion_Passes))!;
 
-        string hash1 = PropertyTestMethodAttribute.ComputeTestId(method);
-        string hash2 = PropertyTestMethodAttribute.ComputeTestId(method);
+        string hash1 = TestCaseHelper.ComputeTestId(method);
+        string hash2 = TestCaseHelper.ComputeTestId(method);
 
         Assert.AreEqual(hash1, hash2);
     }
@@ -82,8 +81,8 @@ public class MSTestPropertyExecutionTests
         MethodInfo method2 = typeof(MSTestPropertyExecutionTests)
             .GetMethod(nameof(AsyncTaskReturn_NoAssertion_Passes))!;
 
-        string hash1 = PropertyTestMethodAttribute.ComputeTestId(method1);
-        string hash2 = PropertyTestMethodAttribute.ComputeTestId(method2);
+        string hash1 = TestCaseHelper.ComputeTestId(method1);
+        string hash2 = TestCaseHelper.ComputeTestId(method2);
 
         Assert.AreNotEqual(hash1, hash2);
     }
@@ -157,7 +156,7 @@ public class MSTestPropertyExecutionTests
         });
 
         Assert.IsFalse(result.Passed);
-        string message = PropertyTestMethodAttribute.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.IsTrue(message.Contains("x ="), $"Expected 'x =' in: {message}");
     }
 
@@ -174,7 +173,7 @@ public class MSTestPropertyExecutionTests
         });
 
         Assert.IsFalse(result.Passed);
-        string message = PropertyTestMethodAttribute.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.IsTrue(
             message.Contains("Reproduce with: [Property(Seed = 0xDEADBEEF)]"),
             $"Expected seed line in: {message}");
@@ -194,7 +193,7 @@ public class MSTestPropertyExecutionTests
         });
 
         Assert.IsFalse(result.Passed);
-        string message = PropertyTestMethodAttribute.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.IsTrue(message.Contains("x ="), $"Expected 'x =' in: {message}");
         Assert.IsTrue(message.Contains("flag ="), $"Expected 'flag =' in: {message}");
     }

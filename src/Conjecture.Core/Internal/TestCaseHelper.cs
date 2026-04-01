@@ -1,12 +1,11 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 using System.Text;
-using Conjecture.Core;
-using Conjecture.Core.Internal;
 
-namespace Conjecture.NUnit.Internal;
+namespace Conjecture.Core.Internal;
 
-internal static class PropertyTestBuilder
+internal static class TestCaseHelper
 {
     [RequiresUnreferencedCode("Accesses type and parameter metadata via reflection; not trim-safe.")]
     internal static string ComputeTestId(MethodInfo method)
@@ -58,5 +57,43 @@ internal static class PropertyTestBuilder
     {
         IEnumerable<(string name, object? value)> pairs = parameters.Zip(example.Arguments, (p, a) => (p.Name!, a));
         return CounterexampleFormatter.FormatExplicit(pairs, failure);
+    }
+
+    internal static bool IsAsyncReturnType(Type returnType)
+    {
+        return returnType == typeof(Task)
+            || returnType == typeof(ValueTask)
+            || (returnType.IsGenericType && (
+                returnType.GetGenericTypeDefinition() == typeof(Task<>)
+                || returnType.GetGenericTypeDefinition() == typeof(ValueTask<>)));
+    }
+
+    internal static void InvokeSync(MethodInfo method, object? instance, object[] args)
+    {
+        try
+        {
+            method.Invoke(instance, args);
+        }
+        catch (TargetInvocationException ex) when (ex.InnerException is not null)
+        {
+            ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
+        }
+    }
+
+    internal static async Task InvokeAsync(MethodInfo method, object? instance, object[] args)
+    {
+        object? returnVal;
+        try
+        {
+            returnVal = method.Invoke(instance, args);
+        }
+        catch (TargetInvocationException ex) when (ex.InnerException is not null)
+        {
+            ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
+            return;
+        }
+
+        if (returnVal is Task task) { await task; }
+        else if (returnVal is ValueTask vt) { await vt; }
     }
 }

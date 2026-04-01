@@ -2,7 +2,6 @@ using System.Reflection;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
 using Conjecture.Xunit.V3;
-using Conjecture.Xunit.V3.Internal;
 using Xunit;
 
 namespace Conjecture.Xunit.V3.Tests.EndToEnd;
@@ -89,7 +88,7 @@ public class SourceGeneratorXunitV3E2ETests
         });
 
         Assert.False(result.Passed);
-        string message = PropertyTestCaseRunner.BuildFailureMessage(result, parameters);
+        string message = TestCaseHelper.BuildFailureMessage(result, parameters);
         Assert.Contains("c =", message);
         Assert.Contains("Reproduce with: [Property(Seed = 0x3)]", message);
     }
