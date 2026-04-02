@@ -293,7 +293,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
 ### 4.8 API Surface Tracking
 
 #### Cycle 4.8.1 -- PublicAPI.Unshipped.txt final update
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `dotnet build src/ -c Release` with zero `RS0016`/`RS0017` warnings
   - **Impl** -- `src/Conjecture.Core/PublicAPI.Unshipped.txt`
     - Add all new public API: `IStateMachine<TState,TCommand>` (4 members), `StateMachineRun<TState>` (all properties), `ExecutedStep<TState>` (struct members), `StateMachineFormatter<TState>`, `Gen.StateMachine<TMachine,TState,TCommand>(int)`
