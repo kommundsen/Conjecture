@@ -261,7 +261,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
 ### 4.6 End-to-End Tests
 
 #### Cycle 4.6.1 -- Stack state machine end-to-end
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/StateMachine/EndToEnd/StackStateMachineTests.cs`
     - `StackMachine : IStateMachine<Stack<int>, StackCommand>` with `Push`/`Pop`; `Pop` only available when `Count > 0`; invariant asserts model count matches SUT count
     - A planted bug (count tracking off-by-one on pop) is found within 100 examples
