@@ -10,6 +10,11 @@ internal sealed class StateMachineStrategy<TMachine, TState, TCommand>(int maxSt
     : Strategy<StateMachineRun<TState>>, IStrategyProvider<StateMachineRun<TState>>
     where TMachine : IStateMachine<TState, TCommand>, new()
 {
+    static StateMachineStrategy()
+    {
+        FormatterRegistry.Register<StateMachineRun<TState>>(new StateMachineFormatter<TState>());
+    }
+
     public Strategy<StateMachineRun<TState>> Create() => this;
 
     internal override StateMachineRun<TState> Generate(ConjectureData data)

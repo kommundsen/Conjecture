@@ -237,7 +237,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
 ### 4.5 Failure Reporting
 
 #### Cycle 4.5.1 -- StateMachineFormatter for step-sequence output
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/StateMachine/StateMachineFormatterTests.cs`
     - `StateMachineFormatter<TState>.Format(run)` for a passing run returns a neutral placeholder
     - For a failing run, returns multi-line string: `state = InitialState();` then `RunCommand(state, <cmd>);` per step, then `Invariant(state); // ← fails here` at the failure step
