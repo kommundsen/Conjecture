@@ -33,6 +33,12 @@ internal sealed class StateMachineStrategy<TMachine, TState, TCommand>(int maxSt
             state = machine.RunCommand(state, command);
         }
 
-        return StateMachineRunner.Execute(machine, drawn);
+        (StateMachineRun<TState> run, Exception? invariantException) = StateMachineRunner.Execute(machine, drawn);
+        if (!run.Passed)
+        {
+            string message = StateMachineRunner.FormatSteps(run.Steps, run.FailureStepIndex);
+            throw new Exception(message, invariantException);
+        }
+        return run;
     }
 }

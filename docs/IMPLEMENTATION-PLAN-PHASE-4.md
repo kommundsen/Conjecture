@@ -188,7 +188,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
     - Pure execution function decoupled from `ConjectureData` (called by `StateMachineStrategy.Generate` after drawing the command list)
 
 #### Cycle 4.3.2 -- Invariant failure propagates to TestRunner
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/StateMachine/InvariantFailurePropagationTests.cs`
     - A `[Property]` with a `StateMachineStrategy` that always violates invariant is detected and reported as failing
     - A `[Property]` with a machine whose invariant never fails passes after `MaxExamples` iterations with no exception
