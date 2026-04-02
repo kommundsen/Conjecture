@@ -224,7 +224,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
     - Sub-pass 3: delete-one-at-a-time (like `DeleteBlocksPass` but using `CommandStart` spans as block boundaries)
 
 #### Cycle 4.4.3 -- Register CommandSequenceShrinkPass in Shrinker tier 0
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/StateMachine/ShrinkIntegrationTests.cs`
     - Full `TestRunner` run with a machine that violates invariant only when three pushes are stacked — shrinks to exactly 3 steps
     - `ShrinkCount` in `TestRunResult` reflects command-level shrinks

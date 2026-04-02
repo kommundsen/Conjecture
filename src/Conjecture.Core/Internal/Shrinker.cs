@@ -7,7 +7,7 @@ internal static class Shrinker
 {
     private static readonly IShrinkPass[][] PassTiers =
     [
-        [new ZeroBlocksPass(), new DeleteBlocksPass(), new IntervalDeletionPass()],
+        [new ZeroBlocksPass(), new DeleteBlocksPass(), new IntervalDeletionPass(), new CommandSequenceShrinkPass()],
         [new LexMinimizePass(), new IntegerReductionPass(), new BlockSwappingPass(), new RedistributionPass()],
         [new FloatSimplificationPass(), new StringAwarePass(), new AdaptivePass(new IntegerReductionPass())],
     ];
