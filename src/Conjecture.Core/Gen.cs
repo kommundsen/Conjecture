@@ -110,4 +110,15 @@ public static class Generate
         ArgumentNullException.ThrowIfNull(valueStrategy);
         return new DictionaryStrategy<TKey, TValue>(keyStrategy, valueStrategy, minSize, maxSize);
     }
+
+    /// <summary>Returns a strategy that generates <see cref="StateMachineRun{TState}"/> values by running <typeparamref name="TMachine"/> for up to <paramref name="maxSteps"/> steps.</summary>
+    /// <typeparam name="TMachine">The state machine type. Must have a parameterless constructor.</typeparam>
+    /// <typeparam name="TState">The type representing the system's state.</typeparam>
+    /// <typeparam name="TCommand">The type representing a command that can be applied to the state.</typeparam>
+    /// <param name="maxSteps">Maximum number of commands to draw per run. Defaults to 50.</param>
+    public static Strategy<StateMachineRun<TState>> StateMachine<TMachine, TState, TCommand>(int maxSteps = 50)
+        where TMachine : IStateMachine<TState, TCommand>, new()
+    {
+        return new StateMachineStrategy<TMachine, TState, TCommand>(maxSteps);
+    }
 }
