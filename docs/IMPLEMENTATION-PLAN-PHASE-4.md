@@ -249,7 +249,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
     - Update `PublicAPI.Unshipped.txt`
 
 #### Cycle 4.5.2 -- Failure message integration tests across all adapters
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Xunit.Tests/StateMachine/StateMachineReportingTests.cs` (and V3, NUnit, MSTest equivalents)
     - A failing stateful `[Property]` in each of the four framework adapters produces a failure message containing `"state = InitialState();"` and `"// ← fails here"`
     - Seed-reproduction line is still present: `Reproduce with: [Property(Seed = 0x...)]`
