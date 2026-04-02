@@ -41,6 +41,9 @@ internal readonly struct IRNode
     internal static IRNode ForStringChar(ulong value, ulong min, ulong max) =>
         new(IRNodeKind.StringChar, value, min, max);
 
+    internal static IRNode ForCommandStart() =>
+        new(IRNodeKind.CommandStart, 0UL, 0UL, 0UL);
+
     internal bool IsIntegerLike =>
         Kind is IRNodeKind.Integer or IRNodeKind.Float64 or IRNodeKind.Float32
              or IRNodeKind.StringLength or IRNodeKind.StringChar;
