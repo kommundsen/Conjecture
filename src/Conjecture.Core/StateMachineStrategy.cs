@@ -15,12 +15,9 @@ internal sealed class StateMachineStrategy<TMachine, TState, TCommand>(int maxSt
     internal override StateMachineRun<TState> Generate(ConjectureData data)
     {
         TMachine machine = new();
-        TState initialState = machine.InitialState();
-        TState state = initialState;
+        TState state = machine.InitialState();
         int length = (int)data.NextInteger(0, (ulong)maxSteps);
-        List<ExecutedStep<TState>> steps = new(length);
-        int? failureStep = null;
-        IStrategyFormatter<TCommand>? formatter = FormatterRegistry.Get<TCommand>();
+        List<TCommand> drawn = new(length);
 
         for (int i = 0; i < length; i++)
         {
@@ -32,28 +29,10 @@ internal sealed class StateMachineStrategy<TMachine, TState, TCommand>(int maxSt
 
             data.InsertCommandStart();
             TCommand command = new OneOfStrategy<TCommand>(commands).Generate(data);
+            drawn.Add(command);
             state = machine.RunCommand(state, command);
-            string label = formatter?.Format(command!) ?? command?.ToString() ?? string.Empty;
-
-            bool invariantFailed = false;
-            try
-            {
-                machine.Invariant(state);
-            }
-            catch
-            {
-                // IStateMachine.Invariant signals a violation by throwing any exception type
-                failureStep = i;
-                invariantFailed = true;
-            }
-
-            steps.Add(new ExecutedStep<TState>(state, label));
-            if (invariantFailed)
-            {
-                break;
-            }
         }
 
-        return new StateMachineRun<TState>(steps, initialState, failureStep);
+        return StateMachineRunner.Execute(machine, drawn);
     }
 }

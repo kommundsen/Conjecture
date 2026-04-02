@@ -176,7 +176,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
 ### 4.3 State Machine Runner
 
 #### Cycle 4.3.1 -- StateMachineRunner executes and records steps
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/StateMachine/StateMachineRunnerTests.cs`
     - `StateMachineRunner.Execute` for an empty command list returns `Passed = true`, `Steps.Count = 0`
     - Three-command sequence with all invariants passing: `Passed = true`, `Steps.Count = 3`, each `ExecutedStep.State` is post-command state
