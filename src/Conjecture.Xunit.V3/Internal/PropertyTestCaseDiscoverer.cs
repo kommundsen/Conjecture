@@ -21,7 +21,7 @@ internal sealed class PropertyTestCaseDiscoverer : IXunitTestCaseDiscoverer
         int maxStrategyRejections = attr.MaxStrategyRejections > 0 ? attr.MaxStrategyRejections : 5;
         int deadlineMs = attr.DeadlineMs;
 
-        string displayName = testMethod.GetDisplayName(attr.DisplayName ?? testMethod.Method.Name, null, null);
+        string displayName = testMethod.GetDisplayName(attr.DisplayName ?? testMethod.Method.Name, null, null, null);
         string uniqueID = testMethod.UniqueID;
 
         IReadOnlyCollection<IXunitTestCase> testCases = [new PropertyTestCase(

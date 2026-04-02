@@ -1,6 +1,7 @@
 // Copyright (c) 2026 Kim Ommundsen. Licensed under the MPL-2.0.
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
+using System.Runtime.CompilerServices;
 using Xunit;
 using Xunit.v3;
 
@@ -9,7 +10,9 @@ namespace Conjecture.Xunit.V3;
 /// <summary>Marks a method as a Conjecture property-based test (xUnit v3).</summary>
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
 [XunitTestCaseDiscovererAttribute(typeof(Internal.PropertyTestCaseDiscoverer))]
-public sealed class PropertyAttribute : FactAttribute
+public sealed class PropertyAttribute(
+    [CallerFilePath] string? sourceFilePath = null,
+    [CallerLineNumber] int sourceLineNumber = -1) : FactAttribute(sourceFilePath, sourceLineNumber)
 {
     /// <summary>Maximum number of examples to generate. Defaults to 100.</summary>
     public int MaxExamples { get; set; } = 100;

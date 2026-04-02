@@ -88,7 +88,7 @@ internal sealed class PropertyTestCase : XunitTestCase, ISelfExecutingXunitTestC
         IReadOnlyDictionary<string, IReadOnlyCollection<string>> traits =
             Traits.ToDictionary(kvp => kvp.Key, kvp => (IReadOnlyCollection<string>)kvp.Value.ToList());
 
-        XunitTest test = new(this, TestMethod, null, null, TestCaseDisplayName, 0, traits, null, Array.Empty<object?>());
+        XunitTest test = new(this, TestMethod, null, null, null, null, null, TestCaseDisplayName, 0, traits, null, Array.Empty<object?>());
 
         string assemblyID = TestMethod.TestClass.TestCollection.TestAssembly.UniqueID;
         string collectionID = TestMethod.TestClass.TestCollection.UniqueID;

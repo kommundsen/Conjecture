@@ -1,6 +1,6 @@
 #nullable enable
 Conjecture.Xunit.V3.PropertyAttribute
-Conjecture.Xunit.V3.PropertyAttribute.PropertyAttribute() -> void
+Conjecture.Xunit.V3.PropertyAttribute.PropertyAttribute(string? sourceFilePath = null, int sourceLineNumber = -1) -> void
 Conjecture.Xunit.V3.PropertyAttribute.MaxExamples.get -> int
 Conjecture.Xunit.V3.PropertyAttribute.MaxExamples.set -> void
 Conjecture.Xunit.V3.PropertyAttribute.Seed.get -> ulong
