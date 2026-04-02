@@ -281,7 +281,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
 ### 4.7 Self-Tests
 
 #### Cycle 4.7.1 -- Shrinker invariant self-tests for command sequences
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.SelfTests/StateMachineSelfTests.cs`
     - Self-test property: for any randomly constructed failing machine run, shrinking never increases `Steps.Count` (monotone shrinking)
     - Self-test property: shrunk run is still `Passed = false` (shrinking preserves failure)
