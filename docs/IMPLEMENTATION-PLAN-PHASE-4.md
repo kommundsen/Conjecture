@@ -270,7 +270,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
     - Passing variant (no bug) completes all examples without failure
 
 #### Cycle 4.6.2 -- Queue state machine end-to-end
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/StateMachine/EndToEnd/QueueStateMachineTests.cs`
     - `QueueMachine` with `Enqueue`/`Dequeue`/`Peek`; `Dequeue`/`Peek` only when non-empty; invariant asserts FIFO ordering
     - A planted bug (peek returns wrong element after two enqueues) is found and shrunk to 3 steps
