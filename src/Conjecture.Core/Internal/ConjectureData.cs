@@ -100,6 +100,19 @@ internal sealed class ConjectureData
         }
     }
 
+    internal void InsertCommandStart()
+    {
+        ThrowIfNotActive();
+        if (replayNodes is not null)
+        {
+            nodes.Add(ConsumeReplayNode());
+        }
+        else
+        {
+            nodes.Add(IRNode.ForCommandStart());
+        }
+    }
+
     internal void MarkInvalid() => Status = Status.Invalid;
     internal void MarkInteresting() => Status = Status.Interesting;
     internal void Freeze() => frozen = true;

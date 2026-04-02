@@ -145,7 +145,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
 ### 4.2 Command Sequence Strategy
 
 #### Cycle 4.2.1 -- StateMachineStrategy generates state-dependent sequences
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/StateMachine/StateMachineStrategyTests.cs`
     - `StateMachineStrategy<TMachine,TState,TCommand>` extends `Strategy<StateMachineRun<TState>>`
     - `Generate(data)` calls `machine.InitialState()`, draws a length integer `[0, maxSteps]`, then for each step: inserts `CommandStart` sentinel, draws from `Gen.OneOf(machine.Commands(currentState))`, calls `machine.RunCommand`, calls `machine.Invariant` — records failure step and stops if invariant throws
