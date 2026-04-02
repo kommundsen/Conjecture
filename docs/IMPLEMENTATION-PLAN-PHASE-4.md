@@ -202,7 +202,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
 ### 4.4 Command Sequence Shrinking
 
 #### Cycle 4.4.1 -- CommandSequenceShrinkPass: truncate-from-end
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/StateMachine/CommandSequenceShrinkTests.cs`
     - For an N-step failing sequence, pass truncates to N-1 steps when the last command is not the sole cause of failure
     - Truncating removes the IR node span between the last two `CommandStart` sentinels and everything after
