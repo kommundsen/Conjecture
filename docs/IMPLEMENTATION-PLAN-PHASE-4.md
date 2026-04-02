@@ -303,7 +303,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
 ### 4.9 Performance Baselines
 
 #### Cycle 4.9.1 -- Command sequence generation and shrinking benchmarks
-- [ ] `/benchmark` -- `src/Conjecture.Benchmarks/StateMachineBenchmarks.cs`
+- [x] `/benchmark` -- `src/Conjecture.Benchmarks/StateMachineBenchmarks.cs`
   - `StateMachineGeneration_Passing`: throughput of generating 50-step sequences for a no-failure machine
   - `StateMachineGeneration_Failing`: throughput including failure-detection path
   - `StateMachineShrinking_Short`: full find+shrink for a machine failing at step 3 of 10
