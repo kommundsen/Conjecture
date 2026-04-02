@@ -46,7 +46,7 @@ public class StateMachineRunnerTests
     public void Execute_EmptyCommandList_ReturnsPassed()
     {
         CounterMachine machine = new();
-        StateMachineRun<int> run = StateMachineRunner.Execute(machine, []);
+        (StateMachineRun<int> run, _) = StateMachineRunner.Execute(machine, []);
         Assert.True(run.Passed);
     }
 
@@ -54,7 +54,7 @@ public class StateMachineRunnerTests
     public void Execute_EmptyCommandList_ReturnsZeroSteps()
     {
         CounterMachine machine = new();
-        StateMachineRun<int> run = StateMachineRunner.Execute(machine, []);
+        (StateMachineRun<int> run, _) = StateMachineRunner.Execute(machine, []);
         Assert.Empty(run.Steps);
     }
 
@@ -62,7 +62,7 @@ public class StateMachineRunnerTests
     public void Execute_ThreePassingCommands_ReturnsPassed()
     {
         CounterMachine machine = new();
-        StateMachineRun<int> run = StateMachineRunner.Execute(machine, ["inc", "inc", "inc"]);
+        (StateMachineRun<int> run, _) = StateMachineRunner.Execute(machine, ["inc", "inc", "inc"]);
         Assert.True(run.Passed);
     }
 
@@ -70,7 +70,7 @@ public class StateMachineRunnerTests
     public void Execute_ThreePassingCommands_ReturnsThreeSteps()
     {
         CounterMachine machine = new();
-        StateMachineRun<int> run = StateMachineRunner.Execute(machine, ["inc", "inc", "inc"]);
+        (StateMachineRun<int> run, _) = StateMachineRunner.Execute(machine, ["inc", "inc", "inc"]);
         Assert.Equal(3, run.Steps.Count);
     }
 
@@ -78,7 +78,7 @@ public class StateMachineRunnerTests
     public void Execute_ThreePassingCommands_StepsHaveCorrectPostCommandStates()
     {
         CounterMachine machine = new();
-        StateMachineRun<int> run = StateMachineRunner.Execute(machine, ["inc", "inc", "inc"]);
+        (StateMachineRun<int> run, _) = StateMachineRunner.Execute(machine, ["inc", "inc", "inc"]);
         Assert.Equal(new[] { 1, 2, 3 }, run.Steps.Select(s => s.State));
     }
 
@@ -86,7 +86,7 @@ public class StateMachineRunnerTests
     public void Execute_InvariantFailsAtStepOne_DoesNotPass()
     {
         FailAtStepMachine machine = new(failAtStep: 1);
-        StateMachineRun<int> run = StateMachineRunner.Execute(machine, ["inc", "inc", "inc"]);
+        (StateMachineRun<int> run, _) = StateMachineRunner.Execute(machine, ["inc", "inc", "inc"]);
         Assert.False(run.Passed);
     }
 
@@ -94,7 +94,7 @@ public class StateMachineRunnerTests
     public void Execute_InvariantFailsAtStepOne_FailureStepIndexIsOne()
     {
         FailAtStepMachine machine = new(failAtStep: 1);
-        StateMachineRun<int> run = StateMachineRunner.Execute(machine, ["inc", "inc", "inc"]);
+        (StateMachineRun<int> run, _) = StateMachineRunner.Execute(machine, ["inc", "inc", "inc"]);
         Assert.Equal(1, run.FailureStepIndex);
     }
 
@@ -102,7 +102,7 @@ public class StateMachineRunnerTests
     public void Execute_InvariantFailsAtStepOne_StepsCountIsTwo()
     {
         FailAtStepMachine machine = new(failAtStep: 1);
-        StateMachineRun<int> run = StateMachineRunner.Execute(machine, ["inc", "inc", "inc"]);
+        (StateMachineRun<int> run, _) = StateMachineRunner.Execute(machine, ["inc", "inc", "inc"]);
         Assert.Equal(2, run.Steps.Count);
     }
 
@@ -110,7 +110,7 @@ public class StateMachineRunnerTests
     public void Execute_AnyExceptionTypeFromInvariant_TreatedAsFailure()
     {
         NonStandardExceptionMachine machine = new();
-        StateMachineRun<int> run = StateMachineRunner.Execute(machine, ["cmd"]);
+        (StateMachineRun<int> run, _) = StateMachineRunner.Execute(machine, ["cmd"]);
         Assert.False(run.Passed);
     }
 
@@ -120,7 +120,7 @@ public class StateMachineRunnerTests
         int commandsExecuted = 0;
         FailAtStepMachine machine = new(failAtStep: 0);
         // Step 0 fails invariant; remaining two commands should not run
-        StateMachineRun<int> run = StateMachineRunner.Execute(machine, ["inc", "inc", "inc"]);
+        (StateMachineRun<int> run, _) = StateMachineRunner.Execute(machine, ["inc", "inc", "inc"]);
         _ = commandsExecuted; // suppress warning
         Assert.Single(run.Steps);
     }

@@ -66,19 +66,18 @@ public class StateMachineStrategyTests
     }
 
     [Fact]
-    public void Generate_WithAlwaysFailInvariant_DoesNotPass()
+    public void Generate_WithAlwaysFailInvariant_Throws()
     {
         StateMachineStrategy<AlwaysFailMachine, int, string> strategy = new(maxSteps: 10);
-        StateMachineRun<int> run = strategy.Generate(MakeData());
-        Assert.False(run.Passed);
+        Assert.ThrowsAny<Exception>(() => strategy.Generate(MakeData()));
     }
 
     [Fact]
-    public void Generate_WithAlwaysFailInvariant_FailureStepIndexIsZero()
+    public void Generate_WithAlwaysFailInvariant_ExceptionMessageContainsStepIndex()
     {
         StateMachineStrategy<AlwaysFailMachine, int, string> strategy = new(maxSteps: 10);
-        StateMachineRun<int> run = strategy.Generate(MakeData());
-        Assert.Equal(0, run.FailureStepIndex);
+        Exception ex = Assert.ThrowsAny<Exception>(() => strategy.Generate(MakeData()));
+        Assert.Contains("step", ex.Message, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
