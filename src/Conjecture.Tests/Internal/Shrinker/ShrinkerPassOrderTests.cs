@@ -20,16 +20,16 @@ public class ShrinkerPassOrderTests
     }
 
     [Fact]
-    public void PassRegistration_AllTenPassTypes_ArePresent()
+    public void PassRegistration_AllElevenPassTypes_ArePresent()
     {
-        // Every pass introduced through Phase 2 must be wired in.
         IShrinkPass[][] tiers = GetPassTiers();
         List<IShrinkPass> all = tiers.SelectMany(t => t).ToList();
 
-        Assert.Equal(10, all.Count);
+        Assert.Equal(11, all.Count);
         Assert.Contains(all, p => p is ZeroBlocksPass);
         Assert.Contains(all, p => p is DeleteBlocksPass);
         Assert.Contains(all, p => p is IntervalDeletionPass);
+        Assert.Contains(all, p => p is CommandSequenceShrinkPass);
         Assert.Contains(all, p => p is LexMinimizePass);
         Assert.Contains(all, p => p is IntegerReductionPass);
         Assert.Contains(all, p => p is BlockSwappingPass);
@@ -40,17 +40,17 @@ public class ShrinkerPassOrderTests
     }
 
     [Fact]
-    public void TierStructure_TierZeroContainsExactlyThreeCheapPasses()
+    public void TierStructure_TierZeroContainsExactlyFourCheapPasses()
     {
-        // Tier 0: ZeroBlocks, DeleteBlocks, IntervalDeletion — cheap structural passes.
         IShrinkPass[][] tiers = GetPassTiers();
         Assert.True(tiers.Length >= 3, $"Expected ≥ 3 tiers, got {tiers.Length}.");
 
         IShrinkPass[] tier0 = tiers[0];
-        Assert.Equal(3, tier0.Length);
+        Assert.Equal(4, tier0.Length);
         Assert.Contains(tier0, p => p is ZeroBlocksPass);
         Assert.Contains(tier0, p => p is DeleteBlocksPass);
         Assert.Contains(tier0, p => p is IntervalDeletionPass);
+        Assert.Contains(tier0, p => p is CommandSequenceShrinkPass);
     }
 
     [Fact]
@@ -104,7 +104,7 @@ public class ShrinkerPassOrderTests
     [Fact]
     public async Task FullShrinkLoop_FloatNodeAboveThreshold_ConvergesAndPreservesFailure()
     {
-        // With all 10 passes active across 3 tiers, the loop must still terminate
+        // With all 11 passes active across 3 tiers, the loop must still terminate
         // and the final result must remain interesting.
         ulong bigFloat = Unsafe.BitCast<double, ulong>(1e6);
         var nodes = new[] { IRNode.ForFloat64(bigFloat, 0UL, ulong.MaxValue) };
