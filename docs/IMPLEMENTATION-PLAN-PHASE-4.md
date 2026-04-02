@@ -160,7 +160,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
     - Also add `IRNodeKind.CommandStart = 7` to `src/Conjecture.Core/Internal/IRNodeKind.cs`
 
 #### Cycle 4.2.2 -- Gen.StateMachine entry point
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/StateMachine/GenStateMachineTests.cs`
     - `Gen.StateMachine<TMachine, TState, TCommand>()` returns `Strategy<StateMachineRun<TState>>`
     - `Gen.StateMachine<TMachine, TState, TCommand>(maxSteps: 10)` respects the bound

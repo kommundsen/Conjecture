@@ -115,3 +115,4 @@ Conjecture.Core.StateMachineRun<TState>.Steps.get -> System.Collections.Generic.
 Conjecture.Core.StateMachineRun<TState>.FailureStepIndex.get -> int?
 Conjecture.Core.StateMachineRun<TState>.FinalState.get -> TState
 Conjecture.Core.StateMachineRun<TState>.Passed.get -> bool
+static Conjecture.Core.Generate.StateMachine<TMachine, TState, TCommand>(int maxSteps = 50) -> Conjecture.Core.Strategy<Conjecture.Core.StateMachineRun<TState>!>!
