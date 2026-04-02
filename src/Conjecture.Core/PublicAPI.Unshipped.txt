@@ -102,3 +102,16 @@ Conjecture.Core.IStateMachine<TState, TCommand>.Commands(TState state) -> System
 Conjecture.Core.IStateMachine<TState, TCommand>.InitialState() -> TState
 Conjecture.Core.IStateMachine<TState, TCommand>.Invariant(TState state) -> void
 Conjecture.Core.IStateMachine<TState, TCommand>.RunCommand(TState state, TCommand command) -> TState
+Conjecture.Core.ExecutedStep<TState>
+Conjecture.Core.ExecutedStep<TState>.ExecutedStep(TState State, string! CommandLabel) -> void
+Conjecture.Core.ExecutedStep<TState>.ExecutedStep() -> void
+Conjecture.Core.ExecutedStep<TState>.State.get -> TState
+Conjecture.Core.ExecutedStep<TState>.State.init -> void
+Conjecture.Core.ExecutedStep<TState>.CommandLabel.get -> string!
+Conjecture.Core.ExecutedStep<TState>.CommandLabel.init -> void
+Conjecture.Core.StateMachineRun<TState>
+Conjecture.Core.StateMachineRun<TState>.StateMachineRun(System.Collections.Generic.IReadOnlyList<Conjecture.Core.ExecutedStep<TState>>! steps, TState initialState, int? failureStepIndex) -> void
+Conjecture.Core.StateMachineRun<TState>.Steps.get -> System.Collections.Generic.IReadOnlyList<Conjecture.Core.ExecutedStep<TState>>!
+Conjecture.Core.StateMachineRun<TState>.FailureStepIndex.get -> int?
+Conjecture.Core.StateMachineRun<TState>.FinalState.get -> TState
+Conjecture.Core.StateMachineRun<TState>.Passed.get -> bool

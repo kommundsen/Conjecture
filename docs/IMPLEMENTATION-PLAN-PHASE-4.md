@@ -127,7 +127,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
     - Update `PublicAPI.Unshipped.txt`
 
 #### Cycle 4.1.2 -- StateMachineRun and ExecutedStep
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/StateMachine/StateMachineRunTests.cs`
     - `StateMachineRun<TState>` constructable with list of executed steps and nullable failure step index
     - `Steps` is `IReadOnlyList<ExecutedStep<TState>>` in execution order
