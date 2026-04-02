@@ -1,0 +1,26 @@
+name: Feature Request
+description: Suggest a new strategy, API, or capability
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: What problem does this solve? What property-based testing scenario is blocked without it?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed API / Behavior
+      description: Sketch of the desired C# API or behavior.
+      render: csharp
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: What workarounds or other approaches did you consider?
+  - type: markdown
+    attributes:
+      value: >
+        **Note:** For reference, the equivalent Hypothesis (Python) feature can be linked in the description if applicable.
