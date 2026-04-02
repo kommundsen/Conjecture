@@ -20,6 +20,9 @@
     <ProjectReference Include="..\Conjecture.Analyzers\Conjecture.Analyzers.csproj"
                       OutputItemType="Analyzer"
                       ReferenceOutputAssembly="true" />
+    <ProjectReference Include="..\Conjecture.Analyzers.CodeFixes\Conjecture.Analyzers.CodeFixes.csproj"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="true" />
   </ItemGroup>
 
   <ItemGroup>
