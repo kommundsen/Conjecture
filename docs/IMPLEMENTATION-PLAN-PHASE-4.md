@@ -213,7 +213,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
     - `ValueTask<bool> TryReduce(ShrinkState state)`: scan nodes for `CommandStart` sentinels, build command span index, attempt truncation from end
 
 #### Cycle 4.4.2 -- CommandSequenceShrinkPass: binary-halve and delete-one
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/StateMachine/CommandSequenceShrinkPass2Tests.cs`
     - Binary-halving: 8-step sequence shrinks to 4 when the first 4 steps contain the violation
     - Delete-one: each command is tried for deletion in-order; minimal single-step failing sequence is found

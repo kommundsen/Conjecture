@@ -71,9 +71,10 @@ public class CommandSequenceShrinkTests
     }
 
     [Fact]
-    public async Task TruncateFromEnd_SingleStepSequence_ReturnsFalse()
+    public async Task SingleStepSequence_AtMinimum_ReturnsFalse()
     {
-        ShrinkState state = AlwaysInteresting(MakeCommandNodes(1));
+        // With count >= 1 as the minimum, a 1-step sequence cannot be reduced further.
+        ShrinkState state = InterestingWhenCommandCountAtLeast(MakeCommandNodes(1), minimum: 1);
         CommandSequenceShrinkPass pass = new();
         bool result = await pass.TryReduce(state);
         Assert.False(result);
