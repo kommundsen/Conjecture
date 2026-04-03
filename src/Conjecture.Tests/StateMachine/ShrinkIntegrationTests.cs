@@ -49,7 +49,7 @@ public class ShrinkIntegrationTests
     public async Task Shrink_StateMachineFailure_ShrinkCountIsPositive()
     {
         TestRunResult result = await TestRunner.Run(
-            new ConjectureSettings { MaxExamples = 200, UseDatabase = false },
+            new ConjectureSettings { MaxExamples = 200, Seed = 1UL, UseDatabase = false },
             data =>
             {
                 StateMachineStrategy<FailsAtThreeMachine, int, string> strategy = new(maxSteps: 50);
