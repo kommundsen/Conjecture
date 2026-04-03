@@ -71,7 +71,7 @@ public sealed class StateMachineReportingTests
     public async Task StatefulProperty_ShrinkCount_IsReportedInResult()
     {
         TestRunResult result = await TestRunner.Run(
-            new ConjectureSettings { MaxExamples = 50, UseDatabase = false },
+            new ConjectureSettings { MaxExamples = 50, Seed = 1UL, UseDatabase = false },
             data => _ = Generate.StateMachine<FailsAtThreeReportingMachine, int, string>(maxSteps: 20).Generate(data));
 
         Assert.That(result.Passed, Is.False);
