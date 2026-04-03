@@ -327,7 +327,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
     - Update `docs/site/toc.yml` (or equivalent) to include the new guide
 
 #### Cycle 4.10.2 -- XML doc audit on all new public API
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `dotnet build src/ -c Release` produces zero CS1591 warnings (already gated by `TreatWarningsAsErrors`)
   - **Impl** -- Review XML doc on `IStateMachine<TState,TCommand>` (all four methods + type params), `StateMachineRun<TState>` (all properties), `ExecutedStep<TState>`, `StateMachineFormatter<TState>`, `Gen.StateMachine<>()` (params, returns, constraints, example block)
 

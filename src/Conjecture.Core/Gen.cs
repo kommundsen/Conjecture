@@ -112,10 +112,36 @@ public static class Generate
     }
 
     /// <summary>Returns a strategy that generates <see cref="StateMachineRun{TState}"/> values by running <typeparamref name="TMachine"/> for up to <paramref name="maxSteps"/> steps.</summary>
-    /// <typeparam name="TMachine">The state machine type. Must have a parameterless constructor.</typeparam>
+    /// <typeparam name="TMachine">
+    ///   The state machine type. Must implement <see cref="IStateMachine{TState, TCommand}"/>
+    ///   and expose a public parameterless constructor.
+    /// </typeparam>
     /// <typeparam name="TState">The type representing the system's state.</typeparam>
     /// <typeparam name="TCommand">The type representing a command that can be applied to the state.</typeparam>
     /// <param name="maxSteps">Maximum number of commands to draw per run. Defaults to 50.</param>
+    /// <returns>
+    ///   A <see cref="Strategy{T}"/> that produces <see cref="StateMachineRun{TState}"/> values.
+    ///   If <see cref="IStateMachine{TState, TCommand}.Invariant"/> throws during generation, the strategy
+    ///   propagates the exception so the enclosing property fails with a shrunk command sequence.
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// public sealed class CounterMachine : IStateMachine&lt;int, string&gt;
+    /// {
+    ///     public int InitialState() =&gt; 0;
+    ///     public IEnumerable&lt;Strategy&lt;string&gt;&gt; Commands(int state) =&gt; [Generate.Just("inc")];
+    ///     public int RunCommand(int state, string cmd) =&gt; state + 1;
+    ///     public void Invariant(int state)
+    ///     {
+    ///         if (state &lt; 0)
+    ///             throw new InvalidOperationException("counter went negative");
+    ///     }
+    /// }
+    ///
+    /// Strategy&lt;StateMachineRun&lt;int&gt;&gt; strategy =
+    ///     Generate.StateMachine&lt;CounterMachine, int, string&gt;(maxSteps: 50);
+    /// </code>
+    /// </example>
     public static Strategy<StateMachineRun<TState>> StateMachine<TMachine, TState, TCommand>(int maxSteps = 50)
         where TMachine : IStateMachine<TState, TCommand>, new()
     {
