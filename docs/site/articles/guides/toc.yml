@@ -7,3 +7,5 @@ items:
     href: settings-profiles.md
   - name: Example Database
     href: example-database.md
+  - name: Stateful Testing
+    href: stateful-testing.md
