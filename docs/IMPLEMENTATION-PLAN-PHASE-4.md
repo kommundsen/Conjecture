@@ -315,7 +315,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
 ### 4.10 Documentation
 
 #### Cycle 4.10.1 -- DocFX stateful testing guide
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `dotnet build src/ -c Release` produces no documentation warnings; DocFX build completes without errors
   - **Impl** -- `docs/site/articles/guides/stateful-testing.md`
     - Introduction: when to use stateful testing vs pure property tests
