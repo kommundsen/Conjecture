@@ -9,3 +9,5 @@ items:
     href: example-database.md
   - name: Stateful Testing
     href: stateful-testing.md
+  - name: Targeted Testing
+    href: targeted-testing.md

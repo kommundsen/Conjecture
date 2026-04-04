@@ -362,7 +362,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
 ### 5.13 Documentation
 
 #### Cycle 5.13.1 -- DocFX targeted testing guide
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `dotnet build src/ -c Release` produces no documentation warnings
   - **Impl** -- `docs/site/articles/guides/targeted-testing.md`
     - Introduction: when to use targeted testing vs pure random
