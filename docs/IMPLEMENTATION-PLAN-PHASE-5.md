@@ -153,7 +153,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
 ### 5.3 Hill Climber
 
 #### Cycle 5.3.1 -- HillClimber greedy mutation
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/Internal/HillClimberTests.cs`
     - Given IR nodes `[Integer(50, 0, 100)]` and a scoring function that returns the node's value: `HillClimber.Climb` produces nodes with a higher score than the input
     - Given already-maximal nodes (value=100), `Climb` returns the same nodes
