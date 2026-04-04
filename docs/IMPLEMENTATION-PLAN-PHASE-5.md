@@ -348,7 +348,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
 ### 5.12 Performance Baselines
 
 #### Cycle 5.12.1 -- Targeting and recursive strategy benchmarks
-- [ ] `/benchmark` -- `src/Conjecture.Benchmarks/TargetingBenchmarks.cs`
+- [x] `/benchmark` -- `src/Conjecture.Benchmarks/TargetingBenchmarks.cs`
   - `TargetedGeneration_SingleLabel`: throughput of 100-example run with one `Target.Maximize` call per example
   - `TargetedGeneration_MultiLabel`: throughput with 3 labels
   - `HillClimber_SingleNode`: hill climbing 100 rounds on a single integer node
