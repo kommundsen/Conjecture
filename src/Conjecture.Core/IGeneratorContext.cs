@@ -12,4 +12,7 @@ public interface IGeneratorContext
 
     /// <summary>Rejects the current test case if <paramref name="condition"/> is false.</summary>
     void Assume(bool condition);
+
+    /// <summary>Records a numeric observation to guide targeted generation.</summary>
+    void Target(double observation, string label = "default");
 }

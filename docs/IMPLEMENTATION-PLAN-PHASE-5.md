@@ -138,7 +138,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
     - Update `PublicAPI.Unshipped.txt`
 
 #### Cycle 5.2.2 -- IGeneratorContext.Target integration
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/Strategies/ComposeTargetTests.cs`
     - `Generate.Compose(ctx => { var n = ctx.Generate(Generate.Integers<int>()); ctx.Target(n, "size"); return n; })` records observation when used in `TestRunner`
     - `ctx.Target(value)` uses label `"default"`

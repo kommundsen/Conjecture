@@ -16,8 +16,10 @@ internal sealed class GeneratorContext(ConjectureData data) : IGeneratorContext
         {
             throw new UnsatisfiedAssumptionException();
         }
-
     }
+
+    public void Target(double observation, string label = "default") =>
+        data.RecordObservation(label, observation);
 }
 
 internal sealed class ComposeStrategy<T>(Func<IGeneratorContext, T> factory) : Strategy<T>
