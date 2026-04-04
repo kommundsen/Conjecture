@@ -282,7 +282,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
 ### 5.8 End-to-End Targeting Tests
 
 #### Cycle 5.8.1 -- Targeting effectiveness
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/Targeting/EndToEnd/TargetingEffectivenessTests.cs`
     - Property: `Target.Maximize(xs.Count)` where `xs : List<int>` — after targeting, max `xs.Count` observed is higher than pure-random baseline (measured over 10 seeds)
     - Property: `Target.Minimize(xs.Count)` — after targeting, min `xs.Count` is 0 (or close)

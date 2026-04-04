@@ -188,12 +188,16 @@ internal static class TestRunner
             {
                 string label = labels[labelIdx++ % labels.Count];
 
+                // budget: 2 so the greedy pass can try both value+1 and value-1 per step,
+                // enabling both maximization and minimization (via negated scores) to make
+                // progress with a single label visit.
+                int stepBudget = Math.Min(2, budgetRemaining);
                 var (newNodes, newScore) = await HillClimber.Climb(
-                    currentNodes[label], currentScores[label], label, EvalForClimb, budget: 1, perturbRng);
+                    currentNodes[label], currentScores[label], label, EvalForClimb, stepBudget, perturbRng);
 
                 currentNodes[label] = newNodes;
                 currentScores[label] = newScore;
-                budgetRemaining--;
+                budgetRemaining -= stepBudget;
             }
 
             if (failingNodes is not null)
