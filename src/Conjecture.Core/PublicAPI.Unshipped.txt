@@ -24,6 +24,7 @@ static Conjecture.Core.Generate.Floats(float min, float max) -> Conjecture.Core.
 Conjecture.Core.IGeneratorContext
 Conjecture.Core.IGeneratorContext.Assume(bool condition) -> void
 Conjecture.Core.IGeneratorContext.Generate<T>(Conjecture.Core.Strategy<T>! strategy) -> T
+Conjecture.Core.IGeneratorContext.Target(double observation, string! label = "default") -> void
 static Conjecture.Core.Generate.Compose<T>(System.Func<Conjecture.Core.IGeneratorContext!, T>! factory) -> Conjecture.Core.Strategy<T>!
 Conjecture.Core.UnsatisfiedAssumptionException
 Conjecture.Core.UnsatisfiedAssumptionException.UnsatisfiedAssumptionException() -> void
