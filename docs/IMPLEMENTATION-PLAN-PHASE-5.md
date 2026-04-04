@@ -328,7 +328,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
     - Self-test property: observations recorded during targeting are finite (no NaN/Infinity leaked)
 
 #### Cycle 5.10.2 -- Recursive strategy self-tests
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.SelfTests/RecursiveStrategySelfTests.cs`
     - Self-test property: for any `RecursiveStrategy<int>`, generated values are reproducible from their IR nodes (replay produces same value)
     - Self-test property: shrinking a recursive value always produces a value with depth <= original depth
