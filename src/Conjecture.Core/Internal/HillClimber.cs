@@ -10,7 +10,8 @@ internal static class HillClimber
         double currentScore,
         string label,
         Func<IReadOnlyList<IRNode>, Task<(Status, IReadOnlyDictionary<string, double>)>> evaluate,
-        int budget)
+        int budget,
+        IRandom? rng = null)
     {
         var bestNodes = nodes.ToList();
         var bestScore = currentScore;
@@ -18,7 +19,7 @@ internal static class HillClimber
 
         while (remaining > 0)
         {
-            var improved = false;
+            var greedyImproved = false;
 
             for (var i = 0; i < bestNodes.Count && remaining > 0; i++)
             {
@@ -41,37 +42,88 @@ internal static class HillClimber
                     {
                         bestNodes = candidate;
                         bestScore = score;
-                        improved = true;
-                        break; // move to next node
+                        greedyImproved = true;
+                        break;
                     }
                 }
             }
 
-            if (!improved)
+            if (greedyImproved)
+                continue;
+
+            // Greedy stalled — try random perturbation if rng provided.
+            if (rng is null)
+                break;
+
+            var perturbImproved = false;
+            while (remaining > 0 && !perturbImproved)
+            {
+                remaining--;
+                var perturbed = Perturb(bestNodes, rng);
+                var (status, obs) = await evaluate(perturbed);
+
+                if (status == Status.Valid
+                    && obs.TryGetValue(label, out var score)
+                    && score > bestScore)
+                {
+                    bestNodes = perturbed;
+                    bestScore = score;
+                    perturbImproved = true;
+                }
+            }
+
+            if (!perturbImproved)
                 break;
         }
 
         return (bestNodes, bestScore);
     }
 
+    private static List<IRNode> Perturb(List<IRNode> nodes, IRandom rng)
+    {
+        var integerLikeIndices = new List<int>();
+        for (var i = 0; i < nodes.Count; i++)
+            if (nodes[i].IsIntegerLike)
+                integerLikeIndices.Add(i);
+
+        if (integerLikeIndices.Count == 0)
+            return nodes.ToList();
+
+        var count = (int)(rng.NextUInt64() % (ulong)Math.Min(3, integerLikeIndices.Count)) + 1;
+        var result = nodes.ToList();
+
+        for (var p = 0; p < count; p++)
+        {
+            var idx = integerLikeIndices[(int)(rng.NextUInt64() % (ulong)integerLikeIndices.Count)];
+            var node = result[idx];
+            result[idx] = node.WithValue(RandomInRange(rng, node.Min, node.Max));
+        }
+
+        return result;
+    }
+
+    private static ulong RandomInRange(IRandom rng, ulong min, ulong max)
+    {
+        var range = max - min;
+        if (range == ulong.MaxValue)
+            return rng.NextUInt64();
+        return min + rng.NextUInt64() % (range + 1);
+    }
+
     private static IEnumerable<ulong> CandidateValues(IRNode node)
     {
-        // Increment by 1
         if (node.Value < node.Max)
             yield return node.Value + 1;
 
-        // Decrement by 1
         if (node.Value > node.Min)
             yield return node.Value - 1;
 
-        // Binary search toward Max
         if (node.Value < node.Max)
         {
             var mid = node.Value + (node.Max - node.Value) / 2;
             yield return mid == node.Value ? node.Max : mid;
         }
 
-        // Binary search toward Min
         if (node.Value > node.Min)
         {
             var mid = node.Min + (node.Value - node.Min) / 2;

@@ -168,7 +168,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
     - One full pass over all nodes constitutes one "round". Repeat rounds until budget exhausted or no progress.
 
 #### Cycle 5.3.2 -- HillClimber random perturbation
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/Internal/HillClimberPerturbTests.cs`
     - HillClimber with perturbation: after greedy phase, randomly perturbs 1-3 nodes, keeps if score improves
     - A scoring function with a local maximum at value=50 but global at value=90 — perturbation helps escape local maxima within budget
