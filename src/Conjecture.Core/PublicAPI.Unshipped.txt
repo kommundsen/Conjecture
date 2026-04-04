@@ -120,6 +120,7 @@ Conjecture.Core.StateMachineRun<TState>.Steps.get -> System.Collections.Generic.
 Conjecture.Core.StateMachineRun<TState>.FailureStepIndex.get -> int?
 Conjecture.Core.StateMachineRun<TState>.FinalState.get -> TState
 Conjecture.Core.StateMachineRun<TState>.Passed.get -> bool
+static Conjecture.Core.Generate.Recursive<T>(Conjecture.Core.Strategy<T>! baseCase, System.Func<Conjecture.Core.Strategy<T>!, Conjecture.Core.Strategy<T>!>! recursive, int maxDepth = 5) -> Conjecture.Core.Strategy<T>!
 static Conjecture.Core.Generate.StateMachine<TMachine, TState, TCommand>(int maxSteps = 50) -> Conjecture.Core.Strategy<Conjecture.Core.StateMachineRun<TState>!>!
 Conjecture.Core.StateMachineFormatter<TState>
 Conjecture.Core.StateMachineFormatter<TState>.StateMachineFormatter() -> void
