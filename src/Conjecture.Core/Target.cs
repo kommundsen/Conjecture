@@ -1,0 +1,26 @@
+// Copyright (c) 2026 Kim Ommundsen. Licensed under the MPL-2.0.
+// See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
+
+using Conjecture.Core.Internal;
+
+namespace Conjecture.Core;
+
+/// <summary>Provides targeting helpers to guide property test generation toward interesting input regions.</summary>
+public static class Target
+{
+    internal static readonly AsyncLocal<ConjectureData?> CurrentData = new();
+
+    /// <summary>Records a numeric observation to maximize during the targeting phase.</summary>
+    public static void Maximize(double observation, string label = "default")
+    {
+        ConjectureData data = CurrentData.Value
+            ?? throw new InvalidOperationException("Target.Maximize can only be called inside a property test body.");
+        data.RecordObservation(label, observation);
+    }
+
+    /// <summary>Records a numeric observation to minimize during the targeting phase.</summary>
+    public static void Minimize(double observation, string label = "default")
+    {
+        Maximize(-observation, label);
+    }
+}

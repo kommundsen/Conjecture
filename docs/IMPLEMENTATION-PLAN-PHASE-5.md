@@ -82,7 +82,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
 ### 5.0 Pre-requisites
 
 #### Cycle 5.0.1 -- ADRs
-- [ ] `/decision` -- ADR-0035: Targeted Testing API
+- [x] `/decision` -- ADR-0035: Targeted Testing API
   - Two exposure paths: (1) `Target.Maximize(double, string)` / `Target.Minimize(double, string)` static methods callable from `[Property]` test bodies (parallels `Assume.That` pattern); (2) `IGeneratorContext.Target(double, string)` callable inside `Generate.Compose` blocks
   - Both paths write observations into `ConjectureData.Observations` (`Dictionary<string, double>`)
   - `Target.Minimize(x, label)` is sugar for `Target.Maximize(-x, label)`
@@ -92,7 +92,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
   - Multiple labels supported; targeting phase round-robins between labels
   - `AsyncLocal<ConjectureData>` ambient context avoids thread-local problems with async tests (ADR-0017)
   - Observations are purely advisory — they never affect shrinking behavior; shrinking still works on interestingness (exceptions)
-- [ ] `/decision` -- ADR-0036: Recursive Strategy Design
+- [x] `/decision` -- ADR-0036: Recursive Strategy Design
   - `Generate.Recursive<T>(Strategy<T> baseCase, Func<Strategy<T>, Strategy<T>> recursive, int maxDepth = 5)` — user provides base case and a function that receives a "self" strategy and returns a combined strategy
   - `RecursiveStrategy<T>` internally tracks depth via IR integer draws from the stream; when `maxDepth` is reached, the "self" strategy substitutes `baseCase`
   - Depth tracking uses integer IR node draws that the shrinker can reduce to 0 (preferring shallower trees) via existing `IntegerReductionPass`
@@ -122,7 +122,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
 ### 5.2 Target Public API
 
 #### Cycle 5.2.1 -- Target static class
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/TargetTests.cs`
     - `Target.Maximize(10.0)` within a test body (invoked via `TestRunner`) records observation with label `"default"`
     - `Target.Maximize(10.0, "custom")` records with label `"custom"`
