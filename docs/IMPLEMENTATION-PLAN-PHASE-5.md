@@ -301,7 +301,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
 ### 5.9 End-to-End Recursive Strategy Tests
 
 #### Cycle 5.9.1 -- Expression tree generation
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/Strategies/Recursive/ExprTreeTests.cs`
     - `Expr` ADT (Literal, Add, Mul) generated with `Generate.Recursive`; all generated trees have depth <= maxDepth
     - Property: `eval(expr) >= 0` for expressions over non-negative literals — planted bug (Mul of two negatives) shrinks to minimal tree
