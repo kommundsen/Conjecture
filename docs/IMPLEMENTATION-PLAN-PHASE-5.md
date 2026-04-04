@@ -248,7 +248,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
 ### 5.7 Recursive Strategy
 
 #### Cycle 5.7.1 -- RecursiveStrategy depth-limited generation
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/Strategies/RecursiveStrategyTests.cs`
     - `Generate.Recursive<int>(Generate.Just(0), self => Generate.OneOf(Generate.Just(0), self.Select(n => n + 1)), maxDepth: 3)` generates values in `[0, 3]`
     - At `maxDepth=0`, only base case values are generated
