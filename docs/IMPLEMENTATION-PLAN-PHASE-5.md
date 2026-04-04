@@ -233,7 +233,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
 ### 5.6 Failure Reporting
 
 #### Cycle 5.6.1 -- Target scores in failure output
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/Internal/TargetReportingTests.cs`
     - Failure message for a property that uses `Target.Maximize` includes `"Target scores:"` section with label and value
     - Failure message without targeting has no `"Target scores:"` section

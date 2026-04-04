@@ -34,8 +34,8 @@ internal static class TestCaseHelper
     {
         IEnumerable<(string name, object value)> shrunkPairs = ResolvePairs(result.Counterexample!);
         string message = result.OriginalCounterexample is not null
-            ? CounterexampleFormatter.Format(ResolvePairs(result.OriginalCounterexample), shrunkPairs, result.Seed!.Value, result.ExampleCount, result.ShrinkCount)
-            : CounterexampleFormatter.Format(shrunkPairs, result.Seed!.Value, result.ExampleCount, result.ShrinkCount);
+            ? CounterexampleFormatter.Format(ResolvePairs(result.OriginalCounterexample), shrunkPairs, result.Seed!.Value, result.ExampleCount, result.ShrinkCount, result.TargetingScores)
+            : CounterexampleFormatter.Format(shrunkPairs, result.Seed!.Value, result.ExampleCount, result.ShrinkCount, result.TargetingScores);
         string trimmedTrace = StackTraceTrimmer.Trim(result.FailureStackTrace);
         return string.IsNullOrEmpty(trimmedTrace) ? message : message + Environment.NewLine + trimmedTrace;
 
