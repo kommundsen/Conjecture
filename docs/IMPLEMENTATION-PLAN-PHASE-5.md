@@ -290,7 +290,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
     - Failure during targeting phase — produces correct shrunk counterexample with seed reproduction
 
 #### Cycle 5.8.2 -- Targeting with database integration
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/Targeting/EndToEnd/TargetingDatabaseTests.cs`
     - Failing property found via targeting: counterexample is stored in database
     - Second run replays from database successfully
