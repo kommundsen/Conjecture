@@ -11,3 +11,5 @@ items:
     href: stateful-testing.md
   - name: Targeted Testing
     href: targeted-testing.md
+  - name: Recursive Strategies
+    href: recursive-strategies.md

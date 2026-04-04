@@ -374,7 +374,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
     - Update `docs/site/toc.yml`
 
 #### Cycle 5.13.2 -- DocFX recursive strategies guide
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `dotnet build src/ -c Release` produces no documentation warnings
   - **Impl** -- `docs/site/articles/guides/recursive-strategies.md`
     - Introduction: when to use recursive strategies
