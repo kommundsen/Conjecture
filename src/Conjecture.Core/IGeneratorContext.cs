@@ -14,5 +14,7 @@ public interface IGeneratorContext
     void Assume(bool condition);
 
     /// <summary>Records a numeric observation to guide targeted generation.</summary>
+    /// <param name="observation">The value to maximize. Must be finite (not NaN or Infinity).</param>
+    /// <param name="label">Identifies this metric. Multiple labels are optimized independently.</param>
     void Target(double observation, string label = "default");
 }

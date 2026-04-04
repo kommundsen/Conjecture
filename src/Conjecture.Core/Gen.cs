@@ -112,6 +112,30 @@ public static class Generate
     }
 
     /// <summary>Returns a strategy that generates recursive data structures up to <paramref name="maxDepth"/> levels deep.</summary>
+    /// <typeparam name="T">The type of value to generate.</typeparam>
+    /// <param name="baseCase">Strategy for leaf nodes (depth 0). Used whenever the target depth is exhausted.</param>
+    /// <param name="recursive">
+    ///   Factory that receives a <c>self</c> strategy (which recurses at depth − 1) and returns a strategy
+    ///   for non-leaf nodes. The engine substitutes <paramref name="baseCase"/> for <c>self</c> at depth 0.
+    /// </param>
+    /// <param name="maxDepth">Maximum recursion depth. Generated values have depth in [0, maxDepth]. Must be ≥ 0.</param>
+    /// <returns>
+    ///   A <see cref="Strategy{T}"/> whose generated values have depth at most <paramref name="maxDepth"/>.
+    ///   The depth draw is an IR integer, so the shrinker reduces it toward 0, producing shallower structures
+    ///   when minimising a counterexample.
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// // Expression tree: Literal | Add | Mul, up to 5 levels deep
+    /// Strategy&lt;Expr&gt; exprStrategy = Generate.Recursive&lt;Expr&gt;(
+    ///     baseCase: Generate.Integers&lt;int&gt;(0, 100).Select(n =&gt; (Expr)new Literal(n)),
+    ///     recursive: self =&gt; Generate.OneOf(
+    ///         Generate.Integers&lt;int&gt;(0, 100).Select(n =&gt; (Expr)new Literal(n)),
+    ///         Generate.Tuples(self, self).Select(t =&gt; (Expr)new Add(t.Item1, t.Item2)),
+    ///         Generate.Tuples(self, self).Select(t =&gt; (Expr)new Mul(t.Item1, t.Item2))),
+    ///     maxDepth: 5);
+    /// </code>
+    /// </example>
     public static Strategy<T> Recursive<T>(Strategy<T> baseCase, Func<Strategy<T>, Strategy<T>> recursive, int maxDepth = 5)
     {
         ArgumentNullException.ThrowIfNull(baseCase);
