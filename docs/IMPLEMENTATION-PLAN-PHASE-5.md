@@ -321,7 +321,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
 ### 5.10 Self-Tests
 
 #### Cycle 5.10.1 -- Targeting self-tests
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.SelfTests/TargetingSelfTests.cs`
     - Self-test property: hill climbing on a monotonically scored property always improves or maintains score (never regresses below initial)
     - Self-test property: targeting phase never produces more examples than the budget allows
