@@ -165,41 +165,47 @@ internal static class TestRunner
             }
         }
 
-        // Targeting phase: climb from the best observed IR buffer per label.
+        // Targeting phase: round-robin HillClimber across labels, one step per label per cycle.
         if (settings.Targeting && bestPerLabel.Count > 0)
         {
-            int targetingBudget = settings.MaxExamples - generationBudget;
+            int budgetRemaining = settings.MaxExamples - generationBudget;
             var perturbRng = new SplittableRandom(rng.NextUInt64());
-            var targetingScores = new Dictionary<string, double>();
+            var labels = bestPerLabel.Keys.ToList();
+            var currentNodes = bestPerLabel.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Nodes);
+            var currentScores = bestPerLabel.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Score);
+            IReadOnlyList<IRNode>? failingNodes = null;
 
-            foreach (var (label, (bestNodes, bestScore)) in bestPerLabel)
+            async Task<(Status, IReadOnlyDictionary<string, double>)> EvalForClimb(IReadOnlyList<IRNode> nodes)
             {
-                IReadOnlyList<IRNode>? failingNodes = null;
-
-                async Task<(Status, IReadOnlyDictionary<string, double>)> EvalForClimb(IReadOnlyList<IRNode> nodes)
-                {
-                    var (status, obs) = await ReplayAndObserveAsync(nodes, test);
-                    if (status == Status.Interesting)
-                        failingNodes = nodes;
-                    return (status, obs);
-                }
-
-                var (_, climbedScore) = await HillClimber.Climb(
-                    bestNodes, bestScore, label, EvalForClimb, targetingBudget, perturbRng);
-
-                if (failingNodes is not null)
-                {
-                    (IReadOnlyList<IRNode> shrunk, int shrinkCount) = await Shrinker.ShrinkAsync(
-                        failingNodes, n => ReplayAsync(n, test));
-                    if (dbContext is DbContext ctx)
-                        ctx.Database.Save(ctx.TestIdHash, SerializeNodes(shrunk));
-                    return TestRunResult.Fail(shrunk, failingNodes, seed, valid + 1, shrinkCount);
-                }
-
-                targetingScores[label] = climbedScore;
+                var (status, obs) = await ReplayAndObserveAsync(nodes, test);
+                if (status == Status.Interesting)
+                    failingNodes = nodes;
+                return (status, obs);
             }
 
-            return TestRunResult.Pass(seed, valid, targetingScores);
+            int labelIdx = 0;
+            while (budgetRemaining > 0 && failingNodes is null)
+            {
+                string label = labels[labelIdx++ % labels.Count];
+
+                var (newNodes, newScore) = await HillClimber.Climb(
+                    currentNodes[label], currentScores[label], label, EvalForClimb, budget: 1, perturbRng);
+
+                currentNodes[label] = newNodes;
+                currentScores[label] = newScore;
+                budgetRemaining--;
+            }
+
+            if (failingNodes is not null)
+            {
+                (IReadOnlyList<IRNode> shrunk, int shrinkCount) = await Shrinker.ShrinkAsync(
+                    failingNodes, n => ReplayAsync(n, test));
+                if (dbContext is DbContext ctx)
+                    ctx.Database.Save(ctx.TestIdHash, SerializeNodes(shrunk));
+                return TestRunResult.Fail(shrunk, failingNodes, seed, valid + 1, shrinkCount);
+            }
+
+            return TestRunResult.Pass(seed, valid, currentScores);
         }
 
         return TestRunResult.Pass(seed, valid);

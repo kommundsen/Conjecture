@@ -199,7 +199,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
     - `src/Conjecture.Core/Internal/TestRunResult.cs` -- add optional `TargetingScores` field
 
 #### Cycle 5.4.2 -- Multi-label round-robin
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/Internal/TestRunnerMultiTargetTests.cs`
     - Property with two labels (`"size"` and `"depth"`): both are optimized
     - Budget is split evenly across labels (with N labels and B targeting budget, each label gets ~B/N rounds)
