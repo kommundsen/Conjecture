@@ -309,7 +309,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
     - Large maxDepth (20): does not stack overflow, generates within time bounds
 
 #### Cycle 5.9.2 -- JSON-like structure generation
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/Strategies/Recursive/JsonValueTests.cs`
     - `JsonValue` ADT (JNull, JBool, JNumber, JString, JArray, JObject) generated recursively
     - All generated values serialize to valid JSON strings
