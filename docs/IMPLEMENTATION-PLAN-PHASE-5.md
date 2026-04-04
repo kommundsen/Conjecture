@@ -264,7 +264,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
     - Depth tracking via a depth counter integer drawn from the IR stream (so it's shrinkable)
 
 #### Cycle 5.7.2 -- Generate.Recursive public API
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/Strategies/GenRecursiveTests.cs`
     - `Generate.Recursive<T>(baseCase, recursive, maxDepth)` returns a `Strategy<T>`
     - `Generate.Recursive<T>(baseCase, recursive)` defaults to `maxDepth=5`

@@ -111,6 +111,14 @@ public static class Generate
         return new DictionaryStrategy<TKey, TValue>(keyStrategy, valueStrategy, minSize, maxSize);
     }
 
+    /// <summary>Returns a strategy that generates recursive data structures up to <paramref name="maxDepth"/> levels deep.</summary>
+    public static Strategy<T> Recursive<T>(Strategy<T> baseCase, Func<Strategy<T>, Strategy<T>> recursive, int maxDepth = 5)
+    {
+        ArgumentNullException.ThrowIfNull(baseCase);
+        ArgumentNullException.ThrowIfNull(recursive);
+        return new RecursiveStrategy<T>(baseCase, recursive, maxDepth);
+    }
+
     /// <summary>Returns a strategy that generates <see cref="StateMachineRun{TState}"/> values by running <typeparamref name="TMachine"/> for up to <paramref name="maxSteps"/> steps.</summary>
     /// <typeparam name="TMachine">
     ///   The state machine type. Must implement <see cref="IStateMachine{TState, TCommand}"/>
