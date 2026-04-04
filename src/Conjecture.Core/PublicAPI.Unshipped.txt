@@ -123,3 +123,7 @@ Conjecture.Core.StateMachineFormatter<TState>.Format(Conjecture.Core.StateMachin
 Conjecture.Core.Target
 static Conjecture.Core.Target.Maximize(double observation, string! label = "default") -> void
 static Conjecture.Core.Target.Minimize(double observation, string! label = "default") -> void
+Conjecture.Core.ConjectureSettings.Targeting.get -> bool
+Conjecture.Core.ConjectureSettings.Targeting.init -> void
+Conjecture.Core.ConjectureSettings.TargetingProportion.get -> double
+Conjecture.Core.ConjectureSettings.TargetingProportion.init -> void

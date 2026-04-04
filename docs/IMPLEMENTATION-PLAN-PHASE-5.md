@@ -183,7 +183,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
 ### 5.4 Targeting Phase in TestRunner
 
 #### Cycle 5.4.1 -- Single-label targeting
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/Internal/TestRunnerTargetingTests.cs`
     - Property that does `Target.Maximize(data.NextInteger(0, 100))` with `MaxExamples=20, Targeting=true`: after run, the max observed score is higher than the average of a pure-random run (statistical test over 5 runs with different seeds)
     - Property that never calls `Target`: targeting phase is skipped (no extra examples consumed)

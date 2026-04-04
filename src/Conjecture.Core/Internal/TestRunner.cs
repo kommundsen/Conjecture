@@ -84,12 +84,22 @@ internal static class TestRunner
         int valid = 0;
         int unsatisfied = 0;
         int totalAttempts = 0;
+        int generationBudget = settings.Targeting
+            ? Math.Max(1, (int)(settings.MaxExamples * (1.0 - settings.TargetingProportion)))
+            : settings.MaxExamples;
         int maxAttempts = settings.MaxExamples * 200;
         TimeSpan? deadline = settings.Deadline;
         Stopwatch? sw = deadline.HasValue ? Stopwatch.StartNew() : null;
+        var bestPerLabel = new Dictionary<string, (IReadOnlyList<IRNode> Nodes, double Score)>();
 
-        while (valid < settings.MaxExamples && totalAttempts < maxAttempts)
+        while (totalAttempts < maxAttempts)
         {
+            // Stop when we've reached the generation budget AND have observations to target,
+            // or when we've exhausted the full MaxExamples budget.
+            bool atGenerationBudget = valid >= generationBudget && bestPerLabel.Count > 0;
+            if (valid >= settings.MaxExamples || atGenerationBudget)
+                break;
+
             totalAttempts++;
             ConjectureData data = ConjectureData.ForGeneration(rng.Split());
             Target.CurrentData.Value = data;
@@ -106,6 +116,12 @@ internal static class TestRunner
                 }
 
                 valid++;
+                foreach (var (label, score) in data.Observations)
+                {
+                    if (!bestPerLabel.TryGetValue(label, out var current) || score > current.Score)
+                        bestPerLabel[label] = (data.IRNodes, score);
+                }
+
                 if (sw is not null && sw.Elapsed > deadline!.Value)
                 {
                     throw new ConjectureException("deadline exceeded");
@@ -149,6 +165,43 @@ internal static class TestRunner
             }
         }
 
+        // Targeting phase: climb from the best observed IR buffer per label.
+        if (settings.Targeting && bestPerLabel.Count > 0)
+        {
+            int targetingBudget = settings.MaxExamples - generationBudget;
+            var perturbRng = new SplittableRandom(rng.NextUInt64());
+            var targetingScores = new Dictionary<string, double>();
+
+            foreach (var (label, (bestNodes, bestScore)) in bestPerLabel)
+            {
+                IReadOnlyList<IRNode>? failingNodes = null;
+
+                async Task<(Status, IReadOnlyDictionary<string, double>)> EvalForClimb(IReadOnlyList<IRNode> nodes)
+                {
+                    var (status, obs) = await ReplayAndObserveAsync(nodes, test);
+                    if (status == Status.Interesting)
+                        failingNodes = nodes;
+                    return (status, obs);
+                }
+
+                var (_, climbedScore) = await HillClimber.Climb(
+                    bestNodes, bestScore, label, EvalForClimb, targetingBudget, perturbRng);
+
+                if (failingNodes is not null)
+                {
+                    (IReadOnlyList<IRNode> shrunk, int shrinkCount) = await Shrinker.ShrinkAsync(
+                        failingNodes, n => ReplayAsync(n, test));
+                    if (dbContext is DbContext ctx)
+                        ctx.Database.Save(ctx.TestIdHash, SerializeNodes(shrunk));
+                    return TestRunResult.Fail(shrunk, failingNodes, seed, valid + 1, shrinkCount);
+                }
+
+                targetingScores[label] = climbedScore;
+            }
+
+            return TestRunResult.Pass(seed, valid, targetingScores);
+        }
+
         return TestRunResult.Pass(seed, valid);
     }
 
@@ -176,6 +229,35 @@ internal static class TestRunner
         catch (Exception)
         {
             return Status.Interesting;
+        }
+    }
+
+    private static async Task<(Status, IReadOnlyDictionary<string, double>)> ReplayAndObserveAsync(
+        IReadOnlyList<IRNode> nodes, Func<ConjectureData, Task> test)
+    {
+        ConjectureData data = ConjectureData.ForRecord(nodes);
+        Target.CurrentData.Value = data;
+        try
+        {
+            await test(data);
+            return (Status.Valid, data.Observations);
+        }
+        catch (UnsatisfiedAssumptionException)
+        {
+            return (Status.Invalid, data.Observations);
+        }
+        catch (InvalidOperationException) when (data.Status == Status.Overrun)
+        {
+            return (Status.Overrun, data.Observations);
+        }
+        catch (Exception)
+        {
+            return (Status.Interesting, data.Observations);
+        }
+        finally
+        {
+            Target.CurrentData.Value = null;
+            data.Freeze();
         }
     }
 
