@@ -33,6 +33,8 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
             UseDatabase = testCase.UseDatabase,
             MaxStrategyRejections = testCase.MaxStrategyRejections,
             Deadline = testCase.DeadlineMs > 0 ? TimeSpan.FromMilliseconds(testCase.DeadlineMs) : null,
+            Targeting = testCase.Targeting,
+            TargetingProportion = testCase.TargetingProportion,
         };
     }
 

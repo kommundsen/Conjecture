@@ -83,6 +83,10 @@ Conjecture.Core.ConjectureSettingsAttribute.MaxUnsatisfiedRatio.get -> int
 Conjecture.Core.ConjectureSettingsAttribute.MaxUnsatisfiedRatio.init -> void
 Conjecture.Core.ConjectureSettingsAttribute.DatabasePath.get -> string!
 Conjecture.Core.ConjectureSettingsAttribute.DatabasePath.init -> void
+Conjecture.Core.ConjectureSettingsAttribute.Targeting.get -> bool
+Conjecture.Core.ConjectureSettingsAttribute.Targeting.init -> void
+Conjecture.Core.ConjectureSettingsAttribute.TargetingProportion.get -> double
+Conjecture.Core.ConjectureSettingsAttribute.TargetingProportion.init -> void
 Conjecture.Core.ConjectureSettingsAttribute.Apply(Conjecture.Core.ConjectureSettings! baseline) -> Conjecture.Core.ConjectureSettings!
 Conjecture.Core.ExampleAttribute
 Conjecture.Core.ExampleAttribute.ExampleAttribute(params object?[]! arguments) -> void

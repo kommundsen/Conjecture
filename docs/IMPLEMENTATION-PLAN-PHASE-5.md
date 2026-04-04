@@ -214,7 +214,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
 ### 5.5 Settings
 
 #### Cycle 5.5.1 -- Targeting settings
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/Internal/SettingsTargetingTests.cs`
     - `ConjectureSettings` default: `Targeting = true`, `TargetingProportion = 0.5`
     - `TargetingProportion = 0.0` disables targeting (all budget to generation)

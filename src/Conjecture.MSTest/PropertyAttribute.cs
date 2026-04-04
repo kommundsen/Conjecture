@@ -34,6 +34,12 @@ public sealed class PropertyAttribute(
     /// <summary>Deadline for each test run in milliseconds. 0 means no deadline.</summary>
     public int DeadlineMs { get; set; }
 
+    /// <summary>Whether to run a targeting phase after generation. Defaults to <see langword="true"/>.</summary>
+    public bool Targeting { get; set; } = true;
+
+    /// <summary>Fraction of MaxExamples budget allocated to the targeting phase. Defaults to 0.5.</summary>
+    public double TargetingProportion { get; set; } = 0.5;
+
     /// <inheritdoc/>
     [RequiresDynamicCode("Property test execution uses MakeGenericMethod for typed strategy dispatch.")]
     [RequiresUnreferencedCode("Property test execution accesses parameter type metadata that may be trimmed.")]
@@ -59,6 +65,8 @@ public sealed class PropertyAttribute(
             UseDatabase = UseDatabase,
             MaxStrategyRejections = MaxStrategyRejections,
             Deadline = DeadlineMs > 0 ? TimeSpan.FromMilliseconds(DeadlineMs) : null,
+            Targeting = Targeting,
+            TargetingProportion = TargetingProportion,
         };
 
         string dbPath = Path.Combine(settings.DatabasePath, "conjecture.db");
