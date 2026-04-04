@@ -92,6 +92,7 @@ internal static class TestRunner
         {
             totalAttempts++;
             ConjectureData data = ConjectureData.ForGeneration(rng.Split());
+            Target.CurrentData.Value = data;
             try
             {
                 Task testTask = test(data);
@@ -143,6 +144,7 @@ internal static class TestRunner
             }
             finally
             {
+                Target.CurrentData.Value = null;
                 data.Freeze();
             }
         }

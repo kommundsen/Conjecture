@@ -119,3 +119,6 @@ static Conjecture.Core.Generate.StateMachine<TMachine, TState, TCommand>(int max
 Conjecture.Core.StateMachineFormatter<TState>
 Conjecture.Core.StateMachineFormatter<TState>.StateMachineFormatter() -> void
 Conjecture.Core.StateMachineFormatter<TState>.Format(Conjecture.Core.StateMachineRun<TState>! value) -> string!
+Conjecture.Core.Target
+static Conjecture.Core.Target.Maximize(double observation, string! label = "default") -> void
+static Conjecture.Core.Target.Minimize(double observation, string! label = "default") -> void
