@@ -11,10 +11,12 @@ internal sealed class ConjectureData
     private readonly IReadOnlyList<IRNode>? replayNodes;
     private int cursor;
     private readonly List<IRNode> nodes = [];
+    private readonly Dictionary<string, double> observations = [];
     private bool frozen;
 
     internal Status Status { get; private set; } = Status.Valid;
     internal IReadOnlyList<IRNode> IRNodes => nodes;
+    internal IReadOnlyDictionary<string, double> Observations => observations;
     internal bool IsReplay => replayNodes is not null;
 
     private ConjectureData(IRandom rng) => this.rng = rng;
@@ -111,6 +113,15 @@ internal sealed class ConjectureData
         {
             nodes.Add(IRNode.ForCommandStart());
         }
+    }
+
+    internal void RecordObservation(string label, double value)
+    {
+        if (frozen)
+            throw new InvalidOperationException("Cannot record observations on frozen ConjectureData.");
+        if (double.IsNaN(value) || double.IsInfinity(value))
+            throw new ArgumentException("Observation value must be finite.", nameof(value));
+        observations[label] = value;
     }
 
     internal void MarkInvalid() => Status = Status.Invalid;
