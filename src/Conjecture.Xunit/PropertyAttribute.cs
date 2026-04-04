@@ -25,4 +25,10 @@ public sealed class PropertyAttribute : FactAttribute
 
     /// <summary>Deadline for each test run in milliseconds. 0 means no deadline.</summary>
     public int DeadlineMs { get; set; }
+
+    /// <summary>Whether to run a targeting phase after generation. Defaults to <see langword="true"/>.</summary>
+    public bool Targeting { get; set; } = true;
+
+    /// <summary>Fraction of MaxExamples budget allocated to the targeting phase. Defaults to 0.5.</summary>
+    public double TargetingProportion { get; set; } = 0.5;
 }

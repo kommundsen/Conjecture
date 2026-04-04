@@ -12,6 +12,8 @@ public sealed class ConjectureSettingsAttribute : Attribute
     private int? maxStrategyRejections;
     private int? maxUnsatisfiedRatio;
     private string? databasePath;
+    private bool? targeting;
+    private double? targetingProportion;
 
     /// <summary>Maximum number of examples to generate.</summary>
     public int MaxExamples
@@ -48,6 +50,20 @@ public sealed class ConjectureSettingsAttribute : Attribute
         init => databasePath = value;
     }
 
+    /// <summary>Whether to run a targeting phase after generation.</summary>
+    public bool Targeting
+    {
+        get => targeting ?? true;
+        init => targeting = value;
+    }
+
+    /// <summary>Fraction of MaxExamples budget allocated to the targeting phase.</summary>
+    public double TargetingProportion
+    {
+        get => targetingProportion ?? 0.5;
+        init => targetingProportion = value;
+    }
+
     /// <summary>Returns a <see cref="ConjectureSettings"/> with explicitly-set values overriding <paramref name="baseline"/>.</summary>
     public ConjectureSettings Apply(ConjectureSettings baseline) => new()
     {
@@ -58,5 +74,7 @@ public sealed class ConjectureSettingsAttribute : Attribute
         MaxStrategyRejections = maxStrategyRejections ?? baseline.MaxStrategyRejections,
         MaxUnsatisfiedRatio = maxUnsatisfiedRatio ?? baseline.MaxUnsatisfiedRatio,
         DatabasePath = databasePath ?? baseline.DatabasePath,
+        Targeting = targeting ?? baseline.Targeting,
+        TargetingProportion = targetingProportion ?? baseline.TargetingProportion,
     };
 }

@@ -11,3 +11,7 @@ Conjecture.NUnit.PropertyAttribute.MaxStrategyRejections.get -> int
 Conjecture.NUnit.PropertyAttribute.MaxStrategyRejections.set -> void
 Conjecture.NUnit.PropertyAttribute.DeadlineMs.get -> int
 Conjecture.NUnit.PropertyAttribute.DeadlineMs.set -> void
+Conjecture.NUnit.PropertyAttribute.Targeting.get -> bool
+Conjecture.NUnit.PropertyAttribute.Targeting.set -> void
+Conjecture.NUnit.PropertyAttribute.TargetingProportion.get -> double
+Conjecture.NUnit.PropertyAttribute.TargetingProportion.set -> void

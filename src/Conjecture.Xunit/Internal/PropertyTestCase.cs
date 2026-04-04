@@ -13,6 +13,8 @@ internal sealed class PropertyTestCase : XunitTestCase
     internal bool UseDatabase { get; private set; }
     internal int MaxStrategyRejections { get; private set; }
     internal int DeadlineMs { get; private set; }
+    internal bool Targeting { get; private set; } = true;
+    internal double TargetingProportion { get; private set; } = 0.5;
 
     [Obsolete("For deserialization only", error: false)]
     public PropertyTestCase() { }
@@ -26,7 +28,9 @@ internal sealed class PropertyTestCase : XunitTestCase
         ulong? seed,
         bool useDatabase,
         int maxStrategyRejections,
-        int deadlineMs)
+        int deadlineMs,
+        bool targeting,
+        double targetingProportion)
         : base(diagnosticMessageSink, defaultMethodDisplay, defaultMethodDisplayOptions, testMethod)
     {
         MaxExamples = maxExamples;
@@ -34,6 +38,8 @@ internal sealed class PropertyTestCase : XunitTestCase
         UseDatabase = useDatabase;
         MaxStrategyRejections = maxStrategyRejections;
         DeadlineMs = deadlineMs;
+        Targeting = targeting;
+        TargetingProportion = targetingProportion;
     }
 
     public override void Serialize(IXunitSerializationInfo info)
@@ -44,17 +50,23 @@ internal sealed class PropertyTestCase : XunitTestCase
         info.AddValue("UseDatabase", UseDatabase);
         info.AddValue("MaxStrategyRejections", MaxStrategyRejections);
         info.AddValue("DeadlineMs", DeadlineMs);
+        info.AddValue("Targeting", Targeting.ToString());
+        info.AddValue("TargetingProportion", TargetingProportion.ToString("R"));
     }
 
     public override void Deserialize(IXunitSerializationInfo info)
     {
         base.Deserialize(info);
         MaxExamples = info.GetValue<int>("MaxExamples");
-        var seedStr = info.GetValue<string?>("Seed");
+        string? seedStr = info.GetValue<string?>("Seed");
         Seed = seedStr is not null ? ulong.Parse(seedStr) : null;
         UseDatabase = info.GetValue<bool>("UseDatabase");
         MaxStrategyRejections = info.GetValue<int>("MaxStrategyRejections");
         DeadlineMs = info.GetValue<int>("DeadlineMs");
+        string? targetingStr = info.GetValue<string?>("Targeting");
+        Targeting = targetingStr is null ? true : bool.Parse(targetingStr);
+        string? proportionStr = info.GetValue<string?>("TargetingProportion");
+        TargetingProportion = proportionStr is null ? 0.5 : double.Parse(proportionStr, System.Globalization.CultureInfo.InvariantCulture);
     }
 
     public override Task<RunSummary> RunAsync(

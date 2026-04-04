@@ -28,6 +28,12 @@ public sealed class PropertyAttribute : global::NUnit.Framework.NUnitAttribute, 
     /// <summary>Deadline for each test run in milliseconds. 0 means no deadline.</summary>
     public int DeadlineMs { get; set; }
 
+    /// <summary>Whether to run a targeting phase after generation. Defaults to <see langword="true"/>.</summary>
+    public bool Targeting { get; set; } = true;
+
+    /// <summary>Fraction of MaxExamples budget allocated to the targeting phase. Defaults to 0.5.</summary>
+    public double TargetingProportion { get; set; } = 0.5;
+
     /// <inheritdoc/>
     IEnumerable<TestMethod> ITestBuilder.BuildFrom(IMethodInfo method, Test? suite)
     {
@@ -53,6 +59,8 @@ public sealed class PropertyAttribute : global::NUnit.Framework.NUnitAttribute, 
             Seed != 0 ? Seed : null,
             UseDatabase,
             MaxStrategyRejections,
-            DeadlineMs);
+            DeadlineMs,
+            Targeting,
+            TargetingProportion);
     }
 }

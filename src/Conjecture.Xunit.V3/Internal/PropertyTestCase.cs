@@ -19,6 +19,8 @@ internal sealed class PropertyTestCase : XunitTestCase, ISelfExecutingXunitTestC
     internal bool UseDatabase { get; private set; }
     internal int MaxStrategyRejections { get; private set; }
     internal int DeadlineMs { get; private set; }
+    internal bool Targeting { get; private set; } = true;
+    internal double TargetingProportion { get; private set; } = 0.5;
 
     [Obsolete("For deserialization only", error: false)]
     public PropertyTestCase() { }
@@ -41,7 +43,9 @@ internal sealed class PropertyTestCase : XunitTestCase, ISelfExecutingXunitTestC
         ulong? seed,
         bool useDatabase,
         int maxStrategyRejections,
-        int deadlineMs)
+        int deadlineMs,
+        bool targeting,
+        double targetingProportion)
         : base(testMethod, testCaseDisplayName, uniqueID, @explicit, skipExceptions,
                skipReason, skipType, skipUnless, skipWhen, traits,
                testMethodArguments, sourceFilePath, sourceLineNumber, timeout: null)
@@ -51,6 +55,8 @@ internal sealed class PropertyTestCase : XunitTestCase, ISelfExecutingXunitTestC
         UseDatabase = useDatabase;
         MaxStrategyRejections = maxStrategyRejections;
         DeadlineMs = deadlineMs;
+        Targeting = targeting;
+        TargetingProportion = targetingProportion;
     }
 
     protected override void Serialize(IXunitSerializationInfo info)
@@ -61,6 +67,8 @@ internal sealed class PropertyTestCase : XunitTestCase, ISelfExecutingXunitTestC
         info.AddValue("UseDatabase", UseDatabase);
         info.AddValue("MaxStrategyRejections", MaxStrategyRejections);
         info.AddValue("DeadlineMs", DeadlineMs);
+        info.AddValue("Targeting", Targeting);
+        info.AddValue("TargetingProportion", TargetingProportion);
     }
 
     protected override void Deserialize(IXunitSerializationInfo info)
@@ -72,6 +80,8 @@ internal sealed class PropertyTestCase : XunitTestCase, ISelfExecutingXunitTestC
         UseDatabase = info.GetValue<bool>("UseDatabase");
         MaxStrategyRejections = info.GetValue<int>("MaxStrategyRejections");
         DeadlineMs = info.GetValue<int>("DeadlineMs");
+        Targeting = info.GetValue<bool>("Targeting");
+        TargetingProportion = info.GetValue<double>("TargetingProportion");
     }
 
     [RequiresDynamicCode("xUnit test execution invokes test methods via reflection.")]
@@ -141,6 +151,8 @@ internal sealed class PropertyTestCase : XunitTestCase, ISelfExecutingXunitTestC
                 UseDatabase = UseDatabase,
                 MaxStrategyRejections = MaxStrategyRejections,
                 Deadline = DeadlineMs > 0 ? TimeSpan.FromMilliseconds(DeadlineMs) : null,
+                Targeting = Targeting,
+                TargetingProportion = TargetingProportion,
             };
 
             string dbPath = Path.Combine(settings.DatabasePath, "conjecture.db");

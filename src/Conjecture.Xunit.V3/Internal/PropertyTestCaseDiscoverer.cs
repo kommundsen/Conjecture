@@ -20,6 +20,8 @@ internal sealed class PropertyTestCaseDiscoverer : IXunitTestCaseDiscoverer
         bool useDatabase = attr.UseDatabase;
         int maxStrategyRejections = attr.MaxStrategyRejections > 0 ? attr.MaxStrategyRejections : 5;
         int deadlineMs = attr.DeadlineMs;
+        bool targeting = attr.Targeting;
+        double targetingProportion = attr.TargetingProportion;
 
         string displayName = testMethod.GetDisplayName(attr.DisplayName ?? testMethod.Method.Name, null, null, null);
         string uniqueID = testMethod.UniqueID;
@@ -42,7 +44,9 @@ internal sealed class PropertyTestCaseDiscoverer : IXunitTestCaseDiscoverer
             seed,
             useDatabase,
             maxStrategyRejections,
-            deadlineMs)];
+            deadlineMs,
+            targeting,
+            targetingProportion)];
 
         return ValueTask.FromResult(testCases);
     }

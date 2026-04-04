@@ -18,6 +18,8 @@ internal sealed class PropertyTestCommand : DelegatingTestCommand
     private readonly bool useDatabase;
     private readonly int maxStrategyRejections;
     private readonly int deadlineMs;
+    private readonly bool targeting;
+    private readonly double targetingProportion;
 
     internal PropertyTestCommand(
         TestCommand innerCommand,
@@ -25,7 +27,9 @@ internal sealed class PropertyTestCommand : DelegatingTestCommand
         ulong? seed,
         bool useDatabase,
         int maxStrategyRejections,
-        int deadlineMs)
+        int deadlineMs,
+        bool targeting,
+        double targetingProportion)
         : base(innerCommand)
     {
         this.maxExamples = maxExamples;
@@ -33,6 +37,8 @@ internal sealed class PropertyTestCommand : DelegatingTestCommand
         this.useDatabase = useDatabase;
         this.maxStrategyRejections = maxStrategyRejections;
         this.deadlineMs = deadlineMs;
+        this.targeting = targeting;
+        this.targetingProportion = targetingProportion;
     }
 
     [RequiresDynamicCode("Property test execution uses MakeGenericMethod for typed strategy dispatch.")]
@@ -60,6 +66,8 @@ internal sealed class PropertyTestCommand : DelegatingTestCommand
             UseDatabase = useDatabase,
             MaxStrategyRejections = maxStrategyRejections,
             Deadline = deadlineMs > 0 ? TimeSpan.FromMilliseconds(deadlineMs) : null,
+            Targeting = targeting,
+            TargetingProportion = targetingProportion,
         };
 
         string dbPath = Path.Combine(settings.DatabasePath, "conjecture.db");
