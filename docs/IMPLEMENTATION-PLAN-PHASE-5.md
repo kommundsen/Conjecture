@@ -338,7 +338,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
 ### 5.11 API Surface Tracking
 
 #### Cycle 5.11.1 -- PublicAPI.Unshipped.txt final update
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `dotnet build src/ -c Release` with zero `RS0016`/`RS0017` warnings
   - **Impl** -- `src/Conjecture.Core/PublicAPI.Unshipped.txt`
     - Add all new public API: `Target`, `Target.Maximize`, `Target.Minimize`, `IGeneratorContext.Target`, `ConjectureSettings.Targeting`, `ConjectureSettings.TargetingProportion`, `ConjectureSettingsAttribute.Targeting`, `ConjectureSettingsAttribute.TargetingProportion`, `Generate.Recursive<T>`, adapter `PropertyAttribute` properties
