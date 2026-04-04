@@ -11,6 +11,8 @@ public static class Target
     internal static readonly AsyncLocal<ConjectureData?> CurrentData = new();
 
     /// <summary>Records a numeric observation to maximize during the targeting phase.</summary>
+    /// <param name="observation">The value to maximize. Must be finite (not NaN or Infinity).</param>
+    /// <param name="label">Identifies this metric. Multiple labels are optimized independently.</param>
     public static void Maximize(double observation, string label = "default")
     {
         ConjectureData data = CurrentData.Value
@@ -19,6 +21,8 @@ public static class Target
     }
 
     /// <summary>Records a numeric observation to minimize during the targeting phase.</summary>
+    /// <param name="observation">The value to minimize. Must be finite (not NaN or Infinity).</param>
+    /// <param name="label">Identifies this metric. Multiple labels are optimized independently.</param>
     public static void Minimize(double observation, string label = "default")
     {
         Maximize(-observation, label);

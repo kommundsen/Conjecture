@@ -385,7 +385,7 @@ Each cycle: `/implement-cycle` (Red → Green → Refactor → Verify → Mark d
     - Update `docs/site/toc.yml`
 
 #### Cycle 5.13.3 -- XML doc audit on all new public API
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `dotnet build src/ -c Release` produces zero CS1591 warnings (already gated by `TreatWarningsAsErrors`)
   - **Impl** -- Review XML doc on `Target` (class + both methods), `IGeneratorContext.Target`, `ConjectureSettings.Targeting`, `ConjectureSettings.TargetingProportion`, `Generate.Recursive<T>` (params, returns, constraints, example block)
 
