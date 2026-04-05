@@ -44,6 +44,8 @@ Generates a `[Property]` test skeleton from a C# method signature. Supports `xun
 
 Given `public static int Add(int a, int b)`:
 
+# [xUnit v2](#tab/xunit-v2)
+
 ```csharp
 using Conjecture.Core;
 using Conjecture.Xunit;
@@ -62,6 +64,72 @@ public class AddPropertyTests
     }
 }
 ```
+
+# [xUnit v3](#tab/xunit-v3)
+
+```csharp
+using Conjecture.Core;
+using Conjecture.Xunit.V3;
+using Xunit;
+
+public class AddPropertyTests
+{
+    [Property]
+    public void Add_SatisfiesProperty(int a, int b)
+    {
+        // Act
+        // var result = Add(a, b);
+
+        // Assert
+        // Assert.True(result >= 0);
+    }
+}
+```
+
+# [NUnit](#tab/nunit)
+
+```csharp
+using Conjecture.Core;
+using Conjecture.NUnit;
+using NUnit.Framework;
+
+public class AddPropertyTests
+{
+    [Property]
+    public void Add_SatisfiesProperty(int a, int b)
+    {
+        // Act
+        // var result = Add(a, b);
+
+        // Assert
+        // Assert.That(result >= 0, Is.True);
+    }
+}
+```
+
+# [MSTest](#tab/mstest)
+
+```csharp
+using Conjecture.Core;
+using Conjecture.MSTest;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+[TestClass]
+public class AddPropertyTests
+{
+    [Property]
+    public void Add_SatisfiesProperty(int a, int b)
+    {
+        // Act
+        // var result = Add(a, b);
+
+        // Assert
+        // Assert.IsTrue(result >= 0);
+    }
+}
+```
+
+***
 
 ### `explain-shrink-output`
 

@@ -4,7 +4,7 @@ Conjecture works with all major .NET test frameworks. The `[Property]` attribute
 
 ## Side-by-Side Comparison
 
-### xUnit v2
+# [xUnit v2](#tab/xunit-v2)
 
 ```csharp
 using Conjecture.Xunit;
@@ -25,7 +25,7 @@ public class MathTests
 
 Package: `Conjecture.Xunit`
 
-### xUnit v3
+# [xUnit v3](#tab/xunit-v3)
 
 ```csharp
 using Conjecture.Xunit.V3;
@@ -46,7 +46,7 @@ public class MathTests
 
 Package: `Conjecture.Xunit.V3`
 
-### NUnit
+# [NUnit](#tab/nunit)
 
 ```csharp
 using Conjecture.NUnit;
@@ -67,7 +67,7 @@ public class MathTests
 
 Package: `Conjecture.NUnit`
 
-### MSTest
+# [MSTest](#tab/mstest)
 
 ```csharp
 using Conjecture.MSTest;
@@ -91,6 +91,8 @@ public class MathTests
 Package: `Conjecture.MSTest`
 
 > **Note:** MSTest requires `[TestClass]` on the class. The other frameworks don't.
+
+***
 
 ## Shared Features
 

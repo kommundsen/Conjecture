@@ -59,10 +59,8 @@ Strategy<Expr> exprStrategy = Generate.Recursive<Expr>(
     maxDepth: 5);
 
 [Property]
-public void Eval_nonNegativeLiterals_resultIsNonNegative([From<ExprProvider>] Expr expr)
-{
-    Assert.True(Eval(expr) >= 0);
-}
+public bool Eval_nonNegativeLiterals_resultIsNonNegative([From<ExprProvider>] Expr expr)
+    => Eval(expr) >= 0;
 ```
 
 When a failure is found (e.g., because `Mul` was implemented as subtraction), the shrinker reduces the tree depth and simplifies literal values. The result is typically a depth-1 or depth-0 tree — the minimal example that exposes the bug.
