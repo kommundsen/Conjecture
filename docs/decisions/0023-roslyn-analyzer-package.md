@@ -1,7 +1,7 @@
 # 0023. Roslyn Analyzer Package
 
 **Date:** 2026-03-25
-**Status:** Accepted
+**Status:** Superseded by ADR-0038
 
 ## Context
 
