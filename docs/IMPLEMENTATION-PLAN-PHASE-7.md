@@ -85,7 +85,7 @@ Each cycle: `/implement-cycle` (Red -> Green -> Refactor -> Verify -> Mark done)
   - **Verify** -- `dotnet build src/ -c Release` no warnings
 
 #### Cycle 7.2.2 -- Per-project Description overrides
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Impl** -- add `<Description>` to each packable project's `PropertyGroup`:
     - `src/Conjecture.Core/Conjecture.Core.csproj` -- `Property-based testing for .NET, inspired by Hypothesis. Includes analyzers and source generator.`
     - `src/Conjecture.Xunit/Conjecture.Xunit.csproj` -- `xUnit v2 adapter for Conjecture.NET property-based testing`
@@ -96,7 +96,7 @@ Each cycle: `/implement-cycle` (Red -> Green -> Refactor -> Verify -> Mark done)
   - **Verify** -- `dotnet build src/ -c Release` no warnings
 
 #### Cycle 7.2.3 -- Per-package READMEs
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Impl** -- create `README.md` for each packable project (install command, minimal usage example, link to repo):
     - `src/Conjecture.Core/README.md` -- overview, `dotnet add package Conjecture.Core`, basic `[Property]` + `Generate.*` example, note about bundled analyzers
     - `src/Conjecture.Xunit/README.md` -- xUnit v2 install + `[Property]` example
