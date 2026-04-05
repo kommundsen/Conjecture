@@ -142,7 +142,7 @@ Each cycle: `/implement-cycle` (Red -> Green -> Refactor -> Verify -> Mark done)
 ### 7.5 API Surface Rotation
 
 #### Cycle 7.5.1 -- PublicAPI rotation (all projects)
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Impl** -- For each of Core, Xunit, Xunit.V3, NUnit, MSTest:
     - Append `PublicAPI.Unshipped.txt` content (excluding the `#nullable enable` header line) to `PublicAPI.Shipped.txt`
     - Reset `PublicAPI.Unshipped.txt` to contain only `#nullable enable`

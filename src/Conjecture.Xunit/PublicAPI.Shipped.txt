@@ -1,1 +1,17 @@
 #nullable enable
+Conjecture.Xunit.PropertyAttribute
+Conjecture.Xunit.PropertyAttribute.MaxExamples.get -> int
+Conjecture.Xunit.PropertyAttribute.MaxExamples.set -> void
+Conjecture.Xunit.PropertyAttribute.PropertyAttribute() -> void
+Conjecture.Xunit.PropertyAttribute.DeadlineMs.get -> int
+Conjecture.Xunit.PropertyAttribute.DeadlineMs.set -> void
+Conjecture.Xunit.PropertyAttribute.MaxStrategyRejections.get -> int
+Conjecture.Xunit.PropertyAttribute.MaxStrategyRejections.set -> void
+Conjecture.Xunit.PropertyAttribute.Seed.get -> ulong
+Conjecture.Xunit.PropertyAttribute.Seed.set -> void
+Conjecture.Xunit.PropertyAttribute.UseDatabase.get -> bool
+Conjecture.Xunit.PropertyAttribute.UseDatabase.set -> void
+Conjecture.Xunit.PropertyAttribute.Targeting.get -> bool
+Conjecture.Xunit.PropertyAttribute.Targeting.set -> void
+Conjecture.Xunit.PropertyAttribute.TargetingProportion.get -> double
+Conjecture.Xunit.PropertyAttribute.TargetingProportion.set -> void
