@@ -116,7 +116,7 @@ Each cycle: `/implement-cycle` (Red -> Green -> Refactor -> Verify -> Mark done)
     - Update `PublicAPI.Unshipped.txt`
 
 #### Cycle 6.2.2 -- TestRunner logging
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/Internal/TestRunnerLoggingTests.cs`
     - Passing run: logger receives `GenerationCompleted` at Information
     - Failing run: logger receives `PropertyTestFailure` at Error with seed
