@@ -203,7 +203,7 @@ Each adapter auto-wires logging to its native test output mechanism. All adapter
     - `new ExampleDatabase(dbPath, settings.Logger)`
 
 #### Cycle 6.4.3 -- xUnit v3 auto-wires ITestOutputHelper
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Xunit.V3.Tests/PropertyAttributeLoggingTests.cs`
     - Test class with `ITestOutputHelper` ctor: Conjecture logs appear in test output
     - Test class without `ITestOutputHelper`: no exceptions, NullLogger used
