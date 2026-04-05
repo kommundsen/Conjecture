@@ -129,7 +129,7 @@ Each cycle: `/implement-cycle` (Red -> Green -> Refactor -> Verify -> Mark done)
 ### 7.4 Release Workflow
 
 #### Cycle 7.4.1 -- GitHub Actions release workflow
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Impl** -- `.github/workflows/release.yml`
     - Trigger: `on: push: tags: ['v*']`
     - `permissions: contents: write`
