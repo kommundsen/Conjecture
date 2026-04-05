@@ -66,7 +66,13 @@ internal sealed class PropertyTestCase : XunitTestCase
         string? targetingStr = info.GetValue<string?>("Targeting");
         Targeting = targetingStr is null ? true : bool.Parse(targetingStr);
         string? proportionStr = info.GetValue<string?>("TargetingProportion");
-        TargetingProportion = proportionStr is null ? 0.5 : double.Parse(proportionStr, System.Globalization.CultureInfo.InvariantCulture);
+        if (proportionStr is not null
+            && double.TryParse(proportionStr, System.Globalization.NumberStyles.Float,
+                System.Globalization.CultureInfo.InvariantCulture, out double parsed)
+            && parsed >= 0.0 && parsed < 1.0)
+        {
+            TargetingProportion = parsed;
+        }
     }
 
     public override Task<RunSummary> RunAsync(

@@ -193,7 +193,7 @@ Each adapter auto-wires logging to its native test output mechanism. All adapter
     - `internal static ILogger FromWriteLine(Action<string>? writeLine, LogLevel minLevel = LogLevel.Information)`
 
 #### Cycle 6.4.2 -- xUnit v2 auto-wires ITestOutputHelper
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Xunit.Tests/PropertyAttributeLoggingTests.cs`
     - Test class with `ITestOutputHelper` ctor: Conjecture logs appear in test output
     - Test class without `ITestOutputHelper`: no exceptions, NullLogger used
