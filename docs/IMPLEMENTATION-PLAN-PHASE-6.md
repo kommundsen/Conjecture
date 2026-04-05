@@ -232,7 +232,7 @@ Each adapter auto-wires logging to its native test output mechanism. All adapter
 ### 6.5 End-to-End Logging Tests
 
 #### Cycle 6.5.1 -- Logging end-to-end
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/Logging/EndToEnd/LoggingEndToEndTests.cs`
     - Passing test: `GenerationCompleted` at Information
     - Failing test: `PropertyTestFailure` at Error + `ShrinkingStarted`/`ShrinkingCompleted`
