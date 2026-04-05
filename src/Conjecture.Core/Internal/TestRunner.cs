@@ -58,7 +58,7 @@ internal static class TestRunner
                 if (replayStatus == Status.Interesting)
                 {
                     (IReadOnlyList<IRNode> shrunk, int shrinkCount) = await Shrinker.ShrinkAsync(
-                        nodes, n => ReplayAsync(n, test));
+                        nodes, n => ReplayAsync(n, test), settings.Logger);
                     db.Delete(testIdHash);
                     db.Save(testIdHash, SerializeNodes(shrunk));
                     return TestRunResult.Fail(shrunk, nodes, 0UL, 1, shrinkCount);
@@ -160,7 +160,7 @@ internal static class TestRunner
                 string? stackTrace = failureEx.StackTrace;
                 IReadOnlyList<IRNode> firstFailureNodes = data.IRNodes;
                 (IReadOnlyList<IRNode> shrunk, int shrinkCount) = await Shrinker.ShrinkAsync(
-                    firstFailureNodes, n => ReplayAsync(n, test));
+                    firstFailureNodes, n => ReplayAsync(n, test), logger);
                 if (dbContext is DbContext ctx)
                 {
                     ctx.Database.Save(ctx.TestIdHash, SerializeNodes(shrunk));
@@ -222,7 +222,7 @@ internal static class TestRunner
             if (failingNodes is not null)
             {
                 (IReadOnlyList<IRNode> shrunk, int shrinkCount) = await Shrinker.ShrinkAsync(
-                    failingNodes, n => ReplayAsync(n, test));
+                    failingNodes, n => ReplayAsync(n, test), logger);
                 if (dbContext is DbContext ctx)
                     ctx.Database.Save(ctx.TestIdHash, SerializeNodes(shrunk));
                 Log.PropertyTestFailure(logger, valid + 1, $"0x{seed:X16}");

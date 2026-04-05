@@ -134,7 +134,7 @@ Each cycle: `/implement-cycle` (Red -> Green -> Refactor -> Verify -> Mark done)
 ### 6.3 Internal Components
 
 #### Cycle 6.3.1 -- Shrinker logging
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/Internal/ShrinkerLoggingTests.cs`
     - `ShrinkingStarted` and `ShrinkingCompleted` at Information with node counts and timing
     - `ShrinkPassProgress` at Debug for each pass (guarded by `IsEnabled`)
