@@ -1,1 +1,18 @@
 #nullable enable
+Conjecture.MSTest.PropertyAttribute
+Conjecture.MSTest.PropertyAttribute.PropertyAttribute(string! sourceFile = "", int sourceLine = -1) -> void
+Conjecture.MSTest.PropertyAttribute.MaxExamples.get -> int
+Conjecture.MSTest.PropertyAttribute.MaxExamples.set -> void
+Conjecture.MSTest.PropertyAttribute.Seed.get -> ulong
+Conjecture.MSTest.PropertyAttribute.Seed.set -> void
+Conjecture.MSTest.PropertyAttribute.UseDatabase.get -> bool
+Conjecture.MSTest.PropertyAttribute.UseDatabase.set -> void
+Conjecture.MSTest.PropertyAttribute.MaxStrategyRejections.get -> int
+Conjecture.MSTest.PropertyAttribute.MaxStrategyRejections.set -> void
+Conjecture.MSTest.PropertyAttribute.DeadlineMs.get -> int
+Conjecture.MSTest.PropertyAttribute.DeadlineMs.set -> void
+Conjecture.MSTest.PropertyAttribute.Targeting.get -> bool
+Conjecture.MSTest.PropertyAttribute.Targeting.set -> void
+Conjecture.MSTest.PropertyAttribute.TargetingProportion.get -> double
+Conjecture.MSTest.PropertyAttribute.TargetingProportion.set -> void
+override Conjecture.MSTest.PropertyAttribute.ExecuteAsync(Microsoft.VisualStudio.TestTools.UnitTesting.ITestMethod! testMethod) -> System.Threading.Tasks.Task<Microsoft.VisualStudio.TestTools.UnitTesting.TestResult![]!>!
