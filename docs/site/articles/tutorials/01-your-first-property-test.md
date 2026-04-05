@@ -5,7 +5,7 @@ This tutorial walks you through writing and running your first property-based te
 ## Prerequisites
 
 - .NET 10 SDK
-- A test project with `Conjecture.Xunit` installed (see [Installation](../installation.md))
+- A test project with a Conjecture adapter installed (see [Installation](../installation.md))
 
 ## What We're Testing
 
@@ -27,6 +27,8 @@ A traditional unit test might check a few specific cases. A property test descri
 
 ## Writing the Property
 
+# [xUnit v2](#tab/xunit-v2)
+
 ```csharp
 using Conjecture.Xunit;
 
@@ -39,6 +41,55 @@ public class StringUtilsTests
     }
 }
 ```
+
+# [xUnit v3](#tab/xunit-v3)
+
+```csharp
+using Conjecture.Xunit.V3;
+
+public class StringUtilsTests
+{
+    [Property]
+    public bool Reverse_twice_returns_original(string input)
+    {
+        return StringUtils.Reverse(StringUtils.Reverse(input)) == input;
+    }
+}
+```
+
+# [NUnit](#tab/nunit)
+
+```csharp
+using Conjecture.NUnit;
+
+public class StringUtilsTests
+{
+    [Property]
+    public bool Reverse_twice_returns_original(string input)
+    {
+        return StringUtils.Reverse(StringUtils.Reverse(input)) == input;
+    }
+}
+```
+
+# [MSTest](#tab/mstest)
+
+```csharp
+using Conjecture.MSTest;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+[TestClass]
+public class StringUtilsTests
+{
+    [Property]
+    public bool Reverse_twice_returns_original(string input)
+    {
+        return StringUtils.Reverse(StringUtils.Reverse(input)) == input;
+    }
+}
+```
+
+***
 
 That's it. The `[Property]` attribute tells Conjecture to:
 
@@ -63,6 +114,8 @@ Passed StringUtilsTests.Reverse_twice_returns_original [100 examples]
 
 Return `void` and use your framework's assertions instead of returning `bool`:
 
+# [xUnit v2](#tab/xunit-v2)
+
 ```csharp
 [Property]
 public void Reverse_preserves_length(string input)
@@ -70,6 +123,38 @@ public void Reverse_preserves_length(string input)
     Assert.Equal(input.Length, StringUtils.Reverse(input).Length);
 }
 ```
+
+# [xUnit v3](#tab/xunit-v3)
+
+```csharp
+[Property]
+public void Reverse_preserves_length(string input)
+{
+    Assert.Equal(input.Length, StringUtils.Reverse(input).Length);
+}
+```
+
+# [NUnit](#tab/nunit)
+
+```csharp
+[Property]
+public void Reverse_preserves_length(string input)
+{
+    Assert.That(StringUtils.Reverse(input).Length, Is.EqualTo(input.Length));
+}
+```
+
+# [MSTest](#tab/mstest)
+
+```csharp
+[Property]
+public void Reverse_preserves_length(string input)
+{
+    Assert.AreEqual(input.Length, StringUtils.Reverse(input).Length);
+}
+```
+
+***
 
 ## A Failing Property
 

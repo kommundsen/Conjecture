@@ -29,9 +29,34 @@ dotnet add package Conjecture.Analyzers
 
 ## Namespace
 
-All core types live in the `Conjecture.Core` namespace. Framework adapters use their own namespace (e.g., `Conjecture.Xunit`).
+All core types live in the `Conjecture.Core` namespace. Framework adapters use their own namespace:
+
+# [xUnit v2](#tab/xunit-v2)
 
 ```csharp
 using Conjecture.Core;   // Generate, Strategy<T>, Assume, ConjectureSettings, ...
 using Conjecture.Xunit;  // [Property], [Example], [From<T>], [FromFactory], ...
 ```
+
+# [xUnit v3](#tab/xunit-v3)
+
+```csharp
+using Conjecture.Core;       // Generate, Strategy<T>, Assume, ConjectureSettings, ...
+using Conjecture.Xunit.V3;  // [Property], [Example], [From<T>], [FromFactory], ...
+```
+
+# [NUnit](#tab/nunit)
+
+```csharp
+using Conjecture.Core;   // Generate, Strategy<T>, Assume, ConjectureSettings, ...
+using Conjecture.NUnit;  // [Property], [Example], [From<T>], [FromFactory], ...
+```
+
+# [MSTest](#tab/mstest)
+
+```csharp
+using Conjecture.Core;    // Generate, Strategy<T>, Assume, ConjectureSettings, ...
+using Conjecture.MSTest;  // [Property], [Example], [From<T>], [FromFactory], ...
+```
+
+***

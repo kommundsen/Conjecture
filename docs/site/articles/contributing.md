@@ -77,4 +77,4 @@ Design decisions are documented in [`docs/decisions/`](https://github.com/<owner
 
 ## License
 
-Source code is licensed under [MPL-2.0](https://mozilla.org/MPL/2.0/). NuGet packages are distributed under [MIT](https://opensource.org/licenses/MIT). See [ADR-0031](../../decisions/0031-source-license-mpl2.md) for details.
+Source code is licensed under [MPL-2.0](https://mozilla.org/MPL/2.0/). NuGet packages are distributed under [MIT](https://opensource.org/licenses/MIT). See ADR-0031 in `docs/decisions/` for rationale.

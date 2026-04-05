@@ -4,15 +4,45 @@ Get a property test running in under 5 minutes.
 
 ## 1. Create a Test Project
 
+# [xUnit v2](#tab/xunit-v2)
+
 ```bash
 dotnet new xunit -n MyProject.Tests
 cd MyProject.Tests
 dotnet add package Conjecture.Xunit
 ```
 
+# [xUnit v3](#tab/xunit-v3)
+
+```bash
+dotnet new xunit -n MyProject.Tests
+cd MyProject.Tests
+dotnet add package Conjecture.Xunit.V3
+```
+
+# [NUnit](#tab/nunit)
+
+```bash
+dotnet new nunit -n MyProject.Tests
+cd MyProject.Tests
+dotnet add package Conjecture.NUnit
+```
+
+# [MSTest](#tab/mstest)
+
+```bash
+dotnet new mstest -n MyProject.Tests
+cd MyProject.Tests
+dotnet add package Conjecture.MSTest
+```
+
+***
+
 ## 2. Write a Property Test
 
 Replace the default test class with:
+
+# [xUnit v2](#tab/xunit-v2)
 
 ```csharp
 using Conjecture.Core;
@@ -37,6 +67,88 @@ public class MathTests
     }
 }
 ```
+
+# [xUnit v3](#tab/xunit-v3)
+
+```csharp
+using Conjecture.Core;
+using Conjecture.Xunit.V3;
+
+namespace MyProject.Tests;
+
+public class MathTests
+{
+    [Property]
+    public bool Addition_is_commutative(int a, int b)
+    {
+        return a + b == b + a;
+    }
+
+    [Property]
+    public bool Abs_is_non_negative(int value)
+    {
+        // Skip int.MinValue — Math.Abs throws for it
+        Assume.That(value != int.MinValue);
+        return Math.Abs(value) >= 0;
+    }
+}
+```
+
+# [NUnit](#tab/nunit)
+
+```csharp
+using Conjecture.Core;
+using Conjecture.NUnit;
+
+namespace MyProject.Tests;
+
+public class MathTests
+{
+    [Property]
+    public bool Addition_is_commutative(int a, int b)
+    {
+        return a + b == b + a;
+    }
+
+    [Property]
+    public bool Abs_is_non_negative(int value)
+    {
+        // Skip int.MinValue — Math.Abs throws for it
+        Assume.That(value != int.MinValue);
+        return Math.Abs(value) >= 0;
+    }
+}
+```
+
+# [MSTest](#tab/mstest)
+
+```csharp
+using Conjecture.Core;
+using Conjecture.MSTest;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace MyProject.Tests;
+
+[TestClass]
+public class MathTests
+{
+    [Property]
+    public bool Addition_is_commutative(int a, int b)
+    {
+        return a + b == b + a;
+    }
+
+    [Property]
+    public bool Abs_is_non_negative(int value)
+    {
+        // Skip int.MinValue — Math.Abs throws for it
+        Assume.That(value != int.MinValue);
+        return Math.Abs(value) >= 0;
+    }
+}
+```
+
+***
 
 ## 3. Run
 
@@ -64,6 +176,8 @@ Run it, and Conjecture will find a counterexample and shrink it down to `1000` �
 
 Property methods can return `bool` (Conjecture asserts it's `true`) or `void` (use your framework's assertions):
 
+# [xUnit v2](#tab/xunit-v2)
+
 ```csharp
 [Property]
 public void Sorting_preserves_length(List<int> items)
@@ -72,6 +186,41 @@ public void Sorting_preserves_length(List<int> items)
     Assert.Equal(items.Count, sorted.Count);
 }
 ```
+
+# [xUnit v3](#tab/xunit-v3)
+
+```csharp
+[Property]
+public void Sorting_preserves_length(List<int> items)
+{
+    var sorted = items.OrderBy(x => x).ToList();
+    Assert.Equal(items.Count, sorted.Count);
+}
+```
+
+# [NUnit](#tab/nunit)
+
+```csharp
+[Property]
+public void Sorting_preserves_length(List<int> items)
+{
+    var sorted = items.OrderBy(x => x).ToList();
+    Assert.That(sorted.Count, Is.EqualTo(items.Count));
+}
+```
+
+# [MSTest](#tab/mstest)
+
+```csharp
+[Property]
+public void Sorting_preserves_length(List<int> items)
+{
+    var sorted = items.OrderBy(x => x).ToList();
+    Assert.AreEqual(items.Count, sorted.Count);
+}
+```
+
+***
 
 ## Explicit Examples
 

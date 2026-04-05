@@ -18,14 +18,14 @@ Call `Target.Maximize` (or `Target.Minimize`) anywhere in a `[Property]` test bo
 
 ```csharp
 [Property]
-public void Sorting_preserves_length(List<int> xs)
+public bool Sorting_preserves_length(List<int> xs)
 {
     List<int> sorted = xs.OrderBy(x => x).ToList();
 
     // Tell the engine to seek longer lists
     Target.Maximize(xs.Count, "list_length");
 
-    Assert.Equal(xs.Count, sorted.Count);
+    return xs.Count == sorted.Count;
 }
 ```
 
@@ -33,12 +33,12 @@ public void Sorting_preserves_length(List<int> xs)
 
 ```csharp
 [Property]
-public void Compression_never_expands_empty_input(byte[] data)
+public bool Compression_never_expands_empty_input(byte[] data)
 {
     Target.Minimize(data.Length, "input_size");
 
     byte[] compressed = Compress(data);
-    Assert.True(compressed.Length <= data.Length || data.Length == 0);
+    return compressed.Length <= data.Length || data.Length == 0;
 }
 ```
 
@@ -50,13 +50,13 @@ A single property can track multiple metrics:
 
 ```csharp
 [Property]
-public void Graph_traversal_visits_all_nodes(int[,] adjacency)
+public bool Graph_traversal_visits_all_nodes(int[,] adjacency)
 {
     Target.Maximize(NodeCount(adjacency), "nodes");
     Target.Maximize(EdgeCount(adjacency), "edges");
 
     IEnumerable<int> visited = BreadthFirst(adjacency, start: 0);
-    Assert.Equal(NodeCount(adjacency), visited.Count());
+    return NodeCount(adjacency) == visited.Count();
 }
 ```
 
