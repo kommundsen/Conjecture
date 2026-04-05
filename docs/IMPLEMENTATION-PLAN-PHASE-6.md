@@ -78,7 +78,7 @@ Each cycle: `/implement-cycle` (Red -> Green -> Refactor -> Verify -> Mark done)
 ### 6.1 LoggerMessage Source-Generated Methods
 
 #### Cycle 6.1.1 -- Log partial class
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/Internal/LogTests.cs`
     - Using a collecting `ILogger`: calling each `Log.*` method emits at the expected level with structured parameters
     - When `IsEnabled` returns false for a level, the method does no work (verified via call count)
