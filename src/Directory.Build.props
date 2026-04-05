@@ -15,10 +15,16 @@
 
     <!-- NuGet packages are distributed under MIT (source is MPL-2.0; see ADR-0031) -->
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+
+    <!-- SourceLink + deterministic builds -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(IsPackable)' != 'false'">
     <None Include="$(MSBuildThisFileDirectory)..\LICENSE-MIT.txt" Pack="true" PackagePath="\" Visible="false" />
     <PackageReference Include="MinVer" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="all" />
   </ItemGroup>
 </Project>

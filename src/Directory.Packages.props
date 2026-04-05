@@ -6,6 +6,7 @@
   <ItemGroup>
     <!-- Versioning -->
     <PackageVersion Include="MinVer" Version="5.0.0" />
+    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.102" />
 
     <!-- API surface tracking (dev-time) -->
     <PackageVersion Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.4" />

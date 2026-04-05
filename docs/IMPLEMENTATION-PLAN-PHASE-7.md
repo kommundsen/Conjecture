@@ -66,7 +66,7 @@ Each cycle: `/implement-cycle` (Red -> Green -> Refactor -> Verify -> Mark done)
   - **Verify** -- `dotnet build src/Conjecture.Core/Conjecture.Core.csproj -c Release`; version shows `0.0.0-alpha.0` (not `1.0.0`)
 
 #### Cycle 7.1.2 -- SourceLink + deterministic builds
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Impl**
     - `src/Directory.Packages.props` -- add `<PackageVersion Include="Microsoft.SourceLink.GitHub" Version="9.0.0" />`
     - `src/Directory.Build.props` -- add to existing `PropertyGroup`: `<PublishRepositoryUrl>true</PublishRepositoryUrl>`, `<EmbedUntrackedSources>true</EmbedUntrackedSources>`, `<ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>`
