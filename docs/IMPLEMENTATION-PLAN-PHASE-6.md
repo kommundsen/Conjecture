@@ -146,7 +146,7 @@ Each cycle: `/implement-cycle` (Red -> Green -> Refactor -> Verify -> Mark done)
     - Update call sites in `TestRunner.cs` to pass `settings.Logger`
 
 #### Cycle 6.3.2 -- ExampleDatabase logging
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/Internal/ExampleDatabaseLoggingTests.cs`
     - `Load` emits `DatabaseReplaying` log
     - `Save` emits `DatabaseSaved` log
