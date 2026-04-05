@@ -6,6 +6,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 using Xunit.Sdk;
 using Xunit.v3;
@@ -133,10 +135,12 @@ internal sealed class PropertyTestCase : XunitTestCase, ISelfExecutingXunitTestC
         {
             MethodInfo methodInfo = TestMethod.Method;
             object? testInstance;
+            ILogger logger = NullLogger.Instance;
             if (constructorArguments is { Length: > 0 })
             {
                 TestOutputHelper outputHelper = new();
                 outputHelper.Initialize(messageBus, test);
+                logger = TestOutputHelperLogger.FromWriteLine(outputHelper.WriteLine);
                 testInstance = Activator.CreateInstance(TestMethod.TestClass.Class, ResolveConstructorArguments(constructorArguments, outputHelper));
             }
             else
@@ -153,6 +157,7 @@ internal sealed class PropertyTestCase : XunitTestCase, ISelfExecutingXunitTestC
                 Deadline = DeadlineMs > 0 ? TimeSpan.FromMilliseconds(DeadlineMs) : null,
                 Targeting = Targeting,
                 TargetingProportion = TargetingProportion,
+                Logger = logger,
             };
 
             string dbPath = Path.Combine(settings.DatabasePath, "conjecture.db");
@@ -197,7 +202,7 @@ internal sealed class PropertyTestCase : XunitTestCase, ISelfExecutingXunitTestC
             }
             else
             {
-                using ExampleDatabase db = new(dbPath);
+                using ExampleDatabase db = new(dbPath, settings.Logger);
                 result = TestCaseHelper.IsAsyncReturnType(methodInfo.ReturnType)
                     ? await TestRunner.RunAsync(settings, async data =>
                     {
