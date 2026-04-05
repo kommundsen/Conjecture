@@ -111,7 +111,7 @@ Each cycle: `/implement-cycle` (Red -> Green -> Refactor -> Verify -> Mark done)
 ### 7.3 Analyzer Bundling
 
 #### Cycle 7.3.1 -- Bundle analyzers + generator into Core
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Impl**
     - `src/Conjecture.Core/Conjecture.Core.csproj` -- add three `ProjectReference` items:
       - `Conjecture.Analyzers` with `ReferenceOutputAssembly="false" OutputItemType="Analyzer"`
