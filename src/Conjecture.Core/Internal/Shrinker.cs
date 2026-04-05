@@ -1,6 +1,10 @@
 // Copyright (c) 2026 Kim Ommundsen. Licensed under the MPL-2.0.
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
+using System.Diagnostics;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+
 namespace Conjecture.Core.Internal;
 
 internal static class Shrinker
@@ -12,11 +16,21 @@ internal static class Shrinker
         [new FloatSimplificationPass(), new StringAwarePass(), new AdaptivePass(new IntegerReductionPass())],
     ];
 
-    internal static async Task<(IReadOnlyList<IRNode> Nodes, int ShrinkCount)> ShrinkAsync(
+    internal static Task<(IReadOnlyList<IRNode> Nodes, int ShrinkCount)> ShrinkAsync(
         IReadOnlyList<IRNode> nodes,
         Func<IReadOnlyList<IRNode>, ValueTask<Status>> isInteresting)
     {
+        return ShrinkAsync(nodes, isInteresting, NullLogger.Instance);
+    }
+
+    internal static async Task<(IReadOnlyList<IRNode> Nodes, int ShrinkCount)> ShrinkAsync(
+        IReadOnlyList<IRNode> nodes,
+        Func<IReadOnlyList<IRNode>, ValueTask<Status>> isInteresting,
+        ILogger logger)
+    {
         ShrinkState state = new(nodes, isInteresting);
+        Log.ShrinkingStarted(logger, nodes.Count);
+        Stopwatch sw = Stopwatch.StartNew();
 
         bool outerProgress;
         do
@@ -30,13 +44,17 @@ internal static class Shrinker
                     tierProgress = false;
                     foreach (IShrinkPass pass in tier)
                     {
-                        tierProgress |= await pass.TryReduce(state);
+                        bool madeProgress = await pass.TryReduce(state);
+                        tierProgress |= madeProgress;
+                        Log.ShrinkPassProgress(logger, pass.GetType().Name, madeProgress);
                     }
                     outerProgress |= tierProgress;
                 } while (tierProgress);
             }
         } while (outerProgress);
 
+        sw.Stop();
+        Log.ShrinkingCompleted(logger, state.Nodes.Count, state.ShrinkCount, sw.Elapsed.TotalMilliseconds);
         return (state.Nodes, state.ShrinkCount);
     }
 
