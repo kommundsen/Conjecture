@@ -1,7 +1,7 @@
 <Solution>
   <Project Path="Conjecture.Core/Conjecture.Core.csproj" />
   <Project Path="Conjecture.Xunit/Conjecture.Xunit.csproj" />
-  <Project Path="Conjecture.Tests/Conjecture.Tests.csproj" />
+  <Project Path="Conjecture.Core.Tests/Conjecture.Core.Tests.csproj" />
   <Project Path="Conjecture.Xunit.Tests/Conjecture.Xunit.Tests.csproj" />
   <Project Path="Conjecture.Benchmarks/Conjecture.Benchmarks.csproj" />
   <Project Path="Conjecture.Generators/Conjecture.Generators.csproj" />
