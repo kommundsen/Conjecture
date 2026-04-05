@@ -16,4 +16,6 @@
   <Project Path="Conjecture.MSTest/Conjecture.MSTest.csproj" />
   <Project Path="Conjecture.MSTest.Tests/Conjecture.MSTest.Tests.csproj" />
   <Project Path="Conjecture.SelfTests/Conjecture.SelfTests.csproj" />
+  <Project Path="Conjecture.Mcp/Conjecture.Mcp.csproj" />
+  <Project Path="Conjecture.Mcp.Tests/Conjecture.Mcp.Tests.csproj" />
 </Solution>
