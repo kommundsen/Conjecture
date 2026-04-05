@@ -19,5 +19,6 @@
 
   <ItemGroup Condition="'$(IsPackable)' != 'false'">
     <None Include="$(MSBuildThisFileDirectory)..\LICENSE-MIT.txt" Pack="true" PackagePath="\" Visible="false" />
+    <PackageReference Include="MinVer" PrivateAssets="all" />
   </ItemGroup>
 </Project>
