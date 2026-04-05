@@ -60,7 +60,7 @@ Each cycle: `/implement-cycle` (Red -> Green -> Refactor -> Verify -> Mark done)
 ### 7.1 Build Infrastructure
 
 #### Cycle 7.1.1 -- MinVer PackageReference fix
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Impl** -- `src/Directory.Build.props`
     - Add `<PackageReference Include="MinVer" PrivateAssets="all" />` to the existing `ItemGroup Condition="'$(IsPackable)' != 'false'"`
   - **Verify** -- `dotnet build src/Conjecture.Core/Conjecture.Core.csproj -c Release`; version shows `0.0.0-alpha.0` (not `1.0.0`)
