@@ -18,6 +18,21 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- Bundle analyzers, code fixes, and source generator into the Core package (ADR-0038) -->
+    <ProjectReference Include="..\Conjecture.Analyzers\Conjecture.Analyzers.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+    <ProjectReference Include="..\Conjecture.Analyzers.CodeFixes\Conjecture.Analyzers.CodeFixes.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+    <ProjectReference Include="..\Conjecture.Generators\Conjecture.Generators.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+  </ItemGroup>
+
+  <Target Name="IncludeAnalyzersInPackage" BeforeTargets="_GetPackageFiles">
+    <ItemGroup>
+      <None Include="$(MSBuildThisFileDirectory)..\Conjecture.Analyzers\bin\$(Configuration)\netstandard2.0\Conjecture.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+      <None Include="$(MSBuildThisFileDirectory)..\Conjecture.Analyzers.CodeFixes\bin\$(Configuration)\netstandard2.0\Conjecture.Analyzers.CodeFixes.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+      <None Include="$(MSBuildThisFileDirectory)..\Conjecture.Generators\bin\$(Configuration)\netstandard2.0\Conjecture.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    </ItemGroup>
+  </Target>
+
   <PropertyGroup>
     <ApiCompatEnableRuleAttributesMustMatch>true</ApiCompatEnableRuleAttributesMustMatch>
     <ApiCompatBaseline>$(MSBuildThisFileDirectory)..\api-baseline\Conjecture.Core.dll</ApiCompatBaseline>
