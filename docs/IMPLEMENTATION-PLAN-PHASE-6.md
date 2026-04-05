@@ -180,7 +180,7 @@ Each adapter auto-wires logging to its native test output mechanism. All adapter
 | **MSTest** | `Console.WriteLine` | auto-captured by `CaptureTraceOutput=true` |
 
 #### Cycle 6.4.1 -- TestOutputHelperLogger bridge
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/Internal/TestOutputHelperLoggerTests.cs`
     - `TestOutputHelperLogger` implements `ILogger`
     - `IsEnabled` returns true for `Information` and above by default
