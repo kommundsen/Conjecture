@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
+using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
@@ -14,6 +15,10 @@ namespace Conjecture.Xunit.Internal;
 internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
 {
     private readonly ConjectureSettings settings;
+    // Stored so we can call Initialize(MessageBus, ITest) before the test runs and
+    // Uninitialize() afterwards. xUnit v2 passes a Func<TestOutputHelper> factory in
+    // constructorArguments; calling factory() yields the (not-yet-active) instance.
+    private readonly TestOutputHelper? testOutputHelper;
 
     internal PropertyTestCaseRunner(
         PropertyTestCase testCase,
@@ -26,6 +31,22 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
         : base(testCase, displayName, skipReason, constructorArguments,
                Array.Empty<object>(), messageBus, aggregator, cancellationTokenSource)
     {
+        Func<TestOutputHelper>? factory = constructorArguments
+            .OfType<Func<TestOutputHelper>>()
+            .FirstOrDefault();
+        ITestOutputHelper? direct = constructorArguments
+            .OfType<ITestOutputHelper>()
+            .FirstOrDefault();
+
+        testOutputHelper = factory?.Invoke();
+
+        Action<string>? writeLine = testOutputHelper is not null
+            ? msg => testOutputHelper.WriteLine(msg)
+            : direct is not null
+                ? msg => direct.WriteLine(msg)
+                : null;
+
+        ILogger logger = TestOutputHelperLogger.FromWriteLine(writeLine);
         settings = new ConjectureSettings
         {
             MaxExamples = testCase.MaxExamples,
@@ -35,6 +56,7 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
             Deadline = testCase.DeadlineMs > 0 ? TimeSpan.FromMilliseconds(testCase.DeadlineMs) : null,
             Targeting = testCase.Targeting,
             TargetingProportion = testCase.TargetingProportion,
+            Logger = logger,
         };
     }
 
@@ -44,6 +66,9 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
     {
         RunSummary summary = new() { Total = 1 };
         ITest test = CreateTest(TestCase, DisplayName);
+
+        // Initialize TestOutputHelper so log writes during the test don't throw.
+        testOutputHelper?.Initialize(MessageBus, test);
 
         if (!MessageBus.QueueMessage(new TestStarting(test)))
         {
@@ -56,7 +81,15 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
 
         try
         {
-            object? testInstance = Activator.CreateInstance(TestClass);
+            // TestOutputHelper is only active during a test — substitute the pre-initialized instance.
+            object?[] resolvedArgs = Array.ConvertAll(ConstructorArguments,
+                arg => arg is Func<TestOutputHelper> ? (object?)testOutputHelper : arg);
+            object? testInstance = resolvedArgs.Length > 0
+                ? TestClass.GetConstructors()
+                    .FirstOrDefault(c => c.GetParameters().Length == resolvedArgs.Length)
+                    ?.Invoke(resolvedArgs)
+                    ?? Activator.CreateInstance(TestClass)
+                : Activator.CreateInstance(TestClass);
             MethodInfo methodInfo = TestMethod;
             string dbPath = Path.Combine(settings.DatabasePath, "conjecture.db");
             string testIdHash = TestCaseHelper.ComputeTestId(methodInfo);
@@ -98,7 +131,7 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
             }
             else
             {
-                using ExampleDatabase db = new(dbPath);
+                using ExampleDatabase db = new(dbPath, settings.Logger);
                 result = TestCaseHelper.IsAsyncReturnType(methodInfo.ReturnType)
                     ? await TestRunner.RunAsync(settings, async data =>
                     {
@@ -147,6 +180,8 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
         {
             CancellationTokenSource.Cancel();
         }
+
+        testOutputHelper?.Uninitialize();
 
         return summary;
     }
