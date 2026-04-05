@@ -76,5 +76,6 @@ public sealed class ConjectureSettingsAttribute : Attribute
         DatabasePath = databasePath ?? baseline.DatabasePath,
         Targeting = targeting ?? baseline.Targeting,
         TargetingProportion = targetingProportion ?? baseline.TargetingProportion,
+        Logger = baseline.Logger,
     };
 }
