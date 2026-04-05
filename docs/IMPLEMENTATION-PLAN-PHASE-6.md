@@ -245,17 +245,17 @@ Each adapter auto-wires logging to its native test output mechanism. All adapter
 ### 6.6 API Surface + Documentation
 
 #### Cycle 6.6.1 -- PublicAPI.Unshipped.txt update
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `dotnet build src/ -c Release` with zero `RS0016`/`RS0017` warnings
   - **Impl** -- `src/Conjecture.Core/PublicAPI.Unshipped.txt`
     - Add `ConjectureSettings.Logger` get + init
 
 #### Cycle 6.6.2 -- ADR-0037 document
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Impl** -- `docs/decisions/0037-observability.md`
 
 #### Cycle 6.6.3 -- DocFX logging guide
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Impl** -- `docs/site/articles/guides/observability.md`
     - Enabling custom logging: `new ConjectureSettings { Logger = loggerFactory.CreateLogger("Conjecture") }`
     - Log event catalog: EventIds, levels, message templates
