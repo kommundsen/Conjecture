@@ -5,6 +5,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
+using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using NUnit.Framework.Internal;
 using NUnit.Framework.Internal.Commands;
@@ -59,6 +61,7 @@ internal sealed class PropertyTestCommand : DelegatingTestCommand
             TestCaseHelper.ValidateExampleArgs(ea, methodParams);
         }
 
+        ILogger logger = TestOutputHelperLogger.FromWriteLine(msg => TestContext.Out.WriteLine(msg));
         ConjectureSettings settings = new()
         {
             MaxExamples = maxExamples,
@@ -68,6 +71,7 @@ internal sealed class PropertyTestCommand : DelegatingTestCommand
             Deadline = deadlineMs > 0 ? TimeSpan.FromMilliseconds(deadlineMs) : null,
             Targeting = targeting,
             TargetingProportion = targetingProportion,
+            Logger = logger,
         };
 
         string dbPath = Path.Combine(settings.DatabasePath, "conjecture.db");
@@ -103,7 +107,7 @@ internal sealed class PropertyTestCommand : DelegatingTestCommand
                 return context.CurrentResult;
             }
 
-            using ExampleDatabase db = new(dbPath);
+            using ExampleDatabase db = new(dbPath, settings.Logger);
             Task<TestRunResult> runTask = isAsync
                 ? TestRunner.RunAsync(settings, async data =>
                 {
