@@ -67,7 +67,7 @@ Each cycle: `/implement-cycle` (Red -> Green -> Refactor -> Verify -> Mark done)
   - Alternatives considered: DI-based `ILoggerFactory` (rejected: Core has no DI), `EventSource` (rejected: `ILogger` is the modern standard), ActivitySource/Meter (deferred: designed for distributed services, not single-process test runs)
 
 #### Cycle 6.0.2 -- NuGet dependency setup
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Impl**
     - `src/Directory.Packages.props` -- add `<PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />`
     - `src/Conjecture.Core/Conjecture.Core.csproj` -- add `<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />`
