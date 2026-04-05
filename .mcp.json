@@ -3,6 +3,11 @@
     "microsoft-learn": {
       "type": "http",
       "url": "https://learn.microsoft.com/api/mcp"
+    },
+    "conjecture": {
+      "type": "stdio",
+      "command": "dotnet",
+      "args": ["run", "--project", "src/Conjecture.Mcp"]
     }
   }
 }
