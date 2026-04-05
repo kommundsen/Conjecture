@@ -220,7 +220,7 @@ Each adapter auto-wires logging to its native test output mechanism. All adapter
     - Pass to settings and ExampleDatabase
 
 #### Cycle 6.4.5 -- MSTest auto-wires Console.WriteLine
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- All adapter test suites pass
   - **Impl** -- `src/Conjecture.MSTest/PropertyAttribute.cs`
     - `ILogger logger = TestOutputHelperLogger.FromWriteLine(Console.WriteLine)`

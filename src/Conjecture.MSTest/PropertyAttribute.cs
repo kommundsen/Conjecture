@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Conjecture.MSTest;
@@ -58,6 +59,7 @@ public sealed class PropertyAttribute(
             TestCaseHelper.ValidateExampleArgs(ea, methodParams);
         }
 
+        ILogger logger = TestOutputHelperLogger.FromWriteLine(Console.WriteLine);
         ConjectureSettings settings = new()
         {
             MaxExamples = MaxExamples,
@@ -67,6 +69,7 @@ public sealed class PropertyAttribute(
             Deadline = DeadlineMs > 0 ? TimeSpan.FromMilliseconds(DeadlineMs) : null,
             Targeting = Targeting,
             TargetingProportion = TargetingProportion,
+            Logger = logger,
         };
 
         string dbPath = Path.Combine(settings.DatabasePath, "conjecture.db");
@@ -95,7 +98,7 @@ public sealed class PropertyAttribute(
             return [new TestResult { Outcome = UnitTestOutcome.Failed, TestFailureException = explicitFailure }];
         }
 
-        using ExampleDatabase db = new(dbPath);
+        using ExampleDatabase db = new(dbPath, settings.Logger);
         TestRunResult result = await TestRunner.RunAsync(settings, async data =>
         {
             object[] args = SharedParameterStrategyResolver.Resolve(methodParams, data);
