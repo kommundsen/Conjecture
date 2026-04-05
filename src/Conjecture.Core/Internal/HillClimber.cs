@@ -1,6 +1,9 @@
 // Copyright (c) 2026 Kim Ommundsen. Licensed under the MPL-2.0.
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+
 namespace Conjecture.Core.Internal;
 
 internal static class HillClimber
@@ -11,8 +14,10 @@ internal static class HillClimber
         string label,
         Func<IReadOnlyList<IRNode>, Task<(Status, IReadOnlyDictionary<string, double>)>> evaluate,
         int budget,
-        IRandom? rng = null)
+        IRandom? rng = null,
+        ILogger? logger = null)
     {
+        ILogger log = logger ?? NullLogger.Instance;
         var bestNodes = nodes.ToList();
         var bestScore = currentScore;
         var remaining = budget;
@@ -43,6 +48,7 @@ internal static class HillClimber
                         bestNodes = candidate;
                         bestScore = score;
                         greedyImproved = true;
+                        Log.TargetingStepImproved(log, label, score);
                         break;
                     }
                 }
@@ -69,6 +75,7 @@ internal static class HillClimber
                     bestNodes = perturbed;
                     bestScore = score;
                     perturbImproved = true;
+                    Log.TargetingStepImproved(log, label, score);
                 }
             }
 
