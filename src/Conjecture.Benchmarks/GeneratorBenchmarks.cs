@@ -129,14 +129,14 @@ public class GeneratorThroughputBenchmarks
 }
 
 /// <summary>
-/// Hand-written equivalent of what ArbitraryGenerator emits for a two-int record:
-/// Generate.Compose composing two Generate.Integers draws.
+/// Hand-written equivalent of what ArbitraryGenerator now emits for a two-int record:
+/// static readonly strategy fields captured outside the lambda.
 /// </summary>
 internal sealed class PairArbitrary : IStrategyProvider<(int, int)>
 {
-    public Strategy<(int, int)> Create()
-    {
-        return Generate.Compose<(int, int)>(ctx =>
-            (ctx.Generate(Generate.Integers<int>()), ctx.Generate(Generate.Integers<int>())));
-    }
+    private static readonly Strategy<int> S0 = Generate.Integers<int>();
+    private static readonly Strategy<int> S1 = Generate.Integers<int>();
+
+    public Strategy<(int, int)> Create() =>
+        Generate.Compose<(int, int)>(ctx => (ctx.Generate(S0), ctx.Generate(S1)));
 }
