@@ -157,7 +157,7 @@ Each cycle: `/implement-cycle` (Red -> Green -> Refactor -> Verify -> Mark done)
     - Update all call sites in adapters and `TestRunner` to pass `logger`
 
 #### Cycle 6.3.3 -- HillClimber logger parameter
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/Internal/HillClimberLoggingTests.cs`
     - `HillClimber.Climb` with a collecting logger: receives per-label targeting progress at Debug
     - `NullLogger.Instance`: identical behavior

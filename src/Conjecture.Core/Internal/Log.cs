@@ -50,4 +50,8 @@ internal static partial class Log
     [LoggerMessage(EventId = 11, Level = LogLevel.Debug,
         Message = "Database saved: testId={TestIdHash}")]
     internal static partial void DatabaseSaved(ILogger logger, string testIdHash);
+
+    [LoggerMessage(EventId = 12, Level = LogLevel.Debug,
+        Message = "Targeting step: label={Label} improved to score={NewScore}")]
+    internal static partial void TargetingStepImproved(ILogger logger, string label, double newScore);
 }

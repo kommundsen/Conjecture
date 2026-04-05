@@ -209,7 +209,7 @@ internal static class TestRunner
                 // progress with a single label visit.
                 int stepBudget = Math.Min(2, budgetRemaining);
                 var (newNodes, newScore) = await HillClimber.Climb(
-                    currentNodes[label], currentScores[label], label, EvalForClimb, stepBudget, perturbRng);
+                    currentNodes[label], currentScores[label], label, EvalForClimb, stepBudget, perturbRng, logger);
 
                 currentNodes[label] = newNodes;
                 currentScores[label] = newScore;
