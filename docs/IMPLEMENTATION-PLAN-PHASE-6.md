@@ -264,7 +264,7 @@ Each adapter auto-wires logging to its native test output mechanism. All adapter
     - Update `docs/site/articles/guides/toc.yml`
 
 #### Cycle 6.6.4 -- XML doc audit
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `dotnet build src/ -c Release` produces zero CS1591 warnings
   - **Impl** -- XML doc on `ConjectureSettings.Logger`
 
