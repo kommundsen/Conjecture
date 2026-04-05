@@ -132,3 +132,5 @@ Conjecture.Core.ConjectureSettings.Targeting.get -> bool
 Conjecture.Core.ConjectureSettings.Targeting.init -> void
 Conjecture.Core.ConjectureSettings.TargetingProportion.get -> double
 Conjecture.Core.ConjectureSettings.TargetingProportion.init -> void
+Conjecture.Core.ConjectureSettings.Logger.get -> Microsoft.Extensions.Logging.ILogger!
+Conjecture.Core.ConjectureSettings.Logger.init -> void

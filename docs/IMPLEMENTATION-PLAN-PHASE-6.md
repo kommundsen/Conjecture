@@ -105,7 +105,7 @@ Each cycle: `/implement-cycle` (Red -> Green -> Refactor -> Verify -> Mark done)
 ### 6.2 Settings + TestRunner Integration
 
 #### Cycle 6.2.1 -- ConjectureSettings.Logger property
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.Tests/Internal/SettingsLoggerTests.cs`
     - `new ConjectureSettings()` has `Logger` defaulting to `NullLogger.Instance`
     - `new ConjectureSettings { Logger = myLogger }` stores the provided logger

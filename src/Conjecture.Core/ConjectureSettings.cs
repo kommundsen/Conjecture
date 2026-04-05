@@ -1,6 +1,9 @@
 // Copyright (c) 2026 Kim Ommundsen. Licensed under the MPL-2.0.
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+
 namespace Conjecture.Core;
 
 /// <summary>Immutable configuration settings for a Conjecture property test.</summary>
@@ -67,4 +70,7 @@ public record ConjectureSettings
 
     /// <summary>Path to the example database directory. Defaults to <c>.conjecture/examples/</c>.</summary>
     public string DatabasePath { get; init; } = ".conjecture/examples/";
+
+    /// <summary>Logger for structured test-run output. Defaults to <see cref="NullLogger.Instance"/>.</summary>
+    public ILogger Logger { get; init; } = NullLogger.Instance;
 }
