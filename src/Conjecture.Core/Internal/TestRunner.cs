@@ -2,6 +2,7 @@
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
 using System.Diagnostics;
+using Microsoft.Extensions.Logging;
 
 namespace Conjecture.Core.Internal;
 
@@ -79,11 +80,14 @@ internal static class TestRunner
         Func<ConjectureData, Task> test,
         DbContext? dbContext)
     {
+        ILogger logger = settings.Logger;
         ulong seed = settings.Seed ?? (ulong)Random.Shared.NextInt64();
         SplittableRandom rng = new(seed);
         int valid = 0;
         int unsatisfied = 0;
         int totalAttempts = 0;
+        bool unsatisfiedWarnLogged = false;
+        Stopwatch generationSw = Stopwatch.StartNew();
         int generationBudget = settings.Targeting
             ? Math.Max(1, (int)(settings.MaxExamples * (1.0 - settings.TargetingProportion)))
             : settings.MaxExamples;
@@ -135,6 +139,12 @@ internal static class TestRunner
             {
                 data.MarkInvalid();
                 unsatisfied++;
+                if (!unsatisfiedWarnLogged && valid > 0 && unsatisfied > valid * settings.MaxUnsatisfiedRatio / 2)
+                {
+                    unsatisfiedWarnLogged = true;
+                    Log.HighUnsatisfiedRatio(logger, unsatisfied, valid, settings.MaxUnsatisfiedRatio);
+                }
+
                 if ((valid > 0 || settings.MaxUnsatisfiedRatio == 0) && unsatisfied > valid * settings.MaxUnsatisfiedRatio)
                 {
                     throw new ConjectureException("too many unsatisfied assumptions");
@@ -156,6 +166,7 @@ internal static class TestRunner
                     ctx.Database.Save(ctx.TestIdHash, SerializeNodes(shrunk));
                 }
 
+                Log.PropertyTestFailure(logger, valid + 1, $"0x{seed:X16}");
                 return TestRunResult.Fail(shrunk, firstFailureNodes, seed, valid + 1, shrinkCount, stackTrace);
             }
             finally
@@ -165,12 +176,17 @@ internal static class TestRunner
             }
         }
 
+        generationSw.Stop();
+        Log.GenerationCompleted(logger, valid, unsatisfied, generationSw.Elapsed.TotalMilliseconds);
+
         // Targeting phase: round-robin HillClimber across labels, one step per label per cycle.
         if (settings.Targeting && bestPerLabel.Count > 0)
         {
             int budgetRemaining = settings.MaxExamples - generationBudget;
             var perturbRng = new SplittableRandom(rng.NextUInt64());
             var labels = bestPerLabel.Keys.ToList();
+            string targetingLabels = string.Join(", ", labels);
+            Log.TargetingStarted(logger, targetingLabels);
             var currentNodes = bestPerLabel.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Nodes);
             var currentScores = bestPerLabel.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Score);
             IReadOnlyList<IRNode>? failingNodes = null;
@@ -200,12 +216,16 @@ internal static class TestRunner
                 budgetRemaining -= stepBudget;
             }
 
+            string targetingBestScores = string.Join(", ", currentScores.Select(kvp => $"{kvp.Key}:{kvp.Value}"));
+            Log.TargetingCompleted(logger, targetingLabels, targetingBestScores);
+
             if (failingNodes is not null)
             {
                 (IReadOnlyList<IRNode> shrunk, int shrinkCount) = await Shrinker.ShrinkAsync(
                     failingNodes, n => ReplayAsync(n, test));
                 if (dbContext is DbContext ctx)
                     ctx.Database.Save(ctx.TestIdHash, SerializeNodes(shrunk));
+                Log.PropertyTestFailure(logger, valid + 1, $"0x{seed:X16}");
                 return TestRunResult.Fail(shrunk, failingNodes, seed, valid + 1, shrinkCount);
             }
 
