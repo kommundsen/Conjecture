@@ -212,7 +212,7 @@ Each adapter auto-wires logging to its native test output mechanism. All adapter
     - Pass to settings and ExampleDatabase
 
 #### Cycle 6.4.4 -- NUnit auto-wires TestContext.Out
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Tests** -- `src/Conjecture.NUnit.Tests/PropertyAttributeLoggingTests.cs`
     - Conjecture log output appears in NUnit test output
   - **Impl** -- `src/Conjecture.NUnit/Internal/PropertyTestCommand.cs`
