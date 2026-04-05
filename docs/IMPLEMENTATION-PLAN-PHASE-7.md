@@ -78,7 +78,7 @@ Each cycle: `/implement-cycle` (Red -> Green -> Refactor -> Verify -> Mark done)
 ### 7.2 Package Metadata
 
 #### Cycle 7.2.1 -- Global NuGet metadata
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Impl** -- `src/Directory.Build.props`
     - Add packable `PropertyGroup`: `Authors`, `PackageProjectUrl`, `RepositoryUrl`, `RepositoryType`, `PackageTags`, `PackageReadmeFile`
     - Add to packable `ItemGroup`: README fallback `<None Include="$(MSBuildThisFileDirectory)..\README.md" Pack="true" PackagePath="\" Visible="false" Condition="!Exists('$(MSBuildProjectDirectory)\README.md')" />`
