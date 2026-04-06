@@ -47,6 +47,9 @@ var ciSettings = settings with { MaxExamples = 1000 };
 | `Deadline` | `TimeSpan?` | `null` | Per-example timeout. `null` = no deadline. On `[Property]`, use `DeadlineMs` (int, milliseconds, `0` = no deadline). |
 | `MaxStrategyRejections` | `int` | `5` | Max consecutive rejections by a single `Where()` filter before giving up. Must be >= 0. |
 | `MaxUnsatisfiedRatio` | `int` | `200` | Max ratio of skipped-to-valid examples before the test is marked as too flaky. Must be >= 0. |
+| `Targeting` | `bool` | `true` | Enable or disable the targeted testing phase (hill climbing after generation). See [Targeted Testing](guides/targeted-testing.md). |
+| `TargetingProportion` | `double` | `0.5` | Fraction of `MaxExamples` reserved for targeting. Must be in `[0.0, 1.0)`. |
+| `Logger` | `ILogger` | `NullLogger.Instance` | Structured logging sink. Adapters auto-wire framework output. See [Observability](guides/observability.md). |
 
 ## Reproducibility
 

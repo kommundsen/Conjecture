@@ -30,6 +30,8 @@ Available properties on `ConjectureSettingsAttribute`:
 | `MaxStrategyRejections` | `int` | 5 |
 | `MaxUnsatisfiedRatio` | `int` | 200 |
 | `DatabasePath` | `string` | `".conjecture/examples/"` |
+| `Targeting` | `bool` | `true` |
+| `TargetingProportion` | `double` | `0.5` |
 
 ## Per-Test Settings
 

@@ -1,12 +1,6 @@
 # Roslyn Analyzers
 
-The `Conjecture.Analyzers` package provides compile-time diagnostics that catch common property-test mistakes.
-
-## Setup
-
-```bash
-dotnet add package Conjecture.Analyzers
-```
+Conjecture includes Roslyn analyzers (bundled in `Conjecture.Core`) that provide compile-time diagnostics catching common property-test mistakes. They activate automatically — no additional packages are needed.
 
 ## Diagnostic Rules
 

@@ -13,19 +13,9 @@ Install the adapter package for your test framework. Each adapter transitively r
 | NUnit 4 | `Conjecture.NUnit` | `dotnet add package Conjecture.NUnit` |
 | MSTest | `Conjecture.MSTest` | `dotnet add package Conjecture.MSTest` |
 
-## Optional Packages
+## Analyzers and Source Generator
 
-| Package | Purpose |
-|---|---|
-| `Conjecture.Generators` | Source generator — derive strategies for your types with `[Arbitrary]` |
-| `Conjecture.Analyzers` | Roslyn analyzers — catch common property-test mistakes at compile time |
-
-Install them alongside your adapter:
-
-```bash
-dotnet add package Conjecture.Generators
-dotnet add package Conjecture.Analyzers
-```
+Roslyn analyzers and the `[Arbitrary]` source generator are bundled into `Conjecture.Core` and activate automatically — no additional packages needed.
 
 ## Namespace
 
