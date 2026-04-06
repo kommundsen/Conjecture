@@ -14,10 +14,12 @@ Files derived from Python Hypothesis source get an additional attribution commen
 ```csharp
 // Copyright (c) 2026 Kim Ommundsen. Licensed under the MPL-2.0.
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
-//
-// This file is derived from the Python Hypothesis library.
+
+// Derived from the Python Hypothesis library.
 // Original copyright: Copyright (c) 2013-present, David R. MacIver and contributors.
 ```
+
+A blank line (not `//`) separates the license header from the attribution. This ensures IDE0073 (`file_header_template`) only inspects the two-line license block and does not flag the attribution as a header mismatch.
 
 All other files use only the standard two-line header.
 
@@ -26,3 +28,4 @@ All other files use only the standard two-line header.
 - Clear provenance tracking for ported code without a separate licensing model.
 - Contributors who port code know exactly what header to use.
 - Upstream Hypothesis authors receive proper attribution.
+- Attribution is IDE0073-compatible — no `.editorconfig` changes or per-file suppressions needed.
