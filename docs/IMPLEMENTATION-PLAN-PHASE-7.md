@@ -153,7 +153,7 @@ Each cycle: `/implement-cycle` (Red -> Green -> Refactor -> Verify -> Mark done)
 ### 7.6 Post-Release Baseline
 
 #### Cycle 7.6.1 -- ApiCompat baseline
-- [ ] `/implement-cycle`
+- [x] `/implement-cycle`
   - **Note**: run this cycle AFTER the first release tag has been pushed and artifacts verified on NuGet
   - **Impl** -- `src/api-baseline/`: copy Release DLLs for Core, Xunit, Xunit.V3, NUnit, MSTest from `bin/Release/net10.0/`
   - **Verify** -- baseline DLLs committed; `dotnet build src/ -c Release` uses them for breaking-change detection on future releases
