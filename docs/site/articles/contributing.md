@@ -22,8 +22,8 @@ src/
 ├── Conjecture.Xunit.V3       # xUnit v3 adapter
 ├── Conjecture.NUnit          # NUnit adapter
 ├── Conjecture.MSTest          # MSTest adapter
-├── Conjecture.Generators      # Source generator ([Arbitrary])
-├── Conjecture.Analyzers       # Roslyn analyzer (CON100-105)
+├── Conjecture.Generators      # Source generator ([Arbitrary]) — bundled into Conjecture.Core.nupkg
+├── Conjecture.Analyzers       # Roslyn analyzer (CON100-105) — bundled into Conjecture.Core.nupkg
 ├── Conjecture.Tests           # Core unit tests
 ├── Conjecture.Xunit.Tests     # xUnit v2 adapter tests
 ├── Conjecture.Xunit.V3.Tests  # xUnit v3 adapter tests

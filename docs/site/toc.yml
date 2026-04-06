@@ -11,5 +11,9 @@ items:
     href: articles/porting-guide.md
   - name: API Reference
     href: api/
+  - name: Changelog
+    href: articles/changelog.md
+  - name: Troubleshooting
+    href: articles/troubleshooting.md
   - name: Contributing
     href: articles/contributing.md

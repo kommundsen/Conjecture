@@ -1,12 +1,6 @@
 # Source Generators
 
-The `Conjecture.Generators` package provides a Roslyn incremental source generator that derives `IStrategyProvider<T>` implementations from your types at compile time.
-
-## Setup
-
-```bash
-dotnet add package Conjecture.Generators
-```
+Conjecture includes a Roslyn incremental source generator (bundled in `Conjecture.Core`) that derives `IStrategyProvider<T>` implementations from your types at compile time. No additional packages are needed.
 
 ## Usage
 

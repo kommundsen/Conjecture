@@ -4,7 +4,7 @@ This tutorial covers advanced Conjecture features: source generators, the exampl
 
 ## Source Generators
 
-The `Conjecture.Generators` package auto-derives strategies for your types at compile time.
+The source generator (bundled in `Conjecture.Core`) auto-derives strategies for your types at compile time.
 
 Mark a type with `[Arbitrary]`:
 
@@ -34,13 +34,7 @@ See the [Source Generators Guide](../guides/source-generators.md) for details.
 
 ## Roslyn Analyzers
 
-Install `Conjecture.Analyzers` for compile-time feedback:
-
-```bash
-dotnet add package Conjecture.Analyzers
-```
-
-Diagnostics:
+Roslyn analyzers are bundled in `Conjecture.Core` and active automatically. Diagnostics:
 
 | ID | Description |
 |---|---|

@@ -13,5 +13,9 @@ items:
     href: tutorials/toc.yml
   - name: Guides
     href: guides/toc.yml
+  - name: Changelog
+    href: changelog.md
+  - name: Troubleshooting
+    href: troubleshooting.md
   - name: Contributing
     href: contributing.md
