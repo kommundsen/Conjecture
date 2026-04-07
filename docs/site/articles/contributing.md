@@ -5,7 +5,7 @@ Conjecture.NET is a port of Python's [Hypothesis](https://github.com/HypothesisW
 ## Development Setup
 
 ```bash
-git clone https://github.com/<owner>/Conjecture.git
+git clone https://github.com/kommundsen/Conjecture.git
 cd Conjecture
 dotnet build src/
 dotnet test src/
@@ -17,22 +17,22 @@ Requires **.NET 10 SDK**.
 
 ```
 src/
-├── Conjecture.Core           # Core engine, strategies, settings
-├── Conjecture.Xunit          # xUnit v2 adapter
-├── Conjecture.Xunit.V3       # xUnit v3 adapter
-├── Conjecture.NUnit          # NUnit adapter
-├── Conjecture.MSTest          # MSTest adapter
-├── Conjecture.Generators      # Source generator ([Arbitrary]) — bundled into Conjecture.Core.nupkg
-├── Conjecture.Analyzers       # Roslyn analyzer (CON100-105) — bundled into Conjecture.Core.nupkg
-├── Conjecture.Tests           # Core unit tests
-├── Conjecture.Xunit.Tests     # xUnit v2 adapter tests
-├── Conjecture.Xunit.V3.Tests  # xUnit v3 adapter tests
-├── Conjecture.NUnit.Tests     # NUnit adapter tests
-├── Conjecture.MSTest.Tests    # MSTest adapter tests
-├── Conjecture.Generators.Tests
-├── Conjecture.Analyzers.Tests
-├── Conjecture.SelfTests       # Dogfooding (tests Conjecture with Conjecture)
-└── Conjecture.Benchmarks      # BenchmarkDotNet performance tests
+├── Conjecture.Core             # Core engine, strategies, settings
+├── Conjecture.Core.Tests       # Core unit tests
+├── Conjecture.Generators       # Source generator ([Arbitrary]) — bundled into Conjecture.Core.nupkg
+├── Conjecture.Generators.Tests # Source generator tests
+├── Conjecture.Analyzers        # Roslyn analyzer (CON100-105) — bundled into Conjecture.Core.nupkg
+├── Conjecture.Analyzers.Tests  # Roslyn analyser tests
+├── Conjecture.Xunit            # xUnit v2 adapter
+├── Conjecture.Xunit.Tests      # xUnit v2 adapter tests
+├── Conjecture.Xunit.V3         # xUnit v3 adapter
+├── Conjecture.Xunit.V3.Tests   # xUnit v3 adapter tests
+├── Conjecture.NUnit            # NUnit adapter
+├── Conjecture.NUnit.Tests      # NUnit adapter tests
+├── Conjecture.MSTest           # MSTest adapter
+├── Conjecture.MSTest.Tests     # MSTest adapter tests
+├── Conjecture.SelfTests        # Dogfooding (tests Conjecture with Conjecture)
+└── Conjecture.Benchmarks       # BenchmarkDotNet performance tests
 ```
 
 ## Architecture
@@ -66,7 +66,7 @@ dotnet run --project src/Conjecture.Benchmarks -c Release
 
 ## Architecture Decision Records
 
-Design decisions are documented in [`docs/decisions/`](https://github.com/<owner>/Conjecture/tree/main/docs/decisions). Read these before proposing changes to core architecture. If your change involves a significant design choice, add an ADR.
+Design decisions are documented in [`docs/decisions/`](https://github.com/kommundsen/Conjecture/tree/main/docs/decisions). Read these before proposing changes to core architecture. If your change involves a significant design choice, add an ADR.
 
 ## PR Checklist
 
