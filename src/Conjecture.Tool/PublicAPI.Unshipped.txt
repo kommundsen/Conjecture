@@ -1,0 +1,6 @@
+#nullable enable
+Conjecture.Tool.AssemblyLoader
+static Conjecture.Tool.AssemblyLoader.FindProviders(string! assemblyPath) -> System.Collections.Generic.IReadOnlyList<System.Type!>!
+static Conjecture.Tool.AssemblyLoader.ResolveByTargetType(System.Reflection.Assembly! assembly, string! typeName) -> System.Type?
+Conjecture.Tool.GenerateCommand
+static Conjecture.Tool.GenerateCommand.ExecuteAsync(string! assemblyPath, string! typeName, int count, ulong? seed, string! format) -> System.Threading.Tasks.Task<string!>!
