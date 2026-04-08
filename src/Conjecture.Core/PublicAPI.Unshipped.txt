@@ -3,3 +3,6 @@ Conjecture.Core.DataGen
 static Conjecture.Core.DataGen.Sample<T>(Conjecture.Core.Strategy<T>! strategy, int count, ulong? seed = null) -> System.Collections.Generic.IReadOnlyList<T>!
 static Conjecture.Core.DataGen.SampleOne<T>(Conjecture.Core.Strategy<T>! strategy, ulong? seed = null) -> T
 static Conjecture.Core.DataGen.Stream<T>(Conjecture.Core.Strategy<T>! strategy, int count, ulong? seed = null) -> System.Collections.Generic.IEnumerable<T>!
+Conjecture.Core.IOutputFormatter
+Conjecture.Core.IOutputFormatter.Name.get -> string!
+Conjecture.Core.IOutputFormatter.WriteAsync<T>(System.Collections.Generic.IEnumerable<T>! data, System.IO.Stream! output, System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!

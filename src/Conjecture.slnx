@@ -18,4 +18,6 @@
   <Project Path="Conjecture.SelfTests/Conjecture.SelfTests.csproj" />
   <Project Path="Conjecture.Mcp/Conjecture.Mcp.csproj" />
   <Project Path="Conjecture.Mcp.Tests/Conjecture.Mcp.Tests.csproj" />
+  <Project Path="Conjecture.Formatters/Conjecture.Formatters.csproj" />
+  <Project Path="Conjecture.Formatters.Tests/Conjecture.Formatters.Tests.csproj" />
 </Solution>
