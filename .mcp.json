@@ -6,8 +6,8 @@
     },
     "conjecture": {
       "type": "stdio",
-      "command": "dotnet",
-      "args": ["run", "--project", "src/Conjecture.Mcp"]
+      "command": "dnx",
+      "args": ["Conjecture.Mcp", "--prerelease", "-y"]
     }
   }
 }
