@@ -1,63 +1,122 @@
 ---
 name: implement-cycle
 description: >
-  Execute the next incomplete TDD cycle from the Conjecture implementation plan: Red → Green → Refactor → Verify → Mark done.
+  Execute the next incomplete TDD cycle from a GitHub tracking issue: Red → Green → Refactor → Verify → PR.
   Use this skill whenever the user wants to work through the next planned cycle, progress the implementation plan, run the next TDD iteration, or says "next cycle" — even if they don't specify which one.
-  Triggers on phrases like "do the next cycle", "implement cycle X.Y.Z", "work through phase 2", "continue the implementation plan", or "what's the next step in the plan".
+  Triggers on phrases like "do the next cycle", "implement cycle X.Y", "implement the next cycle of #76", "work through phase 2", "continue the implementation plan", or "what's the next step in the plan".
 ---
 
-Execute the next incomplete TDD cycle from the implementation plan: Red → Green → Refactor → Verify → Mark done.
+Execute the next incomplete TDD cycle from a GitHub tracking issue: Red → Green → Refactor → Verify → PR.
 
 ## Input
 
-Optional cycle specifier:
-- Omitted: finds the first cycle with unchecked items across all `docs/IMPLEMENTATION-PLAN-PHASE-*.md` files
-- Cycle number (e.g. `1.1.1`): targets that specific cycle
-- Phase number (e.g. `2`): restricts search to Phase 2 plan
+Optional specifier — one of:
+- `#<n>` or `<n>`: parent tracking issue number (e.g. `#76`). Finds the lowest-numbered open sub-issue whose title matches `[<n>.`.
+- `#<n>-#<m>`: explicit parent + sub-issue (e.g. `#76-#86`). Targets that sub-issue directly.
+- Omitted: searches all open issues for the lowest-numbered issue whose title matches `[*.` pattern.
 
 ## Steps
 
-1. **Find the cycle**
-   - Read `docs/IMPLEMENTATION-PLAN-PHASE-*.md` files in phase order.
-   - Locate the target cycle: first `#### Cycle X.Y.Z` block with any `- [ ]` items (or the specified cycle).
-   - Extract: cycle number, test file path, implement target, behavior description (sub-bullets under the `/test` line).
-   - If the cycle spec includes a `/decision` step first, invoke the `decision` skill before proceeding.
+### 1. Find the cycle issue
 
-2. **Red phase — write failing tests**
-   - Invoke the `test` skill with the behavior description and test file path from the cycle spec.
-   - Run `dotnet build src/` — must fail or have test failures (red). If unexpectedly green, stop and report.
+```bash
+# List open issues whose title contains the parent prefix, sorted by number
+gh issue list --repo kommundsen/Conjecture --state open --json number,title \
+  | grep -i "\[<n>\."
+```
 
-3. **Green phase — implement**
-   - Invoke the `implement` skill with the test class name extracted from the test file path.
-   - Run `dotnet test src/ --filter "FullyQualifiedName~<TestClassName>"`.
-   - If tests fail, invoke `implement` again with the failing test output as additional context. Repeat until all targeted tests pass or 3 attempts have been made. If still failing after 3 attempts, stop and report what remains failing.
+Pick the lowest-numbered result. Extract:
+- **Sub-issue number** (e.g. `86`)
+- **Cycle number** from the title (e.g. `76.1`)
+- **Short description** from the title after `]` — slugify to kebab-case (lowercase, spaces→hyphens, strip special chars)
 
-4. **Refactor phase — simplify**
-   - Invoke the `simplify` skill on the production files created or modified during the Green phase.
-   - Run `dotnet test src/ --filter "FullyQualifiedName~<TestClassName>"` again — must still be green.
+Read the full issue body:
+```bash
+gh issue view <sub-issue-number> --repo kommundsen/Conjecture
+```
 
-5. **Verify no regressions**
-   - Run `dotnet test src/` — full suite must be green.
-   - If any previously-passing test now fails: stop, report the regression, and do NOT proceed to step 6.
+Extract the **## Test** and **## Implement** sections from the body.
 
-6. **PublicAPI check**
-   - If the cycle's implement bullet mentions "Update `PublicAPI.Unshipped.txt`", verify the file was updated with the new public symbols. If not, update it now.
+### 2. Create a branch
 
-7. **Mark cycle complete**
-   - In the plan file, change every `- [ ]` line within this cycle's block to `- [x]`.
+Branch name format: `feat/#<parent>-#<sub>-<slug>`
 
-8. **Report**
-   - Cycle number completed, test file created, production files created/modified, test count, refactor changes made, any design decisions recorded.
+Example: issue `[76.1] DataGen API in Conjecture.Core` → `feat/76-86-datagen-api`
 
-9. **Suggest commit**
-   - Invoke the `commit-message` skill to generate a suggested commit message for all changes made during this cycle.
-   - Ask the user: "Want me to commit with this message?"
-   - If yes, stage all new and modified files from this cycle and commit with the suggested message (no `Co-Authored-By` trailer).
-   - If no, do nothing — the user will commit manually.
+```bash
+git checkout main
+git pull
+git checkout -b feat/<parent>-<sub>-<slug>
+```
+
+### 3. Red phase — write failing tests
+
+Invoke the `test` skill with:
+- The behavior description from the **## Test** section of the issue
+- The test file path specified in the **## Test** section
+
+Run `dotnet build src/` — must fail or have test failures (red). If unexpectedly green, stop and report.
+
+### 4. Green phase — implement
+
+Invoke the `implement` skill with the test class name extracted from the test file path.
+
+Run `dotnet test src/ --filter "FullyQualifiedName~<TestClassName>"`.
+
+If tests fail, invoke `implement` again with the failing test output as additional context. Repeat until all targeted tests pass or 3 attempts have been made. If still failing after 3 attempts, stop and report what remains failing.
+
+### 5. Refactor phase — simplify
+
+Invoke the `simplify` skill on the production files created or modified during the Green phase.
+
+Run `dotnet test src/ --filter "FullyQualifiedName~<TestClassName>"` again — must still be green.
+
+### 6. Verify no regressions
+
+Run `dotnet test src/` — full suite must be green.
+
+If any previously-passing test now fails: stop, report the regression, and do NOT proceed.
+
+### 7. PublicAPI check
+
+If the **## Implement** section mentions new public API surface, verify `PublicAPI.Unshipped.txt` was updated with the new symbols. If not, update it now.
+
+### 8. Commit
+
+Invoke the `commit-message` skill to generate a suggested commit message.
+
+Stage all new and modified files from this cycle and commit with the suggested message (no `Co-Authored-By` trailer).
+
+### 9. Create PR
+
+```bash
+gh pr create \
+  --repo kommundsen/Conjecture \
+  --title "[<cycle>] <title>" \
+  --base main \
+  --body "$(cat <<'EOF'
+## Summary
+<1–3 bullet points from the Implement section>
+
+## Test plan
+- [ ] All cycle tests pass (`dotnet test src/ --filter "FullyQualifiedName~<TestClass>"`)
+- [ ] Full suite green (`dotnet test src/`)
+- [ ] PublicAPI.Unshipped.txt updated (if applicable)
+
+Closes #<sub-issue-number>
+Part of #<parent-issue-number>
+EOF
+)"
+```
+
+The `Closes #<sub-issue-number>` line causes GitHub to automatically close the sub-issue when this PR is merged into main.
+
+Print the PR URL.
 
 ## Guidelines
 
 - One cycle per invocation — do not cascade into the next cycle.
-- If the cycle spec references a decision before implementing, invoke the `decision` skill first.
-- Never mark done if build or tests are red.
-- Scope all changes to what the cycle spec demands.
+- If the issue references a `/decision` step, invoke the `decision` skill before implementing.
+- Never create the PR if the build or tests are red.
+- Scope all changes to what the cycle issue demands.
+- Branch off `main` — never off another feature branch.

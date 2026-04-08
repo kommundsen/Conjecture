@@ -16,12 +16,12 @@ Test class or file to target (e.g., `IntegerStrategyTests` or `src/Conjecture.Te
 
 1. Run `dotnet test src/ --filter "FullyQualifiedName~<target>"` (or `dotnet test src/` if no target) to see which tests fail and why.
 2. Read the failing test(s) to understand the exact behavior required.
-3. Read the relevant production file(s) in `src/Conjecture.Core/` (or create them if they don't exist). Check `docs/decisions/` for ADRs that constrain the design.
+3. Identify the production project from the test file path using the mapping in CLAUDE.md. Read the relevant production file(s) there (or create them if they don't exist). Check `docs/decisions/` for ADRs that constrain the design.
 4. Write the **minimum** code that makes the failing tests pass:
    - No speculative features, no extra overloads
    - Hardcode constants only if a single test demands it; generalise only when a second test forces you to
    - Follow existing patterns in the codebase (file-scoped namespaces, `readonly struct` where appropriate, etc.)
-   - Any new or changed `public` API surface in non-test projects must be declared in that project's `PublicAPI.Unshipped.txt` (e.g. `src/Conjecture.Core/PublicAPI.Unshipped.txt`, `src/Conjecture.Xunit/PublicAPI.Unshipped.txt`). The project enforces this via RS0016 at build time — the compiler error includes the exact signature string to copy in.
+   - Any new or changed `public` API surface in non-test projects must be declared in that project's `PublicAPI.Unshipped.txt` (see CLAUDE.md). The project enforces this via RS0016 at build time — the compiler error includes the exact signature string to copy in.
    - Follow the **Code Style Quick Reference** below — these rules are enforced as build warnings.
 5. Run `dotnet build src/ 2>&1 | grep -E 'warning (IDE|CS)'` — fix **all** warnings before continuing. Common culprits: block-scoped namespace, `var`, missing braces, `new T()` instead of `new()`, explicit `if`/`return` instead of ternary.
 6. Run `dotnet test src/ --filter "FullyQualifiedName~<target>"` again — all targeted tests must be green.
