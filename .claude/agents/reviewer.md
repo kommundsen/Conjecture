@@ -1,6 +1,7 @@
 ---
 name: reviewer
 model: haiku
+color: blue
 description: >
   Read-only code quality reviewer for the Conjecture .NET project.
   Reviews changed production files for reuse opportunities, quality issues,

@@ -1,6 +1,7 @@
 ---
 name: test-developer
 model: sonnet
+color: red
 description: >
   Writes failing xUnit tests for the Conjecture .NET project (TDD Red phase).
   Given a behavior description and issue body, explores the codebase, writes
