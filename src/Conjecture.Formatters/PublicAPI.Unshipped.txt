@@ -1,0 +1,9 @@
+#nullable enable
+Conjecture.Formatters.JsonOutputFormatter
+Conjecture.Formatters.JsonOutputFormatter.JsonOutputFormatter() -> void
+Conjecture.Formatters.JsonOutputFormatter.Name.get -> string!
+Conjecture.Formatters.JsonOutputFormatter.WriteAsync<T>(System.Collections.Generic.IEnumerable<T>! data, System.IO.Stream! output, System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+Conjecture.Formatters.JsonLinesOutputFormatter
+Conjecture.Formatters.JsonLinesOutputFormatter.JsonLinesOutputFormatter() -> void
+Conjecture.Formatters.JsonLinesOutputFormatter.Name.get -> string!
+Conjecture.Formatters.JsonLinesOutputFormatter.WriteAsync<T>(System.Collections.Generic.IEnumerable<T>! data, System.IO.Stream! output, System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
