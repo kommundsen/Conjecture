@@ -18,33 +18,13 @@ One or more production file paths to review (e.g., `src/Conjecture.Core/Strategi
    - If arguments provided: read those files directly.
    - Otherwise: run `git diff HEAD` to find changed production files.
 
-2. **Launch three review agents in parallel** — pass each agent the full diff or file contents. Use `model: "haiku"` for all three.
+2. **Spawn the `reviewer` agent** — pass the full diff or file contents and any available test results. Use `subagent_type: "reviewer"`.
 
-   ### Agent 1: Code Reuse
-   - Search for existing utilities or helpers that could replace newly written code.
-   - Flag any new function that duplicates existing functionality.
-   - Flag inline logic that could use an existing utility.
-
-   ### Agent 2: Code Quality
-   - Redundant state (duplicates existing state, could be derived)
-   - Parameter sprawl (adding params instead of restructuring)
-   - Copy-paste with slight variation (should be unified)
-   - Leaky abstractions (exposing internals, breaking encapsulation)
-   - Stringly-typed code (raw strings where constants/enums exist)
-   - Unnecessary comments (comments explaining WHAT, not WHY — delete these; keep only non-obvious WHY)
-
-   ### Agent 3: Efficiency
-   - Unnecessary work (redundant computations, repeated reads)
-   - Missed concurrency (independent ops run sequentially)
-   - Hot-path bloat (new blocking work in per-draw or per-request paths)
-   - Memory issues (unbounded structures, missing cleanup, leaks)
-   - Overly broad operations (reading all when only part is needed)
-
-3. **Fix issues** — aggregate all agent findings. Before applying, check whether the user's ask was narrow or broad:
+3. **Fix issues** — based on the reviewer's findings. Before applying, check whether the user's ask was narrow or broad:
    - **Broad ask** ("simplify", "refactor", "any issues?", "clean this up"): apply all legitimate findings.
-   - **Narrow ask** ("clean up the comments", "just fix X"): apply only findings that match the stated scope. Note other findings as observations but don't apply them — the user asked for one thing, not a full refactor.
+   - **Narrow ask** ("clean up the comments", "just fix X"): apply only findings that match the stated scope. Note other findings as observations but don't apply them.
 
-4. **Verify** — run `dotnet build src/ 2>&1 | grep -E 'warning (IDE|CS)'` to catch any style violations introduced by the refactor, then run `dotnet test src/` to confirm tests still pass.
+4. **Verify** — run `dotnet build src/ 2>&1 | grep -E 'warning (IDE|CS)'` to catch style violations, then run `dotnet test src/` to confirm tests still pass.
 
 5. **Report** — summarise what was fixed, or confirm the code was already clean.
 

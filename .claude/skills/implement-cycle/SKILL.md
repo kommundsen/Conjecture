@@ -20,7 +20,6 @@ Optional specifier — one of:
 ### 1. Find the cycle issue
 
 ```bash
-# List open issues whose title contains the parent prefix, sorted by number
 gh issue list --repo kommundsen/Conjecture --state open --json number,title \
   | grep -i "\[<n>\."
 ```
@@ -37,39 +36,69 @@ gh issue view <sub-issue-number> --repo kommundsen/Conjecture
 
 Extract the **## Test** and **## Implement** sections from the body.
 
+Print a summary line so the user knows what is being worked on:
+```
+Cycle <cycle-number>: <title>  (#<sub-issue-number>)
+```
+
 ### 2. Create a branch
 
 Branch name format: `feat/#<parent>-#<sub>-<slug>`
 
-Example: issue `[76.1] DataGen API in Conjecture.Core` → `feat/76-86-datagen-api`
-
 ```bash
-git checkout main
-git pull
-git checkout -b feat/<parent>-<sub>-<slug>
+git checkout main && git pull && git checkout -b feat/<parent>-<sub>-<slug>
 ```
 
-### 3. Red phase — write failing tests
+### 3–5. TDD loop (max 3 iterations)
 
-Invoke the `test` skill with:
-- The behavior description from the **## Test** section of the issue
-- The test file path specified in the **## Test** section
+Repeat the following loop. Track the iteration count; stop after 3 and report if never approved.
+
+#### 3a. Red phase — write failing tests (test-developer agent)
+
+On the **first iteration**: spawn a `test-developer` agent with:
+- The full `## Test` section from the issue
+- The test file path from the issue
+
+On **subsequent iterations** (ADD_TEST verdict): spawn a `test-developer` agent with:
+- The reviewer's findings from the previous iteration
+- The existing test file path
 
 Run `dotnet build src/` — must fail or have test failures (red). If unexpectedly green, stop and report.
 
-### 4. Green phase — implement
+#### 3b. Green phase — implement (developer agent)
 
-Invoke the `implement` skill with the test class name extracted from the test file path.
+Spawn a `developer` agent with the test class name extracted from the test file path.
 
 Run `dotnet test src/ --filter "FullyQualifiedName~<TestClassName>"`.
 
-If tests fail, invoke `implement` again with the failing test output as additional context. Repeat until all targeted tests pass or 3 attempts have been made. If still failing after 3 attempts, stop and report what remains failing.
+If tests still fail, spawn the `developer` agent again with the failing output as additional context. After 2 failed haiku attempts, respawn with `model: "sonnet"` as override. If still failing after 3 total attempts, stop and report.
 
-### 5. Refactor phase — simplify
+#### 3c. Review phase — assess quality (reviewer agent)
 
-Invoke the `simplify` skill on the production files created or modified during the Green phase.
+Spawn a `reviewer` agent with:
+- The git diff of all production files changed since branch creation (`git diff main HEAD -- src/ ':!*.Tests*'`)
+- The test results from 3b
 
-Run `dotnet test src/ --filter "FullyQualifiedName~<TestClassName>"` again — must still be green.
+#### 3d. User checkpoint
+
+Present the reviewer's verdict and findings to the user using AskUserQuestion:
+
+```
+Reviewer verdict: <APPROVED | FIX_IMPLEMENTATION | ADD_TEST>
+
+Findings:
+<bullet list from reviewer>
+
+What would you like to do?
+```
+
+Options:
+- **Fix implementation** — re-run 3b with reviewer findings threaded as context (skip 3a)
+- **Add / refine tests** — re-run from 3a with reviewer findings as context
+- **Approve** — exit loop and proceed to step 6
+- **Abort** — stop here, leave branch as-is
+
+If the verdict is APPROVED, still show the checkpoint but default-highlight "Approve".
 
 ### 6. Verify no regressions
 
@@ -87,7 +116,13 @@ Invoke the `commit-message` skill to generate a suggested commit message.
 
 Stage all new and modified files from this cycle and commit with the suggested message (no `Co-Authored-By` trailer).
 
-### 9. Create PR
+### 9. Push branch and create PR
+
+```bash
+git push -u origin feat/<parent>-<sub>-<slug>
+```
+
+Read `.github/pull_request_template.md` and fill it in:
 
 ```bash
 gh pr create \
@@ -95,13 +130,7 @@ gh pr create \
   --title "[<cycle>] <title>" \
   --base main \
   --body "$(cat <<'EOF'
-## Summary
-<1–3 bullet points from the Implement section>
-
-## Test plan
-- [ ] All cycle tests pass (`dotnet test src/ --filter "FullyQualifiedName~<TestClass>"`)
-- [ ] Full suite green (`dotnet test src/`)
-- [ ] PublicAPI.Unshipped.txt updated (if applicable)
+<filled-in pull_request_template.md content>
 
 Closes #<sub-issue-number>
 Part of #<parent-issue-number>
@@ -109,14 +138,12 @@ EOF
 )"
 ```
 
-The `Closes #<sub-issue-number>` line causes GitHub to automatically close the sub-issue when this PR is merged into main.
-
 Print the PR URL.
 
 ## Guidelines
 
 - One cycle per invocation — do not cascade into the next cycle.
-- If the issue references a `/decision` step, invoke the `decision` skill before implementing.
+- If the issue references a `/decision` step, invoke the `decision` skill before the loop.
 - Never create the PR if the build or tests are red.
 - Scope all changes to what the cycle issue demands.
 - Branch off `main` — never off another feature branch.
