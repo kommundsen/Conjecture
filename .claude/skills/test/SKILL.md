@@ -15,10 +15,10 @@ The behavior to test, e.g. `IntegerStrategy generates values within [min, max]`.
 
 ## Steps
 
-1. Identify the target class/component from the description. Check `src/Conjecture.Core/` for existing types; check `docs/decisions/` for relevant ADRs.
-2. Determine the test file location:
-   - New class `Foo` → `src/Conjecture.Tests/FooTests.cs`
-   - Module `Bar/Baz` → `src/Conjecture.Tests/Bar/BazTests.cs`
+1. Identify the target class/component from the description. Check the relevant production project (see CLAUDE.md for the project map) for existing types; check `docs/decisions/` for relevant ADRs.
+2. Determine the test file location using the production→test project mapping in CLAUDE.md:
+   - New class `Foo` in `src/Conjecture.Core/` → `src/Conjecture.Core.Tests/FooTests.cs`
+   - Mirror the production file's relative path inside the paired test project.
    - Add to existing file if tests for that class already exist.
 3. Write tests that:
    - Cover the happy path, boundary values, and at least one failure/edge case
