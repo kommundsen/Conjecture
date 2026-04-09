@@ -2,6 +2,7 @@
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
 using System.Reflection;
+
 using Conjecture.Core;
 
 namespace Conjecture.Tool;
@@ -80,11 +81,6 @@ public static class AssemblyLoader
     private static bool IsProviderForType(Type providerType, string typeName)
     {
         Type? targetType = GetProviderTargetType(providerType);
-        if (targetType is not null)
-        {
-            return targetType.FullName == typeName || targetType.Name == typeName;
-        }
-
-        return false;
+        return targetType is not null && (targetType.FullName == typeName || targetType.Name == typeName);
     }
 }

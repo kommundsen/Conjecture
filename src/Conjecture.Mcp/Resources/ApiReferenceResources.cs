@@ -3,6 +3,7 @@
 
 using System.IO;
 using System.Reflection;
+
 using ModelContextProtocol.Protocol;
 using ModelContextProtocol.Server;
 
@@ -23,7 +24,7 @@ internal static class ApiReferenceResources
     ];
 
     internal static ValueTask<ListResourcesResult> HandleListResources(
-        RequestContext<ListResourcesRequestParams> context, CancellationToken cancellationToken)
+        RequestContext<ListResourcesRequestParams> _, CancellationToken __)
     {
         var resources = Topics.Select(t => new Resource
         {
@@ -37,7 +38,7 @@ internal static class ApiReferenceResources
     }
 
     internal static ValueTask<ReadResourceResult> HandleReadResource(
-        RequestContext<ReadResourceRequestParams> context, CancellationToken cancellationToken)
+        RequestContext<ReadResourceRequestParams> context, CancellationToken _)
     {
         var uri = context.Params?.Uri ?? string.Empty;
         const string prefix = "conjecture://api/";

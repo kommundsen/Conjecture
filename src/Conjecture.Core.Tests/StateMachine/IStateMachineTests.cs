@@ -2,6 +2,7 @@
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
 using System.Collections.Generic;
+
 using Conjecture.Core;
 
 namespace Conjecture.Core.Tests.StateMachine;
@@ -44,7 +45,7 @@ public class IStateMachineTests
         public IEnumerable<Strategy<int>> Commands(List<int> state) =>
             [Generate.Integers(1, 100)];
 
-        public List<int> RunCommand(List<int> state, int command) { return [..state, command]; }
+        public List<int> RunCommand(List<int> state, int command) { return [.. state, command]; }
 
         public void Invariant(List<int> state) { }
     }

@@ -6,6 +6,7 @@
 
 using System.Numerics;
 using System.Runtime.CompilerServices;
+
 using Conjecture.Core.Internal;
 
 namespace Conjecture.Core;

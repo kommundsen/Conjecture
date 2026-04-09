@@ -94,7 +94,7 @@ internal sealed class StringAwarePass : IShrinkPass
             {
                 continue;
             }
-            IRNode[] candidate = [..state.Nodes];
+            IRNode[] candidate = [.. state.Nodes];
             candidate[charIndex] = IRNode.ForStringChar(target, charNode.Min, charNode.Max);
             if (await state.TryUpdate(candidate))
             {

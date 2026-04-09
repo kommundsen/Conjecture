@@ -33,12 +33,16 @@ internal static class HillClimber
             {
                 var node = bestNodes[i];
                 if (!node.IsIntegerLike)
+                {
                     continue;
+                }
 
                 foreach (var candidateValue in CandidateValues(node))
                 {
                     if (remaining <= 0)
+                    {
                         break;
+                    }
 
                     remaining--;
                     var candidate = Mutate(bestNodes, i, candidateValue);
@@ -58,11 +62,15 @@ internal static class HillClimber
             }
 
             if (greedyImproved)
+            {
                 continue;
+            }
 
             // Greedy stalled — try random perturbation if rng provided.
             if (rng is null)
+            {
                 break;
+            }
 
             var perturbImproved = false;
             while (remaining > 0 && !perturbImproved)
@@ -83,7 +91,9 @@ internal static class HillClimber
             }
 
             if (!perturbImproved)
+            {
                 break;
+            }
         }
 
         return (bestNodes, bestScore);
@@ -93,11 +103,17 @@ internal static class HillClimber
     {
         var integerLikeIndices = new List<int>();
         for (var i = 0; i < nodes.Count; i++)
+        {
             if (nodes[i].IsIntegerLike)
+            {
                 integerLikeIndices.Add(i);
+            }
+        }
 
         if (integerLikeIndices.Count == 0)
+        {
             return nodes.ToList();
+        }
 
         var count = (int)(rng.NextUInt64() % (ulong)Math.Min(3, integerLikeIndices.Count)) + 1;
         var result = nodes.ToList();
@@ -115,18 +131,20 @@ internal static class HillClimber
     private static ulong RandomInRange(IRandom rng, ulong min, ulong max)
     {
         var range = max - min;
-        if (range == ulong.MaxValue)
-            return rng.NextUInt64();
-        return min + rng.NextUInt64() % (range + 1);
+        return range == ulong.MaxValue ? rng.NextUInt64() : min + rng.NextUInt64() % (range + 1);
     }
 
     private static IEnumerable<ulong> CandidateValues(IRNode node)
     {
         if (node.Value < node.Max)
+        {
             yield return node.Value + 1;
+        }
 
         if (node.Value > node.Min)
+        {
             yield return node.Value - 1;
+        }
 
         if (node.Value < node.Max)
         {

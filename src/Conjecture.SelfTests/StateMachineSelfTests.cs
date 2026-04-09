@@ -2,8 +2,10 @@
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
 using System.Collections.Generic;
+
 using Conjecture.Core;
 using Conjecture.Core.Internal;
+
 using Xunit;
 
 using ShrinkEngine = Conjecture.Core.Internal.Shrinker;
@@ -57,7 +59,9 @@ public class StateMachineSelfTests
         public void Invariant(int state)
         {
             if (state >= 3)
+            {
                 throw new InvalidOperationException($"Counter exceeded threshold: {state}");
+            }
         }
     }
 
@@ -110,10 +114,13 @@ public class StateMachineSelfTests
 
         Assert.False(result.Passed);
 
-        Action<ConjectureData> property = data => _ = MachineStrategy().Generate(data);
+        static void Property(ConjectureData data)
+        {
+            _ = MachineStrategy().Generate(data);
+        }
         (IReadOnlyList<IRNode> _, int additionalShrinks) = await ShrinkEngine.ShrinkAsync(
             result.Counterexample!,
-            nodes => new ValueTask<Status>(SelfTestHelpers.Replay(nodes, property)));
+            nodes => new ValueTask<Status>(SelfTestHelpers.Replay(nodes, Property)));
 
         Assert.Equal(0, additionalShrinks);
     }

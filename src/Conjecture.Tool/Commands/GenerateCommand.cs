@@ -2,6 +2,7 @@
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
 using System.Reflection;
+
 using Conjecture.Core;
 using Conjecture.Formatters;
 

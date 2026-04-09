@@ -97,7 +97,13 @@ public class HillClimberTests
             {
                 double sum = 0;
                 foreach (var node in n)
-                    if (node.IsIntegerLike) sum += node.Value;
+                {
+                    if (node.IsIntegerLike)
+                    {
+                        sum += node.Value;
+                    }
+                }
+
                 var dict = new Dictionary<string, double> { [label] = sum };
                 return Task.FromResult<(Status, IReadOnlyDictionary<string, double>)>((Status.Valid, dict));
             },

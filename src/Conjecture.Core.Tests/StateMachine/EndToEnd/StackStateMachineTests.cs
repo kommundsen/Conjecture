@@ -2,6 +2,7 @@
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
 using System.Collections.Generic;
+
 using Conjecture.Core;
 using Conjecture.Core.Internal;
 
@@ -26,11 +27,9 @@ public class StackStateMachineTests
 
     private abstract class StackCommand
     {
-        public sealed class Push : StackCommand
+        public sealed class Push(int value) : StackCommand
         {
-            public Push(int value) { Value = value; }
-            public int Value { get; }
-            public override string ToString() => $"Push({Value})";
+            public int Value { get; } = value; public override string ToString() => $"Push({Value})";
         }
 
         public sealed class Pop : StackCommand
@@ -75,8 +74,10 @@ public class StackStateMachineTests
         public void Invariant(StackState state)
         {
             if (state.ModelCount != state.Stack.Count)
+            {
                 throw new InvalidOperationException(
                     $"ModelCount {state.ModelCount} != Stack.Count {state.Stack.Count}");
+            }
         }
     }
 
@@ -110,8 +111,10 @@ public class StackStateMachineTests
         public void Invariant(StackState state)
         {
             if (state.ModelCount != state.Stack.Count)
+            {
                 throw new InvalidOperationException(
                     $"ModelCount {state.ModelCount} != Stack.Count {state.Stack.Count}");
+            }
         }
     }
 
@@ -125,7 +128,9 @@ public class StackStateMachineTests
         {
             yield return Generate.Integers<int>(0, 9).Select(n => (StackCommand)new StackCommand.Push(n));
             if (state.Stack.Count > 0)
+            {
                 yield return Generate.Just((StackCommand)new StackCommand.Pop());
+            }
         }
 
         public StackState RunCommand(StackState state, StackCommand cmd)
@@ -145,8 +150,10 @@ public class StackStateMachineTests
         public void Invariant(StackState state)
         {
             if (state.ModelCount != state.Stack.Count)
+            {
                 throw new InvalidOperationException(
                     $"ModelCount {state.ModelCount} != Stack.Count {state.Stack.Count}");
+            }
         }
     }
 

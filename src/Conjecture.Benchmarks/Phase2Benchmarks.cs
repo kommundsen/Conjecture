@@ -2,7 +2,9 @@
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
 using System.Runtime.CompilerServices;
+
 using BenchmarkDotNet.Attributes;
+
 using Conjecture.Core;
 using Conjecture.Core.Internal;
 

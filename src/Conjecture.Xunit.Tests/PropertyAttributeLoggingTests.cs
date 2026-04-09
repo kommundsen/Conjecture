@@ -3,7 +3,9 @@
 
 using Conjecture.Core;
 using Conjecture.Core.Internal;
+
 using Microsoft.Extensions.Logging;
+
 using Xunit.Abstractions;
 
 namespace Conjecture.Xunit.Tests;

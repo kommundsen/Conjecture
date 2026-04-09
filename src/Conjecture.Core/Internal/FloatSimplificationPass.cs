@@ -42,7 +42,7 @@ internal sealed class FloatSimplificationPass : IShrinkPass
         ulong bits = node.Value;
         foreach (ulong candidate in Candidates64(bits))
         {
-            IRNode[] arr = [..state.Nodes];
+            IRNode[] arr = [.. state.Nodes];
             arr[index] = IRNode.ForFloat64(candidate, node.Min, node.Max);
             if (await state.TryUpdate(arr))
             {
@@ -57,7 +57,7 @@ internal sealed class FloatSimplificationPass : IShrinkPass
         ulong bits = node.Value;
         foreach (ulong candidate in Candidates32(bits))
         {
-            IRNode[] arr = [..state.Nodes];
+            IRNode[] arr = [.. state.Nodes];
             arr[index] = IRNode.ForFloat32(candidate, node.Min, node.Max);
             if (await state.TryUpdate(arr))
             {

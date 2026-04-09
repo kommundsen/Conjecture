@@ -3,6 +3,7 @@
 
 using Conjecture.Core;
 using Conjecture.Core.Internal;
+
 using Xunit;
 
 namespace Conjecture.SelfTests;
@@ -22,7 +23,7 @@ public class RecursiveStrategySelfTests
     private static int ReplayDepth(IReadOnlyList<IRNode> nodes)
     {
         int depth = 0;
-        SelfTestHelpers.Replay(nodes, data => { depth = DepthCountingStrategy.Generate(data); });
+        SelfTestHelpers.Replay(nodes, data => depth = DepthCountingStrategy.Generate(data));
         return depth;
     }
 

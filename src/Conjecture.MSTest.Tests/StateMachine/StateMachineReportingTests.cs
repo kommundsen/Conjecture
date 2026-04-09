@@ -3,6 +3,7 @@
 
 using Conjecture.Core;
 using Conjecture.Core.Internal;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Conjecture.MSTest.Tests.StateMachine;

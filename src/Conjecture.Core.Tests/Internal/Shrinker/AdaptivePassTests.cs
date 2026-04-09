@@ -31,7 +31,7 @@ public class AdaptivePassTests
                     continue;
                 }
 
-                IRNode[] candidate = [..state.Nodes];
+                IRNode[] candidate = [.. state.Nodes];
                 candidate[i] = IRNode.ForInteger(node.Value - 1, node.Min, node.Max);
                 if (await state.TryUpdate(candidate, i))
                 {

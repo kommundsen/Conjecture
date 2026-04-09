@@ -21,10 +21,7 @@ public class TestRunnerTargetingTests
             TargetingProportion = 0.5,
         };
 
-        var result = await TestRunner.Run(settings, data =>
-        {
-            Target.Maximize((double)data.NextInteger(0, 100));
-        });
+        var result = await TestRunner.Run(settings, data => Target.Maximize((double)data.NextInteger(0, 100)));
 
         Assert.True(result.Passed);
         Assert.NotNull(result.TargetingScores);
@@ -61,10 +58,7 @@ public class TestRunnerTargetingTests
             TargetingProportion = 0.5,
         };
 
-        var result = await TestRunner.Run(settings, data =>
-        {
-            Target.Maximize((double)data.NextInteger(0, 100));
-        });
+        var result = await TestRunner.Run(settings, data => Target.Maximize((double)data.NextInteger(0, 100)));
 
         Assert.True(result.Passed);
         Assert.Null(result.TargetingScores);
@@ -82,10 +76,7 @@ public class TestRunnerTargetingTests
             TargetingProportion = 0.5,
         };
 
-        var result = await TestRunner.Run(settings, data =>
-        {
-            Target.Maximize(42.0, "myscore");
-        });
+        var result = await TestRunner.Run(settings, data => Target.Maximize(42.0, "myscore"));
 
         Assert.NotNull(result.TargetingScores);
         Assert.True(result.TargetingScores.ContainsKey("myscore"));
@@ -103,10 +94,7 @@ public class TestRunnerTargetingTests
             TargetingProportion = 0.5,
         };
 
-        var result = await TestRunner.Run(settings, data =>
-        {
-            Target.Maximize((double)data.NextInteger(0, 100));
-        });
+        var result = await TestRunner.Run(settings, data => Target.Maximize((double)data.NextInteger(0, 100)));
 
         Assert.Equal(50, result.ExampleCount);
     }

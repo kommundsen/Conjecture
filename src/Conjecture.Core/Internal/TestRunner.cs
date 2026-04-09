@@ -5,6 +5,7 @@
 // Original copyright: Copyright (c) 2013-present, David R. MacIver and contributors.
 
 using System.Diagnostics;
+
 using Microsoft.Extensions.Logging;
 
 namespace Conjecture.Core.Internal;
@@ -105,7 +106,9 @@ internal static class TestRunner
             // or when we've exhausted the full MaxExamples budget.
             bool atGenerationBudget = valid >= generationBudget && bestPerLabel.Count > 0;
             if (valid >= settings.MaxExamples || atGenerationBudget)
+            {
                 break;
+            }
 
             totalAttempts++;
             ConjectureData data = ConjectureData.ForGeneration(rng.Split());
@@ -126,7 +129,9 @@ internal static class TestRunner
                 foreach (var (label, score) in data.Observations)
                 {
                     if (!bestPerLabel.TryGetValue(label, out var current) || score > current.Score)
+                    {
                         bestPerLabel[label] = (data.IRNodes, score);
+                    }
                 }
 
                 if (sw is not null && sw.Elapsed > deadline!.Value)
@@ -198,7 +203,10 @@ internal static class TestRunner
             {
                 var (status, obs) = await ReplayAndObserveAsync(nodes, test);
                 if (status == Status.Interesting)
+                {
                     failingNodes = nodes;
+                }
+
                 return (status, obs);
             }
 
@@ -227,7 +235,10 @@ internal static class TestRunner
                 (IReadOnlyList<IRNode> shrunk, int shrinkCount) = await Shrinker.ShrinkAsync(
                     failingNodes, n => ReplayAsync(n, test), logger);
                 if (dbContext is DbContext ctx)
+                {
                     ctx.Database.Save(ctx.TestIdHash, SerializeNodes(shrunk));
+                }
+
                 Log.PropertyTestFailure(logger, valid + 1, $"0x{seed:X16}");
                 return TestRunResult.Fail(shrunk, failingNodes, seed, valid + 1, shrinkCount);
             }

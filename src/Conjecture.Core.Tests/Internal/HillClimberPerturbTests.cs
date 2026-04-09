@@ -14,8 +14,16 @@ public class HillClimberPerturbTests
     private static double LocalMaxScore(IReadOnlyList<IRNode> nodes)
     {
         var value = nodes[0].Value;
-        if (value <= 50) return (double)value;
-        if (value >= 80) return (double)value;
+        if (value <= 50)
+        {
+            return (double)value;
+        }
+
+        if (value >= 80)
+        {
+            return (double)value;
+        }
+
         return 0.0; // valley between 50 and 80
     }
 

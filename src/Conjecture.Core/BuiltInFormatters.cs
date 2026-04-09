@@ -51,12 +51,12 @@ public static class BuiltInFormatters
             {
                 switch (c)
                 {
-                    case '"':  sb.Append("\\\""); break;
+                    case '"': sb.Append("\\\""); break;
                     case '\\': sb.Append("\\\\"); break;
-                    case '\n': sb.Append("\\n");  break;
-                    case '\r': sb.Append("\\r");  break;
-                    case '\t': sb.Append("\\t");  break;
-                    default:   sb.Append(c);       break;
+                    case '\n': sb.Append("\\n"); break;
+                    case '\r': sb.Append("\\r"); break;
+                    case '\t': sb.Append("\\t"); break;
+                    default: sb.Append(c); break;
                 }
             }
             sb.Append('"');

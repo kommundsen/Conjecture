@@ -2,6 +2,7 @@
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
 using Conjecture.Xunit.V3;
+
 using Xunit;
 
 namespace Conjecture.Xunit.V3.Tests;

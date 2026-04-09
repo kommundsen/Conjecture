@@ -5,6 +5,7 @@
 // Original copyright: Copyright (c) 2013-present, David R. MacIver and contributors.
 
 using System.Numerics;
+
 using Conjecture.Core.Internal;
 
 namespace Conjecture.Core;

@@ -3,6 +3,7 @@
 
 using Conjecture.Core;
 using Conjecture.Core.Internal;
+
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -61,10 +62,7 @@ public class LoggingEndToEndTests
             TargetingProportion = 0.5,
         };
 
-        await TestRunner.Run(settings, data =>
-        {
-            Target.Maximize((double)data.NextInteger(0, 100));
-        });
+        await TestRunner.Run(settings, data => Target.Maximize((double)data.NextInteger(0, 100)));
 
         Assert.Contains(logger.Entries, e => e.Level == LogLevel.Information && e.EventId.Id == 4);
         Assert.Contains(logger.Entries, e => e.Level == LogLevel.Information && e.EventId.Id == 5);
@@ -86,12 +84,7 @@ public class LoggingEndToEndTests
         await Assert.ThrowsAsync<ConjectureException>(() => TestRunner.RunAsync(settings, _ =>
         {
             callCount++;
-            if (callCount > 1)
-            {
-                throw new UnsatisfiedAssumptionException();
-            }
-
-            return Task.CompletedTask;
+            return callCount > 1 ? throw new UnsatisfiedAssumptionException() : Task.CompletedTask;
         }));
 
         Assert.Contains(logger.Entries, e => e.Level == LogLevel.Warning && e.EventId.Id == 7);

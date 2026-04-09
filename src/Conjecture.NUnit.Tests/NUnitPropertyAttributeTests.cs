@@ -3,6 +3,7 @@
 
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
+
 using ConjecturePropertyAttribute = Conjecture.NUnit.PropertyAttribute;
 
 namespace Conjecture.NUnit.Tests;

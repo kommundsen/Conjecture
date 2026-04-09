@@ -4,6 +4,7 @@
 using Conjecture.Core;
 using Conjecture.Core.Internal;
 using Conjecture.Xunit.V3;
+
 using Xunit;
 
 using ShrinkEngine = Conjecture.Core.Internal.Shrinker;

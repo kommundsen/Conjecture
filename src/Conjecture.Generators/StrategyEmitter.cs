@@ -10,13 +10,13 @@ internal static class StrategyEmitter
 {
     private static readonly Dictionary<string, (string GenExpr, string ShortName)> PrimitiveData = new()
     {
-        ["System.Int32"]  = ("global::Conjecture.Core.Generate.Integers<int>()",  "int"),
-        ["System.Int64"]  = ("global::Conjecture.Core.Generate.Integers<long>()", "long"),
-        ["System.Byte"]   = ("global::Conjecture.Core.Generate.Integers<byte>()", "byte"),
-        ["System.Boolean"] = ("global::Conjecture.Core.Generate.Booleans()",      "bool"),
-        ["System.String"]  = ("global::Conjecture.Core.Generate.Strings()",       "string"),
-        ["System.Double"]  = ("global::Conjecture.Core.Generate.Doubles()",       "double"),
-        ["System.Single"]  = ("global::Conjecture.Core.Generate.Floats()",        "float"),
+        ["System.Int32"] = ("global::Conjecture.Core.Generate.Integers<int>()", "int"),
+        ["System.Int64"] = ("global::Conjecture.Core.Generate.Integers<long>()", "long"),
+        ["System.Byte"] = ("global::Conjecture.Core.Generate.Integers<byte>()", "byte"),
+        ["System.Boolean"] = ("global::Conjecture.Core.Generate.Booleans()", "bool"),
+        ["System.String"] = ("global::Conjecture.Core.Generate.Strings()", "string"),
+        ["System.Double"] = ("global::Conjecture.Core.Generate.Doubles()", "double"),
+        ["System.Single"] = ("global::Conjecture.Core.Generate.Floats()", "float"),
     };
 
     internal static string Emit(TypeModel model)

@@ -4,7 +4,9 @@
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
+
 using Conjecture.Analyzers;
+
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;

@@ -3,6 +3,7 @@
 
 using Conjecture.Core;
 using Conjecture.Core.Internal;
+
 using Xunit;
 
 namespace Conjecture.Xunit.V3.Tests.StateMachine;

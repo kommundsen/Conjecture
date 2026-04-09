@@ -74,13 +74,17 @@ public class TestRunnerMultiTargetTests
         var result = await TestRunner.Run(settings, data =>
         {
             for (int i = 0; i < 10; i++)
+            {
                 Target.Maximize((double)data.NextInteger(0, 100), $"label{i}");
+            }
         });
 
         Assert.NotNull(result.TargetingScores);
         Assert.Equal(10, result.TargetingScores.Count);
         for (int i = 0; i < 10; i++)
+        {
             Assert.True(result.TargetingScores.ContainsKey($"label{i}"));
+        }
     }
 
     [Fact]

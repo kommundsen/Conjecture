@@ -3,6 +3,7 @@
 
 using System.Reflection;
 using System.Runtime.CompilerServices;
+
 using Conjecture.Core.Internal;
 
 namespace Conjecture.Core.Tests.Internal.Shrinker;

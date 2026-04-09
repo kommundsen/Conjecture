@@ -4,6 +4,7 @@
 using System.ComponentModel;
 using System.Text;
 using System.Text.RegularExpressions;
+
 using ModelContextProtocol.Server;
 
 namespace Conjecture.Mcp.Tools;
@@ -31,10 +32,7 @@ internal static class ShrinkOutputTools
     public static string ExplainShrinkOutput(
         [Description("The Conjecture failure output text from a failed [Property] test")] string failureOutput)
     {
-        if (string.IsNullOrWhiteSpace(failureOutput))
-            return "No output provided.";
-
-        return Parse(failureOutput);
+        return string.IsNullOrWhiteSpace(failureOutput) ? "No output provided." : Parse(failureOutput);
     }
 
     internal static string Parse(string output)
@@ -64,7 +62,10 @@ internal static class ShrinkOutputTools
             {
                 exampleCount = int.Parse(summaryMatch.Groups["examples"].Value);
                 if (summaryMatch.Groups["shrinks"].Success)
+                {
                     shrinkCount = int.Parse(summaryMatch.Groups["shrinks"].Value);
+                }
+
                 currentSection = "original";
                 continue;
             }
@@ -113,7 +114,9 @@ internal static class ShrinkOutputTools
                 sb.AppendLine();
                 sb.AppendLine("**Failing values:**");
                 foreach (var (name, value) in originalParams)
+                {
                     sb.AppendLine($"- `{name}` = `{value}`");
+                }
             }
 
             sb.AppendLine();
@@ -145,7 +148,9 @@ internal static class ShrinkOutputTools
             {
                 sb.AppendLine($"**Shrinking:** The failing input was simplified **{shrinkCount} time{(shrinkCount == 1 ? "" : "s")}** to find the minimal counterexample.");
                 if (shrinkCount == 0)
+                {
                     sb.AppendLine("  (The first failing example was already minimal — no simplification was needed.)");
+                }
             }
         }
 
@@ -155,7 +160,9 @@ internal static class ShrinkOutputTools
             sb.AppendLine();
             sb.AppendLine(shrunkParams.Count > 0 ? "**Minimal counterexample (after shrinking):**" : "**Failing input:**");
             foreach (var (name, value) in displayParams)
+            {
                 sb.AppendLine($"- `{name}` = `{value}`");
+            }
 
             sb.AppendLine();
             sb.AppendLine(
@@ -168,7 +175,9 @@ internal static class ShrinkOutputTools
             sb.AppendLine();
             sb.AppendLine("**Original (unshrunk) failing input:**");
             foreach (var (name, value) in originalParams)
+            {
                 sb.AppendLine($"- `{name}` = `{value}`");
+            }
         }
 
         if (seed is not null)

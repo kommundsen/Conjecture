@@ -5,6 +5,7 @@
 // Original copyright: Copyright (c) 2013-present, David R. MacIver and contributors.
 
 using System.Diagnostics;
+
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
