@@ -1,8 +1,6 @@
 // Copyright (c) 2026 Kim Ommundsen. Licensed under the MPL-2.0.
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
-using System.Collections;
-using System.Reflection;
 using System.Text.Json;
 
 using Conjecture.Core;
@@ -11,15 +9,23 @@ namespace Conjecture.Tool.Plan;
 
 public class PlanRunner
 {
+    private const string Int32TypeFull = "System.Int32";
+    private const string Int32TypeSimple = "Int32";
+    private const string StringTypeFull = "System.String";
+    private const string StringTypeSimple = "String";
+
     public PlanResult Run(GenerationPlan plan)
     {
         var stepResults = new Dictionary<string, IReadOnlyList<JsonElement>>();
 
+        plan.Output.Validate();
+
         try
         {
-            _ = Assembly.LoadFrom(plan.Assembly);
+            // Validate assembly exists; will be used for custom type resolution in future
+            System.Reflection.Assembly.LoadFrom(plan.Assembly);
         }
-        catch (FileNotFoundException)
+        catch (System.IO.FileNotFoundException)
         {
             throw new PlanException($"Assembly not found: {plan.Assembly}", exitCode: 1);
         }
@@ -60,13 +66,13 @@ public class PlanRunner
         IDictionary<string, IReadOnlyList<JsonElement>> resolvedBindings)
     {
         ValidateBindingKeys(step, resolvedBindings);
-        return step.Type == "System.Int32" || step.Type == "Int32"
+        return IsInt32(step.Type)
             ? GenerateBoundOrDefault(
                 step,
                 resolvedBindings,
                 elem => elem.GetInt32(),
                 () => Generate.Integers<int>())
-            : step.Type == "System.String" || step.Type == "String"
+            : IsString(step.Type)
             ? GenerateBoundOrDefault(
                 step,
                 resolvedBindings,
@@ -75,7 +81,7 @@ public class PlanRunner
             : throw new NotImplementedException($"Type {step.Type} is not yet supported");
     }
 
-    private static void ValidateBindingKeys(
+    private void ValidateBindingKeys(
         PlanStep step,
         IDictionary<string, IReadOnlyList<JsonElement>> resolvedBindings)
     {
@@ -84,9 +90,7 @@ public class PlanRunner
             return;
         }
 
-        bool isKnownScalar =
-            step.Type == "System.Int32" || step.Type == "Int32" ||
-            step.Type == "System.String" || step.Type == "String";
+        bool isKnownScalar = IsInt32(step.Type) || IsString(step.Type);
 
         if (!isKnownScalar)
         {
@@ -103,6 +107,14 @@ public class PlanRunner
             }
         }
     }
+
+    private static bool IsInt32(string typeName) =>
+        string.Equals(typeName, Int32TypeFull, StringComparison.Ordinal) ||
+        string.Equals(typeName, Int32TypeSimple, StringComparison.Ordinal);
+
+    private static bool IsString(string typeName) =>
+        string.Equals(typeName, StringTypeFull, StringComparison.Ordinal) ||
+        string.Equals(typeName, StringTypeSimple, StringComparison.Ordinal);
 
     private object? GenerateBoundOrDefault<T>(
         PlanStep step,
@@ -157,7 +169,8 @@ public class PlanRunner
 
         var result = new List<JsonElement>();
 
-        if (data is IEnumerable enumerable)
+        // Exclude string, which implements IEnumerable<char> but should be treated as a scalar
+        if (data is System.Collections.IEnumerable enumerable && data is not string)
         {
             foreach (object? item in enumerable)
             {
@@ -168,7 +181,7 @@ public class PlanRunner
             return result;
         }
 
-        // Single item
+        // Single item (including bare string)
         string json = JsonSerializer.Serialize(data);
         using JsonDocument doc2 = JsonDocument.Parse(json);
         return new[] { doc2.RootElement.Clone() };

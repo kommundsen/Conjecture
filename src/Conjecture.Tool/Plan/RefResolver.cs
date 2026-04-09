@@ -11,7 +11,6 @@ public static class RefResolver
         string refPath,
         IDictionary<string, IReadOnlyList<JsonElement>> priorResults)
     {
-        // Parse the ref path: "customers[*].Id" or "config.Name"
         int bracketIndex = refPath.IndexOf('[');
         string stepName;
         string? propertyPath;
@@ -19,7 +18,6 @@ public static class RefResolver
 
         if (bracketIndex == -1)
         {
-            // "config.Name" format - no array expansion
             int dotIndex = refPath.IndexOf('.');
             if (dotIndex == -1)
             {
@@ -35,7 +33,6 @@ public static class RefResolver
         }
         else
         {
-            // "customers[*].Id" format
             stepName = refPath[..bracketIndex];
 
             int closeBracketIndex = refPath.IndexOf(']', bracketIndex);
@@ -44,39 +41,39 @@ public static class RefResolver
                 throw new InvalidOperationException($"Invalid ref format: {refPath}");
             }
 
-            // Check if there's a property path after [*]
+            string bracketContent = refPath[(bracketIndex + 1)..closeBracketIndex];
+            if (bracketContent != "*")
+            {
+                throw new InvalidOperationException(
+                    $"Invalid ref format '{refPath}': only '[*]' array expansion is supported");
+            }
+
             propertyPath = closeBracketIndex + 1 < refPath.Length && refPath[closeBracketIndex + 1] == '.' ? refPath[(closeBracketIndex + 2)..] : null;
             isArrayExpansion = true;
         }
 
-        // Look up the step in prior results
         if (!priorResults.TryGetValue(stepName, out IReadOnlyList<JsonElement>? stepResults))
         {
             throw new InvalidOperationException($"Reference to undefined step: {stepName}");
         }
 
-        // If no array expansion and no property path, return the single item
         if (!isArrayExpansion && propertyPath is null)
         {
             return stepResults;
         }
 
-        // Extract property from each element
         var resolved = new List<JsonElement>();
 
         if (isArrayExpansion)
         {
-            // Array expansion: iterate over each element
             foreach (JsonElement element in stepResults)
             {
                 if (propertyPath is null)
                 {
-                    // No property specified, add the element itself
                     resolved.Add(element);
                 }
                 else
                 {
-                    // Extract property from element
                     JsonElement value = ExtractProperty(element, propertyPath);
                     resolved.Add(value);
                 }
@@ -84,7 +81,6 @@ public static class RefResolver
         }
         else
         {
-            // No array expansion, but we have a property path
             if (stepResults.Count == 0)
             {
                 throw new InvalidOperationException($"No results for step: {stepName}");
