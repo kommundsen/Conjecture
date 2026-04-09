@@ -4,3 +4,44 @@ static Conjecture.Tool.AssemblyLoader.FindProviders(string! assemblyPath) -> Sys
 static Conjecture.Tool.AssemblyLoader.ResolveByTargetType(System.Reflection.Assembly! assembly, string! typeName) -> System.Type?
 Conjecture.Tool.GenerateCommand
 static Conjecture.Tool.GenerateCommand.ExecuteAsync(string! assemblyPath, string! typeName, int count, ulong? seed, string! format) -> System.Threading.Tasks.Task<string!>!
+Conjecture.Tool.Plan.GenerationPlan
+Conjecture.Tool.Plan.GenerationPlan.GenerationPlan() -> void
+Conjecture.Tool.Plan.GenerationPlan.Assembly.get -> string!
+Conjecture.Tool.Plan.GenerationPlan.Assembly.init -> void
+Conjecture.Tool.Plan.GenerationPlan.Output.get -> Conjecture.Tool.Plan.OutputConfig!
+Conjecture.Tool.Plan.GenerationPlan.Output.init -> void
+Conjecture.Tool.Plan.GenerationPlan.Steps.get -> System.Collections.Generic.IReadOnlyList<Conjecture.Tool.Plan.PlanStep!>!
+Conjecture.Tool.Plan.GenerationPlan.Steps.init -> void
+Conjecture.Tool.Plan.OutputConfig
+Conjecture.Tool.Plan.OutputConfig.OutputConfig() -> void
+Conjecture.Tool.Plan.OutputConfig.File.get -> string?
+Conjecture.Tool.Plan.OutputConfig.File.init -> void
+Conjecture.Tool.Plan.OutputConfig.Format.get -> string!
+Conjecture.Tool.Plan.OutputConfig.Format.init -> void
+Conjecture.Tool.Plan.PlanException
+Conjecture.Tool.Plan.PlanException.ExitCode.get -> int
+Conjecture.Tool.Plan.PlanException.PlanException(string! message, int exitCode = 1) -> void
+Conjecture.Tool.Plan.PlanResult
+Conjecture.Tool.Plan.PlanResult.PlanResult(System.Collections.Generic.IDictionary<string!, System.Collections.Generic.IReadOnlyList<System.Text.Json.JsonElement>!>! stepResults) -> void
+Conjecture.Tool.Plan.PlanResult.StepResults.get -> System.Collections.Generic.IReadOnlyDictionary<string!, System.Collections.Generic.IReadOnlyList<System.Text.Json.JsonElement>!>!
+Conjecture.Tool.Plan.PlanRunner
+Conjecture.Tool.Plan.PlanRunner.PlanRunner() -> void
+Conjecture.Tool.Plan.PlanRunner.Run(Conjecture.Tool.Plan.GenerationPlan! plan) -> Conjecture.Tool.Plan.PlanResult!
+Conjecture.Tool.Plan.PlanStep
+Conjecture.Tool.Plan.PlanStep.PlanStep() -> void
+Conjecture.Tool.Plan.PlanStep.Bindings.get -> System.Collections.Generic.IDictionary<string!, Conjecture.Tool.Plan.RefExpression!>?
+Conjecture.Tool.Plan.PlanStep.Bindings.init -> void
+Conjecture.Tool.Plan.PlanStep.Count.get -> int
+Conjecture.Tool.Plan.PlanStep.Count.init -> void
+Conjecture.Tool.Plan.PlanStep.Name.get -> string!
+Conjecture.Tool.Plan.PlanStep.Name.init -> void
+Conjecture.Tool.Plan.PlanStep.Seed.get -> ulong?
+Conjecture.Tool.Plan.PlanStep.Seed.init -> void
+Conjecture.Tool.Plan.PlanStep.Type.get -> string!
+Conjecture.Tool.Plan.PlanStep.Type.init -> void
+Conjecture.Tool.Plan.RefExpression
+Conjecture.Tool.Plan.RefExpression.RefExpression() -> void
+Conjecture.Tool.Plan.RefExpression.Ref.get -> string!
+Conjecture.Tool.Plan.RefExpression.Ref.init -> void
+Conjecture.Tool.Plan.RefResolver
+static Conjecture.Tool.Plan.RefResolver.Resolve(string! refPath, System.Collections.Generic.IDictionary<string!, System.Collections.Generic.IReadOnlyList<System.Text.Json.JsonElement>!>! priorResults) -> System.Collections.Generic.IReadOnlyList<System.Text.Json.JsonElement>!
