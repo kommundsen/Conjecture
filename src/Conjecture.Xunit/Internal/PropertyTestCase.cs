@@ -64,7 +64,7 @@ internal sealed class PropertyTestCase : XunitTestCase
         MaxStrategyRejections = info.GetValue<int>("MaxStrategyRejections");
         DeadlineMs = info.GetValue<int>("DeadlineMs");
         string? targetingStr = info.GetValue<string?>("Targeting");
-        Targeting = targetingStr is null ? true : bool.Parse(targetingStr);
+        Targeting = targetingStr is null || bool.Parse(targetingStr);
         string? proportionStr = info.GetValue<string?>("TargetingProportion");
         if (proportionStr is not null
             && double.TryParse(proportionStr, System.Globalization.NumberStyles.Float,

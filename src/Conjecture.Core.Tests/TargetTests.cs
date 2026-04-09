@@ -12,10 +12,7 @@ public class TargetTests
     public async Task Maximize_WithinTestBody_RecordsObservation()
     {
         ConjectureSettings settings = new() { MaxExamples = 1, Seed = 1UL };
-        TestRunResult result = await TestRunner.Run(settings, data =>
-        {
-            Target.Maximize(10.0);
-        });
+        TestRunResult result = await TestRunner.Run(settings, data => Target.Maximize(10.0));
 
         Assert.True(result.Passed);
     }
@@ -84,10 +81,7 @@ public class TargetTests
     public async Task Maximize_NaN_Throws()
     {
         ConjectureSettings settings = new() { MaxExamples = 1, Seed = 1UL };
-        TestRunResult result = await TestRunner.Run(settings, _ =>
-        {
-            Assert.Throws<ArgumentException>(() => Target.Maximize(double.NaN));
-        });
+        TestRunResult result = await TestRunner.Run(settings, _ => Assert.Throws<ArgumentException>(() => Target.Maximize(double.NaN)));
 
         Assert.True(result.Passed);
     }

@@ -3,6 +3,7 @@
 
 using System.Text;
 using System.Text.Json;
+
 using Conjecture.Formatters;
 
 namespace Conjecture.Formatters.Tests;

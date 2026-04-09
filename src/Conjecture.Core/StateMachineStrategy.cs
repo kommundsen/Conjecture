@@ -5,6 +5,7 @@
 // Original copyright: Copyright (c) 2013-present, David R. MacIver and contributors.
 
 using System.Collections.Generic;
+
 using Conjecture.Core.Internal;
 
 namespace Conjecture.Core;
@@ -29,7 +30,7 @@ internal sealed class StateMachineStrategy<TMachine, TState, TCommand>(int maxSt
 
         for (int i = 0; i < length; i++)
         {
-            Strategy<TCommand>[] commands = [..machine.Commands(state)];
+            Strategy<TCommand>[] commands = [.. machine.Commands(state)];
             if (commands.Length == 0)
             {
                 break;

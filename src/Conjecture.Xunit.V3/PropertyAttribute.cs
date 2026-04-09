@@ -2,6 +2,7 @@
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
 using System.Runtime.CompilerServices;
+
 using Xunit;
 using Xunit.v3;
 

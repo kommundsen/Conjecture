@@ -2,8 +2,10 @@
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
 using Conjecture.Mcp.Resources;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
 using ModelContextProtocol.Server;
 
 var builder = Host.CreateApplicationBuilder(args);

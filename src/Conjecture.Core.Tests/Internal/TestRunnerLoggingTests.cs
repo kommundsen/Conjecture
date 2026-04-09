@@ -3,6 +3,7 @@
 
 using Conjecture.Core;
 using Conjecture.Core.Internal;
+
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -57,12 +58,7 @@ public class TestRunnerLoggingTests
         await Assert.ThrowsAsync<ConjectureException>(() => TestRunner.RunAsync(settings, _ =>
         {
             callCount++;
-            if (callCount > 1)
-            {
-                throw new UnsatisfiedAssumptionException();
-            }
-
-            return Task.CompletedTask;
+            return callCount > 1 ? throw new UnsatisfiedAssumptionException() : Task.CompletedTask;
         }));
 
         Assert.Contains(logger.Entries, e => e.Level == LogLevel.Warning && e.EventId.Id == 7);

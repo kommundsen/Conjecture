@@ -2,6 +2,7 @@
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using ConjecturePropertyAttribute = Conjecture.MSTest.PropertyAttribute;
 
 namespace Conjecture.MSTest.Tests;

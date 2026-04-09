@@ -2,6 +2,7 @@
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
 using NUnit.Framework;
+
 using ConjecturePropertyAttribute = Conjecture.NUnit.PropertyAttribute;
 
 namespace Conjecture.NUnit.Tests;

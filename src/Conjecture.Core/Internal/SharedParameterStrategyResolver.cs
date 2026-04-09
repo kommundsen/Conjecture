@@ -159,18 +159,18 @@ internal static class SharedParameterStrategyResolver
     {
         return type switch
         {
-            _ when type == typeof(int)       => Generate.Integers<int>().Generate(data),
-            _ when type == typeof(long)      => Generate.Integers<long>().Generate(data),
-            _ when type == typeof(byte)      => Generate.Integers<byte>().Generate(data),
-            _ when type == typeof(bool)      => Generate.Booleans().Generate(data),
-            _ when type == typeof(string)    => Generate.Strings().Generate(data),
-            _ when type == typeof(float)     => Generate.Floats().Generate(data),
-            _ when type == typeof(double)    => Generate.Doubles().Generate(data),
+            _ when type == typeof(int) => Generate.Integers<int>().Generate(data),
+            _ when type == typeof(long) => Generate.Integers<long>().Generate(data),
+            _ when type == typeof(byte) => Generate.Integers<byte>().Generate(data),
+            _ when type == typeof(bool) => Generate.Booleans().Generate(data),
+            _ when type == typeof(string) => Generate.Strings().Generate(data),
+            _ when type == typeof(float) => Generate.Floats().Generate(data),
+            _ when type == typeof(double) => Generate.Doubles().Generate(data),
             _ when type == typeof(List<int>) => Generate.Lists(Generate.Integers<int>()).Generate(data),
-            { IsEnum: true }                 => GenerateEnum(type, data),
+            { IsEnum: true } => GenerateEnum(type, data),
             _ when Nullable.GetUnderlyingType(type) is { } u
                                              => data.NextInteger(0, 9) == 0 ? null! : GenerateValue(u, data),
-            _                                => throw new NotSupportedException($"No strategy registered for parameter type '{type.FullName}'.")
+            _ => throw new NotSupportedException($"No strategy registered for parameter type '{type.FullName}'.")
         };
     }
 

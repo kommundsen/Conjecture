@@ -2,6 +2,7 @@
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
 using System.Collections.Generic;
+
 using Conjecture.Core;
 using Conjecture.Core.Internal;
 
@@ -28,11 +29,9 @@ public class QueueStateMachineTests
 
     private abstract class QueueCommand
     {
-        public sealed class Enqueue : QueueCommand
+        public sealed class Enqueue(int value) : QueueCommand
         {
-            public Enqueue(int value) { Value = value; }
-            public int Value { get; }
-            public override string ToString() => $"Enqueue({Value})";
+            public int Value { get; } = value; public override string ToString() => $"Enqueue({Value})";
         }
 
         public sealed class Dequeue : QueueCommand
@@ -78,7 +77,10 @@ public class QueueStateMachineTests
             if (cmd is QueueCommand.Dequeue)
             {
                 if (state.Queue.Count == 0)
+                {
                     return new(state.Queue, null);
+                }
+
                 Queue<int> q = new(state.Queue);
                 q.Dequeue();
                 return new(q, null);
@@ -86,7 +88,10 @@ public class QueueStateMachineTests
 
             // Peek — planted bug: off-by-one on front element when Count > 1.
             if (state.Queue.Count == 0)
+            {
                 return state;
+            }
+
             int peeked = state.Queue.Count > 1
                 ? state.Queue.Peek() + 1   // Bug: returns front + 1, not front
                 : state.Queue.Peek();       // Correct when only one element
@@ -97,8 +102,10 @@ public class QueueStateMachineTests
         {
             if (state.SnapshotPeek.HasValue && state.Queue.Count > 0
                 && state.SnapshotPeek.Value != state.Queue.Peek())
+            {
                 throw new InvalidOperationException(
                     $"Peek returned {state.SnapshotPeek.Value} but front element is {state.Queue.Peek()}");
+            }
         }
     }
 
@@ -125,24 +132,27 @@ public class QueueStateMachineTests
             if (cmd is QueueCommand.Dequeue)
             {
                 if (state.Queue.Count == 0)
+                {
                     return new(state.Queue, null);
+                }
+
                 Queue<int> q = new(state.Queue);
                 q.Dequeue();
                 return new(q, null);
             }
 
             // Peek — correct implementation.
-            if (state.Queue.Count == 0)
-                return state;
-            return new(new Queue<int>(state.Queue), state.Queue.Peek());
+            return state.Queue.Count == 0 ? state : new(new Queue<int>(state.Queue), state.Queue.Peek());
         }
 
         public void Invariant(QueueState state)
         {
             if (state.SnapshotPeek.HasValue && state.Queue.Count > 0
                 && state.SnapshotPeek.Value != state.Queue.Peek())
+            {
                 throw new InvalidOperationException(
                     $"Peek returned {state.SnapshotPeek.Value} but front element is {state.Queue.Peek()}");
+            }
         }
     }
 
@@ -187,8 +197,10 @@ public class QueueStateMachineTests
         {
             if (state.SnapshotPeek.HasValue && state.Queue.Count > 0
                 && state.SnapshotPeek.Value != state.Queue.Peek())
+            {
                 throw new InvalidOperationException(
                     $"Peek returned {state.SnapshotPeek.Value} but front element is {state.Queue.Peek()}");
+            }
         }
     }
 

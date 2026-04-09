@@ -3,10 +3,13 @@
 
 using System.IO;
 using System.Text;
+
 using BenchmarkDotNet.Attributes;
+
 using Conjecture.Core;
 using Conjecture.Core.Internal;
 using Conjecture.Generators;
+
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 

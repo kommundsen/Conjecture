@@ -3,6 +3,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+
 using Conjecture.Core.Internal;
 using Conjecture.Xunit.Internal;
 

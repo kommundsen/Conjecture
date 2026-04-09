@@ -121,9 +121,15 @@ internal sealed class ConjectureData
     internal void RecordObservation(string label, double value)
     {
         if (frozen)
+        {
             throw new InvalidOperationException("Cannot record observations on frozen ConjectureData.");
+        }
+
         if (double.IsNaN(value) || double.IsInfinity(value))
+        {
             throw new ArgumentException("Observation value must be finite.", nameof(value));
+        }
+
         observations[label] = value;
     }
 

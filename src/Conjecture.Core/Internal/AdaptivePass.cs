@@ -14,7 +14,7 @@ internal sealed class AdaptivePass(IShrinkPass inner) : IShrinkPass
     {
         if (productiveIndices.Count > 0)
         {
-            int[] snapshot = [..productiveIndices];
+            int[] snapshot = [.. productiveIndices];
             foreach (int i in snapshot)
             {
                 if (await TryReduceAt(state, i))
@@ -44,7 +44,7 @@ internal sealed class AdaptivePass(IShrinkPass inner) : IShrinkPass
         {
             return false;
         }
-        IRNode[] candidate = [..state.Nodes];
+        IRNode[] candidate = [.. state.Nodes];
         candidate[index] = node.WithValue(node.Value - 1);
         return await state.TryUpdate(candidate, index);
     }

@@ -2,6 +2,7 @@
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
 using BenchmarkDotNet.Attributes;
+
 using Conjecture.Core;
 using Conjecture.Core.Internal;
 
@@ -33,7 +34,9 @@ internal sealed class CounterMachineFailsAt3 : IStateMachine<int, CounterCommand
     public void Invariant(int state)
     {
         if (state > 3)
+        {
             throw new InvalidOperationException($"counter exceeded 3: {state}");
+        }
     }
 }
 
@@ -49,7 +52,9 @@ internal sealed class CounterMachineFailsAt20 : IStateMachine<int, CounterComman
     public void Invariant(int state)
     {
         if (state > 20)
+        {
             throw new InvalidOperationException($"counter exceeded 20: {state}");
+        }
     }
 }
 

@@ -59,10 +59,7 @@ public class ComposeTargetTests
         });
 
         ConjectureSettings settings = new() { MaxExamples = 1, Seed = 1UL };
-        TestRunResult result = await TestRunner.Run(settings, data =>
-        {
-            strategy.Generate(data);
-        });
+        TestRunResult result = await TestRunner.Run(settings, data => strategy.Generate(data));
 
         Assert.True(result.Passed);
     }

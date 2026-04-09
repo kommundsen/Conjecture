@@ -3,13 +3,16 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+
 using Conjecture.Core;
 using Conjecture.Core.Internal;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
+
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using NUnit.Framework.Internal;
 using NUnit.Framework.Internal.Commands;
+
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Conjecture.NUnit.Internal;
 

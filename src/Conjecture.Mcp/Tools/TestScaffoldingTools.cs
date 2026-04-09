@@ -3,6 +3,7 @@
 
 using System.ComponentModel;
 using System.Text;
+
 using ModelContextProtocol.Server;
 
 namespace Conjecture.Mcp.Tools;
@@ -29,11 +30,15 @@ internal static class TestScaffoldingTools
         var parenStart = signature.IndexOf('(');
         var parenEnd = signature.LastIndexOf(')');
         if (parenStart < 0 || parenEnd < 0 || parenEnd <= parenStart)
+        {
             return [];
+        }
 
         var paramSection = signature[(parenStart + 1)..parenEnd].Trim();
         if (string.IsNullOrWhiteSpace(paramSection))
+        {
             return [];
+        }
 
         var results = new List<(string, string)>();
         foreach (var chunk in SplitParams(paramSection))
@@ -44,16 +49,23 @@ internal static class TestScaffoldingTools
             {
                 var closeAttr = part.IndexOf(']');
                 if (closeAttr >= 0)
+                {
                     part = part[(closeAttr + 1)..].Trim();
+                }
             }
 
             var lastSpace = part.LastIndexOf(' ');
-            if (lastSpace < 0) continue;
+            if (lastSpace < 0)
+            {
+                continue;
+            }
 
             var type = part[..lastSpace].Trim();
             var name = part[(lastSpace + 1)..].Trim();
             if (!string.IsNullOrEmpty(type) && !string.IsNullOrEmpty(name))
+            {
                 results.Add((type, name));
+            }
         }
 
         return results;
@@ -83,7 +95,11 @@ internal static class TestScaffoldingTools
     internal static string ParseMethodName(string signature)
     {
         var parenIdx = signature.IndexOf('(');
-        if (parenIdx < 0) return "Method";
+        if (parenIdx < 0)
+        {
+            return "Method";
+        }
+
         var beforeParen = signature[..parenIdx];
         var last = beforeParen.Split(' ', StringSplitOptions.RemoveEmptyEntries).Last();
         return last;

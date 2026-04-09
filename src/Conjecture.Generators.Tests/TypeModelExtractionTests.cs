@@ -4,9 +4,11 @@
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
+
+using Conjecture.Generators;
+
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Conjecture.Generators;
 
 namespace Conjecture.Generators.Tests;
 
