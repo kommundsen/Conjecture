@@ -1,6 +1,6 @@
 ---
 name: developer
-model: haiku
+model: sonnet
 color: green
 description: >
   Writes minimal production code to make failing tests pass (TDD Green phase)
@@ -26,8 +26,9 @@ You will receive:
    - Follow existing patterns (file-scoped namespaces, `readonly struct` where appropriate)
    - New or changed `public` API in non-test projects must be declared in `PublicAPI.Unshipped.txt` (enforced by RS0016 — the error includes the exact signature to copy)
 5. Run `dotnet build src/ 2>&1 | grep -E 'warning (IDE|CS)'` — fix **all** warnings. Common culprits: block-scoped namespace, `var`, missing braces, `new T()` instead of `new()`.
-6. Run `dotnet test src/ --filter "FullyQualifiedName~<target>"` — all targeted tests must pass.
-7. Run `dotnet test src/` — no regressions.
+6. Run `dotnet format --include <changed_cs_files> --exclude-diagnostics IDE0130` for all changed `.cs` and fix any incorrect formatting.
+7. Run `dotnet test src/ --filter "FullyQualifiedName~<target>"` — all targeted tests must pass.
+8. Run `dotnet test src/` — no regressions.
 
 ## Code Style Quick Reference
 
@@ -59,3 +60,4 @@ Report:
 - Implement only what the tests demand — resist anticipating future tests
 - Do not add `public` API surface beyond what the tests reference
 - If a reviewer FIX_IMPLEMENTATION verdict was provided, address each finding while keeping all tests green
+- Prefer one type (class, record, interface etc) per file

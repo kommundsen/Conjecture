@@ -10,8 +10,15 @@ dotnet build src/
 dotnet test src/
 dotnet test src/ --filter "FullyQualifiedName~SomeTest"
 ```
+## Format
+
+```bash
+dotnet format src/ --include .somedir/somefile.cs .somedir/somefile2.cs
+```
 
 ## Project Structure
+
+Solution file: `src/Conjecture.slnx`
 
 ### Production → Test project mapping
 
@@ -34,5 +41,6 @@ New test files go in the paired test project, mirroring the production file's re
 ### Other locations
 
 - Architecture decisions (ADRs): `docs/decisions/`
+- Documentation site: `docs/site`
 - Public API surface: each non-test project has `PublicAPI.Unshipped.txt` — new public symbols must be declared here (enforced by RS0016 at build time; the compiler error includes the exact signature to copy in)
 - GitHub repo: `kommundsen/Conjecture`
