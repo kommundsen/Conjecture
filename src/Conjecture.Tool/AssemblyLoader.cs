@@ -44,7 +44,7 @@ public static class AssemblyLoader
         return null;
     }
 
-    private static IReadOnlyList<Type> FindProvidersInAssembly(Assembly assembly)
+    internal static IReadOnlyList<Type> FindProvidersInAssembly(Assembly assembly)
     {
         var providers = new List<Type>();
 

@@ -18,6 +18,7 @@ Conjecture.Tool.Plan.OutputConfig.File.get -> string?
 Conjecture.Tool.Plan.OutputConfig.File.init -> void
 Conjecture.Tool.Plan.OutputConfig.Format.get -> string!
 Conjecture.Tool.Plan.OutputConfig.Format.init -> void
+Conjecture.Tool.Plan.OutputConfig.Validate() -> void
 Conjecture.Tool.Plan.PlanException
 Conjecture.Tool.Plan.PlanException.ExitCode.get -> int
 Conjecture.Tool.Plan.PlanException.PlanException(string! message, int exitCode = 1) -> void

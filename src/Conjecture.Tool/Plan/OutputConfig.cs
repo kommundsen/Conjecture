@@ -7,6 +7,8 @@ namespace Conjecture.Tool.Plan;
 
 public class OutputConfig
 {
+    private static readonly HashSet<string> KnownFormats = new(StringComparer.OrdinalIgnoreCase) { "json", "jsonl", "ndjson" };
+
     [JsonPropertyName("format")]
     public required string Format
     {
@@ -20,4 +22,15 @@ public class OutputConfig
         get;
         init;
     }
+
+    public void Validate()
+    {
+        if (!KnownFormats.Contains(Format))
+        {
+            throw new PlanException(
+                $"Unknown output format '{Format}'. Supported formats: {string.Join(", ", KnownFormats)}",
+                exitCode: 1);
+        }
+    }
 }
+
