@@ -21,8 +21,9 @@ You will receive one or more of:
 
 ## Steps
 
-1. Run `dotnet format --include <changed_cs_files> --exclude-diagnostics IDE0130 --verify-no-changes` for all changed `.cs` files — all formatting must be correct. If this fails, report it as a FIX_IMPLEMENTATION finding.
-2. Review the changed production files for reuse, quality, and efficiency issues (see "What to look for" section below).
+1. Run `dotnet format src/ --include <changed_cs_files> --exclude-diagnostics IDE0130 --verify-no-changes` — all formatting must be correct. If this fails, report as FIX_IMPLEMENTATION.
+2. Run `dotnet test src/` — full regression. All tests must pass. If any fail, report as FIX_IMPLEMENTATION.
+3. Review the changed production files for reuse, quality, and efficiency issues (see below).
 
 ## Output format
 
@@ -42,7 +43,7 @@ Choose the verdict as follows:
 - **FIX_IMPLEMENTATION** — implementation has quality/efficiency/reuse issues that should be corrected without changing the test contract
 - **ADD_TEST** — a behavioral gap exists that is not covered by any test (missing edge case, missing boundary, untested contract)
 
-If there are both implementation issues and missing tests, pick the one that is more fundamental. A missing test is more fundamental than a style issue.
+If both issues exist, prioritize: ADD_TEST > FIX_IMPLEMENTATION.
 
 ## What to look for
 
@@ -56,7 +57,7 @@ If there are both implementation issues and missing tests, pick the one that is 
 - Leaky abstractions (exposing internals, breaking encapsulation)
 - Unnecessary comments (explaining WHAT, not WHY — flag for removal)
 - Stringly-typed code where constants or enums already exist
-- Unneccassary warning suppression
+- Unnecessary warning suppression
 - One file per type unless they are nested
 - One test class per SUT or feature
 
