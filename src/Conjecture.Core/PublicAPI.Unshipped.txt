@@ -21,3 +21,4 @@ Conjecture.Core.StrategyExtensionProperties.extension<T>(Conjecture.Core.Strateg
 Conjecture.Core.StrategyExtensionProperties.extension<T>(Conjecture.Core.Strategy<System.Collections.Generic.List<T>!>!).NonEmpty.get -> Conjecture.Core.Strategy<System.Collections.Generic.List<T>!>!
 Conjecture.Core.StrategyExtensionProperties.extension<T>(Conjecture.Core.Strategy<T>!)
 static Conjecture.Core.StrategyExtensionProperties.extension<T>(Conjecture.Core.Strategy<T>!).operator |(Conjecture.Core.Strategy<T>! left, Conjecture.Core.Strategy<T>! right) -> Conjecture.Core.Strategy<T>!
+static Conjecture.Core.Generate.NumericStrings(int minDigits = 1, int maxDigits = 6, string? prefix = null, string? suffix = null) -> Conjecture.Core.Strategy<string!>!
