@@ -60,6 +60,8 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
             Targeting = testCase.Targeting,
             TargetingProportion = testCase.TargetingProportion,
             Logger = logger,
+            ExportReproOnFailure = testCase.ExportReproOnFailure,
+            ReproOutputPath = testCase.ReproOutputPath,
         };
     }
 
@@ -171,6 +173,34 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
         else
         {
             summary.Failed = 1;
+            if (settings.ExportReproOnFailure && result is not null && !result.Passed && result.Counterexample is not null)
+            {
+                try
+                {
+                    MethodInfo methodInfo = TestMethod;
+                    ParameterInfo[] methodParams = methodInfo.GetParameters();
+                    ConjectureData replay = ConjectureData.ForRecord(result.Counterexample);
+                    object[] values = SharedParameterStrategyResolver.Resolve(methodParams, replay);
+                    IEnumerable<(string Name, object? Value, Type Type)> parameters = methodParams.Zip(values,
+                        static (p, v) => (p.Name!, (object?)v, p.ParameterType));
+                    ReproContext context = new(
+                        TestClass.Name,
+                        methodInfo.Name,
+                        TestCaseHelper.IsAsyncReturnType(methodInfo.ReturnType),
+                        parameters,
+                        result.Seed!.Value,
+                        result.ExampleCount,
+                        result.ShrinkCount,
+                        Conjecture.Core.Internal.TestFramework.Xunit,
+                        DateTimeOffset.UtcNow);
+                    ReproFileBuilder.WriteToFile(context, settings.ReproOutputPath);
+                }
+                catch (Exception ex)
+                {
+                    settings.Logger.LogError(ex, "Failed to write repro file");
+                }
+            }
+
             Exception failure = setupFailure
                 ?? new Exception(TestCaseHelper.BuildFailureMessage(result!, TestMethod.GetParameters()));
             if (!MessageBus.QueueMessage(new TestFailed(test, elapsed, null, failure)))
