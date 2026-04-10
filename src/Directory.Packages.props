@@ -46,7 +46,7 @@
     <PackageVersion Include="MSTest.TestAdapter" Version="4.1.0" />
 
     <!-- Logging -->
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.5" />
 
     <!-- MCP server -->
     <PackageVersion Include="ModelContextProtocol" Version="1.2.0" />
