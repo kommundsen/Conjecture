@@ -6,3 +6,7 @@ static Conjecture.Core.DataGen.Stream<T>(Conjecture.Core.Strategy<T>! strategy, 
 Conjecture.Core.IOutputFormatter
 Conjecture.Core.IOutputFormatter.Name.get -> string!
 Conjecture.Core.IOutputFormatter.WriteAsync<T>(System.Collections.Generic.IEnumerable<T>! data, System.IO.Stream! output, System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+Conjecture.Core.ConjectureSettings.ExportReproOnFailure.get -> bool
+Conjecture.Core.ConjectureSettings.ExportReproOnFailure.init -> void
+Conjecture.Core.ConjectureSettings.ReproOutputPath.get -> string!
+Conjecture.Core.ConjectureSettings.ReproOutputPath.init -> void

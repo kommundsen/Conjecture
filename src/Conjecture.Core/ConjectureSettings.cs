@@ -76,4 +76,10 @@ public record ConjectureSettings
 
     /// <summary>Logger for structured test-run output. Defaults to <see cref="NullLogger.Instance"/>.</summary>
     public ILogger Logger { get; init; } = NullLogger.Instance;
+
+    /// <summary>Whether to export a reproduction file on test failure. Defaults to <see langword="false"/>.</summary>
+    public bool ExportReproOnFailure { get; init; } = false;
+
+    /// <summary>Output path for exported reproduction files. Defaults to <c>.conjecture/repros/</c>.</summary>
+    public string ReproOutputPath { get; init; } = ".conjecture/repros/";
 }
