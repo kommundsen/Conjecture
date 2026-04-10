@@ -183,6 +183,14 @@ public static class Generate
         return new StateMachineStrategy<TMachine, TState, TCommand>(maxSteps);
     }
 
+    /// <summary>Returns a strategy that generates identifier strings of the form <c>[a-z]+\d+</c>. The alpha prefix is drawn via IR string nodes so <c>StringAwarePass</c> can simplify it toward 'a', and the digit suffix is drawn so <c>NumericAwareShrinkPass</c> can minimize it.</summary>
+    public static Strategy<string> Identifiers(
+        int minPrefixLength = 1,
+        int maxPrefixLength = 6,
+        int minDigits = 1,
+        int maxDigits = 4)
+        => new IdentifierStrategy(minPrefixLength, maxPrefixLength, minDigits, maxDigits);
+
     /// <summary>Returns a strategy that generates strings of the form <c>[prefix][digits][suffix]</c> where the digit part is drawn via IR string nodes so <c>NumericAwareShrinkPass</c> can minimize it.</summary>
     public static Strategy<string> NumericStrings(
         int minDigits = 1,
