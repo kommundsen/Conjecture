@@ -17,7 +17,7 @@ internal static class Shrinker
     [
         [new ZeroBlocksPass(), new DeleteBlocksPass(), new IntervalDeletionPass(), new CommandSequenceShrinkPass()],
         [new LexMinimizePass(), new IntegerReductionPass(), new BlockSwappingPass(), new RedistributionPass()],
-        [new FloatSimplificationPass(), new StringAwarePass(), new AdaptivePass(new IntegerReductionPass())],
+        [new FloatSimplificationPass(), new StringAwarePass(), new NumericAwareShrinkPass(), new AdaptivePass(new IntegerReductionPass())],
     ];
 
     internal static Task<(IReadOnlyList<IRNode> Nodes, int ShrinkCount)> ShrinkAsync(

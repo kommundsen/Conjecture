@@ -21,23 +21,24 @@ public class ShrinkerPassOrderTests
     }
 
     [Fact]
-    public void PassRegistration_AllElevenPassTypes_ArePresent()
+    public void PassRegistration_AllTwelvePassTypes_ArePresent()
     {
         IShrinkPass[][] tiers = GetPassTiers();
         List<IShrinkPass> all = tiers.SelectMany(t => t).ToList();
 
-        Assert.Equal(11, all.Count);
-        Assert.Contains(all, p => p is ZeroBlocksPass);
-        Assert.Contains(all, p => p is DeleteBlocksPass);
-        Assert.Contains(all, p => p is IntervalDeletionPass);
-        Assert.Contains(all, p => p is CommandSequenceShrinkPass);
-        Assert.Contains(all, p => p is LexMinimizePass);
-        Assert.Contains(all, p => p is IntegerReductionPass);
-        Assert.Contains(all, p => p is BlockSwappingPass);
-        Assert.Contains(all, p => p is RedistributionPass);
-        Assert.Contains(all, p => p is FloatSimplificationPass);
-        Assert.Contains(all, p => p is StringAwarePass);
-        Assert.Contains(all, p => p is AdaptivePass);
+        Assert.Equal(12, all.Count);
+        Assert.Contains(all, static p => p is ZeroBlocksPass);
+        Assert.Contains(all, static p => p is DeleteBlocksPass);
+        Assert.Contains(all, static p => p is IntervalDeletionPass);
+        Assert.Contains(all, static p => p is CommandSequenceShrinkPass);
+        Assert.Contains(all, static p => p is LexMinimizePass);
+        Assert.Contains(all, static p => p is IntegerReductionPass);
+        Assert.Contains(all, static p => p is BlockSwappingPass);
+        Assert.Contains(all, static p => p is RedistributionPass);
+        Assert.Contains(all, static p => p is FloatSimplificationPass);
+        Assert.Contains(all, static p => p is StringAwarePass);
+        Assert.Contains(all, static p => p is NumericAwareShrinkPass);
+        Assert.Contains(all, static p => p is AdaptivePass);
     }
 
     [Fact]
@@ -105,7 +106,7 @@ public class ShrinkerPassOrderTests
     [Fact]
     public async Task FullShrinkLoop_FloatNodeAboveThreshold_ConvergesAndPreservesFailure()
     {
-        // With all 11 passes active across 3 tiers, the loop must still terminate
+        // With all 12 passes active across 3 tiers, the loop must still terminate
         // and the final result must remain interesting.
         ulong bigFloat = Unsafe.BitCast<double, ulong>(1e6);
         var nodes = new[] { IRNode.ForFloat64(bigFloat, 0UL, ulong.MaxValue) };
