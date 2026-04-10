@@ -1,40 +1,13 @@
 ---
 name: test
 description: >
-  Write failing xUnit tests for a behavior before implementation exists (TDD Red phase) in the Conjecture .NET project.
-  Use this skill whenever the user wants NEW tests written — they describe a behavior to verify, say "write tests for X", "add coverage for X", "test that X does Y", "I need a failing test", or name a strategy/feature that needs tests.
-  Triggers even without "TDD" or "red phase" language, as long as the goal is creating tests rather than acting on existing ones.
-  Do NOT trigger when the user wants to make existing failing tests pass (use implement), fix build errors in test files (use implement), refactor or reorganize existing tests (use simplify), or simply run/explain tests.
+  Write failing xUnit tests for a behavior (TDD Red phase).
+  Triggers: "write tests for X", "add coverage for X", "test that X does Y",
+  "I need a failing test", or naming a feature that needs tests.
+  Do NOT trigger when the user wants to make existing failing tests pass (use implement),
+  refactor existing tests (use simplify), or simply run/explain tests.
 ---
 
-Write failing xUnit tests for a behavior before implementation exists (TDD Red phase).
-
-## Input
-
-The behavior to test, e.g. `IntegerStrategy generates values within [min, max]`.
-
-## Steps
-
-1. Identify the target class/component from the description. Check the relevant production project (see CLAUDE.md for the project map) for existing types; check `docs/decisions/` for relevant ADRs.
-2. Determine the test file location using the production→test project mapping in CLAUDE.md:
-   - New class `Foo` in `src/Conjecture.Core/` → `src/Conjecture.Core.Tests/FooTests.cs`
-   - Mirror the production file's relative path inside the paired test project.
-   - Add to existing file if tests for that class already exist.
-3. Write tests that:
-   - Cover the happy path, boundary values, and at least one failure/edge case
-   - Use descriptive method names: `MethodName_Condition_ExpectedResult`
-   - Use `[Fact]` for deterministic cases, `[Theory]` + `[InlineData]` for parameterised
-   - Assert on observable output only — no implementation details
-   - Do NOT create stub/fake implementations to make them compile; use `#pragma warning disable` or `// TODO: implement` comments if the type doesn't exist yet
-   - Follow the same code style rules as production code (file-scoped namespace, no `var`, braces on all control flow, `new()` when type is apparent, etc.) — see the **Code Style Quick Reference** in the `implement` skill.
-4. Run `dotnet build src/ 2>&1 | grep -E 'warning (IDE|CS)'` — fix any style warnings **in the test file itself** (the goal is red from missing production code, not from style violations in the tests).
-5. Run `dotnet build src/` — the build **must fail** or tests **must fail** (red). If they pass, the tests are not testing anything new; revise them.
-6. Report: which tests were added, which assertion checks what behavior, and what the build/test failure is.
-
-## Guidelines
-
-- One test class per production class
-- Keep each test focused on a single behavior
-- Prefer `Assert.Equal` / `Assert.True` over `Assert.NotNull` unless null-safety is the behavior under test
-- Avoid mocking framework internals; test at the public API surface
-- File-scoped namespaces, match the production namespace with `.Tests` appended
+Spawn a `test-developer` agent with the user's behavior description.
+Include the target test file path if the user specified one.
+Report the agent's output to the user.
