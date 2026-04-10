@@ -63,11 +63,29 @@ On **subsequent iterations** (ADD_TEST verdict): spawn a `test-developer` agent 
 - The reviewer's findings from the previous iteration
 - The existing test file path
 
+After the agent returns, format only the files it changed:
+```bash
+git diff --name-only HEAD && git ls-files --others --exclude-standard src/
+```
+Collect all `.cs` paths from that output, then run:
+```bash
+dotnet format src/ --include "<file1>" --include "<file2>" ... --exclude-diagnostics IDE0130
+```
+
 Run `dotnet build src/` — must fail or have test failures (red). If unexpectedly green, stop and report.
 
 #### 3b. Green phase — implement (developer agent)
 
 Spawn a `developer` agent with the test class name extracted from the test file path.
+
+After the agent returns, format only the files it changed:
+```bash
+git diff --name-only HEAD && git ls-files --others --exclude-standard src/
+```
+Collect all `.cs` paths from that output, then run:
+```bash
+dotnet format src/ --include "<file1>" --include "<file2>" ... --exclude-diagnostics IDE0130
+```
 
 Run `dotnet test src/ --filter "FullyQualifiedName~<TestClassName>"`.
 
