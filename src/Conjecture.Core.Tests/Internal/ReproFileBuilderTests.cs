@@ -251,4 +251,76 @@ public class ReproFileBuilderTests
 
         Assert.DoesNotContain("[Fact]", result);
     }
+
+    // --- StateMachine ---
+
+    private static StateMachineReproContext MakeStateMachineContext(
+        string testClassName = "MyStateMachineTests",
+        string methodName = "MyStateMachineProperty",
+        string sutTypeName = "MyStack",
+        IReadOnlyList<(string Label, object? State, Type StateType)>? commands = null,
+        string? violatedInvariant = "stack never empty",
+        ulong seed = 0xDEADBEEFUL,
+        int exampleCount = 100,
+        int shrinkCount = 3,
+        TestFramework framework = TestFramework.Xunit,
+        DateTimeOffset? generatedAt = null)
+    {
+        return new(
+            testClassName,
+            methodName,
+            sutTypeName,
+            commands ?? [("Push", (object?)1, typeof(int)), ("Pop", (object?)0, typeof(int))],
+            violatedInvariant,
+            seed,
+            exampleCount,
+            shrinkCount,
+            framework,
+            generatedAt ?? new DateTimeOffset(2026, 4, 10, 12, 0, 0, TimeSpan.Zero));
+    }
+
+    [Fact]
+    public void BuildStateMachine_EmitsCommandsInOrder()
+    {
+        StateMachineReproContext ctx = MakeStateMachineContext();
+
+        string result = ReproFileBuilder.BuildStateMachine(ctx);
+
+        int pushIndex = result.IndexOf("sut.Push();", StringComparison.Ordinal);
+        int popIndex = result.IndexOf("sut.Pop();", StringComparison.Ordinal);
+        Assert.True(pushIndex >= 0, "Expected 'sut.Push();' in output");
+        Assert.True(popIndex >= 0, "Expected 'sut.Pop();' in output");
+        Assert.True(pushIndex < popIndex, "Expected 'sut.Push();' to appear before 'sut.Pop();'");
+    }
+
+    [Fact]
+    public void BuildStateMachine_EachCommandHasStateComment()
+    {
+        StateMachineReproContext ctx = MakeStateMachineContext();
+
+        string result = ReproFileBuilder.BuildStateMachine(ctx);
+
+        Assert.Contains("// State: 1", result);
+        Assert.Contains("// State: 0", result);
+    }
+
+    [Fact]
+    public void BuildStateMachine_EmitsViolatedInvariantComment()
+    {
+        StateMachineReproContext ctx = MakeStateMachineContext(violatedInvariant: "stack never empty");
+
+        string result = ReproFileBuilder.BuildStateMachine(ctx);
+
+        Assert.Contains("// Invariant violated: stack never empty", result);
+    }
+
+    [Fact]
+    public void BuildStateMachine_OmitsInvariantComment_WhenNull()
+    {
+        StateMachineReproContext ctx = MakeStateMachineContext(violatedInvariant: null);
+
+        string result = ReproFileBuilder.BuildStateMachine(ctx);
+
+        Assert.DoesNotContain("// Invariant violated:", result);
+    }
 }
