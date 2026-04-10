@@ -182,4 +182,12 @@ public static class Generate
     {
         return new StateMachineStrategy<TMachine, TState, TCommand>(maxSteps);
     }
+
+    /// <summary>Returns a strategy that generates strings of the form <c>[prefix][digits][suffix]</c> where the digit part is drawn via IR string nodes so <c>NumericAwareShrinkPass</c> can minimize it.</summary>
+    public static Strategy<string> NumericStrings(
+        int minDigits = 1,
+        int maxDigits = 6,
+        string? prefix = null,
+        string? suffix = null)
+        => new NumericStringStrategy(minDigits, maxDigits, prefix, suffix);
 }
