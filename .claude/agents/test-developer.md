@@ -27,11 +27,9 @@ You will receive:
    - Use `[Fact]` for deterministic cases, `[Theory]` + `[InlineData]` for parameterised
    - Assert on observable output only — no implementation details
    - Do NOT create stub implementations; reference types that don't exist yet (build will fail — that's correct)
-   - Follow code style: file-scoped namespaces, no `var`, braces on all control flow, `new()` when type is apparent
+   - Follow Code Style in CLAUDE.md
 4. If given a reviewer ADD_TEST verdict, add the missing tests the reviewer identified.
-5. Run `dotnet build src/ 2>&1 | grep -E 'warning (IDE|CS)'` — fix any style warnings in the test file itself.
-6. Run `dotnet format --include <changed_cs_files> --exclude-diagnostics IDE0130` for all changed `.cs` and fix any incorrect formatting.
-7. Run `dotnet build src/` — must fail (missing production types) or tests must fail. If green, the tests cover nothing new; revise them.
+5. Run `dotnet build src/ 2>&1 | grep -E 'warning (IDE|CS)'` — fix any style warnings in the test file. Build must fail (missing production types) or tests must fail. If green, tests cover nothing new; revise them.
 
 ## Output
 
@@ -42,10 +40,8 @@ Report:
 
 ## Guidelines
 
-- One test class per production class
+- One test class per production class, one test class per file
 - Keep each test focused on a single behavior
 - Prefer `Assert.Equal` / `Assert.True` over `Assert.NotNull` unless null-safety is the behavior under test
 - Avoid mocking framework internals; test at the public API surface
 - Match production namespace with `.Tests` appended
-- Prefer one test class per file
-- Prefer one test class per subject under test

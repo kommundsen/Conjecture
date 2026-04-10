@@ -71,7 +71,7 @@ Spawn a `developer` agent with the test class name extracted from the test file 
 
 Run `dotnet test src/ --filter "FullyQualifiedName~<TestClassName>"`.
 
-If tests still fail, spawn the `developer` agent again with the failing output as additional context. After 2 failed haiku attempts, respawn with `model: "sonnet"` as override. If still failing after 3 total attempts, stop and report.
+If tests still fail, spawn the `developer` agent again with the failing output as additional context. If still failing after 2 total attempts, stop and report.
 
 #### 3c. Review phase — assess quality (reviewer agent)
 
@@ -95,28 +95,22 @@ What would you like to do?
 Options:
 - **Fix implementation** — re-run 3b with reviewer findings threaded as context (skip 3a)
 - **Add / refine tests** — re-run from 3a with reviewer findings as context
-- **Approve** — exit loop and proceed to step 6
+- **Approve** — exit loop and proceed to PublicAPI check
 - **Abort** — stop here, leave branch as-is
 
 If the verdict is APPROVED, still show the checkpoint but default-highlight "Approve".
 
-### 6. Verify no regressions
-
-Run `dotnet test src/` — full suite must be green.
-
-If any previously-passing test now fails: stop, report the regression, and do NOT proceed.
-
-### 7. PublicAPI check
+### 6. PublicAPI check
 
 If the **## Implement** section mentions new public API surface, verify `PublicAPI.Unshipped.txt` was updated with the new symbols. If not, update it now.
 
-### 8. Commit
+### 7. Commit
 
 Invoke the `commit-message` skill to generate a suggested commit message.
 
 Stage all new and modified files from this cycle and commit with the suggested message (no `Co-Authored-By` trailer).
 
-### 9. Push branch and create PR
+### 8. Push branch and create PR
 
 ```bash
 git push -u origin feat/<parent>-<sub>-<slug>
