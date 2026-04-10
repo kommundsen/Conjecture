@@ -22,3 +22,4 @@ Conjecture.Core.StrategyExtensionProperties.extension<T>(Conjecture.Core.Strateg
 Conjecture.Core.StrategyExtensionProperties.extension<T>(Conjecture.Core.Strategy<T>!)
 static Conjecture.Core.StrategyExtensionProperties.extension<T>(Conjecture.Core.Strategy<T>!).operator |(Conjecture.Core.Strategy<T>! left, Conjecture.Core.Strategy<T>! right) -> Conjecture.Core.Strategy<T>!
 static Conjecture.Core.Generate.NumericStrings(int minDigits = 1, int maxDigits = 6, string? prefix = null, string? suffix = null) -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Core.Generate.VersionStrings(int maxMajor = 9, int maxMinor = 9, int maxPatch = 9) -> Conjecture.Core.Strategy<string!>!
