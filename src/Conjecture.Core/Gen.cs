@@ -190,4 +190,11 @@ public static class Generate
         string? prefix = null,
         string? suffix = null)
         => new NumericStringStrategy(minDigits, maxDigits, prefix, suffix);
+
+    /// <summary>Returns a strategy that generates version strings of the form <c>MAJOR.MINOR.PATCH</c> where each component is a numeric string drawn via IR string nodes so <c>NumericAwareShrinkPass</c> can minimize each segment independently.</summary>
+    public static Strategy<string> VersionStrings(
+        int maxMajor = 9,
+        int maxMinor = 9,
+        int maxPatch = 9)
+        => new VersionStringStrategy(maxMajor, maxMinor, maxPatch);
 }
