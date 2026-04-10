@@ -82,3 +82,4 @@ public static class StrategyExtensions
         return new LabeledStrategy<T>(source, label);
     }
 }
+

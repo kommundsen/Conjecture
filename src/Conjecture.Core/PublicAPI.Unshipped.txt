@@ -10,3 +10,12 @@ Conjecture.Core.ConjectureSettings.ExportReproOnFailure.get -> bool
 Conjecture.Core.ConjectureSettings.ExportReproOnFailure.init -> void
 Conjecture.Core.ConjectureSettings.ReproOutputPath.get -> string!
 Conjecture.Core.ConjectureSettings.ReproOutputPath.init -> void
+Conjecture.Core.StrategyExtensionProperties
+Conjecture.Core.StrategyExtensionProperties.extension(Conjecture.Core.Strategy<int>!)
+Conjecture.Core.StrategyExtensionProperties.extension(Conjecture.Core.Strategy<int>!).Positive.get -> Conjecture.Core.Strategy<int>!
+Conjecture.Core.StrategyExtensionProperties.extension(Conjecture.Core.Strategy<int>!).Negative.get -> Conjecture.Core.Strategy<int>!
+Conjecture.Core.StrategyExtensionProperties.extension(Conjecture.Core.Strategy<int>!).NonZero.get -> Conjecture.Core.Strategy<int>!
+Conjecture.Core.StrategyExtensionProperties.extension(Conjecture.Core.Strategy<string!>!)
+Conjecture.Core.StrategyExtensionProperties.extension(Conjecture.Core.Strategy<string!>!).NonEmpty.get -> Conjecture.Core.Strategy<string!>!
+Conjecture.Core.StrategyExtensionProperties.extension<T>(Conjecture.Core.Strategy<System.Collections.Generic.List<T>!>!)
+Conjecture.Core.StrategyExtensionProperties.extension<T>(Conjecture.Core.Strategy<System.Collections.Generic.List<T>!>!).NonEmpty.get -> Conjecture.Core.Strategy<System.Collections.Generic.List<T>!>!
