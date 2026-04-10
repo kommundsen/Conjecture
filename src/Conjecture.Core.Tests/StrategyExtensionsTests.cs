@@ -77,3 +77,57 @@ public class ExtensionPropertyTests
         }
     }
 }
+
+public class PipeOperatorTests
+{
+    private static List<T> Collect<T>(Strategy<T> strategy, int count, ulong seed = 42UL)
+    {
+        List<T> results = new(count);
+        for (int i = 0; i < count; i++)
+        {
+            ConjectureData data = ConjectureData.ForGeneration(new SplittableRandom(seed + (ulong)i));
+            results.Add(strategy.Generate(data));
+        }
+
+        return results;
+    }
+
+    [Fact]
+    public void PipeOperator_ProducesValuesFromBothStrategies()
+    {
+        Strategy<int> a = Generate.Integers<int>().Positive;
+        Strategy<int> b = Generate.Integers<int>().Negative;
+        Strategy<int> combined = a | b;
+
+        List<int> values = Collect(combined, 200);
+
+        Assert.True(values.Exists(static x => x > 0), "| operator never produced a value from the left strategy");
+        Assert.True(values.Exists(static x => x < 0), "| operator never produced a value from the right strategy");
+    }
+
+    [Fact]
+    public void PipeOperator_IsLeftAssociative()
+    {
+        Strategy<int> a = Generate.Just(-1);
+        Strategy<int> b = Generate.Just(0);
+        Strategy<int> c = Generate.Just(1);
+        Strategy<int> combined = a | b | c;
+
+        List<int> values = Collect(combined, 300);
+
+        Assert.True(values.Exists(static x => x == -1), "| operator never produced a value from the first strategy");
+        Assert.True(values.Exists(static x => x == 0), "| operator never produced a value from the second strategy");
+        Assert.True(values.Exists(static x => x == 1), "| operator never produced a value from the third strategy");
+    }
+
+    [Fact]
+    public void PipeOperator_WorksWithExtensionProperties()
+    {
+        Strategy<int> combined = Generate.Integers<int>().Positive | Generate.Just(0);
+
+        List<int> values = Collect(combined, 200);
+
+        Assert.True(values.Exists(static x => x > 0), "| operator with .Positive never produced a positive integer");
+        Assert.True(values.Exists(static x => x == 0), "| operator with Generate.Just(0) never produced zero");
+    }
+}
