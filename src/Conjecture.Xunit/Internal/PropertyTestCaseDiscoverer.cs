@@ -25,6 +25,8 @@ internal sealed class PropertyTestCaseDiscoverer(IMessageSink diagnosticMessageS
         int deadlineMs = factAttribute.GetNamedArgument<int>("DeadlineMs");
         bool targeting = factAttribute.GetNamedArgument<bool>("Targeting");
         double targetingProportion = factAttribute.GetNamedArgument<double>("TargetingProportion");
+        bool exportReproOnFailure = factAttribute.GetNamedArgument<bool>("ExportReproOnFailure");
+        string reproOutputPath = factAttribute.GetNamedArgument<string>("ReproOutputPath") ?? ".conjecture/repros/";
 
         yield return new PropertyTestCase(
             diagnosticMessageSink,
@@ -37,6 +39,8 @@ internal sealed class PropertyTestCaseDiscoverer(IMessageSink diagnosticMessageS
             maxStrategyRejections,
             deadlineMs,
             targeting,
-            targetingProportion);
+            targetingProportion,
+            exportReproOnFailure,
+            reproOutputPath);
     }
 }

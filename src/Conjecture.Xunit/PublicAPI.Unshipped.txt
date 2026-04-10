@@ -1,1 +1,5 @@
 #nullable enable
+Conjecture.Xunit.PropertyAttribute.ExportReproOnFailure.get -> bool
+Conjecture.Xunit.PropertyAttribute.ExportReproOnFailure.set -> void
+Conjecture.Xunit.PropertyAttribute.ReproOutputPath.get -> string!
+Conjecture.Xunit.PropertyAttribute.ReproOutputPath.set -> void

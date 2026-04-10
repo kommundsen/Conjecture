@@ -31,4 +31,10 @@ public sealed class PropertyAttribute : FactAttribute
 
     /// <summary>Fraction of MaxExamples budget allocated to the targeting phase. Defaults to 0.5.</summary>
     public double TargetingProportion { get; set; } = 0.5;
+
+    /// <summary>Whether to export a reproduction file on test failure. Defaults to <see langword="false"/>.</summary>
+    public bool ExportReproOnFailure { get; set; } = false;
+
+    /// <summary>Output path for exported reproduction files. Defaults to <c>.conjecture/repros/</c>.</summary>
+    public string ReproOutputPath { get; set; } = ".conjecture/repros/";
 }

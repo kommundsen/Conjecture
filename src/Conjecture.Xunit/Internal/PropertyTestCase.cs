@@ -15,6 +15,8 @@ internal sealed class PropertyTestCase : XunitTestCase
     internal int DeadlineMs { get; private set; }
     internal bool Targeting { get; private set; } = true;
     internal double TargetingProportion { get; private set; } = 0.5;
+    internal bool ExportReproOnFailure { get; private set; }
+    internal string ReproOutputPath { get; private set; } = ".conjecture/repros/";
 
     [Obsolete("For deserialization only", error: false)]
     public PropertyTestCase() { }
@@ -30,7 +32,9 @@ internal sealed class PropertyTestCase : XunitTestCase
         int maxStrategyRejections,
         int deadlineMs,
         bool targeting,
-        double targetingProportion)
+        double targetingProportion,
+        bool exportReproOnFailure,
+        string reproOutputPath)
         : base(diagnosticMessageSink, defaultMethodDisplay, defaultMethodDisplayOptions, testMethod)
     {
         MaxExamples = maxExamples;
@@ -40,6 +44,8 @@ internal sealed class PropertyTestCase : XunitTestCase
         DeadlineMs = deadlineMs;
         Targeting = targeting;
         TargetingProportion = targetingProportion;
+        ExportReproOnFailure = exportReproOnFailure;
+        ReproOutputPath = reproOutputPath;
     }
 
     public override void Serialize(IXunitSerializationInfo info)
@@ -52,6 +58,8 @@ internal sealed class PropertyTestCase : XunitTestCase
         info.AddValue("DeadlineMs", DeadlineMs);
         info.AddValue("Targeting", Targeting.ToString());
         info.AddValue("TargetingProportion", TargetingProportion.ToString("R"));
+        info.AddValue("ExportReproOnFailure", ExportReproOnFailure.ToString());
+        info.AddValue("ReproOutputPath", ReproOutputPath);
     }
 
     public override void Deserialize(IXunitSerializationInfo info)
@@ -73,6 +81,11 @@ internal sealed class PropertyTestCase : XunitTestCase
         {
             TargetingProportion = parsed;
         }
+
+        string? exportReproStr = info.GetValue<string?>("ExportReproOnFailure");
+        ExportReproOnFailure = exportReproStr is not null && bool.Parse(exportReproStr);
+        string? reproOutputPathStr = info.GetValue<string?>("ReproOutputPath");
+        ReproOutputPath = reproOutputPathStr ?? ".conjecture/repros/";
     }
 
     public override Task<RunSummary> RunAsync(

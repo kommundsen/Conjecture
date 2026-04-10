@@ -62,12 +62,7 @@ internal static class ReproFileBuilder
         }
 
         Func<object, string>? formatter = FormatterRegistry.GetUntyped(type);
-        if (formatter is not null)
-        {
-            return formatter(value);
-        }
-
-        return value.ToString() ?? "null";
+        return formatter is not null ? formatter(value) : value.ToString() ?? "null";
     }
 
     private static string GetFrameworkUsing(TestFramework framework)
@@ -90,6 +85,25 @@ internal static class ReproFileBuilder
         };
     }
 
+    internal static void WriteToFile(ReproContext context, string outputPath)
+    {
+        try
+        {
+            Directory.CreateDirectory(outputPath);
+            string timestamp = context.GeneratedAt.ToString("yyyyMMddHHmmss");
+            string fileName = $"{context.TestClassName}_{context.MethodName}_{timestamp}.cs";
+            string fullPath = Path.Combine(outputPath, fileName);
+            string content = Build(context);
+            File.WriteAllText(fullPath, content);
+        }
+        catch (IOException)
+        {
+        }
+        catch (UnauthorizedAccessException)
+        {
+        }
+    }
+
     internal static string Build(ReproContext context)
     {
         StringBuilder sb = new();
@@ -110,7 +124,7 @@ internal static class ReproFileBuilder
         sb.AppendLine($"[Property(Seed = 0x{context.Seed:X})]");
         sb.AppendLine(GetTestAttribute(context.Framework));
 
-        List<(string Name, object? Value, Type Type)> paramList = [..context.Parameters];
+        List<(string Name, object? Value, Type Type)> paramList = [.. context.Parameters];
 
         if (context.IsAsync)
         {
