@@ -22,6 +22,7 @@ public static class FormatterRegistry
         Register(new BuiltInFormatters.ListFormatter<object>());
         Register(new BuiltInFormatters.HashSetFormatter<string>());
         Register(new BuiltInFormatters.DictionaryFormatter<int, string>());
+        Register(new BuiltInFormatters.DictionaryFormatter<string, int>());
         Register(new BuiltInFormatters.TupleFormatter<int, string>());
     }
 
