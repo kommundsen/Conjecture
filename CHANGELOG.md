@@ -10,6 +10,32 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Version
 
 ---
 
+## [0.7.0] — 2026-04-11
+
+### Added
+
+**Core**
+- `DataGen` static class with `Sample<T>`, `SampleOne<T>`, and `Stream<T>` for generating data outside of property tests
+- `IOutputFormatter` interface with `Name` and `WriteAsync<T>` for pluggable output serialisation
+- `ConjectureSettings.ExportReproOnFailure` and `ReproOutputPath` for saving reproduction scripts on failure
+- `StrategyExtensionProperties` extension properties on `Strategy<int>`, `Strategy<string>`, and `Strategy<List<T>>`: `.Positive`, `.Negative`, `.NonZero`, `.NonEmpty`
+- `|` operator on `Strategy<T>` via `StrategyExtensionProperties` for strategy union
+- `Generate.Identifiers(...)`, `Generate.NumericStrings(...)`, `Generate.VersionStrings(...)` string generators
+
+**Formatters** (new package `Conjecture.Formatters`)
+- `JsonOutputFormatter` — serialises generated data as a JSON array
+- `JsonLinesOutputFormatter` — serialises generated data as newline-delimited JSON
+
+**Tool** (new package `Conjecture.Tool`)
+- `AssemblyLoader` — discovers `IStrategyProvider` types in an assembly
+- `GenerateCommand.ExecuteAsync(...)` — CLI entry point for ad-hoc data generation
+- `Plan` sub-namespace: `GenerationPlan`, `PlanStep`, `OutputConfig`, `PlanRunner`, `PlanResult`, `RefExpression`, `RefResolver`, `PlanException` for YAML-driven multi-step generation plans
+
+**Xunit**
+- `PropertyAttribute.ExportReproOnFailure` and `ReproOutputPath` for per-test repro export configuration
+
+---
+
 ## [0.6.0-alpha.1] — 2026-04-05
 
 First public alpha release. All seven implementation phases are complete.
@@ -79,4 +105,5 @@ First public alpha release. All seven implementation phases are complete.
 - GitHub Actions release workflow (`v*` tag → NuGet publish)
 - Public API tracking (`PublicAPI.Shipped.txt`)
 
+[0.7.0]: https://github.com/kommundsen/Conjecture/releases/tag/v0.7.0
 [0.6.0-alpha.1]: https://github.com/kommundsen/Conjecture/releases/tag/v0.6.0-alpha.1
