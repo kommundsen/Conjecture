@@ -5,7 +5,7 @@ This tutorial walks you through writing and running your first property-based te
 ## Prerequisites
 
 - .NET 10 SDK
-- A test project with a Conjecture adapter installed (see [Installation](../installation.md))
+- A test project with a Conjecture adapter installed (see [How to install](../how-to/install.md))
 
 ## What We're Testing
 

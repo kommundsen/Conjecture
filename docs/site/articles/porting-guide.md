@@ -33,7 +33,7 @@ This guide maps Python Hypothesis concepts to their Conjecture.NET equivalents. 
 | `st.frozensets(st.integers())` | `Generate.Sets(Generate.Integers<int>())` | Returns `Strategy<IReadOnlySet<T>>` |
 | `st.dictionaries(st.text(), st.integers())` | `Generate.Dictionaries(Generate.Strings(), Generate.Integers<int>())` | Returns `Strategy<IReadOnlyDictionary<TKey, TValue>>` |
 | `st.one_of(st_a, st_b)` | `Generate.OneOf(stratA, stratB)` | |
-| `st.builds(MyClass, ...)` | `[Arbitrary]` source generator | Compile-time code generation; see [Source Generators](guides/source-generators.md) |
+| `st.builds(MyClass, ...)` | `[Arbitrary]` source generator | Compile-time code generation; see [Source Generators](how-to/use-source-generators.md) |
 
 ## Combinators
 

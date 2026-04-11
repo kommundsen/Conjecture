@@ -53,7 +53,7 @@ dotnet add package Conjecture.MSTest     # MSTest
 
 ## Get Started
 
-- [Installation](articles/installation.md) — package names and requirements
+- [Install](articles/how-to/install.md) — package names and requirements
 - [Quick Start](articles/quick-start.md) — write your first property test in 5 minutes
 - [Tutorials](articles/tutorials/01-your-first-property-test.md) — learn property-based testing step by step
 - <xref:Conjecture.Core?text=API+Reference> — auto-generated from source

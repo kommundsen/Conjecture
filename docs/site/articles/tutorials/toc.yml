@@ -11,3 +11,5 @@ items:
     href: 05-framework-adapters.md
   - name: Advanced Patterns
     href: 06-advanced-patterns.md
+  - name: Data Generation Outside Tests
+    href: 07-data-generation.md

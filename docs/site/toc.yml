@@ -1,19 +1,21 @@
 items:
   - name: Home
     href: index.md
-  - name: Getting Started
-    href: articles/getting-started.md
+  - name: Quick Start
+    href: articles/quick-start.md
   - name: Tutorials
     href: articles/tutorials/toc.yml
-  - name: Guides
-    href: articles/guides/toc.yml
-  - name: Porting Guide
-    href: articles/porting-guide.md
+  - name: How-to Guides
+    href: articles/how-to/toc.yml
+  - name: Reference
+    href: articles/reference/toc.yml
+  - name: Explanation
+    href: articles/explanation/toc.yml
   - name: API Reference
     href: api/
+  - name: Porting Guide
+    href: articles/porting-guide.md
   - name: Changelog
     href: articles/changelog.md
-  - name: Troubleshooting
-    href: articles/troubleshooting.md
   - name: Contributing
     href: articles/contributing.md

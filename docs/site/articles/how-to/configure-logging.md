@@ -1,8 +1,8 @@
-# Observability
+# How to configure logging
 
-Conjecture emits structured log events during every test run — assumption rejection rates, shrink progress, timing, and failures. All four adapters auto-wire logging to their native test output mechanism with zero user configuration.
+Conjecture emits structured log events covering assumption rejection rates, shrink progress, timing, and failures. All four adapters auto-wire logging to their native test output with zero configuration.
 
-## Auto-Wired Output
+## Auto-wired output
 
 Each adapter routes Conjecture logs to the test framework's native output automatically:
 
@@ -41,7 +41,6 @@ public class MyTests
     [Property]
     public void Reverse_TwiceIsIdentity(List<int> xs)
     {
-        // Conjecture logs automatically appear in test output
         Assert.Equal(xs, xs.AsEnumerable().Reverse().Reverse().ToList());
     }
 }
@@ -61,7 +60,6 @@ public class MyTests
     [Property]
     public void Reverse_TwiceIsIdentity(List<int> xs)
     {
-        // Conjecture logs automatically appear in TestContext.Out
         Assert.That(xs.AsEnumerable().Reverse().Reverse(), Is.EqualTo(xs));
     }
 }
@@ -81,25 +79,24 @@ public class MyTests
     [Property]
     public void Reverse_TwiceIsIdentity(List<int> xs)
     {
-        // Conjecture logs automatically appear in test output
         CollectionAssert.AreEqual(xs, xs.AsEnumerable().Reverse().Reverse().ToList());
     }
 }
 ```
 
----
+***
 
-## Typical Output
+## Typical output
 
-A passing run looks like this:
+A passing run:
 
-```
+```text
 [info] Generation complete: valid=100, unsatisfied=0, elapsed=42ms
 ```
 
 A failing run includes shrink events:
 
-```
+```text
 [info] Generation complete: valid=23, unsatisfied=0, elapsed=18ms
 [info] Shrinking started: 47 nodes
 [info] Shrinking complete: 12 nodes, 31 steps, elapsed=8ms
@@ -108,15 +105,15 @@ A failing run includes shrink events:
 
 A targeted run adds targeting events:
 
-```
+```text
 [info] Generation complete: valid=50, unsatisfied=0, elapsed=22ms
 [info] Targeting started: labels=list_length
 [info] Targeting complete: labels=list_length, best=87.0
 ```
 
-## Custom Structured Logging
+## Supply a custom logger
 
-Supply an `ILogger` via `ConjectureSettings.Logger` to integrate Conjecture events into your application's logging pipeline:
+Pass an `ILogger` via `ConjectureSettings.Logger` to integrate Conjecture events into your application's logging pipeline:
 
 ```csharp
 using Microsoft.Extensions.Logging;
@@ -127,14 +124,9 @@ ILoggerFactory factory = LoggerFactory.Create(builder =>
 ILogger logger = factory.CreateLogger("Conjecture");
 
 ConjectureSettings settings = new() { Logger = logger, MaxExamples = 200 };
-TestRunResult result = await TestRunner.Run(settings, data =>
-{
-    int x = data.NextInteger(0, 100);
-    Assert.True(x >= 0);
-});
 ```
 
-To suppress all output programmatically:
+To suppress all output:
 
 ```csharp
 using Microsoft.Extensions.Logging.Abstractions;
@@ -142,11 +134,11 @@ using Microsoft.Extensions.Logging.Abstractions;
 ConjectureSettings settings = new() { Logger = NullLogger.Instance };
 ```
 
-## Log Event Catalog
+## Log event catalog
 
-All events use the `Conjecture.Core.Internal.Log` source-generated class. EventIds are stable across versions.
+All events are generated at compile time via `[LoggerMessage]` — no boxing, no runtime template parsing.
 
-| EventId | Level | Message Template |
+| EventId | Level | Message template |
 |---|---|---|
 | 1 | Information | `Generation complete: valid={Valid}, unsatisfied={Unsatisfied}, elapsed={DurationMs}ms` |
 | 2 | Information | `Shrinking started: {NodeCount} nodes` |
@@ -163,9 +155,5 @@ All events use the `Conjecture.Core.Internal.Log` source-generated class. EventI
 
 Debug events (10–12) are suppressed by default. Enable them by setting `LogLevel.Debug` on your logger.
 
-## Performance
-
-- **`[LoggerMessage]` source generation** — all log methods are generated at compile time. There is no boxing, no runtime template parsing, and no allocation when a log level is disabled.
-- **`IsEnabled` guards** — debug-level events (shrink pass progress, targeting steps) are unconditionally guarded: the method body is skipped entirely when `Debug` is disabled, with zero overhead.
-- **No inner-loop instrumentation** — `ConjectureData` draw methods and per-shrink-attempt loops are never instrumented. Only aggregate phase boundaries (generation complete, shrink complete, etc.) emit events.
-- **`NullLogger.Instance`** — `ConjectureSettings.Logger` defaults to `NullLogger.Instance` when no adapter is auto-wiring. All log calls become no-ops with no allocation.
+> [!NOTE]
+> `IsEnabled` guards are unconditional: when debug logging is disabled, the method body is skipped entirely with zero overhead.
