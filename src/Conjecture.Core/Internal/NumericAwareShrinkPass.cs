@@ -108,7 +108,12 @@ internal sealed class NumericAwareShrinkPass : IShrinkPass
             lo = mid + 1;
         }
 
-        return await TryCandidateValue(state, lenIndex, charStart, charCount, runStart, runEnd, lo);
+        // Only try lo if it is strictly smaller than currentValue.
+        // When lo == currentValue the candidate is identical to the current state,
+        // which state.TryUpdate() would accept (property still fails), causing the
+        // outer fixpoint loop to spin forever.
+        return lo < currentValue
+            && await TryCandidateValue(state, lenIndex, charStart, charCount, runStart, runEnd, lo);
     }
 
     private static async ValueTask<bool> TryCandidateValue(
