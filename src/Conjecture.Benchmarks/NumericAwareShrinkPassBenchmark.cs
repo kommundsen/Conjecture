@@ -45,9 +45,11 @@ public class NumericAwareShrinkPassBenchmarks
     }
 
     /// <summary>
-    /// Property that fails when the last digit of the numeric string is not '0'.
+    /// Property that fails when the last digit of a 1–4 digit string is not '0'.
     /// NumericAwareShrinkPass binary-searches the digit run toward '0', stopping at '1'
     /// (the minimal value that still fails). Measures the full numeric reduction path.
+    /// The guard <c>s.Length > 0</c> prevents degenerate empty-string shrink candidates
+    /// from being accepted (which would cause IntegerReductionPass to overflow).
     /// </summary>
     [Benchmark]
     public async Task ShrinkNumericString()
@@ -56,7 +58,7 @@ public class NumericAwareShrinkPassBenchmarks
         await TestRunner.Run(settings, data =>
         {
             string s = strategy.Generate(data);
-            if (s[^1] > '0') { throw new Exception("fail"); }
+            if (s.Length > 0 && s[^1] > '0') { throw new Exception("fail"); }
         });
     }
 }
