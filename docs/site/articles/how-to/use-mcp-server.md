@@ -1,8 +1,8 @@
-# MCP Server
+# How to use the MCP server
 
-`Conjecture.Mcp` is a [Model Context Protocol](https://modelcontextprotocol.io) server that exposes Conjecture's API to AI assistants (Claude, Copilot, Cursor, etc.). It provides three tools and a set of API reference resources.
+`Conjecture.Mcp` is a [Model Context Protocol](https://modelcontextprotocol.io) server that exposes Conjecture's API to AI assistants (Claude, Copilot, Cursor, etc.).
 
-## Setup
+## Install
 
 ```bash
 dotnet tool install --global Conjecture.Mcp
@@ -40,7 +40,7 @@ Recommends the right `Generate.*` factory for a given C# type name.
 
 ### `scaffold-property-test`
 
-Generates a `[Property]` test skeleton from a C# method signature. Supports `xunit` (default), `nunit`, and `mstest`.
+Generates a `[Property]` test skeleton from a C# method signature. Supports `xunit` (default), `xunit-v3`, `nunit`, and `mstest`.
 
 Given `public static int Add(int a, int b)`:
 
@@ -133,14 +133,14 @@ public class AddPropertyTests
 
 ### `explain-shrink-output`
 
-Parses a Conjecture test failure and returns a structured explanation:
+Parses a Conjecture test failure message and returns a structured explanation:
 
 - How many examples were tried and how many shrink steps occurred
 - The minimal counterexample with each parameter labelled
 - The original unshrunk input for comparison
 - A `[Property(Seed = 0x...)]` snippet to reproduce the failure deterministically
 
-## API Reference Resources
+## API reference resources
 
 Eight read-only resources are available at `conjecture://api/*`:
 

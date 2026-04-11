@@ -1,0 +1,27 @@
+items:
+  - name: Install
+    href: install.md
+  - name: Reproduce a failure
+    href: reproduce-a-failure.md
+  - name: Export counterexamples to files
+    href: export-repros.md
+  - name: Test stateful systems
+    href: test-stateful-systems.md
+  - name: Use targeted testing
+    href: use-targeted-testing.md
+  - name: Generate recursive structures
+    href: generate-recursive-structures.md
+  - name: Manage the example database
+    href: manage-example-database.md
+  - name: Use source generators
+    href: use-source-generators.md
+  - name: Configure logging
+    href: configure-logging.md
+  - name: Use DataGen outside tests
+    href: use-data-gen.md
+  - name: Use the CLI tool
+    href: use-cli-tool.md
+  - name: Use the MCP server
+    href: use-mcp-server.md
+  - name: Troubleshoot
+    href: troubleshoot.md

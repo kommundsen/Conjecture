@@ -257,6 +257,6 @@ public bool Positive_ints_are_positive([From<PositiveInts>] int value)
 
 ## What's Next
 
-- [Configuration](configuration.md) — tune `MaxExamples`, deadlines, seeds
+- [Reference: Settings](reference/settings.md) — tune `MaxExamples`, deadlines, seeds
 - [Tutorials](tutorials/01-your-first-property-test.md) — full tutorial series
 - [Porting Guide](porting-guide.md) — coming from Python Hypothesis?

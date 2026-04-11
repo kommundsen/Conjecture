@@ -105,7 +105,7 @@ public bool Distance_is_non_negative(
 }
 ```
 
-See [Source Generators Guide](../guides/source-generators.md) for details.
+See [How to use source generators](../how-to/use-source-generators.md) for details.
 
 ## Composing Providers
 

@@ -30,7 +30,7 @@ Requirements:
 - Must have an accessible constructor
 - All constructor parameter types must have resolvable strategies
 
-See the [Source Generators Guide](../guides/source-generators.md) for details.
+See [How to use source generators](../how-to/use-source-generators.md) for details.
 
 ## Roslyn Analyzers
 
@@ -163,7 +163,7 @@ public bool Normalize_is_idempotent(string input)
 
 ## Further Reading
 
-- [Configuration](../configuration.md) — all settings
-- [Source Generators Guide](../guides/source-generators.md) — `[Arbitrary]` in depth
-- [Analyzers Guide](../guides/analyzers.md) — all diagnostic rules
+- [Reference: Settings](../reference/settings.md) — all settings
+- [How to use source generators](../how-to/use-source-generators.md) — `[Arbitrary]` in depth
+- [Reference: Analyzers](../reference/analyzers.md) — all diagnostic rules
 - <xref:Conjecture.Core?text=API+Reference> — generated docs

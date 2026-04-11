@@ -1,0 +1,15 @@
+items:
+  - name: Settings
+    href: settings.md
+  - name: Strategies
+    href: strategies.md
+  - name: String strategies
+    href: string-strategies.md
+  - name: Extension properties
+    href: extension-properties.md
+  - name: Attributes
+    href: attributes.md
+  - name: Analyzers
+    href: analyzers.md
+  - name: Formatters
+    href: formatters.md
