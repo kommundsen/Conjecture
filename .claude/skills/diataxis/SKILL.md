@@ -1,7 +1,7 @@
 ---
 name: diataxis
 description: >
-  Write or reorganize documentation for the Conjecture .NET library following the Diataxis framework
+  Write documentation for the Conjecture .NET library following the Diataxis framework
   (https://diataxis.fr/). Use this skill whenever the user wants to write, update, or reorganize docs —
   tutorials, how-to guides, reference material, or explanation/background pages — for the Conjecture project.
   Triggers on: "write a tutorial for X", "document X", "write a how-to for X", "explain why X works this way",
