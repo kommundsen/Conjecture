@@ -167,6 +167,10 @@ internal static class SharedParameterStrategyResolver
             _ when type == typeof(float) => Generate.Floats().Generate(data),
             _ when type == typeof(double) => Generate.Doubles().Generate(data),
             _ when type == typeof(List<int>) => Generate.Lists(Generate.Integers<int>()).Generate(data),
+            _ when type == typeof(DateTimeOffset) => Generate.DateTimeOffsets().Generate(data),
+            _ when type == typeof(TimeSpan) => Generate.TimeSpans().Generate(data),
+            _ when type == typeof(DateOnly) => Generate.DateOnlyValues().Generate(data),
+            _ when type == typeof(TimeOnly) => Generate.TimeOnlyValues().Generate(data),
             { IsEnum: true } => GenerateEnum(type, data),
             _ when Nullable.GetUnderlyingType(type) is { } u
                                              => data.NextInteger(0, 9) == 0 ? null! : GenerateValue(u, data),

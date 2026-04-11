@@ -183,6 +183,38 @@ public static class Generate
         return new StateMachineStrategy<TMachine, TState, TCommand>(maxSteps);
     }
 
+    /// <summary>Returns a strategy that generates random <see cref="DateTimeOffset"/> values across the full range.</summary>
+    public static Strategy<DateTimeOffset> DateTimeOffsets()
+        => new DateTimeOffsetStrategy(DateTimeOffset.MinValue, DateTimeOffset.MaxValue);
+
+    /// <summary>Returns a strategy that generates random <see cref="DateTimeOffset"/> values in [<paramref name="min"/>, <paramref name="max"/>].</summary>
+    public static Strategy<DateTimeOffset> DateTimeOffsets(DateTimeOffset min, DateTimeOffset max)
+        => new DateTimeOffsetStrategy(min, max);
+
+    /// <summary>Returns a strategy that generates random <see cref="TimeSpan"/> values across the full range.</summary>
+    public static Strategy<TimeSpan> TimeSpans()
+        => new TimeSpanStrategy(TimeSpan.MinValue, TimeSpan.MaxValue);
+
+    /// <summary>Returns a strategy that generates random <see cref="TimeSpan"/> values in [<paramref name="min"/>, <paramref name="max"/>].</summary>
+    public static Strategy<TimeSpan> TimeSpans(TimeSpan min, TimeSpan max)
+        => new TimeSpanStrategy(min, max);
+
+    /// <summary>Returns a strategy that generates random <see cref="DateOnly"/> values across the full range.</summary>
+    public static Strategy<DateOnly> DateOnlyValues()
+        => new DateOnlyStrategy(DateOnly.MinValue, DateOnly.MaxValue);
+
+    /// <summary>Returns a strategy that generates random <see cref="DateOnly"/> values in [<paramref name="min"/>, <paramref name="max"/>].</summary>
+    public static Strategy<DateOnly> DateOnlyValues(DateOnly min, DateOnly max)
+        => new DateOnlyStrategy(min, max);
+
+    /// <summary>Returns a strategy that generates random <see cref="TimeOnly"/> values across the full range.</summary>
+    public static Strategy<TimeOnly> TimeOnlyValues()
+        => new TimeOnlyStrategy(TimeOnly.MinValue, TimeOnly.MaxValue);
+
+    /// <summary>Returns a strategy that generates random <see cref="TimeOnly"/> values in [<paramref name="min"/>, <paramref name="max"/>].</summary>
+    public static Strategy<TimeOnly> TimeOnlyValues(TimeOnly min, TimeOnly max)
+        => new TimeOnlyStrategy(min, max);
+
     /// <summary>Returns a strategy that generates identifier strings of the form <c>[a-z]+\d+</c>. The alpha prefix is drawn via IR string nodes so <c>StringAwarePass</c> can simplify it toward 'a', and the digit suffix is drawn so <c>NumericAwareShrinkPass</c> can minimize it.</summary>
     public static Strategy<string> Identifiers(
         int minPrefixLength = 1,
