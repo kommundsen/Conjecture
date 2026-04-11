@@ -18,10 +18,10 @@ jobs:
           dotnet-version: '10.0.x'
 
       - name: Build
-        run: dotnet build src/Conjecture.slnx
+        run: dotnet build src/Conjecture.slnx -c Release
 
       - name: Test
-        run: dotnet test src/Conjecture.slnx --no-build
+        run: dotnet test src/Conjecture.slnx -c Release --no-build
 
       - name: Pack
-        run: dotnet pack src/Conjecture.slnx --no-build -o /tmp/packages
+        run: dotnet pack src/Conjecture.slnx -c Release --no-build -o /tmp/packages
