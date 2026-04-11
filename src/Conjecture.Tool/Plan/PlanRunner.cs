@@ -14,16 +14,19 @@ public class PlanRunner
     private const string StringTypeFull = "System.String";
     private const string StringTypeSimple = "String";
 
+    private static readonly System.Reflection.MethodInfo RunProviderStrategyMethod =
+        typeof(PlanRunner).GetMethod(nameof(RunProviderStrategy), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!;
+
     public PlanResult Run(GenerationPlan plan)
     {
         var stepResults = new Dictionary<string, IReadOnlyList<JsonElement>>();
 
         plan.Output.Validate();
 
+        System.Reflection.Assembly assembly;
         try
         {
-            // Validate assembly exists; will be used for custom type resolution in future
-            System.Reflection.Assembly.LoadFrom(plan.Assembly);
+            assembly = System.Reflection.Assembly.LoadFrom(plan.Assembly);
         }
         catch (System.IO.FileNotFoundException)
         {
@@ -52,7 +55,7 @@ public class PlanRunner
                 }
             }
 
-            object? data = GenerateStepData(step, resolvedBindings);
+            object? data = GenerateStepData(step, resolvedBindings, assembly);
 
             IReadOnlyList<JsonElement> jsonElements = ConvertToJsonElements(data);
             stepResults[step.Name] = jsonElements;
@@ -63,22 +66,54 @@ public class PlanRunner
 
     private object? GenerateStepData(
         PlanStep step,
-        IDictionary<string, IReadOnlyList<JsonElement>> resolvedBindings)
+        IDictionary<string, IReadOnlyList<JsonElement>> resolvedBindings,
+        System.Reflection.Assembly assembly)
     {
         ValidateBindingKeys(step, resolvedBindings);
-        return IsInt32(step.Type)
-            ? GenerateBoundOrDefault(
+        if (IsInt32(step.Type))
+        {
+            return GenerateBoundOrDefault(
                 step,
                 resolvedBindings,
                 elem => elem.GetInt32(),
-                () => Generate.Integers<int>())
-            : IsString(step.Type)
-            ? GenerateBoundOrDefault(
+                () => Generate.Integers<int>());
+        }
+
+        if (IsString(step.Type))
+        {
+            return GenerateBoundOrDefault(
                 step,
                 resolvedBindings,
                 elem => elem.GetString()!,
-                () => Generate.Strings())
-            : throw new NotImplementedException($"Type {step.Type} is not yet supported");
+                () => Generate.Strings());
+        }
+
+        Type? providerType = AssemblyLoader.ResolveByTargetType(assembly, step.Type);
+        if (providerType is null)
+        {
+            throw new PlanException($"No IStrategyProvider<T> found for type {step.Type}", exitCode: 1);
+        }
+
+        IStrategyProvider provider;
+        try
+        {
+            provider = (IStrategyProvider)Activator.CreateInstance(providerType)!;
+        }
+        catch (MissingMethodException)
+        {
+            throw new PlanException(
+                $"Provider for type {step.Type} has no public parameterless constructor",
+                exitCode: 1);
+        }
+        Type targetType = AssemblyLoader.GetProviderTargetType(providerType)!;
+        System.Reflection.MethodInfo method = RunProviderStrategyMethod.MakeGenericMethod(targetType);
+        return method.Invoke(this, [provider, step]);
+    }
+
+    private object? RunProviderStrategy<T>(IStrategyProvider<T> provider, PlanStep step)
+    {
+        Strategy<T> strategy = provider.Create();
+        return DataGen.Sample(strategy, step.Count, step.Seed);
     }
 
     private void ValidateBindingKeys(
