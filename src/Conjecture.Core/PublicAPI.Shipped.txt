@@ -134,3 +134,28 @@ Conjecture.Core.ConjectureSettings.TargetingProportion.get -> double
 Conjecture.Core.ConjectureSettings.TargetingProportion.init -> void
 Conjecture.Core.ConjectureSettings.Logger.get -> Microsoft.Extensions.Logging.ILogger!
 Conjecture.Core.ConjectureSettings.Logger.init -> void
+Conjecture.Core.DataGen
+static Conjecture.Core.DataGen.Sample<T>(Conjecture.Core.Strategy<T>! strategy, int count, ulong? seed = null) -> System.Collections.Generic.IReadOnlyList<T>!
+static Conjecture.Core.DataGen.SampleOne<T>(Conjecture.Core.Strategy<T>! strategy, ulong? seed = null) -> T
+static Conjecture.Core.DataGen.Stream<T>(Conjecture.Core.Strategy<T>! strategy, int count, ulong? seed = null) -> System.Collections.Generic.IEnumerable<T>!
+Conjecture.Core.IOutputFormatter
+Conjecture.Core.IOutputFormatter.Name.get -> string!
+Conjecture.Core.IOutputFormatter.WriteAsync<T>(System.Collections.Generic.IEnumerable<T>! data, System.IO.Stream! output, System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+Conjecture.Core.ConjectureSettings.ExportReproOnFailure.get -> bool
+Conjecture.Core.ConjectureSettings.ExportReproOnFailure.init -> void
+Conjecture.Core.ConjectureSettings.ReproOutputPath.get -> string!
+Conjecture.Core.ConjectureSettings.ReproOutputPath.init -> void
+Conjecture.Core.StrategyExtensionProperties
+Conjecture.Core.StrategyExtensionProperties.extension(Conjecture.Core.Strategy<int>!)
+Conjecture.Core.StrategyExtensionProperties.extension(Conjecture.Core.Strategy<int>!).Positive.get -> Conjecture.Core.Strategy<int>!
+Conjecture.Core.StrategyExtensionProperties.extension(Conjecture.Core.Strategy<int>!).Negative.get -> Conjecture.Core.Strategy<int>!
+Conjecture.Core.StrategyExtensionProperties.extension(Conjecture.Core.Strategy<int>!).NonZero.get -> Conjecture.Core.Strategy<int>!
+Conjecture.Core.StrategyExtensionProperties.extension(Conjecture.Core.Strategy<string!>!)
+Conjecture.Core.StrategyExtensionProperties.extension(Conjecture.Core.Strategy<string!>!).NonEmpty.get -> Conjecture.Core.Strategy<string!>!
+Conjecture.Core.StrategyExtensionProperties.extension<T>(Conjecture.Core.Strategy<System.Collections.Generic.List<T>!>!)
+Conjecture.Core.StrategyExtensionProperties.extension<T>(Conjecture.Core.Strategy<System.Collections.Generic.List<T>!>!).NonEmpty.get -> Conjecture.Core.Strategy<System.Collections.Generic.List<T>!>!
+Conjecture.Core.StrategyExtensionProperties.extension<T>(Conjecture.Core.Strategy<T>!)
+static Conjecture.Core.StrategyExtensionProperties.extension<T>(Conjecture.Core.Strategy<T>!).operator |(Conjecture.Core.Strategy<T>! left, Conjecture.Core.Strategy<T>! right) -> Conjecture.Core.Strategy<T>!
+static Conjecture.Core.Generate.Identifiers(int minPrefixLength = 1, int maxPrefixLength = 6, int minDigits = 1, int maxDigits = 4) -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Core.Generate.NumericStrings(int minDigits = 1, int maxDigits = 6, string? prefix = null, string? suffix = null) -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Core.Generate.VersionStrings(int maxMajor = 9, int maxMinor = 9, int maxPatch = 9) -> Conjecture.Core.Strategy<string!>!
