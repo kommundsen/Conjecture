@@ -553,9 +553,35 @@ public class PlanRunnerTests
         GenerationPlan plan = JsonSerializer.Deserialize<GenerationPlan>(json)!;
         PlanRunner runner = new();
 
-        NotImplementedException ex = Assert.Throws<NotImplementedException>(() => runner.Run(plan));
+        PlanException ex = Assert.Throws<PlanException>(() => runner.Run(plan));
 
+        Assert.Equal(1, ex.ExitCode);
         Assert.Contains("System.Guid", ex.Message);
+    }
+
+    [Fact]
+    public void Run_ProviderWithNoParameterlessCtor_ThrowsPlanExceptionWithExitCodeOne()
+    {
+        string assemblyPath = typeof(PlanRunnerTests).Assembly.Location.Replace("\\", "/");
+        string json = $$"""
+            {
+              "assembly": "{{assemblyPath}}",
+              "steps": [
+                { "name": "items", "type": "Conjecture.Tool.Tests.Plan.TestModels.NoCtorModel", "count": 3, "seed": 1 }
+              ],
+              "output": { "format": "json", "file": null }
+            }
+            """;
+
+        GenerationPlan plan = JsonSerializer.Deserialize<GenerationPlan>(json)!;
+        PlanRunner runner = new();
+
+        PlanException ex = Assert.Throws<PlanException>(() => runner.Run(plan));
+
+        Assert.Equal(1, ex.ExitCode);
+        Assert.True(
+            ex.Message.Contains("NoCtorModel") || ex.Message.Contains("constructor"),
+            $"Expected message to mention 'NoCtorModel' or 'constructor', but was: {ex.Message}");
     }
 
     [Fact]
@@ -1041,7 +1067,7 @@ public class PlanRunnerNestedRefTests
     // serialised output has nested objects is not yet possible end-to-end.
     // These tests will FAIL until PlanRunner supports record/object types.
 
-    [Fact(Skip = "Pending: generic type support via reflection; currently only System.Int32 and System.String are supported")]
+    [Fact]
     public void RunAsync_BindingToNestedPropertyPath_ResolvesTwoLevels()
     {
         // Goal: a "locations" step produces objects like {"City": "Oslo"},
