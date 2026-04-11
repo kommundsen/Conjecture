@@ -22,3 +22,6 @@ jobs:
 
       - name: Test
         run: dotnet test src/Conjecture.slnx --no-build
+
+      - name: Pack
+        run: dotnet pack src/Conjecture.slnx --no-build -o /tmp/packages
