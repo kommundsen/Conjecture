@@ -1,6 +1,8 @@
 // Copyright (c) 2026 Kim Ommundsen. Licensed under the MPL-2.0.
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
+using System.Collections.Immutable;
+
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -19,9 +21,16 @@ public sealed class ArbitraryGenerator : IIncrementalGenerator
                 predicate: static (node, _) => node is TypeDeclarationSyntax,
                 transform: static (ctx, _) => (INamedTypeSymbol)ctx.TargetSymbol);
 
-        context.RegisterSourceOutput(types, static (ctx, symbol) =>
+        IncrementalValueProvider<ImmutableDictionary<string, string>> registry =
+            context.CompilationProvider.Select(static (compilation, _) => ProviderRegistry.Build(compilation));
+
+        IncrementalValuesProvider<(INamedTypeSymbol Symbol, ImmutableDictionary<string, string> Registry)> combined =
+            types.Combine(registry);
+
+        context.RegisterSourceOutput(combined, static (ctx, item) =>
         {
-            (TypeModel? model, System.Collections.Immutable.ImmutableArray<Diagnostic> diagnostics) = TypeModelExtractor.Extract(symbol);
+            (INamedTypeSymbol symbol, ImmutableDictionary<string, string> reg) = item;
+            (TypeModel? model, ImmutableArray<Diagnostic> diagnostics) = TypeModelExtractor.Extract(symbol, reg);
 
             bool hasError = false;
             foreach (Diagnostic d in diagnostics)
