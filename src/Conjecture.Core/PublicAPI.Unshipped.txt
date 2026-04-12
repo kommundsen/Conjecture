@@ -17,6 +17,7 @@ static Conjecture.Core.Generate.DateOnlyValues() -> Conjecture.Core.Strategy<Sys
 static Conjecture.Core.Generate.DateOnlyValues(System.DateOnly min, System.DateOnly max) -> Conjecture.Core.Strategy<System.DateOnly>!
 static Conjecture.Core.Generate.DateTimeOffsets() -> Conjecture.Core.Strategy<System.DateTimeOffset>!
 static Conjecture.Core.Generate.DateTimeOffsets(System.DateTimeOffset min, System.DateTimeOffset max) -> Conjecture.Core.Strategy<System.DateTimeOffset>!
+static Conjecture.Core.Generate.FromBytes<T>(System.ReadOnlySpan<byte> buffer) -> Conjecture.Core.Strategy<T>!
 static Conjecture.Core.Generate.TimeOnlyValues() -> Conjecture.Core.Strategy<System.TimeOnly>!
 static Conjecture.Core.Generate.TimeOnlyValues(System.TimeOnly min, System.TimeOnly max) -> Conjecture.Core.Strategy<System.TimeOnly>!
 static Conjecture.Core.Generate.TimeSpans() -> Conjecture.Core.Strategy<System.TimeSpan>!

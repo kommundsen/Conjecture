@@ -162,6 +162,11 @@ internal static class SharedParameterStrategyResolver
         return strategy.Generate(data)!;
     }
 
+    [RequiresUnreferencedCode("Accesses parameter type metadata via reflection; not trim-safe.")]
+    [RequiresDynamicCode("Uses MakeGenericMethod for typed strategy dispatch; not NativeAOT-safe.")]
+    internal static object GenerateValueForDefault(Type type, ConjectureData data) =>
+        GenerateValue(type, data);
+
     private static object GenerateValue(Type type, ConjectureData data)
     {
         return type switch
@@ -190,5 +195,12 @@ internal static class SharedParameterStrategyResolver
         Array values = Enum.GetValues(type);
         int idx = (int)data.NextInteger(0, (ulong)(values.Length - 1));
         return values.GetValue(idx)!;
+    }
+
+    internal static Strategy<T> GetDefault<T>() => DefaultStrategyCache<T>.Instance;
+
+    private static class DefaultStrategyCache<T>
+    {
+        internal static readonly DefaultStrategy<T> Instance = new();
     }
 }
