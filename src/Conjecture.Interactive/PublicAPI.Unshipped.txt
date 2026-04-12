@@ -5,3 +5,7 @@ Conjecture.Interactive.ConjectureKernelExtension.OnLoadAsync(Microsoft.DotNet.In
 Conjecture.Interactive.StrategyExtensionsInteractive
 static Conjecture.Interactive.StrategyExtensionsInteractive.Preview<T>(this Conjecture.Core.Strategy<T>! strategy, int count = 20, ulong? seed = null) -> string!
 static Conjecture.Interactive.StrategyExtensionsInteractive.SampleTable<T>(this Conjecture.Core.Strategy<T>! strategy, int count = 10, ulong? seed = null) -> string!
+Conjecture.Interactive.SvgHistogram
+static Conjecture.Interactive.SvgHistogram.Render(System.Collections.Generic.IReadOnlyList<double>! values, int bucketCount = 20) -> string!
+static Conjecture.Interactive.StrategyExtensionsInteractive.Histogram<T>(this Conjecture.Core.Strategy<T>! strategy, int sampleSize = 1000, int bucketCount = 20, ulong? seed = null) -> string!
+static Conjecture.Interactive.StrategyExtensionsInteractive.Histogram<T>(this Conjecture.Core.Strategy<T>! strategy, System.Func<T, double>! selector, int sampleSize = 1000, int bucketCount = 20, ulong? seed = null) -> string!
