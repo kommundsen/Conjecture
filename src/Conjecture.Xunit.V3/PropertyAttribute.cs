@@ -3,6 +3,8 @@
 
 using System.Runtime.CompilerServices;
 
+using Conjecture.Core;
+
 using Xunit;
 using Xunit.v3;
 
@@ -13,7 +15,7 @@ namespace Conjecture.Xunit.V3;
 [XunitTestCaseDiscovererAttribute(typeof(Internal.PropertyTestCaseDiscoverer))]
 public sealed class PropertyAttribute(
     [CallerFilePath] string? sourceFilePath = null,
-    [CallerLineNumber] int sourceLineNumber = -1) : FactAttribute(sourceFilePath, sourceLineNumber)
+    [CallerLineNumber] int sourceLineNumber = -1) : FactAttribute(sourceFilePath, sourceLineNumber), IPropertyTest
 {
     /// <summary>Maximum number of examples to generate. Defaults to 100.</summary>
     public int MaxExamples { get; set; } = 100;

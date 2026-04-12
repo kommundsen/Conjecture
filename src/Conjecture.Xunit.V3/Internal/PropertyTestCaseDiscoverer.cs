@@ -1,6 +1,8 @@
 // Copyright (c) 2026 Kim Ommundsen. Licensed under the MPL-2.0.
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
+using Conjecture.Core;
+
 using Xunit.Sdk;
 using Xunit.v3;
 
@@ -13,15 +15,16 @@ internal sealed class PropertyTestCaseDiscoverer : IXunitTestCaseDiscoverer
         IXunitTestMethod testMethod,
         IFactAttribute factAttribute)
     {
+        IPropertyTest propTest = (IPropertyTest)factAttribute;
         PropertyAttribute attr = (PropertyAttribute)factAttribute;
 
-        int maxExamples = attr.MaxExamples > 0 ? attr.MaxExamples : 100;
-        ulong? seed = attr.Seed != 0UL ? attr.Seed : null;
-        bool useDatabase = attr.UseDatabase;
-        int maxStrategyRejections = attr.MaxStrategyRejections > 0 ? attr.MaxStrategyRejections : 5;
-        int deadlineMs = attr.DeadlineMs;
-        bool targeting = attr.Targeting;
-        double targetingProportion = attr.TargetingProportion;
+        int maxExamples = propTest.MaxExamples > 0 ? propTest.MaxExamples : 100;
+        ulong? seed = propTest.Seed != 0UL ? propTest.Seed : null;
+        bool useDatabase = propTest.UseDatabase;
+        int maxStrategyRejections = propTest.MaxStrategyRejections > 0 ? propTest.MaxStrategyRejections : 5;
+        int deadlineMs = propTest.DeadlineMs;
+        bool targeting = propTest.Targeting;
+        double targetingProportion = propTest.TargetingProportion;
 
         string displayName = testMethod.GetDisplayName(attr.DisplayName ?? testMethod.Method.Name, null, null, null);
         string uniqueID = testMethod.UniqueID;

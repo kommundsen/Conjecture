@@ -12,13 +12,28 @@ internal static class PropertyAttributeHelper
 {
     internal static bool HasPropertyAttribute(MethodDeclarationSyntax method, SemanticModel model)
     {
+        INamedTypeSymbol? markerInterface =
+            model.Compilation.GetTypeByMetadataName("Conjecture.Core.IPropertyTest");
+
         foreach (AttributeListSyntax attrList in method.AttributeLists)
         {
             foreach (AttributeSyntax attr in attrList.Attributes)
             {
                 SymbolInfo info = model.GetSymbolInfo(attr);
                 ISymbol? symbol = info.Symbol ?? info.CandidateSymbols.FirstOrDefault();
-                if (symbol?.ContainingType?.Name == "PropertyAttribute")
+                INamedTypeSymbol? attrType = symbol?.ContainingType;
+
+                if (attrType is not null && markerInterface is not null)
+                {
+                    foreach (INamedTypeSymbol iface in attrType.AllInterfaces)
+                    {
+                        if (SymbolEqualityComparer.Default.Equals(iface, markerInterface))
+                        {
+                            return true;
+                        }
+                    }
+                }
+                else if (attrType?.Name == "PropertyAttribute")
                 {
                     return true;
                 }

@@ -19,7 +19,7 @@ namespace Conjecture.MSTest;
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
 public sealed class PropertyAttribute(
     [CallerFilePath] string sourceFile = "",
-    [CallerLineNumber] int sourceLine = -1) : TestMethodAttribute(sourceFile, sourceLine)
+    [CallerLineNumber] int sourceLine = -1) : TestMethodAttribute(sourceFile, sourceLine), IPropertyTest
 {
 
     /// <summary>Maximum number of examples to generate. Defaults to 100.</summary>
@@ -62,17 +62,7 @@ public sealed class PropertyAttribute(
         }
 
         ILogger logger = TestOutputHelperLogger.FromWriteLine(Console.WriteLine);
-        ConjectureSettings settings = new()
-        {
-            MaxExamples = MaxExamples,
-            Seed = Seed == 0UL ? null : Seed,
-            UseDatabase = UseDatabase,
-            MaxStrategyRejections = MaxStrategyRejections,
-            Deadline = DeadlineMs > 0 ? TimeSpan.FromMilliseconds(DeadlineMs) : null,
-            Targeting = Targeting,
-            TargetingProportion = TargetingProportion,
-            Logger = logger,
-        };
+        ConjectureSettings settings = ConjectureSettings.From(this, logger);
 
         string dbPath = Path.Combine(settings.DatabasePath, "conjecture.db");
         string testIdHash = TestCaseHelper.ComputeTestId(methodInfo);

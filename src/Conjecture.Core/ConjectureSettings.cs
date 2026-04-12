@@ -68,6 +68,28 @@ public record ConjectureSettings
         }
     } = 0.5;
 
+    /// <summary>
+    /// Creates a <see cref="ConjectureSettings"/> from an <see cref="IPropertyTest"/> attribute.
+    /// If <paramref name="attr"/> also implements <see cref="IReproductionExport"/>, those
+    /// settings are included; otherwise they default to <see langword="false"/> and the default path.
+    /// </summary>
+    public static ConjectureSettings From(IPropertyTest attr, ILogger? logger = null)
+    {
+        return new ConjectureSettings
+        {
+            MaxExamples = attr.MaxExamples,
+            Seed = attr.Seed != 0UL ? attr.Seed : null,
+            UseDatabase = attr.UseDatabase,
+            MaxStrategyRejections = attr.MaxStrategyRejections,
+            Deadline = attr.DeadlineMs > 0 ? TimeSpan.FromMilliseconds(attr.DeadlineMs) : null,
+            Targeting = attr.Targeting,
+            TargetingProportion = attr.TargetingProportion,
+            Logger = logger ?? NullLogger.Instance,
+            ExportReproOnFailure = (attr as IReproductionExport)?.ExportReproOnFailure ?? false,
+            ReproOutputPath = (attr as IReproductionExport)?.ReproOutputPath ?? ".conjecture/repros/",
+        };
+    }
+
     private static int ValidateNonNegative(int value, string paramName) =>
         value >= 0 ? value : throw new ArgumentOutOfRangeException(paramName, value, "Must be non-negative.");
 

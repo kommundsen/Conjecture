@@ -118,6 +118,13 @@ internal static class SharedParameterStrategyResolver
     [RequiresDynamicCode("Calls MakeGenericMethod to construct typed generate helper.")]
     private static object? TryGenerateFromArbitraryProvider(ParameterInfo parameter, ConjectureData data)
     {
+        // Check the source-generated AOT-safe registry first.
+        object? registered = ConjectureStrategyRegistrar.TryResolve(parameter.ParameterType, data);
+        if (registered is not null)
+        {
+            return registered;
+        }
+
         Type paramType = parameter.ParameterType;
         MethodInfo? drawMethod = ArbitraryProviderCache.GetOrAdd(paramType, FindArbitraryGenerateMethod);
         if (drawMethod is null)
