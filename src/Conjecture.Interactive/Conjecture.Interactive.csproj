@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.DotNet.Interactive" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Conjecture.Core\Conjecture.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Packed into interactive-extensions/dotnet so Polyglot auto-loads on #r nuget: -->
+    <None Include="extension.dib" Pack="true" PackagePath="interactive-extensions/dotnet" />
+    <!-- Also copy to output so the test can find it -->
+    <Content Include="extension.dib">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+</Project>
