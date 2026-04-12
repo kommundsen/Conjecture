@@ -237,4 +237,11 @@ public static class Generate
         int maxMinor = 9,
         int maxPatch = 9)
         => new VersionStringStrategy(maxMajor, maxMinor, maxPatch);
+
+    /// <summary>
+    /// Creates a strategy that replays values from a fixed byte buffer.
+    /// Useful for deterministic seed replay and round-trip testing.
+    /// </summary>
+    public static Strategy<T> FromBytes<T>(ReadOnlySpan<byte> buffer)
+        => new Internal.FromBytesStrategy<T>(buffer, Internal.SharedParameterStrategyResolver.GetDefault<T>());
 }
