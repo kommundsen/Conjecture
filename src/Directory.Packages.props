@@ -51,6 +51,9 @@
     <!-- Logging -->
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.5" />
 
+    <!-- .NET Interactive -->
+    <PackageVersion Include="Microsoft.DotNet.Interactive" Version="1.0.0-beta.26120.1" />
+
     <!-- MCP server -->
     <PackageVersion Include="ModelContextProtocol" Version="1.2.0" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.5" />

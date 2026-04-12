@@ -1,0 +1,4 @@
+#nullable enable
+Conjecture.Interactive.ConjectureKernelExtension
+Conjecture.Interactive.ConjectureKernelExtension.ConjectureKernelExtension() -> void
+Conjecture.Interactive.ConjectureKernelExtension.OnLoadAsync(Microsoft.DotNet.Interactive.Kernel! kernel) -> System.Threading.Tasks.Task!
