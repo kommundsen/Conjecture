@@ -12,13 +12,15 @@ namespace Conjecture.Generators;
 
 internal static class TypeModelExtractor
 {
-    private static readonly SymbolDisplayFormat TypeNameFormat = new(
+    internal static readonly SymbolDisplayFormat TypeNameFormat = new(
         globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Omitted,
         typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
         genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
         miscellaneousOptions: SymbolDisplayMiscellaneousOptions.ExpandNullable);
 
-    internal static (TypeModel? Model, ImmutableArray<Diagnostic> Diagnostics) Extract(INamedTypeSymbol symbol)
+    internal static (TypeModel? Model, ImmutableArray<Diagnostic> Diagnostics) Extract(
+        INamedTypeSymbol symbol,
+        IReadOnlyDictionary<string, string>? providerRegistry = null)
     {
         Location location = symbol.Locations.Length > 0 ? symbol.Locations[0] : Location.None;
 
@@ -41,12 +43,12 @@ internal static class TypeModelExtractor
 
         if (bestCtor is not null)
         {
-            members = BuildMembers(bestCtor, warnings);
+            members = BuildMembers(bestCtor, warnings, providerRegistry);
             mode = ConstructionMode.Constructor;
         }
         else
         {
-            members = BuildInitPropertyMembers(symbol, warnings);
+            members = BuildInitPropertyMembers(symbol, warnings, providerRegistry);
             if (members.IsEmpty)
             {
                 return (null, ImmutableArray.Create(Diagnostic.Create(DiagnosticDescriptors.Con200, location, symbol.Name)));
@@ -121,7 +123,10 @@ internal static class TypeModelExtractor
         return builder.ToImmutable();
     }
 
-    private static ImmutableArray<MemberModel> BuildMembers(IMethodSymbol ctor, List<Diagnostic> warnings)
+    private static ImmutableArray<MemberModel> BuildMembers(
+        IMethodSymbol ctor,
+        List<Diagnostic> warnings,
+        IReadOnlyDictionary<string, string>? providerRegistry)
     {
         if (ctor.Parameters.IsEmpty)
         {
@@ -133,7 +138,7 @@ internal static class TypeModelExtractor
         {
             string typeName = param.Type.ToDisplayString(TypeNameFormat);
             bool isNullable = param.NullableAnnotation == NullableAnnotation.Annotated;
-            (MemberGenerationKind kind, string innerFqn) = ClassifyMemberType(param.Type);
+            (MemberGenerationKind kind, string innerFqn) = ClassifyMemberType(param.Type, providerRegistry);
 
             if (kind == MemberGenerationKind.Unsupported)
             {
@@ -147,7 +152,10 @@ internal static class TypeModelExtractor
         return builder.ToImmutable();
     }
 
-    private static ImmutableArray<MemberModel> BuildInitPropertyMembers(INamedTypeSymbol symbol, List<Diagnostic> warnings)
+    private static ImmutableArray<MemberModel> BuildInitPropertyMembers(
+        INamedTypeSymbol symbol,
+        List<Diagnostic> warnings,
+        IReadOnlyDictionary<string, string>? providerRegistry)
     {
         ImmutableArray<MemberModel>.Builder builder = ImmutableArray.CreateBuilder<MemberModel>();
         foreach (ISymbol member in symbol.GetMembers())
@@ -169,7 +177,7 @@ internal static class TypeModelExtractor
 
             string typeName = prop.Type.ToDisplayString(TypeNameFormat);
             bool isNullable = prop.NullableAnnotation == NullableAnnotation.Annotated;
-            (MemberGenerationKind kind, string innerFqn) = ClassifyMemberType(prop.Type);
+            (MemberGenerationKind kind, string innerFqn) = ClassifyMemberType(prop.Type, providerRegistry);
 
             if (kind == MemberGenerationKind.Unsupported)
             {
@@ -183,7 +191,9 @@ internal static class TypeModelExtractor
         return builder.ToImmutable();
     }
 
-    private static (MemberGenerationKind Kind, string InnerFqn) ClassifyMemberType(ITypeSymbol type)
+    private static (MemberGenerationKind Kind, string InnerFqn) ClassifyMemberType(
+        ITypeSymbol type,
+        IReadOnlyDictionary<string, string>? providerRegistry)
     {
         if (IsPrimitive(type.SpecialType))
         {
@@ -213,16 +223,17 @@ internal static class TypeModelExtractor
             return (MemberGenerationKind.List, innerFqn);
         }
 
-        foreach (AttributeData attr in type.GetAttributes())
+        if (type is INamedTypeSymbol namedType && SymbolHelpers.HasArbitraryAttribute(namedType))
         {
-            if (attr.AttributeClass is
-                {
-                    Name: "ArbitraryAttribute",
-                    ContainingNamespace.Name: "Core",
-                    ContainingNamespace.ContainingNamespace.Name: "Conjecture"
-                })
+            return (MemberGenerationKind.ArbitraryReference, "");
+        }
+
+        if (providerRegistry is not null)
+        {
+            string typeFqn = type.ToDisplayString(TypeNameFormat);
+            if (providerRegistry.TryGetValue(typeFqn, out string? providerFqn))
             {
-                return (MemberGenerationKind.ArbitraryReference, "");
+                return (MemberGenerationKind.ExternalStrategyProvider, providerFqn);
             }
         }
 

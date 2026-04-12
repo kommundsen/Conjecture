@@ -89,12 +89,14 @@ internal static class StrategyEmitter
         MemberGenerationKind.Enum =>
             "global::" + member.TypeFullName,
         MemberGenerationKind.NullableValue =>
-            PrimitiveData.TryGetValue(member.InnerTypeFullName, out (string GenExpr, string ShortName) n) ? n.ShortName + "?" : "/* unsupported */",
+            PrimitiveData.TryGetValue(member.AuxiliaryTypeName, out (string GenExpr, string ShortName) n) ? n.ShortName + "?" : "/* unsupported */",
         MemberGenerationKind.List =>
-            PrimitiveData.TryGetValue(member.InnerTypeFullName, out (string GenExpr, string ShortName) l)
+            PrimitiveData.TryGetValue(member.AuxiliaryTypeName, out (string GenExpr, string ShortName) l)
                 ? "global::System.Collections.Generic.List<" + l.ShortName + ">"
                 : "/* unsupported */",
         MemberGenerationKind.ArbitraryReference =>
+            "global::" + member.TypeFullName,
+        MemberGenerationKind.ExternalStrategyProvider =>
             "global::" + member.TypeFullName,
         _ =>
             "/* unsupported */",
@@ -107,11 +109,13 @@ internal static class StrategyEmitter
             MemberGenerationKind.Enum =>
                 "global::Conjecture.Core.Generate.Enums<global::" + member.TypeFullName + ">()",
             MemberGenerationKind.NullableValue =>
-                BuildWrappedExpr(member.InnerTypeFullName, "Nullable"),
+                BuildWrappedExpr(member.AuxiliaryTypeName, "Nullable"),
             MemberGenerationKind.List =>
-                BuildWrappedExpr(member.InnerTypeFullName, "Lists"),
+                BuildWrappedExpr(member.AuxiliaryTypeName, "Lists"),
             MemberGenerationKind.ArbitraryReference =>
                 "new global::" + member.TypeFullName + "Arbitrary().Create()",
+            MemberGenerationKind.ExternalStrategyProvider =>
+                "((global::Conjecture.Core.IStrategyProvider<global::" + member.TypeFullName + ">)new global::" + member.AuxiliaryTypeName + "()).Create()",
             MemberGenerationKind.Primitive =>
                 PrimitiveData.TryGetValue(member.TypeFullName, out (string GenExpr, string ShortName) d) ? d.GenExpr : $"/* unsupported type: {member.TypeFullName} */",
             _ =>

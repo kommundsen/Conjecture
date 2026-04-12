@@ -9,7 +9,7 @@ namespace Conjecture.Generators;
 
 internal enum ConstructionMode { Constructor, ObjectInitializer }
 
-internal enum MemberGenerationKind { Primitive, Enum, NullableValue, List, ArbitraryReference, Unsupported }
+internal enum MemberGenerationKind { Primitive, Enum, NullableValue, List, ArbitraryReference, ExternalStrategyProvider, Unsupported }
 
 internal sealed record TypeModel(
     string FullyQualifiedName,
@@ -25,4 +25,4 @@ internal sealed record MemberModel(
     string TypeFullName,
     bool IsNullable,
     MemberGenerationKind Kind = MemberGenerationKind.Primitive,
-    string InnerTypeFullName = "");
+    string AuxiliaryTypeName = "");

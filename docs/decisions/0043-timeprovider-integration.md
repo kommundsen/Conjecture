@@ -28,7 +28,9 @@ Clock injection, `FakeTimeProvider` wrappers, DST-aware extensions, `Generate.Ti
 
 ### 3. Auto-injection via `TimeProviderArbitrary` naming convention
 
-`Conjecture.Time` ships `TimeProviderArbitrary : IStrategyProvider<TimeProvider>`. The existing assembly-scan naming convention in `SharedParameterStrategyResolver.TryGenerateFromArbitraryProvider` discovers `{TypeName}Arbitrary` classes in all loaded assemblies. Adding `Conjecture.Time` to a project automatically enables `TimeProvider` parameter auto-injection — zero changes to Core required.
+`Conjecture.Time` ships `TimeProviderArbitrary : IStrategyProvider<TimeProvider>`. The existing assembly-scan naming convention in `SharedParameterStrategyResolver.TryGenerateFromArbitraryProvider` discovers `{TypeName}Arbitrary` classes in all loaded assemblies. Adding `Conjecture.Time` to a project automatically enables `TimeProvider` parameter auto-injection.
+
+`ArbitraryProviderScanner.EnsureAssembliesLoaded()` was updated in Core to probe the app's base directory for any `*.dll` files not yet JIT-referenced and load them into the default `AssemblyLoadContext` before scanning. This ensures that assemblies like `Conjecture.Time.dll` — which may not have been referenced by any live type before the first property test runs — are visible to the scanner. The method is memoised behind a `static volatile bool` so the directory scan runs at most once per process. This required a small, intentional change to Core; the earlier claim "zero changes to Core required" no longer holds.
 
 ### 4. DST awareness: simplified heuristics via `TimeZoneInfo.GetAdjustmentRules()`
 

@@ -1,29 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="coverlet.collector" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" />
   </ItemGroup>
-
   <ItemGroup>
-    <ProjectReference Include="..\Conjecture.Core\Conjecture.Core.csproj" />
     <ProjectReference Include="..\Conjecture.Time\Conjecture.Time.csproj" />
-    <ProjectReference Include="..\Conjecture.Generators\Conjecture.Generators.csproj"
-                      OutputItemType="Analyzer"
-                      ReferenceOutputAssembly="true" />
+    <ProjectReference Include="..\Conjecture.Xunit\Conjecture.Xunit.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <Using Include="Xunit" />
   </ItemGroup>
-
 </Project>

@@ -59,10 +59,15 @@ Solution file: `src/Conjecture.slnx`
 | `src/Conjecture.MSTest/` | `src/Conjecture.MSTest.Tests/` |
 | `src/Conjecture.Generators/` | `src/Conjecture.Generators.Tests/` |
 | `src/Conjecture.Analyzers/` | `src/Conjecture.Analyzers.Tests/` |
+| `src/Conjecture.Analyzers.CodeFixes/` | `src/Conjecture.Analyzers.Tests/` |
 | `src/Conjecture.Mcp/` | `src/Conjecture.Mcp.Tests/` |
 | `src/Conjecture.Tool/` | `src/Conjecture.Tool.Tests/` |
+| `src/Conjecture.Formatters/` | `src/Conjecture.Formatters.Tests/` |
+| `src/Conjecture.Time/` | `src/Conjecture.Time.Tests/` |
 | `src/Conjecture.FSharp/` | `src/Conjecture.FSharp.Tests/` |
 | `src/Conjecture.FSharp.Expecto/` | `src/Conjecture.FSharp.Expecto.Tests/` |
+| `src/Conjecture.Benchmarks/` | _(benchmark project, not a test project)_ |
+| `src/Conjecture.SelfTests/` | _(integration self-tests, no paired prod project)_ |
 
 New test files go in the paired test project, mirroring the production file's relative path.
 

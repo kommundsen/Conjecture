@@ -22,4 +22,6 @@
   <Project Path="Conjecture.Formatters.Tests/Conjecture.Formatters.Tests.csproj" />
   <Project Path="Conjecture.Tool/Conjecture.Tool.csproj" />
   <Project Path="Conjecture.Tool.Tests/Conjecture.Tool.Tests.csproj" />
+  <Project Path="Conjecture.Time/Conjecture.Time.csproj" />
+  <Project Path="Conjecture.Time.Tests/Conjecture.Time.Tests.csproj" />
 </Solution>

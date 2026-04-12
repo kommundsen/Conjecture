@@ -1,0 +1,4 @@
+#nullable enable
+Conjecture.Time.TimeProviderArbitrary
+Conjecture.Time.TimeProviderArbitrary.TimeProviderArbitrary() -> void
+static Conjecture.Time.TimeProviderArbitrary.Create() -> Conjecture.Core.Strategy<System.TimeProvider!>!

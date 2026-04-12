@@ -45,6 +45,9 @@
     <PackageVersion Include="MSTest.TestFramework" Version="4.1.0" />
     <PackageVersion Include="MSTest.TestAdapter" Version="4.1.0" />
 
+    <!-- Time provider testing -->
+    <PackageVersion Include="Microsoft.Extensions.TimeProvider.Testing" Version="9.6.0" />
+
     <!-- Logging -->
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.5" />
 
