@@ -2,3 +2,6 @@
 Conjecture.Interactive.ConjectureKernelExtension
 Conjecture.Interactive.ConjectureKernelExtension.ConjectureKernelExtension() -> void
 Conjecture.Interactive.ConjectureKernelExtension.OnLoadAsync(Microsoft.DotNet.Interactive.Kernel! kernel) -> System.Threading.Tasks.Task!
+Conjecture.Interactive.StrategyExtensionsInteractive
+static Conjecture.Interactive.StrategyExtensionsInteractive.Preview<T>(this Conjecture.Core.Strategy<T>! strategy, int count = 20, ulong? seed = null) -> string!
+static Conjecture.Interactive.StrategyExtensionsInteractive.SampleTable<T>(this Conjecture.Core.Strategy<T>! strategy, int count = 10, ulong? seed = null) -> string!
