@@ -5,8 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 
 using Conjecture.Core;
+using Conjecture.Core.Internal;
 
 namespace Conjecture.Interactive;
 
@@ -76,6 +78,70 @@ public static class StrategyExtensionsInteractive
         }
 
         return sb.ToString();
+    }
+
+    /// <summary>Runs a shrink trace for <paramref name="strategy"/> starting from <paramref name="seed"/>, recording each accepted reduction.</summary>
+    public static ShrinkTraceResult<T> ShrinkTrace<T>(
+        this Strategy<T> strategy,
+        ulong seed,
+        Func<T, bool> failingProperty)
+    {
+        SplittableRandom rng = new(seed);
+        ConjectureData initialData = ConjectureData.ForGeneration(rng.Split());
+        T initialValue = strategy.Generate(initialData);
+
+        if (!failingProperty(initialValue))
+        {
+            throw new ArgumentException("Property must fail on the generated value to produce a shrink trace.");
+        }
+
+        List<ShrinkStep<T>> steps = [new(initialValue)];
+
+        ValueTask<Status> IsInteresting(IReadOnlyList<IRNode> nodes)
+        {
+            try
+            {
+                ConjectureData data = ConjectureData.ForRecord(nodes);
+                T value = strategy.Generate(data);
+                if (data.Status == Status.Overrun)
+                {
+                    return ValueTask.FromResult(Status.Overrun);
+                }
+
+                if (failingProperty(value))
+                {
+                    steps.Add(new(value));
+                    return ValueTask.FromResult(Status.Interesting);
+                }
+
+                return ValueTask.FromResult(Status.Valid);
+            }
+            catch (UnsatisfiedAssumptionException)
+            {
+                return ValueTask.FromResult(Status.Invalid);
+            }
+            catch (InvalidOperationException)
+            {
+                return ValueTask.FromResult(Status.Overrun);
+            }
+        }
+
+        Shrinker.ShrinkAsync(initialData.IRNodes, IsInteresting).GetAwaiter().GetResult();
+
+        StringBuilder sb = new();
+        sb.Append("<table><thead><tr><th>Step</th><th>Value</th></tr></thead><tbody>");
+        for (int i = 0; i < steps.Count; i++)
+        {
+            sb.Append("<tr><td>");
+            sb.Append(i);
+            sb.Append("</td><td>");
+            sb.Append(WebUtility.HtmlEncode(steps[i].Value?.ToString() ?? string.Empty));
+            sb.Append("</td></tr>");
+        }
+
+        sb.Append("</tbody></table>");
+
+        return new ShrinkTraceResult<T>(steps, sb.ToString());
     }
 
 #pragma warning disable RS0026 // multiple overloads with optional parameters
