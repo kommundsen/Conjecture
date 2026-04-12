@@ -27,6 +27,7 @@ internal sealed class ConjectureData
 
     internal static ConjectureData ForGeneration(IRandom rng) => new(rng);
     internal static ConjectureData ForRecord(IReadOnlyList<IRNode> nodes) => new(nodes);
+    internal static ConjectureData FromBuffer(byte[] buffer) => new(new BufferRandom(buffer));
 
     internal ulong NextInteger(ulong min, ulong max)
     {
