@@ -1,6 +1,7 @@
 // Copyright (c) 2026 Kim Ommundsen. Licensed under the MPL-2.0.
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
@@ -76,4 +77,33 @@ public static class StrategyExtensionsInteractive
 
         return sb.ToString();
     }
+
+#pragma warning disable RS0026 // multiple overloads with optional parameters
+    /// <summary>Renders a histogram SVG of sampled values from <paramref name="strategy"/>.</summary>
+    public static string Histogram<T>(this Strategy<T> strategy, int sampleSize = 1000, int bucketCount = 20, ulong? seed = null)
+        where T : IConvertible
+    {
+        IReadOnlyList<T> samples = DataGen.Sample(strategy, sampleSize, seed);
+        List<double> doubles = new(samples.Count);
+        foreach (T value in samples)
+        {
+            doubles.Add(Convert.ToDouble(value));
+        }
+
+        return SvgHistogram.Render(doubles, bucketCount);
+    }
+
+    /// <summary>Renders a histogram SVG of sampled values projected by <paramref name="selector"/>.</summary>
+    public static string Histogram<T>(this Strategy<T> strategy, Func<T, double> selector, int sampleSize = 1000, int bucketCount = 20, ulong? seed = null)
+    {
+        IReadOnlyList<T> samples = DataGen.Sample(strategy, sampleSize, seed);
+        List<double> doubles = new(samples.Count);
+        foreach (T value in samples)
+        {
+            doubles.Add(selector(value));
+        }
+
+        return SvgHistogram.Render(doubles, bucketCount);
+    }
+#pragma warning restore RS0026
 }
