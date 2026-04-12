@@ -1,6 +1,7 @@
 // Copyright (c) 2026 Kim Ommundsen. Licensed under the MPL-2.0.
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
+using Conjecture.Core;
 using Conjecture.NUnit.Internal;
 
 using NUnit.Framework.Interfaces;
@@ -12,7 +13,7 @@ namespace Conjecture.NUnit;
 
 /// <summary>Marks a method as a Conjecture property-based test (NUnit).</summary>
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-public sealed class PropertyAttribute : global::NUnit.Framework.NUnitAttribute, ITestBuilder, IWrapTestMethod
+public sealed class PropertyAttribute : global::NUnit.Framework.NUnitAttribute, ITestBuilder, IWrapTestMethod, IPropertyTest
 {
     /// <summary>Maximum number of examples to generate. Defaults to 100.</summary>
     public int MaxExamples { get; set; } = 100;
@@ -52,16 +53,5 @@ public sealed class PropertyAttribute : global::NUnit.Framework.NUnitAttribute, 
     }
 
     /// <inheritdoc/>
-    TestCommand ICommandWrapper.Wrap(TestCommand command)
-    {
-        return new PropertyTestCommand(
-            command,
-            MaxExamples,
-            Seed != 0 ? Seed : null,
-            UseDatabase,
-            MaxStrategyRejections,
-            DeadlineMs,
-            Targeting,
-            TargetingProportion);
-    }
+    TestCommand ICommandWrapper.Wrap(TestCommand command) => new PropertyTestCommand(command, this);
 }

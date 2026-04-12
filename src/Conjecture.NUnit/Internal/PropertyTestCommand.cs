@@ -16,35 +16,9 @@ using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Conjecture.NUnit.Internal;
 
-internal sealed class PropertyTestCommand : DelegatingTestCommand
+internal sealed class PropertyTestCommand(TestCommand innerCommand, IPropertyTest attr)
+    : DelegatingTestCommand(innerCommand)
 {
-    private readonly int maxExamples;
-    private readonly ulong? seed;
-    private readonly bool useDatabase;
-    private readonly int maxStrategyRejections;
-    private readonly int deadlineMs;
-    private readonly bool targeting;
-    private readonly double targetingProportion;
-
-    internal PropertyTestCommand(
-        TestCommand innerCommand,
-        int maxExamples,
-        ulong? seed,
-        bool useDatabase,
-        int maxStrategyRejections,
-        int deadlineMs,
-        bool targeting,
-        double targetingProportion)
-        : base(innerCommand)
-    {
-        this.maxExamples = maxExamples;
-        this.seed = seed;
-        this.useDatabase = useDatabase;
-        this.maxStrategyRejections = maxStrategyRejections;
-        this.deadlineMs = deadlineMs;
-        this.targeting = targeting;
-        this.targetingProportion = targetingProportion;
-    }
 
     [RequiresDynamicCode("Property test execution uses MakeGenericMethod for typed strategy dispatch.")]
     [RequiresUnreferencedCode("Property test execution accesses parameter type metadata that may be trimmed.")]
@@ -65,17 +39,7 @@ internal sealed class PropertyTestCommand : DelegatingTestCommand
         }
 
         ILogger logger = TestOutputHelperLogger.FromWriteLine(msg => TestContext.Out.WriteLine(msg));
-        ConjectureSettings settings = new()
-        {
-            MaxExamples = maxExamples,
-            Seed = seed,
-            UseDatabase = useDatabase,
-            MaxStrategyRejections = maxStrategyRejections,
-            Deadline = deadlineMs > 0 ? TimeSpan.FromMilliseconds(deadlineMs) : null,
-            Targeting = targeting,
-            TargetingProportion = targetingProportion,
-            Logger = logger,
-        };
+        ConjectureSettings settings = ConjectureSettings.From(attr, logger);
 
         string dbPath = Path.Combine(settings.DatabasePath, "conjecture.db");
         string testIdHash = TestCaseHelper.ComputeTestId(methodInfo);

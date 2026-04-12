@@ -13,20 +13,17 @@ internal sealed class PropertyTestCaseDiscoverer(IMessageSink diagnosticMessageS
         ITestMethod testMethod,
         IAttributeInfo factAttribute)
     {
-        int maxExamples = factAttribute.GetNamedArgument<int>("MaxExamples");
-        if (maxExamples <= 0) { maxExamples = 100; }
+        AttributeInfoPropertyTestAdapter adapter = new(factAttribute);
 
-        ulong rawSeed = factAttribute.GetNamedArgument<ulong>("Seed");
-        ulong? seed = rawSeed == 0UL ? null : rawSeed;
-
-        bool useDatabase = factAttribute.GetNamedArgument<bool>("UseDatabase");
-        int maxStrategyRejections = factAttribute.GetNamedArgument<int>("MaxStrategyRejections");
-        if (maxStrategyRejections <= 0) { maxStrategyRejections = 5; }
-        int deadlineMs = factAttribute.GetNamedArgument<int>("DeadlineMs");
-        bool targeting = factAttribute.GetNamedArgument<bool>("Targeting");
-        double targetingProportion = factAttribute.GetNamedArgument<double>("TargetingProportion");
-        bool exportReproOnFailure = factAttribute.GetNamedArgument<bool>("ExportReproOnFailure");
-        string reproOutputPath = factAttribute.GetNamedArgument<string>("ReproOutputPath") ?? ".conjecture/repros/";
+        int maxExamples = adapter.MaxExamples > 0 ? adapter.MaxExamples : 100;
+        ulong? seed = adapter.Seed != 0UL ? adapter.Seed : null;
+        bool useDatabase = adapter.UseDatabase;
+        int maxStrategyRejections = adapter.MaxStrategyRejections > 0 ? adapter.MaxStrategyRejections : 5;
+        int deadlineMs = adapter.DeadlineMs;
+        bool targeting = adapter.Targeting;
+        double targetingProportion = adapter.TargetingProportion;
+        bool exportReproOnFailure = adapter.ExportReproOnFailure;
+        string reproOutputPath = adapter.ReproOutputPath;
 
         yield return new PropertyTestCase(
             diagnosticMessageSink,

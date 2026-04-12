@@ -1,4 +1,18 @@
 #nullable enable
+Conjecture.Core.ConjectureStrategyRegistrar
+Conjecture.Core.IPropertyTest
+Conjecture.Core.IPropertyTest.DeadlineMs.get -> int
+Conjecture.Core.IPropertyTest.MaxExamples.get -> int
+Conjecture.Core.IPropertyTest.MaxStrategyRejections.get -> int
+Conjecture.Core.IPropertyTest.Seed.get -> ulong
+Conjecture.Core.IPropertyTest.Targeting.get -> bool
+Conjecture.Core.IPropertyTest.TargetingProportion.get -> double
+Conjecture.Core.IPropertyTest.UseDatabase.get -> bool
+Conjecture.Core.IReproductionExport
+Conjecture.Core.IReproductionExport.ExportReproOnFailure.get -> bool
+Conjecture.Core.IReproductionExport.ReproOutputPath.get -> string!
+static Conjecture.Core.ConjectureSettings.From(Conjecture.Core.IPropertyTest! attr, Microsoft.Extensions.Logging.ILogger? logger = null) -> Conjecture.Core.ConjectureSettings!
+static Conjecture.Core.ConjectureStrategyRegistrar.Register(System.Func<System.Type!, object?>! strategyFactory) -> void
 static Conjecture.Core.Generate.DateOnlyValues() -> Conjecture.Core.Strategy<System.DateOnly>!
 static Conjecture.Core.Generate.DateOnlyValues(System.DateOnly min, System.DateOnly max) -> Conjecture.Core.Strategy<System.DateOnly>!
 static Conjecture.Core.Generate.DateTimeOffsets() -> Conjecture.Core.Strategy<System.DateTimeOffset>!

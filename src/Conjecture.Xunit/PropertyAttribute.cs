@@ -1,6 +1,8 @@
 // Copyright (c) 2026 Kim Ommundsen. Licensed under the MPL-2.0.
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
+using Conjecture.Core;
+
 using Xunit;
 using Xunit.Sdk;
 
@@ -9,7 +11,7 @@ namespace Conjecture.Xunit;
 /// <summary>Marks a method as a Conjecture property-based test.</summary>
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
 [XunitTestCaseDiscoverer("Conjecture.Xunit.Internal.PropertyTestCaseDiscoverer", "Conjecture.Xunit")]
-public sealed class PropertyAttribute : FactAttribute
+public sealed class PropertyAttribute : FactAttribute, IPropertyTest, IReproductionExport
 {
     /// <summary>Maximum number of examples to generate. Defaults to 100.</summary>
     public int MaxExamples { get; set; } = 100;
