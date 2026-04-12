@@ -2,3 +2,9 @@
 Conjecture.Time.TimeProviderArbitrary
 Conjecture.Time.TimeProviderArbitrary.TimeProviderArbitrary() -> void
 static Conjecture.Time.TimeProviderArbitrary.Create() -> Conjecture.Core.Strategy<System.TimeProvider!>!
+Conjecture.Time.DateTimeOffsetExtensions
+Conjecture.Time.DateTimeOffsetExtensions.extension(Conjecture.Core.Strategy<System.DateTimeOffset>!)
+Conjecture.Time.DateTimeOffsetExtensions.extension(Conjecture.Core.Strategy<System.DateTimeOffset>!).NearMidnight() -> Conjecture.Core.Strategy<System.DateTimeOffset>!
+Conjecture.Time.DateTimeOffsetExtensions.extension(Conjecture.Core.Strategy<System.DateTimeOffset>!).NearLeapYear() -> Conjecture.Core.Strategy<System.DateTimeOffset>!
+Conjecture.Time.DateTimeOffsetExtensions.extension(Conjecture.Core.Strategy<System.DateTimeOffset>!).NearEpoch() -> Conjecture.Core.Strategy<System.DateTimeOffset>!
+Conjecture.Time.DateTimeOffsetExtensions.extension(Conjecture.Core.Strategy<System.DateTimeOffset>!).NearDstTransition(System.TimeZoneInfo? zone = null) -> Conjecture.Core.Strategy<System.DateTimeOffset>!
