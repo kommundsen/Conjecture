@@ -89,4 +89,25 @@ internal static class PropertyAttributeHelper
 
         return false;
     }
+
+    /// <summary>
+    /// Returns the unqualified type name of <c>T</c> in a <c>[From&lt;T&gt;]</c> attribute,
+    /// or <see langword="null"/> if no such attribute is present.
+    /// </summary>
+    internal static string? TryGetFromStrategyTypeName(ParameterSyntax parameter)
+    {
+        foreach (AttributeListSyntax attrList in parameter.AttributeLists)
+        {
+            foreach (AttributeSyntax attr in attrList.Attributes)
+            {
+                string name = attr.Name.ToString();
+                if (name.StartsWith("From<", System.StringComparison.Ordinal) && name.EndsWith(">"))
+                {
+                    return name.Substring(5, name.Length - 6);
+                }
+            }
+        }
+
+        return null;
+    }
 }
