@@ -11,16 +11,16 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace Conjecture.Analyzers;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-internal sealed class CON105Analyzer : DiagnosticAnalyzer
+internal sealed class CON109Analyzer : DiagnosticAnalyzer
 {
     internal static readonly DiagnosticDescriptor Rule = new(
-        id: "CON105",
-        title: "[Arbitrary] provider exists but [From<T>] not used",
-        messageFormat: "Parameter '{0}' of type '{1}' has an [Arbitrary] provider; use [From<{1}Arbitrary>] to opt in",
+        id: "CON109",
+        title: "No strategy found for [Property] parameter",
+        messageFormat: "No strategy found for parameter '{0}' of type '{1}'; add [Arbitrary] to the type or use [From<TStrategy>]",
         category: "Conjecture",
-        defaultSeverity: DiagnosticSeverity.Info,
+        defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
-        description: "When a type is decorated with [Arbitrary], its generated provider should be referenced explicitly via [From<T>] on the parameter.");
+        description: "All [Property] parameters must have a resolvable strategy.");
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
         ImmutableArray.Create(Rule);
@@ -34,40 +34,47 @@ internal sealed class CON105Analyzer : DiagnosticAnalyzer
 
     private static void AnalyzeMethod(SyntaxNodeAnalysisContext context)
     {
-        var method = (MethodDeclarationSyntax)context.Node;
+        MethodDeclarationSyntax method = (MethodDeclarationSyntax)context.Node;
 
         if (!PropertyAttributeHelper.HasPropertyAttribute(method, context.SemanticModel))
         {
             return;
         }
 
-        foreach (ParameterSyntax param in method.ParameterList.Parameters)
+        foreach (ParameterSyntax parameter in method.ParameterList.Parameters)
         {
-            if (param.Type is null)
+            if (PropertyAttributeHelper.HasFromAttribute(parameter, context.SemanticModel))
             {
                 continue;
             }
 
-            if (context.SemanticModel.GetSymbolInfo(param.Type).Symbol is not INamedTypeSymbol typeSymbol)
+            TypeSyntax? typeSyntax = parameter.Type;
+            if (typeSyntax is null)
             {
                 continue;
             }
 
-            if (!PropertyAttributeHelper.HasArbitraryAttribute(typeSymbol))
+            ITypeSymbol? typeSymbol = context.SemanticModel.GetTypeInfo(typeSyntax).Type;
+
+            if (typeSymbol is null)
             {
                 continue;
             }
 
-            if (PropertyAttributeHelper.HasFromAttribute(param, context.SemanticModel))
+            if (typeSymbol.SpecialType != SpecialType.None)
             {
                 continue;
             }
 
-            context.ReportDiagnostic(Diagnostic.Create(
-                Rule,
-                param.GetLocation(),
-                param.Identifier.Text,
-                typeSymbol.Name));
+            if (PropertyAttributeHelper.HasArbitraryAttribute(typeSymbol))
+            {
+                continue;
+            }
+
+            string paramName = parameter.Identifier.Text;
+            string typeName = typeSyntax.ToString();
+            context.ReportDiagnostic(
+                Diagnostic.Create(Rule, parameter.Identifier.GetLocation(), paramName, typeName));
         }
     }
 }
