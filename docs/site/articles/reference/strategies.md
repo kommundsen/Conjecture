@@ -74,6 +74,84 @@ Generates a `byte[]` of exactly `size` bytes. `size` must be ≥ 0.
 
 See [String strategies reference](string-strategies.md) for `Strings`, `Text`, `Identifiers`, `NumericStrings`, and `VersionStrings`.
 
+## Date and time strategies
+
+### `Generate.DateTimeOffsets()`
+
+```csharp
+Strategy<DateTimeOffset> Generate.DateTimeOffsets()
+```
+
+Generates `DateTimeOffset` values across the full range.
+
+### `Generate.DateTimeOffsets(DateTimeOffset min, DateTimeOffset max)`
+
+```csharp
+Strategy<DateTimeOffset> Generate.DateTimeOffsets(DateTimeOffset min, DateTimeOffset max)
+```
+
+Generates `DateTimeOffset` values in `[min, max]`.
+
+### `Generate.TimeSpans()`
+
+```csharp
+Strategy<TimeSpan> Generate.TimeSpans()
+```
+
+Generates `TimeSpan` values across the full range.
+
+### `Generate.TimeSpans(TimeSpan min, TimeSpan max)`
+
+```csharp
+Strategy<TimeSpan> Generate.TimeSpans(TimeSpan min, TimeSpan max)
+```
+
+Generates `TimeSpan` values in `[min, max]`.
+
+### `Generate.DateOnlyValues()`
+
+```csharp
+Strategy<DateOnly> Generate.DateOnlyValues()
+```
+
+Generates `DateOnly` values across the full range.
+
+### `Generate.DateOnlyValues(DateOnly min, DateOnly max)`
+
+```csharp
+Strategy<DateOnly> Generate.DateOnlyValues(DateOnly min, DateOnly max)
+```
+
+Generates `DateOnly` values in `[min, max]`.
+
+### `Generate.TimeOnlyValues()`
+
+```csharp
+Strategy<TimeOnly> Generate.TimeOnlyValues()
+```
+
+Generates `TimeOnly` values across the full range.
+
+### `Generate.TimeOnlyValues(TimeOnly min, TimeOnly max)`
+
+```csharp
+Strategy<TimeOnly> Generate.TimeOnlyValues(TimeOnly min, TimeOnly max)
+```
+
+Generates `TimeOnly` values in `[min, max]`.
+
+For boundary-focused extensions (`.NearMidnight()`, `.NearDstTransition()`, etc.) and `TimeGenerate` factory methods, see [Time strategies reference](time-strategies.md).
+
+## Byte buffer strategies
+
+### `Generate.FromBytes<T>(ReadOnlySpan<byte> buffer)`
+
+```csharp
+Strategy<T> Generate.FromBytes<T>(ReadOnlySpan<byte> buffer)
+```
+
+Replays a value of type `T` from a fixed byte buffer using the default strategy for `T`. The buffer is the same format stored by the example database. Useful for deterministic replay and round-trip testing.
+
 ## Collection strategies
 
 ### `Generate.Lists<T>(Strategy<T> inner, int minSize = 0, int maxSize = 100)`

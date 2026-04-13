@@ -97,5 +97,5 @@ public partial struct Point
 
 ## See also
 
-- [Reference: Analyzers](../reference/analyzers.md) — runtime analyzer rules (CON100–CON105)
+- [Reference: Analyzers](../reference/analyzers.md) — runtime analyzer rules (CON100–CON111, CJ0050)
 - [Reference: Attributes](../reference/attributes.md) — `[Arbitrary]`, `[From<T>]` full reference

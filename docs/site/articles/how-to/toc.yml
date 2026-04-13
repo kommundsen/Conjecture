@@ -21,6 +21,10 @@ items:
     href: use-data-gen.md
   - name: Use the CLI tool
     href: use-cli-tool.md
+  - name: Use time strategies
+    href: use-time-strategies.md
+  - name: Explore strategies in notebooks
+    href: use-notebooks.md
   - name: Use the MCP server
     href: use-mcp-server.md
   - name: Troubleshoot
