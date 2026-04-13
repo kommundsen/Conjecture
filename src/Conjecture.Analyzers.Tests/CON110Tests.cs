@@ -1,0 +1,176 @@
+// Copyright (c) 2026 Kim Ommundsen. Licensed under the MPL-2.0.
+// See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
+
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Testing;
+using Microsoft.CodeAnalysis.Testing;
+
+namespace Conjecture.Analyzers.Tests;
+
+public sealed class CON110Tests
+{
+    // Stub types so tests don't need external assembly references.
+    private const string Preamble = """
+        using System;
+        using System.Threading.Tasks;
+        [AttributeUsage(AttributeTargets.Method)] class PropertyAttribute : Attribute {}
+
+        """;
+
+    // --- Fires on async Task<bool> [Property] method with no await ---
+
+    [Fact]
+    public async Task AsyncTaskBool_PropertyMethodNoAwait_EmitsCon110()
+    {
+        await VerifyAsync(Preamble + """
+            class Tests {
+                [Property]
+                public {|CON110:async|} Task<bool> Foo(int x) { return x > 0; }
+            }
+            """);
+    }
+
+    // --- Fires on async Task [Property] method with no await ---
+
+    [Fact]
+    public async Task AsyncTask_PropertyMethodNoAwait_EmitsCon110()
+    {
+        await VerifyAsync(Preamble + """
+            class Tests {
+                [Property]
+                public {|CON110:async|} Task Bar(int x) { }
+            }
+            """);
+    }
+
+    // --- Diagnostic is Info severity ---
+
+    [Fact]
+    public async Task AsyncTaskBool_PropertyMethodNoAwait_Con110IsInfo()
+    {
+        await VerifyAsync(
+            Preamble + """
+            class Tests {
+                [Property]
+                public {|#0:async|} Task<bool> Foo(int x) { return x > 0; }
+            }
+            """,
+            new DiagnosticResult("CON110", DiagnosticSeverity.Info).WithLocation(0));
+    }
+
+    // --- Diagnostic message contains the method name ---
+
+    [Fact]
+    public async Task AsyncTaskBool_PropertyMethodNoAwait_Con110MessageContainsMethodName()
+    {
+        await VerifyAsync(
+            Preamble + """
+            class Tests {
+                [Property]
+                public {|#0:async|} Task<bool> Foo(int x) { return x > 0; }
+            }
+            """,
+            new DiagnosticResult("CON110", DiagnosticSeverity.Info)
+                .WithLocation(0)
+                .WithArguments("Foo"));
+    }
+
+    // --- Diagnostic span is on the async keyword token ---
+
+    [Fact]
+    public async Task AsyncTask_PropertyMethodNoAwait_Con110SpanOnAsyncKeyword()
+    {
+        await VerifyAsync(
+            Preamble + """
+            class Tests {
+                [Property]
+                public {|#0:async|} Task Bar(int x) { }
+            }
+            """,
+            new DiagnosticResult("CON110", DiagnosticSeverity.Info).WithLocation(0));
+    }
+
+    // --- Silent when async [Property] method contains at least one await ---
+
+    [Fact]
+    public async Task AsyncTask_PropertyMethodWithAwait_NoCon110()
+    {
+        await VerifyAsync(Preamble + """
+            class Tests {
+                [Property]
+                public async Task<bool> Foo(int x) { await Task.Yield(); return x > 0; }
+            }
+            """);
+    }
+
+    [Fact]
+    public async Task AsyncTaskBool_PropertyMethodWithAwait_NoCon110()
+    {
+        await VerifyAsync(Preamble + """
+            class Tests {
+                [Property]
+                public async Task<bool> Foo(int x) { bool result = await Task.FromResult(x > 0); return result; }
+            }
+            """);
+    }
+
+    // --- Silent for non-async [Property] methods ---
+
+    [Fact]
+    public async Task NonAsync_PropertyMethod_NoCon110()
+    {
+        await VerifyAsync(Preamble + """
+            class Tests {
+                [Property]
+                public bool Foo(int x) => x > 0;
+            }
+            """);
+    }
+
+    [Fact]
+    public async Task NonAsyncTask_PropertyMethod_NoCon110()
+    {
+        await VerifyAsync(Preamble + """
+            class Tests {
+                [Property]
+                public Task<bool> Foo(int x) => Task.FromResult(x > 0);
+            }
+            """);
+    }
+
+    // --- Silent for async methods without [Property] ---
+
+    [Fact]
+    public async Task AsyncTaskNoAwait_NonPropertyMethod_NoCon110()
+    {
+        await VerifyAsync(Preamble + """
+            class Tests {
+                public async Task<bool> Foo(int x) { return Task.FromResult(x > 0).Result; }
+            }
+            """);
+    }
+
+    [Fact]
+    public async Task AsyncTaskNoAwait_NonPropertyMethodVoid_NoCon110()
+    {
+        await VerifyAsync(Preamble + """
+            class Tests {
+                public async Task Bar() { return; }
+            }
+            """);
+    }
+
+    // --- Helpers ---
+
+    private static Task VerifyAsync(string source, params DiagnosticResult[] expected)
+    {
+        CSharpAnalyzerTest<CON110Analyzer, DefaultVerifier> test = new()
+        {
+            TestCode = source,
+            ReferenceAssemblies = TestHelpers.EmptyNet10,
+        };
+        TestHelpers.AddRuntimeReferences(test.TestState.AdditionalReferences);
+        test.ExpectedDiagnostics.AddRange(expected);
+        return test.RunAsync();
+    }
+}
