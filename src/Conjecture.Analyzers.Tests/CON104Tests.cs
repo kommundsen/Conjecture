@@ -1,15 +1,9 @@
 // Copyright (c) 2026 Kim Ommundsen. Licensed under the MPL-2.0.
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
-using System.Collections.Immutable;
-using System.IO;
-using System.Linq;
-
-using Conjecture.Analyzers;
-
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.CSharp.Testing;
+using Microsoft.CodeAnalysis.Testing;
 
 namespace Conjecture.Analyzers.Tests;
 
@@ -20,29 +14,21 @@ public sealed class CON104Tests
     [Fact]
     public async Task AssumeThat_FalseLiteral_EmitsCon104()
     {
-        string source = """
+        await VerifyAsync("""
             using Conjecture.Core;
-            class Tests { void M() { Assume.That(false); } }
-            """;
-
-        ImmutableArray<Diagnostic> diagnostics = await GetDiagnosticsAsync(source);
-
-        Assert.Contains(diagnostics, d => d.Id == "CON104");
+            class Tests { void M() { {|CON104:Assume.That(false)|}; } }
+            """);
     }
 
     [Fact]
     public async Task AssumeThat_FalseLiteral_Con104IsWarning()
     {
-        string source = """
+        await VerifyAsync(
+            """
             using Conjecture.Core;
-            class Tests { void M() { Assume.That(false); } }
-            """;
-
-        ImmutableArray<Diagnostic> diagnostics = await GetDiagnosticsAsync(source);
-        Diagnostic? hyp104 = diagnostics.FirstOrDefault(d => d.Id == "CON104");
-
-        Assert.NotNull(hyp104);
-        Assert.Equal(DiagnosticSeverity.Warning, hyp104.Severity);
+            class Tests { void M() { {|#0:Assume.That(false)|}; } }
+            """,
+            new DiagnosticResult("CON104", DiagnosticSeverity.Warning).WithLocation(0));
     }
 
     // --- Assume.That(true) → no diagnostic ---
@@ -50,14 +36,10 @@ public sealed class CON104Tests
     [Fact]
     public async Task AssumeThat_TrueLiteral_NoCon104()
     {
-        string source = """
+        await VerifyAsync("""
             using Conjecture.Core;
             class Tests { void M() { Assume.That(true); } }
-            """;
-
-        ImmutableArray<Diagnostic> diagnostics = await GetDiagnosticsAsync(source);
-
-        Assert.DoesNotContain(diagnostics, d => d.Id == "CON104");
+            """);
     }
 
     // --- Assume.That(variable) → no diagnostic ---
@@ -65,45 +47,23 @@ public sealed class CON104Tests
     [Fact]
     public async Task AssumeThat_VariableArgument_NoCon104()
     {
-        string source = """
+        await VerifyAsync("""
             using Conjecture.Core;
             class Tests { void M(bool condition) { Assume.That(condition); } }
-            """;
-
-        ImmutableArray<Diagnostic> diagnostics = await GetDiagnosticsAsync(source);
-
-        Assert.DoesNotContain(diagnostics, d => d.Id == "CON104");
+            """);
     }
 
     // --- Helpers ---
 
-    private static ImmutableArray<MetadataReference> GetReferences()
+    private static Task VerifyAsync(string source, params DiagnosticResult[] expected)
     {
-        string runtimeDir = Path.GetDirectoryName(typeof(object).Assembly.Location)!;
-        return
-        [
-            MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
-            MetadataReference.CreateFromFile(Path.Combine(runtimeDir, "System.Runtime.dll")),
-            MetadataReference.CreateFromFile(Path.Combine(runtimeDir, "System.Collections.dll")),
-            MetadataReference.CreateFromFile(typeof(Conjecture.Core.Assume).Assembly.Location),
-        ];
-    }
-
-    private static CSharpCompilation CreateCompilation(string source) =>
-        CSharpCompilation.Create(
-            assemblyName: "TestAssembly",
-            syntaxTrees: [CSharpSyntaxTree.ParseText(source)],
-            references: GetReferences(),
-            options: new CSharpCompilationOptions(
-                OutputKind.DynamicallyLinkedLibrary,
-                nullableContextOptions: NullableContextOptions.Enable));
-
-    private static async Task<ImmutableArray<Diagnostic>> GetDiagnosticsAsync(string source)
-    {
-        CSharpCompilation compilation = CreateCompilation(source);
-        var analyzer = new CON104Analyzer();
-        CompilationWithAnalyzers compilationWithAnalyzers = compilation.WithAnalyzers(
-            ImmutableArray.Create<DiagnosticAnalyzer>(analyzer));
-        return await compilationWithAnalyzers.GetAnalyzerDiagnosticsAsync();
+        CSharpAnalyzerTest<CON104Analyzer, DefaultVerifier> test = new()
+        {
+            TestCode = source,
+            ReferenceAssemblies = TestHelpers.EmptyNet10,
+        };
+        TestHelpers.AddRuntimeReferences(test.TestState.AdditionalReferences);
+        test.ExpectedDiagnostics.AddRange(expected);
+        return test.RunAsync();
     }
 }

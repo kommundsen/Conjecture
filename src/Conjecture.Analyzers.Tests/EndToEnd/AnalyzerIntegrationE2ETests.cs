@@ -1,24 +1,22 @@
 // Copyright (c) 2026 Kim Ommundsen. Licensed under the MPL-2.0.
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 using Conjecture.Analyzers;
 
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CodeActions;
-using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Text;
 
 namespace Conjecture.Analyzers.Tests.EndToEnd;
 
+/// <summary>
+/// Integration tests that run multiple analyzers simultaneously.
+/// Single-analyzer and code-fix tests live in the per-analyzer test files.
+/// </summary>
 public sealed class AnalyzerIntegrationE2ETests
 {
     // Stub [Property] attribute works for CON100/CON102 (detected by name).
@@ -88,73 +86,6 @@ public sealed class AnalyzerIntegrationE2ETests
         Assert.Single(diagnostics, d => d.Id == "CON105");
     }
 
-    // --- Code-fix for CON103 produces compilable code ---
-
-    [Fact]
-    public async Task CON103CodeFix_ProducesCompilableOutput()
-    {
-        string source = Preamble + """
-            class Test { void M() { var s = Generate.Integers(10, 5); } }
-            """;
-
-        string? fixed_ = await ApplyCon103FixAsync(source);
-
-        Assert.NotNull(fixed_);
-        CSharpCompilation compilation = CreateCompilation(fixed_);
-        IEnumerable<Diagnostic> errors =
-            compilation.GetDiagnostics().Where(d => d.Severity == DiagnosticSeverity.Error);
-        Assert.Empty(errors);
-    }
-
-    [Fact]
-    public async Task CON103CodeFix_SwapsToCorrectBounds()
-    {
-        string source = Preamble + """
-            class Test { void M() { var s = Generate.Integers(10, 5); } }
-            """;
-
-        string? fixed_ = await ApplyCon103FixAsync(source);
-
-        Assert.NotNull(fixed_);
-        Assert.Contains("Generate.Integers(5, 10)", fixed_);
-    }
-
-    // --- Code-fix for CON102 produces compilable code ---
-
-    [Fact]
-    public async Task CON102CodeFix_ProducesCompilableOutput()
-    {
-        string source = Preamble + """
-            class Tests {
-                [Property] public void PropWithBlocking(int x) { Task.Delay(0).GetAwaiter().GetResult(); }
-            }
-            """;
-
-        string? fixed_ = await ApplyCon102FixAsync(source);
-
-        Assert.NotNull(fixed_);
-        CSharpCompilation compilation = CreateCompilation(fixed_);
-        IEnumerable<Diagnostic> errors =
-            compilation.GetDiagnostics().Where(d => d.Severity == DiagnosticSeverity.Error);
-        Assert.Empty(errors);
-    }
-
-    [Fact]
-    public async Task CON102CodeFix_ConvertsToAsyncAwait()
-    {
-        string source = Preamble + """
-            class Tests {
-                [Property] public void PropWithBlocking(int x) { Task.Delay(0).GetAwaiter().GetResult(); }
-            }
-            """;
-
-        string? fixed_ = await ApplyCon102FixAsync(source);
-
-        Assert.NotNull(fixed_);
-        Assert.Contains("async", fixed_);
-        Assert.Contains("await", fixed_);
-    }
-
     // --- No false positives on clean code ---
 
     [Fact]
@@ -207,20 +138,12 @@ public sealed class AnalyzerIntegrationE2ETests
         ImmutableArray<Diagnostic> combined =
             await GetDiagnosticsAsync(source, AllAnalyzers());
 
-        // Each individual analyzer should contribute its expected diagnostic
-        int con100 = combined.Count(d => d.Id == "CON100");
-        int con101 = combined.Count(d => d.Id == "CON101");
-        int con102 = combined.Count(d => d.Id == "CON102");
-        int con103 = combined.Count(d => d.Id == "CON103");
-        int con104 = combined.Count(d => d.Id == "CON104");
-        int con105 = combined.Count(d => d.Id == "CON105");
-
-        Assert.Equal(1, con100);
-        Assert.Equal(1, con101);
-        Assert.Equal(1, con102);
-        Assert.Equal(1, con103);
-        Assert.Equal(1, con104);
-        Assert.Equal(1, con105);
+        Assert.Equal(1, combined.Count(d => d.Id == "CON100"));
+        Assert.Equal(1, combined.Count(d => d.Id == "CON101"));
+        Assert.Equal(1, combined.Count(d => d.Id == "CON102"));
+        Assert.Equal(1, combined.Count(d => d.Id == "CON103"));
+        Assert.Equal(1, combined.Count(d => d.Id == "CON104"));
+        Assert.Equal(1, combined.Count(d => d.Id == "CON105"));
     }
 
     [Fact]
@@ -284,68 +207,5 @@ public sealed class AnalyzerIntegrationE2ETests
         CompilationWithAnalyzers compilationWithAnalyzers =
             compilation.WithAnalyzers(analyzers);
         return await compilationWithAnalyzers.GetAnalyzerDiagnosticsAsync();
-    }
-
-    private static async Task<string?> ApplyCon103FixAsync(string source) =>
-        await ApplyFixAsync(source, "CON103", new CON103Analyzer(), new CON103CodeFix());
-
-    private static async Task<string?> ApplyCon102FixAsync(string source) =>
-        await ApplyFixAsync(source, "CON102", new CON102Analyzer(), new CON102CodeFix());
-
-    private static async Task<string?> ApplyFixAsync(
-        string source, string diagnosticId,
-        DiagnosticAnalyzer analyzer, CodeFixProvider fix)
-    {
-        using var workspace = new Microsoft.CodeAnalysis.AdhocWorkspace();
-        ProjectId projectId = ProjectId.CreateNewId();
-        Solution solution = workspace.CurrentSolution
-            .AddProject(ProjectInfo.Create(
-                projectId, VersionStamp.Create(), "Test", "Test", LanguageNames.CSharp,
-                compilationOptions: new CSharpCompilationOptions(
-                    OutputKind.DynamicallyLinkedLibrary,
-                    nullableContextOptions: NullableContextOptions.Enable),
-                metadataReferences: GetReferences()));
-
-        DocumentId documentId = DocumentId.CreateNewId(projectId);
-        solution = solution.AddDocument(
-            DocumentInfo.Create(documentId, "Test.cs",
-                loader: TextLoader.From(
-                    TextAndVersion.Create(SourceText.From(source), VersionStamp.Create()))));
-
-        workspace.TryApplyChanges(solution);
-        Document document = workspace.CurrentSolution.GetDocument(documentId)!;
-
-        Compilation compilation = (await document.Project.GetCompilationAsync())!;
-        CompilationWithAnalyzers cwAnalyzers = compilation.WithAnalyzers(
-            ImmutableArray.Create(analyzer));
-        ImmutableArray<Diagnostic> mapped = await cwAnalyzers.GetAnalyzerDiagnosticsAsync();
-        Diagnostic? target = mapped.FirstOrDefault(d => d.Id == diagnosticId);
-        if (target is null)
-        {
-            return null;
-        }
-
-        var actions = new List<CodeAction>();
-        CodeFixContext context = new(
-            document, target,
-            (action, _) => actions.Add(action),
-            CancellationToken.None);
-        await fix.RegisterCodeFixesAsync(context);
-
-        if (!actions.Any())
-        {
-            return null;
-        }
-
-        ImmutableArray<CodeActionOperation> operations =
-            await actions[0].GetOperationsAsync(CancellationToken.None);
-        foreach (CodeActionOperation op in operations)
-        {
-            op.Apply(workspace, CancellationToken.None);
-        }
-
-        Document updated = workspace.CurrentSolution.GetDocument(documentId)!;
-        SourceText text = await updated.GetTextAsync();
-        return text.ToString();
     }
 }

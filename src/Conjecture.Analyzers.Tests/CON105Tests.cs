@@ -1,15 +1,9 @@
 // Copyright (c) 2026 Kim Ommundsen. Licensed under the MPL-2.0.
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
-using System.Collections.Immutable;
-using System.IO;
-using System.Linq;
-
-using Conjecture.Analyzers;
-
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.CSharp.Testing;
+using Microsoft.CodeAnalysis.Testing;
 
 namespace Conjecture.Analyzers.Tests;
 
@@ -27,35 +21,27 @@ public sealed class CON105Tests
     [Fact]
     public async Task PropertyParam_TypeWithArbitrary_EmitsCon105()
     {
-        string source = Preamble + """
+        await VerifyAsync(Preamble + """
             [Arbitrary] class Person { }
             class Tests {
                 [Property]
-                public bool Foo(Person p) => true;
+                public bool Foo({|CON105:Person p|}) => true;
             }
-            """;
-
-        ImmutableArray<Diagnostic> diagnostics = await GetDiagnosticsAsync(source);
-
-        Assert.Contains(diagnostics, d => d.Id == "CON105");
+            """);
     }
 
     [Fact]
     public async Task PropertyParam_TypeWithArbitrary_Con105IsInfo()
     {
-        string source = Preamble + """
+        await VerifyAsync(
+            Preamble + """
             [Arbitrary] class Person { }
             class Tests {
                 [Property]
-                public bool Foo(Person p) => true;
+                public bool Foo({|#0:Person p|}) => true;
             }
-            """;
-
-        ImmutableArray<Diagnostic> diagnostics = await GetDiagnosticsAsync(source);
-        Diagnostic? con105 = diagnostics.FirstOrDefault(d => d.Id == "CON105");
-
-        Assert.NotNull(con105);
-        Assert.Equal(DiagnosticSeverity.Info, con105.Severity);
+            """,
+            new DiagnosticResult("CON105", DiagnosticSeverity.Info).WithLocation(0));
     }
 
     // --- [Property] param with [From<PersonArbitrary>] -> no diagnostic ---
@@ -63,18 +49,14 @@ public sealed class CON105Tests
     [Fact]
     public async Task PropertyParam_WithFromAttribute_NoCon105()
     {
-        string source = Preamble + """
+        await VerifyAsync(Preamble + """
             [Arbitrary] class Person { }
             class PersonArbitrary : IStrategyProvider { }
             class Tests {
                 [Property]
                 public bool Foo([From<PersonArbitrary>] Person p) => true;
             }
-            """;
-
-        ImmutableArray<Diagnostic> diagnostics = await GetDiagnosticsAsync(source);
-
-        Assert.DoesNotContain(diagnostics, d => d.Id == "CON105");
+            """);
     }
 
     // --- Non-[Property] method -> no diagnostic ---
@@ -82,16 +64,12 @@ public sealed class CON105Tests
     [Fact]
     public async Task NonPropertyMethod_NoCon105()
     {
-        string source = Preamble + """
+        await VerifyAsync(Preamble + """
             [Arbitrary] class Person { }
             class Tests {
                 public bool Foo(Person p) => true;
             }
-            """;
-
-        ImmutableArray<Diagnostic> diagnostics = await GetDiagnosticsAsync(source);
-
-        Assert.DoesNotContain(diagnostics, d => d.Id == "CON105");
+            """);
     }
 
     // --- Type without [Arbitrary] -> no diagnostic ---
@@ -99,48 +77,26 @@ public sealed class CON105Tests
     [Fact]
     public async Task PropertyParam_TypeWithoutArbitrary_NoCon105()
     {
-        string source = Preamble + """
+        await VerifyAsync(Preamble + """
             class Person { }
             class Tests {
                 [Property]
                 public bool Foo(Person p) => true;
             }
-            """;
-
-        ImmutableArray<Diagnostic> diagnostics = await GetDiagnosticsAsync(source);
-
-        Assert.DoesNotContain(diagnostics, d => d.Id == "CON105");
+            """);
     }
 
     // --- Helpers ---
 
-    private static ImmutableArray<MetadataReference> GetReferences()
+    private static Task VerifyAsync(string source, params DiagnosticResult[] expected)
     {
-        string runtimeDir = Path.GetDirectoryName(typeof(object).Assembly.Location)!;
-        return
-        [
-            MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
-            MetadataReference.CreateFromFile(Path.Combine(runtimeDir, "System.Runtime.dll")),
-            MetadataReference.CreateFromFile(Path.Combine(runtimeDir, "System.Collections.dll")),
-            MetadataReference.CreateFromFile(typeof(Conjecture.Core.ArbitraryAttribute).Assembly.Location),
-        ];
-    }
-
-    private static CSharpCompilation CreateCompilation(string source) =>
-        CSharpCompilation.Create(
-            assemblyName: "TestAssembly",
-            syntaxTrees: [CSharpSyntaxTree.ParseText(source)],
-            references: GetReferences(),
-            options: new CSharpCompilationOptions(
-                OutputKind.DynamicallyLinkedLibrary,
-                nullableContextOptions: NullableContextOptions.Enable));
-
-    private static async Task<ImmutableArray<Diagnostic>> GetDiagnosticsAsync(string source)
-    {
-        CSharpCompilation compilation = CreateCompilation(source);
-        var analyzer = new CON105Analyzer();
-        CompilationWithAnalyzers compilationWithAnalyzers = compilation.WithAnalyzers(
-            ImmutableArray.Create<DiagnosticAnalyzer>(analyzer));
-        return await compilationWithAnalyzers.GetAnalyzerDiagnosticsAsync();
+        CSharpAnalyzerTest<CON105Analyzer, DefaultVerifier> test = new()
+        {
+            TestCode = source,
+            ReferenceAssemblies = TestHelpers.EmptyNet10,
+        };
+        TestHelpers.AddRuntimeReferences(test.TestState.AdditionalReferences);
+        test.ExpectedDiagnostics.AddRange(expected);
+        return test.RunAsync();
     }
 }

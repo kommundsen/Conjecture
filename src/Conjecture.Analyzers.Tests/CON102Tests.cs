@@ -1,21 +1,9 @@
 // Copyright (c) 2026 Kim Ommundsen. Licensed under the MPL-2.0.
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-
-using Conjecture.Analyzers;
-
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CodeActions;
-using Microsoft.CodeAnalysis.CodeFixes;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Text;
+using Microsoft.CodeAnalysis.CSharp.Testing;
+using Microsoft.CodeAnalysis.Testing;
 
 namespace Conjecture.Analyzers.Tests;
 
@@ -34,33 +22,25 @@ public sealed class CON102Tests
     [Fact]
     public async Task GetAwaiterGetResult_InsidePropertyMethod_EmitsCon102()
     {
-        string source = Preamble + """
+        await VerifyAnalyzerAsync(Preamble + """
             class Tests {
                 [Property]
-                public void Foo(int x) { Task.Delay(0).GetAwaiter().GetResult(); }
+                public void Foo(int x) { {|CON102:Task.Delay(0).GetAwaiter().GetResult()|}; }
             }
-            """;
-
-        ImmutableArray<Diagnostic> diagnostics = await GetDiagnosticsAsync(source);
-
-        Assert.Contains(diagnostics, d => d.Id == "CON102");
+            """);
     }
 
     [Fact]
     public async Task GetAwaiterGetResult_InsidePropertyMethod_Con102IsInfo()
     {
-        string source = Preamble + """
+        await VerifyAnalyzerAsync(
+            Preamble + """
             class Tests {
                 [Property]
-                public void Foo(int x) { Task.Delay(0).GetAwaiter().GetResult(); }
+                public void Foo(int x) { {|#0:Task.Delay(0).GetAwaiter().GetResult()|}; }
             }
-            """;
-
-        ImmutableArray<Diagnostic> diagnostics = await GetDiagnosticsAsync(source);
-        Diagnostic? con102 = diagnostics.FirstOrDefault(d => d.Id == "CON102");
-
-        Assert.NotNull(con102);
-        Assert.Equal(DiagnosticSeverity.Info, con102.Severity);
+            """,
+            new DiagnosticResult("CON102", DiagnosticSeverity.Info).WithLocation(0));
     }
 
     // --- .Result on Task inside [Property] → CON102 ---
@@ -68,33 +48,25 @@ public sealed class CON102Tests
     [Fact]
     public async Task TaskResult_InsidePropertyMethod_EmitsCon102()
     {
-        string source = Preamble + """
+        await VerifyAnalyzerAsync(Preamble + """
             class Tests {
                 [Property]
-                public void Foo(int x) { int r = Task.FromResult(x).Result; }
+                public void Foo(int x) { int r = {|CON102:Task.FromResult(x).Result|}; }
             }
-            """;
-
-        ImmutableArray<Diagnostic> diagnostics = await GetDiagnosticsAsync(source);
-
-        Assert.Contains(diagnostics, d => d.Id == "CON102");
+            """);
     }
 
     [Fact]
     public async Task TaskResult_InsidePropertyMethod_Con102IsInfo()
     {
-        string source = Preamble + """
+        await VerifyAnalyzerAsync(
+            Preamble + """
             class Tests {
                 [Property]
-                public void Foo(int x) { int r = Task.FromResult(x).Result; }
+                public void Foo(int x) { int r = {|#0:Task.FromResult(x).Result|}; }
             }
-            """;
-
-        ImmutableArray<Diagnostic> diagnostics = await GetDiagnosticsAsync(source);
-        Diagnostic? con102 = diagnostics.FirstOrDefault(d => d.Id == "CON102");
-
-        Assert.NotNull(con102);
-        Assert.Equal(DiagnosticSeverity.Info, con102.Severity);
+            """,
+            new DiagnosticResult("CON102", DiagnosticSeverity.Info).WithLocation(0));
     }
 
     // --- .Wait() on Task inside [Property] → CON102 ---
@@ -102,33 +74,25 @@ public sealed class CON102Tests
     [Fact]
     public async Task TaskWait_InsidePropertyMethod_EmitsCon102()
     {
-        string source = Preamble + """
+        await VerifyAnalyzerAsync(Preamble + """
             class Tests {
                 [Property]
-                public void Foo(int x) { Task.Delay(0).Wait(); }
+                public void Foo(int x) { {|CON102:Task.Delay(0).Wait()|}; }
             }
-            """;
-
-        ImmutableArray<Diagnostic> diagnostics = await GetDiagnosticsAsync(source);
-
-        Assert.Contains(diagnostics, d => d.Id == "CON102");
+            """);
     }
 
     [Fact]
     public async Task TaskWait_InsidePropertyMethod_Con102IsInfo()
     {
-        string source = Preamble + """
+        await VerifyAnalyzerAsync(
+            Preamble + """
             class Tests {
                 [Property]
-                public void Foo(int x) { Task.Delay(0).Wait(); }
+                public void Foo(int x) { {|#0:Task.Delay(0).Wait()|}; }
             }
-            """;
-
-        ImmutableArray<Diagnostic> diagnostics = await GetDiagnosticsAsync(source);
-        Diagnostic? con102 = diagnostics.FirstOrDefault(d => d.Id == "CON102");
-
-        Assert.NotNull(con102);
-        Assert.Equal(DiagnosticSeverity.Info, con102.Severity);
+            """,
+            new DiagnosticResult("CON102", DiagnosticSeverity.Info).WithLocation(0));
     }
 
     // --- Same patterns outside [Property] → no diagnostic ---
@@ -136,43 +100,31 @@ public sealed class CON102Tests
     [Fact]
     public async Task GetAwaiterGetResult_OutsidePropertyMethod_NoCon102()
     {
-        string source = Preamble + """
+        await VerifyAnalyzerAsync(Preamble + """
             class Tests {
                 public void Foo(int x) { Task.Delay(0).GetAwaiter().GetResult(); }
             }
-            """;
-
-        ImmutableArray<Diagnostic> diagnostics = await GetDiagnosticsAsync(source);
-
-        Assert.DoesNotContain(diagnostics, d => d.Id == "CON102");
+            """);
     }
 
     [Fact]
     public async Task TaskResult_OutsidePropertyMethod_NoCon102()
     {
-        string source = Preamble + """
+        await VerifyAnalyzerAsync(Preamble + """
             class Tests {
                 public void Foo(int x) { int r = Task.FromResult(x).Result; }
             }
-            """;
-
-        ImmutableArray<Diagnostic> diagnostics = await GetDiagnosticsAsync(source);
-
-        Assert.DoesNotContain(diagnostics, d => d.Id == "CON102");
+            """);
     }
 
     [Fact]
     public async Task TaskWait_OutsidePropertyMethod_NoCon102()
     {
-        string source = Preamble + """
+        await VerifyAnalyzerAsync(Preamble + """
             class Tests {
                 public void Foo(int x) { Task.Delay(0).Wait(); }
             }
-            """;
-
-        ImmutableArray<Diagnostic> diagnostics = await GetDiagnosticsAsync(source);
-
-        Assert.DoesNotContain(diagnostics, d => d.Id == "CON102");
+            """);
     }
 
     // --- Code fix: GetAwaiter().GetResult() → async Task + await ---
@@ -183,17 +135,17 @@ public sealed class CON102Tests
         string source = Preamble + """
             class Tests {
                 [Property]
-                public void Foo(int x) { Task.Delay(0).GetAwaiter().GetResult(); }
+                public void Foo(int x) { {|CON102:Task.Delay(0).GetAwaiter().GetResult()|}; }
+            }
+            """;
+        string fixedSource = Preamble + """
+            class Tests {
+                [Property]
+                public async Task Foo(int x) { await Task.Delay(0); }
             }
             """;
 
-        string? result = await ApplyCodeFixAsync(source);
-
-        Assert.NotNull(result);
-        Assert.Contains("async", result);
-        Assert.Contains("await", result);
-        Assert.DoesNotContain(".GetAwaiter()", result);
-        Assert.DoesNotContain(".GetResult()", result);
+        await VerifyCodeFixAsync(source, fixedSource);
     }
 
     [Fact]
@@ -202,14 +154,17 @@ public sealed class CON102Tests
         string source = Preamble + """
             class Tests {
                 [Property]
-                public void Foo(int x) { Task.Delay(0).GetAwaiter().GetResult(); }
+                public void Foo(int x) { {|CON102:Task.Delay(0).GetAwaiter().GetResult()|}; }
+            }
+            """;
+        string fixedSource = Preamble + """
+            class Tests {
+                [Property]
+                public async Task Foo(int x) { await Task.Delay(0); }
             }
             """;
 
-        string? result = await ApplyCodeFixAsync(source);
-
-        Assert.NotNull(result);
-        Assert.Contains("Task", result);
+        await VerifyCodeFixAsync(source, fixedSource);
     }
 
     // --- Code fix: .Result → async Task + await ---
@@ -220,16 +175,17 @@ public sealed class CON102Tests
         string source = Preamble + """
             class Tests {
                 [Property]
-                public void Foo(int x) { int r = Task.FromResult(x).Result; }
+                public void Foo(int x) { int r = {|CON102:Task.FromResult(x).Result|}; }
+            }
+            """;
+        string fixedSource = Preamble + """
+            class Tests {
+                [Property]
+                public async Task Foo(int x) { int r = await Task.FromResult(x); }
             }
             """;
 
-        string? result = await ApplyCodeFixAsync(source);
-
-        Assert.NotNull(result);
-        Assert.Contains("async", result);
-        Assert.Contains("await", result);
-        Assert.DoesNotContain(".Result", result);
+        await VerifyCodeFixAsync(source, fixedSource);
     }
 
     // --- Code fix: .Wait() → async Task + await ---
@@ -240,110 +196,38 @@ public sealed class CON102Tests
         string source = Preamble + """
             class Tests {
                 [Property]
-                public void Foo(int x) { Task.Delay(0).Wait(); }
+                public void Foo(int x) { {|CON102:Task.Delay(0).Wait()|}; }
+            }
+            """;
+        string fixedSource = Preamble + """
+            class Tests {
+                [Property]
+                public async Task Foo(int x) { await Task.Delay(0); }
             }
             """;
 
-        string? result = await ApplyCodeFixAsync(source);
-
-        Assert.NotNull(result);
-        Assert.Contains("async", result);
-        Assert.Contains("await", result);
-        Assert.DoesNotContain(".Wait()", result);
+        await VerifyCodeFixAsync(source, fixedSource);
     }
 
     // --- Helpers ---
 
-    private static ImmutableArray<MetadataReference> GetReferences()
+    private static Task VerifyAnalyzerAsync(string source, params DiagnosticResult[] expected)
     {
-        string runtimeDir = Path.GetDirectoryName(typeof(object).Assembly.Location)!;
-        return
-        [
-            MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
-            MetadataReference.CreateFromFile(Path.Combine(runtimeDir, "System.Runtime.dll")),
-            MetadataReference.CreateFromFile(Path.Combine(runtimeDir, "System.Collections.dll")),
-            MetadataReference.CreateFromFile(Path.Combine(runtimeDir, "System.Threading.Tasks.dll")),
-        ];
+        CSharpAnalyzerTest<CON102Analyzer, DefaultVerifier> test = new()
+        {
+            TestCode = source,
+        };
+        test.ExpectedDiagnostics.AddRange(expected);
+        return test.RunAsync();
     }
 
-    private static CSharpCompilation CreateCompilation(string source) =>
-        CSharpCompilation.Create(
-            assemblyName: "TestAssembly",
-            syntaxTrees: [CSharpSyntaxTree.ParseText(source)],
-            references: GetReferences(),
-            options: new CSharpCompilationOptions(
-                OutputKind.DynamicallyLinkedLibrary,
-                nullableContextOptions: NullableContextOptions.Enable));
-
-    private static async Task<ImmutableArray<Diagnostic>> GetDiagnosticsAsync(string source)
+    private static Task VerifyCodeFixAsync(string source, string fixedSource)
     {
-        CSharpCompilation compilation = CreateCompilation(source);
-        var analyzer = new CON102Analyzer();
-        CompilationWithAnalyzers compilationWithAnalyzers = compilation.WithAnalyzers(
-            ImmutableArray.Create<DiagnosticAnalyzer>(analyzer));
-        return await compilationWithAnalyzers.GetAnalyzerDiagnosticsAsync();
-    }
-
-    private static async Task<string?> ApplyCodeFixAsync(string source)
-    {
-        ImmutableArray<Diagnostic> diagnostics = await GetDiagnosticsAsync(source);
-        Diagnostic? target = diagnostics.FirstOrDefault(d => d.Id == "CON102");
-        if (target is null)
+        CSharpCodeFixTest<CON102Analyzer, CON102CodeFix, DefaultVerifier> test = new()
         {
-            return null;
-        }
-
-        CSharpCompilation compilation = CreateCompilation(source);
-
-        using var workspace = new Microsoft.CodeAnalysis.AdhocWorkspace();
-        ProjectId projectId = ProjectId.CreateNewId();
-        Solution solution = workspace.CurrentSolution
-            .AddProject(ProjectInfo.Create(
-                projectId, VersionStamp.Create(), "Test", "Test", LanguageNames.CSharp,
-                compilationOptions: compilation.Options,
-                metadataReferences: GetReferences()));
-
-        DocumentId documentId = DocumentId.CreateNewId(projectId);
-        solution = solution.AddDocument(
-            DocumentInfo.Create(documentId, "Test.cs",
-                loader: TextLoader.From(TextAndVersion.Create(
-                    SourceText.From(source), VersionStamp.Create()))));
-
-        workspace.TryApplyChanges(solution);
-        Document document = workspace.CurrentSolution.GetDocument(documentId)!;
-
-        Compilation workspaceCompilation = (await document.Project.GetCompilationAsync())!;
-        CompilationWithAnalyzers cwAnalyzers = workspaceCompilation.WithAnalyzers(
-            ImmutableArray.Create<DiagnosticAnalyzer>(new CON102Analyzer()));
-        ImmutableArray<Diagnostic> mapped = await cwAnalyzers.GetAnalyzerDiagnosticsAsync();
-        Diagnostic? mappedDiagnostic = mapped.FirstOrDefault(d => d.Id == "CON102");
-        if (mappedDiagnostic is null)
-        {
-            return null;
-        }
-
-        var fix = new CON102CodeFix();
-        var actions = new List<CodeAction>();
-        CodeFixContext context = new(
-            document, mappedDiagnostic,
-            (action, _) => actions.Add(action),
-            CancellationToken.None);
-        await fix.RegisterCodeFixesAsync(context);
-
-        if (!actions.Any())
-        {
-            return null;
-        }
-
-        ImmutableArray<CodeActionOperation> operations =
-            await actions[0].GetOperationsAsync(CancellationToken.None);
-        foreach (CodeActionOperation op in operations)
-        {
-            op.Apply(workspace, CancellationToken.None);
-        }
-
-        Document updated = workspace.CurrentSolution.GetDocument(documentId)!;
-        SourceText text = await updated.GetTextAsync();
-        return text.ToString();
+            TestCode = source,
+            FixedCode = fixedSource,
+        };
+        return test.RunAsync();
     }
 }
