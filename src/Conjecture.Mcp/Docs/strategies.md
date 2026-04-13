@@ -25,6 +25,19 @@
 | `Generate.Lists<T>(inner, minSize, maxSize)` | `Strategy<List<T>>` | Default: 0–100 elements |
 | `Generate.Sets<T>(inner, minSize, maxSize)` | `Strategy<IReadOnlySet<T>>` | Unique elements; default: 0–100 |
 | `Generate.Dictionaries<K,V>(keyStrategy, valueStrategy, minSize, maxSize)` | `Strategy<IReadOnlyDictionary<K,V>>` | Unique keys |
+| `Generate.DateTimeOffsets()` | `Strategy<DateTimeOffset>` | Full range |
+| `Generate.DateTimeOffsets(min, max)` | `Strategy<DateTimeOffset>` | Bounded range |
+| `Generate.TimeSpans()` | `Strategy<TimeSpan>` | Full range |
+| `Generate.TimeSpans(min, max)` | `Strategy<TimeSpan>` | Bounded range |
+| `Generate.DateOnlyValues()` | `Strategy<DateOnly>` | Full range |
+| `Generate.DateOnlyValues(min, max)` | `Strategy<DateOnly>` | Bounded range |
+| `Generate.TimeOnlyValues()` | `Strategy<TimeOnly>` | Full range |
+| `Generate.TimeOnlyValues(min, max)` | `Strategy<TimeOnly>` | Bounded range |
+| `Generate.Identifiers(minPrefixLength, maxPrefixLength, minDigits, maxDigits)` | `Strategy<string>` | Identifier strings (`[a-z]+\d+`); all params optional |
+| `Generate.NumericStrings(minDigits, maxDigits, prefix, suffix)` | `Strategy<string>` | Numeric strings with optional prefix/suffix |
+| `Generate.VersionStrings(maxMajor, maxMinor, maxPatch)` | `Strategy<string>` | Version strings (`MAJOR.MINOR.PATCH`) |
+| `Generate.FromBytes<T>(buffer)` | `Strategy<T>` | Replay values from a fixed byte buffer |
+| `Generate.Recursive<T>(baseCase, recursive, maxDepth)` | `Strategy<T>` | Tree-shaped / self-referential types; default maxDepth 5 |
 | `Generate.Compose<T>(factory)` | `Strategy<T>` | Imperative composition via `IGeneratorContext` |
 | `Generate.StateMachine<TMachine, TState, TCommand>(maxSteps)` | `Strategy<StateMachineRun<TState>>` | Stateful testing |
 
@@ -39,6 +52,27 @@
 | `.Zip(other, selector)` | `Strategy<R>` | Combine with custom merge |
 | `.OrNull()` | `Strategy<T?>` | Reference types: ~10% null |
 | `.WithLabel(label)` | `Strategy<T>` | Name the strategy for counterexample output |
+
+## Extension Properties
+
+| Property / Operator | Applies to | Returns | Notes |
+|---------------------|-----------|---------|-------|
+| `.Positive` | `Strategy<int>` | `Strategy<int>` | Filters to values > 0 |
+| `.Negative` | `Strategy<int>` | `Strategy<int>` | Filters to values < 0 |
+| `.NonZero` | `Strategy<int>` | `Strategy<int>` | Filters to values ≠ 0 |
+| `.NonEmpty` | `Strategy<string>` | `Strategy<string>` | Filters to non-empty strings |
+| `.NonEmpty` | `Strategy<List<T>>` | `Strategy<List<T>>` | Filters to non-empty lists |
+| `\|` | `Strategy<T>` | `Strategy<T>` | Union: `stratA \| stratB` picks from either |
+
+## `DataGen` (standalone data generation)
+
+Use `DataGen` to generate values outside property tests:
+
+| Method | Returns | Notes |
+|--------|---------|-------|
+| `DataGen.Sample<T>(strategy, count, seed?)` | `IReadOnlyList<T>` | Materialize `count` values |
+| `DataGen.SampleOne<T>(strategy, seed?)` | `T` | Single value |
+| `DataGen.Stream<T>(strategy, count, seed?)` | `IEnumerable<T>` | Lazy enumeration of `count` values |
 
 ## `IGeneratorContext` (inside `Generate.Compose`)
 

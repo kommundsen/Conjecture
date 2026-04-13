@@ -7,7 +7,7 @@ namespace Conjecture.Tool.Plan;
 
 public class OutputConfig
 {
-    private static readonly HashSet<string> KnownFormats = new(StringComparer.OrdinalIgnoreCase) { "json", "jsonl", "ndjson" };
+    private static readonly HashSet<string> KnownFormats = new(StringComparer.OrdinalIgnoreCase) { "json", "jsonl" };
 
     [JsonPropertyName("format")]
     public required string Format

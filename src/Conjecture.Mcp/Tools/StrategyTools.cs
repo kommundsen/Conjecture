@@ -13,7 +13,8 @@ internal static class StrategyTools
     [McpServerTool(Name = "suggest-strategy")]
     [Description(
         "Suggests the Conjecture Generate.* strategy to use for a given C# type. " +
-        "Handles primitives (int, bool, string, float, double, byte[]), collections " +
+        "Handles primitives (int, bool, string, float, double, byte[]), date/time types " +
+        "(DateTimeOffset, TimeSpan, DateOnly, TimeOnly), collections " +
         "(List<T>, IReadOnlySet<T>, IReadOnlyDictionary<K,V>), nullable types, value " +
         "tuples, enums, and custom types.")]
     public static string SuggestStrategy(
@@ -41,6 +42,18 @@ internal static class StrategyTools
 
         "double" =>
             "Use `Generate.Doubles()` for the full range, or `Generate.Doubles(min, max)` for bounded. Includes NaN and ±Infinity.",
+
+        "DateTimeOffset" =>
+            "Use `Generate.DateTimeOffsets()` for the full range, or `Generate.DateTimeOffsets(min, max)` for bounded.",
+
+        "TimeSpan" =>
+            "Use `Generate.TimeSpans()` for the full range, or `Generate.TimeSpans(min, max)` for bounded.",
+
+        "DateOnly" =>
+            "Use `Generate.DateOnlyValues()` for the full range, or `Generate.DateOnlyValues(min, max)` for bounded.",
+
+        "TimeOnly" =>
+            "Use `Generate.TimeOnlyValues()` for the full range, or `Generate.TimeOnlyValues(min, max)` for bounded.",
 
         "string" =>
             """

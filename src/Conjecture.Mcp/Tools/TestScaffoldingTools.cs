@@ -18,7 +18,7 @@ internal static class TestScaffoldingTools
         "test class with the correct using directives for the chosen framework.")]
     public static string ScaffoldPropertyTest(
         [Description("The C# method signature to generate a property test for, e.g. 'public static int Add(int a, int b)'")] string methodSignature,
-        [Description("Test framework: 'xunit' (default), 'nunit', or 'mstest'")] string framework = "xunit")
+        [Description("Test framework: 'xunit' (default), 'xunit-v3', 'nunit', or 'mstest'")] string framework = "xunit")
     {
         var parameters = ParseParameters(methodSignature);
         var methodName = ParseMethodName(methodSignature);
@@ -160,6 +160,10 @@ internal static class TestScaffoldingTools
         sb.AppendLine("using Conjecture.Core;");
         switch (framework)
         {
+            case "xunit-v3":
+                sb.AppendLine("using Conjecture.Xunit.V3;");
+                sb.AppendLine("using Xunit;");
+                break;
             case "nunit":
                 sb.AppendLine("using Conjecture.NUnit;");
                 sb.AppendLine("using NUnit.Framework;");
