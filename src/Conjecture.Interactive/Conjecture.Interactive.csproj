@@ -10,6 +10,9 @@
     <ProjectReference Include="..\Conjecture.Core\Conjecture.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+  <ItemGroup>
     <!-- Packed into interactive-extensions/dotnet so Polyglot auto-loads on #r nuget: -->
     <None Include="extension.dib" Pack="true" PackagePath="interactive-extensions/dotnet" />
     <!-- Also copy to output so the test can find it -->

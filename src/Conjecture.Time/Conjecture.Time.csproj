@@ -9,4 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Conjecture.Core\Conjecture.Core.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 </Project>
