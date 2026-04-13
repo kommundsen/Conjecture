@@ -1,6 +1,6 @@
 # How to use the CLI tool
 
-`Conjecture.Tool` provides a `conjecture generate` command for generating test data from your strategies at the command line — useful for seeding databases, generating fixture files, or integrating with other tooling.
+`Conjecture.Tool` provides `conjecture generate` and `conjecture plan` commands for generating test data from your strategies at the command line — useful for seeding databases, generating fixture files, or integrating with other tooling.
 
 ## Install
 
@@ -56,25 +56,24 @@ conjecture generate \
 
 For multi-step generation with references between steps, define a plan file:
 
-```yaml
-# generation-plan.yaml
-assembly: bin/Debug/net10.0/MyProject.Tests.dll
-output:
-  file: seed-data.json
-  format: json
-steps:
-  - name: customers
-    type: MyProject.Tests.CustomerProvider
-    count: 100
-  - name: orders
-    type: MyProject.Tests.OrderProvider
-    count: 500
+```json
+{
+  "assembly": "bin/Debug/net10.0/MyProject.Tests.dll",
+  "output": {
+    "file": "seed-data.json",
+    "format": "json"
+  },
+  "steps": [
+    { "name": "customers", "type": "MyProject.Tests.CustomerProvider", "count": 100 },
+    { "name": "orders", "type": "MyProject.Tests.OrderProvider", "count": 500 }
+  ]
+}
 ```
 
 Run the plan:
 
 ```bash
-conjecture generate --plan generation-plan.yaml
+conjecture plan generation-plan.json
 ```
 
 The plan runner executes each step in order and writes all results to the configured output.
@@ -97,23 +96,23 @@ public sealed class LocationProvider : IStrategyProvider<Location>
 
 Then reference the type by its fully qualified name in a plan step. A later step can bind to a property of the generated objects using a `$ref` with dot-path navigation:
 
-```yaml
-assembly: path/to/MyAssembly.dll
-steps:
-  - name: locations
-    type: MyNamespace.Location
-    count: 5
-    seed: 1
-  - name: orders
-    type: System.Int32
-    count: 5
-    seed: 2
-    bindings:
-      Value:
-        $ref: "locations[*].CityCode"
-output:
-  format: json
-  file: null
+```json
+{
+  "assembly": "path/to/MyAssembly.dll",
+  "steps": [
+    { "name": "locations", "type": "MyNamespace.Location", "count": 5, "seed": 1 },
+    {
+      "name": "orders",
+      "type": "System.Int32",
+      "count": 5,
+      "seed": 2,
+      "bindings": {
+        "Value": { "$ref": "locations[*].CityCode" }
+      }
+    }
+  ],
+  "output": { "format": "json", "file": null }
+}
 ```
 
 The `[*]` in a `$ref` expands all elements from that step; the dot-path after it navigates nested JSON properties on each serialised object. So `locations[*].CityCode` collects the `CityCode` value from every generated `Location`, and the `orders` step samples from those collected values.
@@ -130,12 +129,12 @@ conjecture generate --assembly ... --type ... --count 100 --seed 12345 --output 
 
 Or in a plan:
 
-```yaml
-steps:
-  - name: customers
-    type: MyProject.Tests.CustomerProvider
-    count: 100
-    seed: 12345
+```json
+{
+  "steps": [
+    { "name": "customers", "type": "MyProject.Tests.CustomerProvider", "count": 100, "seed": 12345 }
+  ]
+}
 ```
 
 ## See also

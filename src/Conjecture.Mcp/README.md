@@ -31,4 +31,4 @@ Then add it to your `.mcp.json`:
 
 ## API Reference Resources
 
-Six read-only reference resources are exposed at `conjecture://api/*`: `strategies`, `settings`, `state-machines`, `shrinking`, `assumptions`, `attributes`.
+Eight read-only reference resources are exposed at `conjecture://api/*`: `strategies`, `settings`, `state-machines`, `shrinking`, `assumptions`, `attributes`, `targeted-testing`, `recursive-strategies`.
