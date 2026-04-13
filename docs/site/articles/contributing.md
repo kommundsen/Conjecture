@@ -21,8 +21,9 @@ src/
 ├── Conjecture.Core.Tests       # Core unit tests
 ├── Conjecture.Generators       # Source generator ([Arbitrary]) — bundled into Conjecture.Core.nupkg
 ├── Conjecture.Generators.Tests # Source generator tests
-├── Conjecture.Analyzers        # Roslyn analyzer (CON100-105) — bundled into Conjecture.Core.nupkg
-├── Conjecture.Analyzers.Tests  # Roslyn analyser tests
+├── Conjecture.Analyzers        # Roslyn analyzers (CON100–CON111, CJ0050) — bundled into Conjecture.Core.nupkg
+├── Conjecture.Analyzers.CodeFixes # Code fixes for analyzer diagnostics — bundled into Conjecture.Core.nupkg
+├── Conjecture.Analyzers.Tests  # Roslyn analyzer tests
 ├── Conjecture.Xunit            # xUnit v2 adapter
 ├── Conjecture.Xunit.Tests      # xUnit v2 adapter tests
 ├── Conjecture.Xunit.V3         # xUnit v3 adapter
@@ -31,6 +32,16 @@ src/
 ├── Conjecture.NUnit.Tests      # NUnit adapter tests
 ├── Conjecture.MSTest           # MSTest adapter
 ├── Conjecture.MSTest.Tests     # MSTest adapter tests
+├── Conjecture.Formatters       # Output formatters (JSON, JSONL)
+├── Conjecture.Formatters.Tests # Formatter tests
+├── Conjecture.Time             # TimeProvider strategies (Conjecture.Time package)
+├── Conjecture.Time.Tests       # Time strategy tests
+├── Conjecture.Interactive      # Polyglot Notebooks extension (Conjecture.Interactive package)
+├── Conjecture.Interactive.Tests # Interactive extension tests
+├── Conjecture.Tool             # CLI tool (conjecture generate / conjecture plan)
+├── Conjecture.Tool.Tests       # CLI tool tests
+├── Conjecture.Mcp              # MCP server
+├── Conjecture.Mcp.Tests        # MCP server tests
 ├── Conjecture.SelfTests        # Dogfooding (tests Conjecture with Conjecture)
 └── Conjecture.Benchmarks       # BenchmarkDotNet performance tests
 ```

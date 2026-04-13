@@ -44,6 +44,12 @@ Roslyn analyzers are bundled in `Conjecture.Core` and active automatically. Diag
 | CON103 | Strategy bounds are inverted (`min > max`) |
 | CON104 | `Assume.That(false)` always skips |
 | CON105 | `[Arbitrary]` provider exists but `[From<T>]` not used |
+| CON107 | Non-deterministic operation in `[Property]` (e.g. `Guid.NewGuid()`, `DateTime.Now`) |
+| CON108 | `Assume.That` condition always true given strategy constraint |
+| CON109 | No strategy found for `[Property]` parameter type |
+| CON110 | Async `[Property]` method contains no `await` |
+| CON111 | `Target.Maximize`/`Minimize` outside `[Property]` method |
+| CJ0050 | Suggest named extension property (`.Positive`, `.NonEmpty`) instead of `.Where()` |
 
 ## The Example Database
 

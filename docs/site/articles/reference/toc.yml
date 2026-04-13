@@ -11,5 +11,7 @@ items:
     href: attributes.md
   - name: Analyzers
     href: analyzers.md
+  - name: Time strategies
+    href: time-strategies.md
   - name: Formatters
     href: formatters.md

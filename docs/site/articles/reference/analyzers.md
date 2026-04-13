@@ -107,6 +107,112 @@ public bool Test(Money money) => ...;
 public bool Test([From<MoneyArbitrary>] Money money) => ...;
 ```
 
+### CON107: Non-deterministic operation in `[Property]`
+
+**Severity:** Warning  
+**Target:** Calls to `Guid.NewGuid()`, `DateTime.Now`, `DateTime.UtcNow`, `DateTimeOffset.Now`, `DateTimeOffset.UtcNow`, `Random.Shared`, `new Random()`, `Environment.TickCount`, or `Environment.TickCount64` inside a `[Property]` method.
+
+Non-deterministic operations break shrink reproducibility.
+
+```csharp
+// Triggers CON107:
+[Property]
+public bool Bad(int x)
+{
+    Guid id = Guid.NewGuid();  // CON107
+    return id != Guid.Empty;
+}
+
+// Better: inject randomness via a strategy parameter
+[Property]
+public bool Good([From<GuidStrategy>] Guid id) => id != Guid.Empty;
+```
+
+### CON108: Redundant `Assume.That` given strategy constraint
+
+**Severity:** Warning  
+**Target:** `Assume.That(condition)` where the condition is always satisfied by a known built-in strategy (`PositiveInts`, `NegativeInts`, `NonNegativeInts`).
+
+```csharp
+// Triggers CON108:
+[Property]
+public bool Bad([From<PositiveInts>] int x)
+{
+    Assume.That(x > 0);  // CON108: always true for PositiveInts
+    return x * 2 > x;
+}
+
+// Fix: remove the redundant assumption
+[Property]
+public bool Good([From<PositiveInts>] int x) => x * 2 > x;
+```
+
+### CON109: No strategy found for `[Property]` parameter
+
+**Severity:** Warning  
+**Target:** `[Property]` method parameters whose type has no resolvable strategy — no built-in support, no `[From<T>]`, and no `[Arbitrary]` on the type.
+
+```csharp
+// Triggers CON109:
+[Property]
+public bool Bad(MyCustomType x) => x is not null;  // CON109
+
+// Fix: add [Arbitrary] to the type or use [From<T>]
+[Property]
+public bool Good([From<MyCustomTypeStrategy>] MyCustomType x) => x is not null;
+```
+
+### CON110: Async `[Property]` without `await`
+
+**Severity:** Info  
+**Target:** `[Property]` methods declared `async` that contain no `await` expression.
+
+```csharp
+// Triggers CON110:
+[Property]
+public async Task<bool> Bad(int x) { return x > 0; }  // CON110
+
+// Fix: remove async or add an awaited call
+[Property]
+public bool Good(int x) => x > 0;
+```
+
+### CON111: `Target.Maximize`/`Minimize` outside `[Property]`
+
+**Severity:** Warning  
+**Target:** Calls to `Target.Maximize(…)` or `Target.Minimize(…)` in a method not decorated with `[Property]`. These calls are no-ops outside a property test body.
+
+```csharp
+// Triggers CON111:
+public void Helper(double x)
+{
+    Target.Maximize(x);  // CON111: no effect here
+}
+
+// Fix: move the call into a [Property] method
+[Property]
+public bool Good(double x)
+{
+    Target.Maximize(x);
+    return x < 1000;
+}
+```
+
+### CJ0050: Suggest named extension property
+
+**Severity:** Info  
+**Target:** `.Where()` predicates that match a named extension property: `.Positive`, `.Negative`, `.NonZero`, `.NonEmpty`.
+
+A code fix is available.
+
+```csharp
+// Triggers CJ0050:
+var pos = Generate.Integers<int>().Where(x => x > 0);  // CJ0050
+
+// Fix: use the extension property
+var pos = Generate.Integers<int>().Positive;
+```
+
 ## Source generator diagnostics
 
 The `[Arbitrary]` source generator reports its own set of diagnostics:

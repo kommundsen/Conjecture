@@ -8,6 +8,39 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Version
 
 ## [Unreleased]
 
+### Added
+
+**Analyzers** (new package `Conjecture.Analyzers`, bundled into `Conjecture.Core.nupkg`)
+- CON107: Non-deterministic operation inside `[Property]` (`Guid.NewGuid()`, `DateTime.Now`, `Random`, etc.)
+- CON108: `Assume.That` condition always true given built-in strategy constraint (`PositiveInts`, `NegativeInts`, `NonNegativeInts`)
+- CON109: Missing strategy for `[Property]` parameter type
+- CON110: Async `[Property]` method contains no `await`
+- CON111: `Target.Maximize`/`Target.Minimize` outside `[Property]` method
+- CJ0050: Suggest named extension property (`.Positive`, `.NonEmpty`) instead of equivalent `.Where()` — with code fix
+
+**Time** (new package `Conjecture.Time`)
+- `TimeGenerate.TimeZones()` — strategy over system time zones, shrinks toward UTC
+- `TimeGenerate.ClockSet(nodeCount, maxSkew)` — generates an array of `FakeTimeProvider` instances with clock skew
+- `TimeProviderArbitrary` — `[Arbitrary]` auto-provider for `TimeProvider` parameters
+- `DateTimeOffsetExtensions`: `.NearMidnight()`, `.NearLeapYear()`, `.NearEpoch()`, `.NearDstTransition(zone?)`
+
+**Interactive** (new package `Conjecture.Interactive`)
+- `Strategy<T>.Preview(count, seed)` — quick-look HTML table of sample values
+- `Strategy<T>.SampleTable(count, seed)` — indexed HTML sample table
+- `Strategy<T>.Histogram(sampleSize, bucketCount, seed)` — SVG histogram of distribution
+- `Strategy<T>.ShrinkTrace(seed, failingProperty)` — step-by-step shrink trace
+- `ConjectureKernelExtension` — Polyglot Notebooks auto-load
+
+**Core**
+- `Generate.FromBytes<T>(ReadOnlySpan<byte>)` — deterministic replay from a fixed byte buffer
+- `Generate.DateTimeOffsets()` / `Generate.DateTimeOffsets(min, max)`
+- `Generate.TimeSpans()` / `Generate.TimeSpans(min, max)`
+- `Generate.DateOnlyValues()` / `Generate.DateOnlyValues(min, max)`
+- `Generate.TimeOnlyValues()` / `Generate.TimeOnlyValues(min, max)`
+
+**Tool**
+- `PlanRunner` resolves `IStrategyProvider<T>` via reflection for arbitrary types in plan steps
+
 ---
 
 ## [0.7.0] — 2026-04-11
