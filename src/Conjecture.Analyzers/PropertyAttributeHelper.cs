@@ -49,4 +49,44 @@ internal static class PropertyAttributeHelper
 
         return false;
     }
+
+    internal static bool HasFromAttribute(ParameterSyntax parameter, SemanticModel model)
+    {
+        foreach (AttributeListSyntax attrList in parameter.AttributeLists)
+        {
+            foreach (AttributeSyntax attr in attrList.Attributes)
+            {
+                SymbolInfo info = model.GetSymbolInfo(attr);
+                ISymbol? symbol = info.Symbol ?? info.CandidateSymbols.FirstOrDefault();
+                if (symbol?.ContainingType?.MetadataName == "FromAttribute`1")
+                {
+                    return true;
+                }
+
+                // Fallback: name-based when attribute is unresolvable
+                string name = attr.Name.ToString();
+                if (name.StartsWith("From<", System.StringComparison.Ordinal) || name == "From")
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    internal static bool HasArbitraryAttribute(ITypeSymbol typeSymbol)
+    {
+        foreach (AttributeData attr in typeSymbol.GetAttributes())
+        {
+            INamedTypeSymbol? attrClass = attr.AttributeClass;
+            if (attrClass?.Name is "ArbitraryAttribute" or "Arbitrary" &&
+                attrClass.ContainingNamespace?.ToDisplayString() == "Conjecture.Core")
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
