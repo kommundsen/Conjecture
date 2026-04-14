@@ -23,5 +23,29 @@ jobs:
       - name: Test
         run: dotnet test src/Conjecture.slnx -c Release --no-build
 
+      - name: Check for deprecated packages
+        run: |
+          # xunit v2 is intentionally supported alongside v3, so exclude it
+          deprecated=$(dotnet list src/Conjecture.slnx package --deprecated 2>&1 \
+            | grep '> ' \
+            | grep -v '^   > xunit' \
+            || true)
+          if [ -n "$deprecated" ]; then
+            echo "::error::Unexpected deprecated NuGet packages detected:"
+            echo "$deprecated"
+            exit 1
+          fi
+
+      - name: Check for vulnerable packages
+        run: |
+          vulnerable=$(dotnet list src/Conjecture.slnx package --vulnerable 2>&1 \
+            | grep '> ' \
+            || true)
+          if [ -n "$vulnerable" ]; then
+            echo "::error::Vulnerable NuGet packages detected:"
+            echo "$vulnerable"
+            exit 1
+          fi
+
       - name: Pack
         run: dotnet pack src/Conjecture.slnx -c Release --no-build -o /tmp/packages
