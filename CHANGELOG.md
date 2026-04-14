@@ -8,6 +8,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Version
 
 ## [Unreleased]
 
+---
+
+## [0.8.0] — 2026-04-14
+
 ### Added
 
 **Analyzers** (new package `Conjecture.Analyzers`, bundled into `Conjecture.Core.nupkg`)
@@ -32,6 +36,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Version
 - `ConjectureKernelExtension` — Polyglot Notebooks auto-load
 
 **Core**
+- `IPropertyTest` and `IReproductionExport` interfaces for framework-agnostic attribute introspection
+- `ConjectureSettings.From(IPropertyTest, ILogger?)` factory for constructing settings from attribute data
+- `ConjectureStrategyRegistrar` for plugging in custom strategy resolution
 - `Generate.FromBytes<T>(ReadOnlySpan<byte>)` — deterministic replay from a fixed byte buffer
 - `Generate.DateTimeOffsets()` / `Generate.DateTimeOffsets(min, max)`
 - `Generate.TimeSpans()` / `Generate.TimeSpans(min, max)`
@@ -138,5 +145,6 @@ First public alpha release. All seven implementation phases are complete.
 - GitHub Actions release workflow (`v*` tag → NuGet publish)
 - Public API tracking (`PublicAPI.Shipped.txt`)
 
+[0.8.0]: https://github.com/kommundsen/Conjecture/releases/tag/v0.8.0
 [0.7.0]: https://github.com/kommundsen/Conjecture/releases/tag/v0.7.0
 [0.6.0-alpha.1]: https://github.com/kommundsen/Conjecture/releases/tag/v0.6.0-alpha.1
