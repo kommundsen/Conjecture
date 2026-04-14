@@ -1,12 +1,12 @@
 ---
-name: implement-cycle
-description: >
-  Execute the next incomplete TDD cycle from a GitHub tracking issue: Red → Green → Refactor → Verify → PR.
-  Use this skill whenever the user wants to work through the next planned cycle, progress the implementation plan, run the next TDD iteration, or says "next cycle" — even if they don't specify which one.
-  Triggers on phrases like "do the next cycle", "implement cycle X.Y", "implement the next cycle of #76", "work through phase 2", "continue the implementation plan", or "what's the next step in the plan".
+name: implement-cycle-stacked
 ---
 
-Execute the next incomplete TDD cycle from a GitHub tracking issue: Red → Green → Refactor → Verify → PR.
+Execute the next incomplete TDD cycle from a GitHub tracking issue using gh-stack stacked PRs: Red → Green → Refactor → Verify → PR.
+
+> **Requires gh-stack** (`gh extension install github/gh-stack`). This extension is currently in private preview — sign up at https://gh.io/stacksbeta. Use `/implement-cycle` if gh-stack is not available.
+
+Each cycle's PR is stacked on top of the previous cycle's branch, so reviewers can begin reviewing completed cycles while later ones are still being implemented.
 
 ## Input
 
@@ -43,11 +43,39 @@ Cycle <cycle-number>: <title>  (#<sub-issue-number>)
 
 ### 2. Create a branch
 
-Branch name format: `feat/#<parent>-#<sub>-<slug>`
+Branch name format: `feat/<parent>-<sub>-<slug>` (no `#` in the git branch name).
 
+First, update main:
 ```bash
-git checkout main && git pull && git checkout -b feat/<parent>-<sub>-<slug>
+git checkout main && git pull
 ```
+
+Then check whether a stack already exists for this parent:
+```bash
+gh stack view --json 2>/dev/null
+```
+
+- Command fails entirely → stop and tell the user gh-stack is not installed
+- Output contains a branch matching `feat/<parent>-` → `STACK_MODE=add`
+- Otherwise → `STACK_MODE=init`
+
+**`STACK_MODE=init`** — initialize a new stack:
+```bash
+gh stack init feat/<parent>-<sub>-<slug>
+```
+(creates and checks out the branch — do NOT also run `git checkout -b`)
+
+**`STACK_MODE=add`** — navigate to top of the existing stack, then add a new layer:
+```bash
+gh stack top
+gh stack add feat/<parent>-<sub>-<slug>
+```
+
+In both stack modes, sync to pick up any merges from previous cycles:
+```bash
+gh stack sync
+```
+If `gh stack sync` reports conflicts, stop and ask the user to resolve them before continuing.
 
 ### 3–5. TDD loop (max 3 iterations)
 
@@ -130,27 +158,26 @@ Stage all new and modified files from this cycle and commit with the suggested m
 
 ### 8. Push branch and create PR
 
-```bash
-git push -u origin feat/<parent>-<sub>-<slug>
+Fill in `.github/pull_request_template.md` with this cycle's description plus:
 ```
-
-Read `.github/pull_request_template.md` and fill it in:
-
-```bash
-gh pr create \
-  --repo kommundsen/Conjecture \
-  --title "[<cycle>] <title>" \
-  --base main \
-  --body "$(cat <<'EOF'
-<filled-in pull_request_template.md content>
-
 Closes #<sub-issue-number>
 Part of #<parent-issue-number>
-EOF
-)"
 ```
 
-Print the PR URL.
+Then submit the stack:
+```bash
+gh stack submit
+```
+
+When prompted for the PR title for this cycle's branch, enter: `[<cycle>] <title>`
+When prompted for the PR body, paste the filled-in template. Do NOT use `--auto` — the title and `Closes #N` body are load-bearing for GitHub's sub-issue tracking.
+
+For any previously-submitted PRs in the stack that are already open, accept the existing title as-is.
+
+Print the PR URL for this cycle's branch:
+```bash
+gh pr view feat/<parent>-<sub>-<slug> --json url --jq '.url'
+```
 
 ## Guidelines
 
@@ -158,4 +185,7 @@ Print the PR URL.
 - If the issue references a `/decision` step, invoke the `decision` skill before the loop.
 - Never create the PR if the build or tests are red.
 - Scope all changes to what the cycle issue demands.
-- Branch off `main` — never off another feature branch.
+- Branch off the previous cycle via `gh stack add`, not off `main` directly.
+- Always call `gh stack top` before `gh stack add` — `add` must be run from the topmost branch.
+- `gh stack sync` at Step 2 handles merges of previous cycles; do not manually rebase onto main.
+- `STACK_MODE` is a local variable for this invocation — re-detect it fresh each run.
