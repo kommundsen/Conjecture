@@ -8,32 +8,35 @@ namespace Conjecture.Interactive.Tests;
 public class StrategyExtensionsInteractiveHistogramTests
 {
     [Fact]
-    public void Histogram_DoubleStrategy_ReturnsSvgString()
+    public void Histogram_DoubleStrategy_ReturnsTextHistogram()
     {
         Strategy<double> strategy = Generate.Doubles(0.0, 100.0);
 
-        string svg = strategy.Histogram(sampleSize: 200, seed: 1UL);
+        string text = strategy.Histogram(sampleSize: 200, seed: 1UL);
 
-        Assert.Contains("<svg", svg, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("█", text);
+        Assert.Contains("│", text);
     }
 
     [Fact]
-    public void Histogram_IntStrategy_ReturnsSvgString()
+    public void Histogram_IntStrategy_ReturnsTextHistogram()
     {
         Strategy<int> strategy = Generate.Integers<int>(1, 100);
 
-        string svg = strategy.Histogram(sampleSize: 200, seed: 1UL);
+        string text = strategy.Histogram(sampleSize: 200, seed: 1UL);
 
-        Assert.Contains("<svg", svg, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("█", text);
+        Assert.Contains("│", text);
     }
 
     [Fact]
-    public void Histogram_SelectorOverload_ReturnsSvgString()
+    public void Histogram_SelectorOverload_ReturnsTextHistogram()
     {
         Strategy<string> strategy = Generate.Strings(minLength: 1, maxLength: 20);
 
-        string svg = strategy.Histogram(static x => (double)x.Length, sampleSize: 200, seed: 1UL);
+        string text = strategy.Histogram(static x => (double)x.Length, sampleSize: 200, seed: 1UL);
 
-        Assert.Contains("<svg", svg, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("█", text);
+        Assert.Contains("│", text);
     }
 }

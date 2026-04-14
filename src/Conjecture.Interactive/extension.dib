@@ -1,6 +1,0 @@
-#!meta
-{"kernelInfo":{"defaultKernelName":"csharp","items":[{"name":"csharp"}]}}
-
-#!csharp
-await new Conjecture.Interactive.ConjectureKernelExtension()
-    .OnLoadAsync(Microsoft.DotNet.Interactive.Kernel.Root);

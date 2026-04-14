@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Conjecture.Interactive.Tests;
 
-public class SvgHistogramTests
+public class TextHistogramTests
 {
     // A spread across 20 buckets: 20 evenly-spaced values from 0.5 to 19.5
     // ensures each bucket [0,1), [1,2), … [19,20) gets exactly one hit.
@@ -21,25 +21,27 @@ public class SvgHistogramTests
     }
 
     [Fact]
-    public void Render_AnyInput_OutputContainsSvgTag()
+    public void Render_AnyInput_OutputContainsBarCharacters()
     {
         IReadOnlyList<double> values = SpreadAcross20Buckets();
 
-        string svg = SvgHistogram.Render(values);
+        string text = TextHistogram.Render(values);
 
-        Assert.Contains("<svg", svg, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("█", text);
+        Assert.Contains("│", text);
     }
 
     [Fact]
-    public void Render_ValuesSpreadAcrossAllBuckets_ContainsExactlyBucketCountRects()
+    public void Render_ValuesSpreadAcrossAllBuckets_ContainsExactlyBucketCountLines()
     {
         IReadOnlyList<double> values = SpreadAcross20Buckets();
         int bucketCount = 20;
 
-        string svg = SvgHistogram.Render(values, bucketCount);
+        string text = TextHistogram.Render(values, bucketCount);
 
-        int rectCount = CountOccurrences(svg, "<rect");
-        Assert.Equal(bucketCount, rectCount);
+        // Each bucket is one line; lines are separated by newlines.
+        string[] lines = text.Split('\n');
+        Assert.Equal(bucketCount, lines.Length);
     }
 
     [Fact]
@@ -47,9 +49,9 @@ public class SvgHistogramTests
     {
         IReadOnlyList<double> values = [5.0, 5.0, 5.0, 5.0, 5.0];
 
-        string svg = SvgHistogram.Render(values);
+        string text = TextHistogram.Render(values);
 
-        Assert.NotNull(svg);
+        Assert.NotNull(text);
     }
 
     [Fact]
@@ -57,21 +59,8 @@ public class SvgHistogramTests
     {
         IReadOnlyList<double> values = [];
 
-        string svg = SvgHistogram.Render(values);
+        string text = TextHistogram.Render(values);
 
-        Assert.NotNull(svg);
-    }
-
-    private static int CountOccurrences(string source, string token)
-    {
-        int count = 0;
-        int index = 0;
-        while ((index = source.IndexOf(token, index, StringComparison.OrdinalIgnoreCase)) >= 0)
-        {
-            count++;
-            index += token.Length;
-        }
-
-        return count;
+        Assert.NotNull(text);
     }
 }

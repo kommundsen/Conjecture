@@ -5,12 +5,12 @@ using System.Collections.Generic;
 
 namespace Conjecture.Interactive;
 
-/// <summary>The result of a shrink trace: the ordered steps and an HTML rendering.</summary>
-public sealed class ShrinkTraceResult<T>(IReadOnlyList<ShrinkStep<T>> steps, string html)
+/// <summary>The result of a shrink trace: the ordered steps and a text rendering.</summary>
+public sealed class ShrinkTraceResult<T>(IReadOnlyList<ShrinkStep<T>> steps, string text)
 {
     /// <summary>The shrink steps, from initial failing value through each accepted reduction.</summary>
     public IReadOnlyList<ShrinkStep<T>> Steps { get; } = steps;
 
-    /// <summary>An HTML table rendering of the shrink trace.</summary>
-    public string Html { get; } = html;
+    /// <summary>A text table rendering of the shrink trace.</summary>
+    public string Text { get; } = text;
 }

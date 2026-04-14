@@ -45,14 +45,16 @@ public class StrategyExtensionsInteractiveShrinkTraceTests
     }
 
     [Fact]
-    public void ShrinkTrace_HtmlOutput_ContainsTableTag()
+    public void ShrinkTrace_TextOutput_ContainsTableStructure()
     {
         Strategy<int> strategy = Generate.Integers<int>(0, 100);
         ulong seed = FindSeedProducingValueAtLeast10(strategy);
 
         ShrinkTraceResult<int> result = strategy.ShrinkTrace(seed, static x => x >= 10);
 
-        Assert.Contains("<table", result.Html, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Step", result.Text);
+        Assert.Contains("│", result.Text);
+        Assert.Contains("─", result.Text);
     }
 
     private static ulong FindSeedProducingValueAtLeast10(Strategy<int> strategy)

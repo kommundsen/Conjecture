@@ -8,6 +8,17 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Version
 
 ## [Unreleased]
 
+### Changed
+
+- `Conjecture.Interactive`: all output switched from HTML/SVG to plain text
+- `SvgHistogram` renamed to `TextHistogram`
+- `ShrinkTraceResult<T>.Html` renamed to `.Text`
+
+### Removed
+
+- `ConjectureKernelExtension` — Polyglot Notebooks auto-load (`Microsoft.DotNet.Interactive` deprecated)
+- `Microsoft.DotNet.Interactive` dependency removed from `Conjecture.Interactive`
+
 ---
 
 ## [0.8.0] — 2026-04-14
