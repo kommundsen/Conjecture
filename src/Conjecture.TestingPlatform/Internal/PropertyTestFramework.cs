@@ -167,7 +167,8 @@ internal sealed class PropertyTestFramework : ITestFramework, IDataProducer
             return;
         }
 
-        ConjectureSettings settings = ConjectureSettings.From(attr);
+        MtpLogger mtpLogger = new(this, bus, parentNodeUid, sessionUid);
+        ConjectureSettings settings = ConjectureSettings.From(attr, mtpLogger);
         using ExampleDatabase db = new(Path.Combine(settings.DatabasePath, "conjecture.db"), settings.Logger);
 
         Task Test(ConjectureData data)
