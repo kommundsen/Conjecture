@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,13 +11,13 @@ using Conjecture.Core.Internal;
 
 namespace Conjecture.Interactive;
 
-/// <summary>Extension methods for rendering Strategy samples as HTML in interactive notebooks.</summary>
+/// <summary>Extension methods for rendering Strategy samples as text for interactive exploration.</summary>
 public static class StrategyExtensionsInteractive
 {
     private const int PreviewMaxCount = 100;
     private const int SampleTableMaxCount = 50;
 
-    /// <summary>Renders up to <paramref name="count"/> sampled values in a single-row HTML table.</summary>
+    /// <summary>Renders up to <paramref name="count"/> sampled values as a comma-separated string.</summary>
     public static string Preview<T>(this Strategy<T> strategy, int count = 20, ulong? seed = null)
     {
         bool capped = count > PreviewMaxCount;
@@ -26,55 +25,72 @@ public static class StrategyExtensionsInteractive
         IReadOnlyList<T> samples = DataGen.Sample(strategy, effective, seed);
 
         StringBuilder sb = new();
-        sb.Append("<table><tr>");
-        foreach (T value in samples)
+        for (int i = 0; i < samples.Count; i++)
         {
-            sb.Append("<td>");
-            sb.Append(WebUtility.HtmlEncode(value?.ToString() ?? string.Empty));
-            sb.Append("</td>");
-        }
+            if (i > 0)
+            {
+                sb.Append(", ");
+            }
 
-        sb.Append("</tr></table>");
+            sb.Append(samples[i]?.ToString() ?? "");
+        }
 
         if (capped)
         {
-            sb.Append("<p>Showing ");
+            sb.AppendLine();
+            sb.Append("(Showing ");
             sb.Append(PreviewMaxCount);
-            sb.Append(" values (capped from ");
+            sb.Append(" values, capped from ");
             sb.Append(count);
-            sb.Append(").</p>");
+            sb.Append(')');
         }
 
         return sb.ToString();
     }
 
-    /// <summary>Renders up to <paramref name="count"/> sampled values in a two-column index/value HTML table.</summary>
+    /// <summary>Renders up to <paramref name="count"/> sampled values in a two-column text table.</summary>
     public static string SampleTable<T>(this Strategy<T> strategy, int count = 10, ulong? seed = null)
     {
         bool capped = count > SampleTableMaxCount;
         int effective = capped ? SampleTableMaxCount : count;
         IReadOnlyList<T> samples = DataGen.Sample(strategy, effective, seed);
 
-        StringBuilder sb = new();
-        sb.Append("<table><thead><tr><th>Index</th><th>Value</th></tr></thead><tbody>");
+        // Compute column widths.
+        int indexWidth = Math.Max(1, samples.Count.ToString().Length);
+        int valueWidth = 5; // minimum "Value" header length
+        string[] values = new string[samples.Count];
         for (int i = 0; i < samples.Count; i++)
         {
-            sb.Append("<tr><th scope=\"row\">");
-            sb.Append(i);
-            sb.Append("</th><td>");
-            sb.Append(WebUtility.HtmlEncode(samples[i]?.ToString() ?? string.Empty));
-            sb.Append("</td></tr>");
+            values[i] = samples[i]?.ToString() ?? "";
+            if (values[i].Length > valueWidth)
+            {
+                valueWidth = values[i].Length;
+            }
         }
 
-        sb.Append("</tbody></table>");
+        StringBuilder sb = new();
+        sb.Append(new string(' ', indexWidth));
+        sb.Append(" # │ Value");
+        sb.AppendLine();
+        sb.Append(new string('─', indexWidth + 2));
+        sb.Append('┼');
+        sb.Append(new string('─', valueWidth + 2));
+        for (int i = 0; i < samples.Count; i++)
+        {
+            sb.AppendLine();
+            sb.Append(i.ToString().PadLeft(indexWidth + 2));
+            sb.Append(" │ ");
+            sb.Append(values[i]);
+        }
 
         if (capped)
         {
-            sb.Append("<p>Showing ");
+            sb.AppendLine();
+            sb.Append("(Showing ");
             sb.Append(SampleTableMaxCount);
-            sb.Append(" values (capped from ");
+            sb.Append(" values, capped from ");
             sb.Append(count);
-            sb.Append(").</p>");
+            sb.Append(')');
         }
 
         return sb.ToString();
@@ -128,24 +144,39 @@ public static class StrategyExtensionsInteractive
 
         Shrinker.ShrinkAsync(initialData.IRNodes, IsInteresting).GetAwaiter().GetResult();
 
-        StringBuilder sb = new();
-        sb.Append("<table><thead><tr><th>Step</th><th>Value</th></tr></thead><tbody>");
+        // Compute column widths.
+        int stepWidth = Math.Max(4, steps.Count.ToString().Length); // "Step" header
+        int valueWidth = 5; // "Value" header
+        string[] rendered = new string[steps.Count];
         for (int i = 0; i < steps.Count; i++)
         {
-            sb.Append("<tr><td>");
-            sb.Append(i);
-            sb.Append("</td><td>");
-            sb.Append(WebUtility.HtmlEncode(steps[i].Value?.ToString() ?? string.Empty));
-            sb.Append("</td></tr>");
+            rendered[i] = steps[i].Value?.ToString() ?? "";
+            if (rendered[i].Length > valueWidth)
+            {
+                valueWidth = rendered[i].Length;
+            }
         }
 
-        sb.Append("</tbody></table>");
+        StringBuilder sb = new();
+        sb.Append("Step".PadLeft(stepWidth));
+        sb.Append(" │ Value");
+        sb.AppendLine();
+        sb.Append(new string('─', stepWidth));
+        sb.Append('┼');
+        sb.Append(new string('─', valueWidth + 2));
+        for (int i = 0; i < steps.Count; i++)
+        {
+            sb.AppendLine();
+            sb.Append(i.ToString().PadLeft(stepWidth));
+            sb.Append(" │ ");
+            sb.Append(rendered[i]);
+        }
 
         return new ShrinkTraceResult<T>(steps, sb.ToString());
     }
 
 #pragma warning disable RS0026 // multiple overloads with optional parameters
-    /// <summary>Renders a histogram SVG of sampled values from <paramref name="strategy"/>.</summary>
+    /// <summary>Renders a text histogram of sampled values from <paramref name="strategy"/>.</summary>
     public static string Histogram<T>(this Strategy<T> strategy, int sampleSize = 1000, int bucketCount = 20, ulong? seed = null)
         where T : IConvertible
     {
@@ -156,10 +187,10 @@ public static class StrategyExtensionsInteractive
             doubles.Add(Convert.ToDouble(value));
         }
 
-        return SvgHistogram.Render(doubles, bucketCount);
+        return TextHistogram.Render(doubles, bucketCount);
     }
 
-    /// <summary>Renders a histogram SVG of sampled values projected by <paramref name="selector"/>.</summary>
+    /// <summary>Renders a text histogram of sampled values projected by <paramref name="selector"/>.</summary>
     public static string Histogram<T>(this Strategy<T> strategy, Func<T, double> selector, int sampleSize = 1000, int bucketCount = 20, ulong? seed = null)
     {
         IReadOnlyList<T> samples = DataGen.Sample(strategy, sampleSize, seed);
@@ -169,7 +200,7 @@ public static class StrategyExtensionsInteractive
             doubles.Add(selector(value));
         }
 
-        return SvgHistogram.Render(doubles, bucketCount);
+        return TextHistogram.Render(doubles, bucketCount);
     }
 #pragma warning restore RS0026
 }

@@ -1,16 +1,12 @@
 # Conjecture.Interactive
 
-[Polyglot Notebooks](https://github.com/dotnet/interactive) extension for [Conjecture.NET](https://github.com/kommundsen/Conjecture). Explore strategy output interactively with sample tables, histograms, and shrink traces.
+Strategy visualization and exploration utilities for [Conjecture.NET](https://github.com/kommundsen/Conjecture). Explore strategy output with sample tables, histograms, and shrink traces — all rendered as plain text for terminals and file-based apps.
 
 ## Install
 
-In a `.dib` notebook cell:
-
 ```
-#r "nuget: Conjecture.Interactive"
+dotnet add package Conjecture.Interactive
 ```
-
-The kernel extension loads automatically and registers HTML formatters for `Strategy<T>`.
 
 ## Usage
 
@@ -19,24 +15,25 @@ using Conjecture.Core;
 using Conjecture.Interactive;
 
 // Quick-look at sample values
-Generate.Integers<int>(0, 100).Preview()
+Console.WriteLine(Generate.Integers<int>(0, 100).Preview());
 
-// Distribution histogram (SVG)
-Generate.Doubles(0, 1).Histogram()
+// Distribution histogram (text bar chart)
+Console.WriteLine(Generate.Doubles(0, 1).Histogram());
 
 // Step-by-step shrink trace
-Generate.Integers<int>().ShrinkTrace(seed: 42, x => x < 1000)
+ShrinkTraceResult<int> trace = Generate.Integers<int>().ShrinkTrace(seed: 42, x => x < 1000);
+Console.WriteLine(trace.Text);
 ```
 
 ## API
 
 | Method | Returns | Description |
 |---|---|---|
-| `.Preview(count, seed)` | `string` (HTML) | Sample values in a single-row table |
-| `.SampleTable(count, seed)` | `string` (HTML) | Indexed two-column sample table |
-| `.Histogram(sampleSize, bucketCount, seed)` | `string` (SVG) | Distribution histogram |
-| `.Histogram(selector, sampleSize, bucketCount, seed)` | `string` (SVG) | Histogram with projection function |
-| `.ShrinkTrace(seed, failingProperty)` | `ShrinkTraceResult<T>` | Step-by-step shrink trace with HTML |
+| `.Preview(count, seed)` | `string` | Comma-separated sample values |
+| `.SampleTable(count, seed)` | `string` | Indexed two-column text table |
+| `.Histogram(sampleSize, bucketCount, seed)` | `string` | Distribution bar chart |
+| `.Histogram(selector, sampleSize, bucketCount, seed)` | `string` | Bar chart with projection function |
+| `.ShrinkTrace(seed, failingProperty)` | `ShrinkTraceResult<T>` | Step-by-step shrink trace with `.Text` and `.Steps` |
 
 ## Links
 

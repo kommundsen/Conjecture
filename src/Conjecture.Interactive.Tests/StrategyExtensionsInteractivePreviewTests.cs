@@ -3,8 +3,6 @@
 
 using Conjecture.Core;
 
-using Conjecture.Interactive;
-
 namespace Conjecture.Interactive.Tests;
 
 public class StrategyExtensionsInteractivePreviewTests
@@ -16,11 +14,11 @@ public class StrategyExtensionsInteractivePreviewTests
     {
         Strategy<int> strategy = Generate.Integers<int>(1, 1000);
 
-        string html = strategy.Preview();
+        string text = strategy.Preview();
 
-        // 20 <tr> rows for data (thead adds one more, but easiest proxy is counting the value cells)
-        int tdCount = CountOccurrences(html, "<td");
-        Assert.Equal(20, tdCount);
+        // 20 values separated by ", " means 19 commas.
+        int commaCount = CountOccurrences(text, ", ");
+        Assert.Equal(19, commaCount);
     }
 
     [Fact]
@@ -28,10 +26,12 @@ public class StrategyExtensionsInteractivePreviewTests
     {
         Strategy<int> strategy = Generate.Integers<int>(1, 1000);
 
-        string html = strategy.Preview(150);
+        string text = strategy.Preview(150);
 
-        int tdCount = CountOccurrences(html, "<td");
-        Assert.Equal(100, tdCount);
+        // 100 values = 99 ", " separators on the first line.
+        string valuesLine = text.Split('\n')[0];
+        int commaCount = CountOccurrences(valuesLine, ", ");
+        Assert.Equal(99, commaCount);
     }
 
     [Fact]
@@ -39,19 +39,14 @@ public class StrategyExtensionsInteractivePreviewTests
     {
         Strategy<int> strategy = Generate.Integers<int>(1, 1000);
 
-        string html = strategy.Preview(150);
+        string text = strategy.Preview(150);
 
-        // The output must mention capping/truncation in some form
-        bool hasTruncationNotice =
-            html.Contains("100", StringComparison.OrdinalIgnoreCase) &&
-            (html.Contains("capped", StringComparison.OrdinalIgnoreCase) ||
-             html.Contains("truncat", StringComparison.OrdinalIgnoreCase) ||
-             html.Contains("warn", StringComparison.OrdinalIgnoreCase));
-        Assert.True(hasTruncationNotice, "Expected a truncation/cap notice in the HTML output.");
+        Assert.Contains("capped", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("100", text);
     }
 
     [Fact]
-    public void Preview_SameSeedTwice_ProducesIdenticalHtml()
+    public void Preview_SameSeedTwice_ProducesIdenticalOutput()
     {
         Strategy<int> strategy = Generate.Integers<int>(1, 1000);
 
@@ -62,13 +57,14 @@ public class StrategyExtensionsInteractivePreviewTests
     }
 
     [Fact]
-    public void Preview_ReturnsHtmlTableTag()
+    public void Preview_ReturnsCommaSeparatedValues()
     {
         Strategy<int> strategy = Generate.Just(7);
 
-        string html = strategy.Preview();
+        string text = strategy.Preview();
 
-        Assert.Contains("<table", html, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("7", text);
+        Assert.Contains(", ", text);
     }
 
     // --- SampleTable ---
@@ -78,10 +74,11 @@ public class StrategyExtensionsInteractivePreviewTests
     {
         Strategy<int> strategy = Generate.Integers<int>(1, 1000);
 
-        string html = strategy.SampleTable();
+        string text = strategy.SampleTable();
 
-        int tdCount = CountOccurrences(html, "<td");
-        Assert.Equal(10, tdCount);
+        // Header line + separator line + 10 data lines = 12 lines total.
+        string[] lines = text.Split('\n');
+        Assert.Equal(12, lines.Length);
     }
 
     [Fact]
@@ -89,20 +86,24 @@ public class StrategyExtensionsInteractivePreviewTests
     {
         Strategy<int> strategy = Generate.Integers<int>(1, 1000);
 
-        string html = strategy.SampleTable(60);
+        string text = strategy.SampleTable(60);
 
-        int tdCount = CountOccurrences(html, "<td");
-        Assert.Equal(50, tdCount);
+        // Header + separator + 50 data lines + capped notice = 53 lines.
+        string[] lines = text.Split('\n');
+        Assert.Equal(53, lines.Length);
     }
 
     [Fact]
-    public void SampleTable_ReturnsHtmlTableTag()
+    public void SampleTable_ContainsTableHeaderAndSeparator()
     {
         Strategy<int> strategy = Generate.Just(99);
 
-        string html = strategy.SampleTable();
+        string text = strategy.SampleTable();
 
-        Assert.Contains("<table", html, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("│", text);
+        Assert.Contains("─", text);
+        Assert.Contains("#", text);
+        Assert.Contains("Value", text);
     }
 
     // --- helpers ---

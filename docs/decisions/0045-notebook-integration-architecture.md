@@ -1,7 +1,7 @@
 # 0045. Notebook Integration Architecture
 
 **Date:** 2026-04-12
-**Status:** Accepted
+**Status:** Superseded by [0047](0047-remove-dotnet-interactive-dependency.md)
 
 ## Context
 

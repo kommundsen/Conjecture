@@ -36,8 +36,8 @@ src/
 ├── Conjecture.Formatters.Tests # Formatter tests
 ├── Conjecture.Time             # TimeProvider strategies (Conjecture.Time package)
 ├── Conjecture.Time.Tests       # Time strategy tests
-├── Conjecture.Interactive      # Polyglot Notebooks extension (Conjecture.Interactive package)
-├── Conjecture.Interactive.Tests # Interactive extension tests
+├── Conjecture.Interactive      # Strategy visualization and exploration (Conjecture.Interactive package)
+├── Conjecture.Interactive.Tests # Interactive exploration tests
 ├── Conjecture.Tool             # CLI tool (conjecture generate / conjecture plan)
 ├── Conjecture.Tool.Tests       # CLI tool tests
 ├── Conjecture.Mcp              # MCP server
