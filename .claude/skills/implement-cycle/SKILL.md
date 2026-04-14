@@ -43,11 +43,44 @@ Cycle <cycle-number>: <title>  (#<sub-issue-number>)
 
 ### 2. Create a branch
 
-Branch name format: `feat/#<parent>-#<sub>-<slug>`
+Branch name format: `feat/<parent>-<sub>-<slug>` (no `#` in the git branch name).
 
+First, update main:
 ```bash
-git checkout main && git pull && git checkout -b feat/<parent>-<sub>-<slug>
+git checkout main && git pull
 ```
+
+Then check whether gh-stack is available and whether a stack already exists for this parent:
+```bash
+gh stack view --json 2>/dev/null
+```
+
+- Command fails entirely → `STACK_MODE=unavailable`
+- Output contains a branch matching `feat/<parent>-` → `STACK_MODE=add`
+- Otherwise → `STACK_MODE=init`
+
+**`STACK_MODE=unavailable`** — announce fallback, create branch manually:
+```bash
+git checkout -b feat/<parent>-<sub>-<slug>
+```
+
+**`STACK_MODE=init`** — initialize a new stack:
+```bash
+gh stack init feat/<parent>-<sub>-<slug>
+```
+(creates and checks out the branch — do NOT also run `git checkout -b`)
+
+**`STACK_MODE=add`** — navigate to top of the existing stack, then add a new layer:
+```bash
+gh stack top
+gh stack add feat/<parent>-<sub>-<slug>
+```
+
+In both stack modes (`init` and `add`), sync to pick up any merges from previous cycles:
+```bash
+gh stack sync
+```
+If `gh stack sync` reports conflicts, stop and ask the user to resolve them before continuing.
 
 ### 3–5. TDD loop (max 3 iterations)
 
@@ -130,6 +163,8 @@ Stage all new and modified files from this cycle and commit with the suggested m
 
 ### 8. Push branch and create PR
 
+**`STACK_MODE=unavailable`** — push and create a PR against `main` (same as before):
+
 ```bash
 git push -u origin feat/<parent>-<sub>-<slug>
 ```
@@ -150,7 +185,28 @@ EOF
 )"
 ```
 
-Print the PR URL.
+**`STACK_MODE=init` or `STACK_MODE=add`** — submit the stack:
+
+Fill in `.github/pull_request_template.md` with this cycle's description plus:
+```
+Closes #<sub-issue-number>
+Part of #<parent-issue-number>
+```
+
+Then run:
+```bash
+gh stack submit
+```
+
+When prompted for the PR title for this cycle's branch, enter: `[<cycle>] <title>`
+When prompted for the PR body, paste the filled-in template. Do NOT use `--auto` — the title and `Closes #N` body are load-bearing for GitHub's sub-issue tracking.
+
+For any previously-submitted PRs in the stack that are already open, accept the existing title as-is.
+
+Print the PR URL for this cycle's branch:
+```bash
+gh pr view feat/<parent>-<sub>-<slug> --json url --jq '.url'
+```
 
 ## Guidelines
 
@@ -158,4 +214,7 @@ Print the PR URL.
 - If the issue references a `/decision` step, invoke the `decision` skill before the loop.
 - Never create the PR if the build or tests are red.
 - Scope all changes to what the cycle issue demands.
-- Branch off `main` — never off another feature branch.
+- When gh-stack is available: branch off the previous cycle via `gh stack add`, not off `main` directly. When unavailable: branch off `main`.
+- Always call `gh stack top` before `gh stack add` — `add` must be run from the topmost branch.
+- `gh stack sync` at Step 2 handles merges of previous cycles; do not manually rebase onto main.
+- `STACK_MODE` is a local variable for this invocation — re-detect it fresh each run.
