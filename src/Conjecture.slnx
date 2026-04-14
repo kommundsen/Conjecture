@@ -26,4 +26,6 @@
   <Project Path="Conjecture.Time.Tests/Conjecture.Time.Tests.csproj" />
   <Project Path="Conjecture.Interactive/Conjecture.Interactive.csproj" />
   <Project Path="Conjecture.Interactive.Tests/Conjecture.Interactive.Tests.csproj" />
+  <Project Path="Conjecture.TestingPlatform/Conjecture.TestingPlatform.csproj" />
+  <Project Path="Conjecture.TestingPlatform.Tests/Conjecture.TestingPlatform.Tests.csproj" />
 </Solution>
