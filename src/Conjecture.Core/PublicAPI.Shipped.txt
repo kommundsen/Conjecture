@@ -159,3 +159,26 @@ static Conjecture.Core.StrategyExtensionProperties.extension<T>(Conjecture.Core.
 static Conjecture.Core.Generate.Identifiers(int minPrefixLength = 1, int maxPrefixLength = 6, int minDigits = 1, int maxDigits = 4) -> Conjecture.Core.Strategy<string!>!
 static Conjecture.Core.Generate.NumericStrings(int minDigits = 1, int maxDigits = 6, string? prefix = null, string? suffix = null) -> Conjecture.Core.Strategy<string!>!
 static Conjecture.Core.Generate.VersionStrings(int maxMajor = 9, int maxMinor = 9, int maxPatch = 9) -> Conjecture.Core.Strategy<string!>!
+Conjecture.Core.ConjectureStrategyRegistrar
+Conjecture.Core.IPropertyTest
+Conjecture.Core.IPropertyTest.DeadlineMs.get -> int
+Conjecture.Core.IPropertyTest.MaxExamples.get -> int
+Conjecture.Core.IPropertyTest.MaxStrategyRejections.get -> int
+Conjecture.Core.IPropertyTest.Seed.get -> ulong
+Conjecture.Core.IPropertyTest.Targeting.get -> bool
+Conjecture.Core.IPropertyTest.TargetingProportion.get -> double
+Conjecture.Core.IPropertyTest.UseDatabase.get -> bool
+Conjecture.Core.IReproductionExport
+Conjecture.Core.IReproductionExport.ExportReproOnFailure.get -> bool
+Conjecture.Core.IReproductionExport.ReproOutputPath.get -> string!
+static Conjecture.Core.ConjectureSettings.From(Conjecture.Core.IPropertyTest! attr, Microsoft.Extensions.Logging.ILogger? logger = null) -> Conjecture.Core.ConjectureSettings!
+static Conjecture.Core.ConjectureStrategyRegistrar.Register(System.Func<System.Type!, object?>! strategyFactory) -> void
+static Conjecture.Core.Generate.DateOnlyValues() -> Conjecture.Core.Strategy<System.DateOnly>!
+static Conjecture.Core.Generate.DateOnlyValues(System.DateOnly min, System.DateOnly max) -> Conjecture.Core.Strategy<System.DateOnly>!
+static Conjecture.Core.Generate.DateTimeOffsets() -> Conjecture.Core.Strategy<System.DateTimeOffset>!
+static Conjecture.Core.Generate.DateTimeOffsets(System.DateTimeOffset min, System.DateTimeOffset max) -> Conjecture.Core.Strategy<System.DateTimeOffset>!
+static Conjecture.Core.Generate.FromBytes<T>(System.ReadOnlySpan<byte> buffer) -> Conjecture.Core.Strategy<T>!
+static Conjecture.Core.Generate.TimeOnlyValues() -> Conjecture.Core.Strategy<System.TimeOnly>!
+static Conjecture.Core.Generate.TimeOnlyValues(System.TimeOnly min, System.TimeOnly max) -> Conjecture.Core.Strategy<System.TimeOnly>!
+static Conjecture.Core.Generate.TimeSpans() -> Conjecture.Core.Strategy<System.TimeSpan>!
+static Conjecture.Core.Generate.TimeSpans(System.TimeSpan min, System.TimeSpan max) -> Conjecture.Core.Strategy<System.TimeSpan>!
