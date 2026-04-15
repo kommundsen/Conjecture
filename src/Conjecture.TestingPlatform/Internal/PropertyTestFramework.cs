@@ -7,10 +7,12 @@ using System.Reflection;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
 
+using Microsoft.Testing.Platform.CommandLine;
 using Microsoft.Testing.Platform.Extensions.Messages;
 using Microsoft.Testing.Platform.Extensions.TestFramework;
 using Microsoft.Testing.Platform.Messages;
 using Microsoft.Testing.Platform.Requests;
+using Microsoft.Testing.Platform.Services;
 using Microsoft.Testing.Platform.TestHost;
 
 namespace Conjecture.TestingPlatform.Internal;
@@ -19,20 +21,24 @@ internal sealed class PropertyTestFramework : ITestFramework, IDataProducer
 {
     private readonly IEnumerable<Assembly> assemblies;
     private readonly Func<Type, bool>? typePredicate;
+    private readonly ICommandLineOptions? commandLineOptions;
 
     internal PropertyTestFramework(IServiceProvider serviceProvider)
-        : this(serviceProvider, AppDomain.CurrentDomain.GetAssemblies(), null)
+        : this(serviceProvider, AppDomain.CurrentDomain.GetAssemblies(), null,
+               serviceProvider.GetCommandLineOptions())
     {
     }
 
     internal PropertyTestFramework(
         IServiceProvider serviceProvider,
         IEnumerable<Assembly> assemblies,
-        Func<Type, bool>? typePredicate = null)
+        Func<Type, bool>? typePredicate = null,
+        ICommandLineOptions? commandLineOptions = null)
     {
         _ = serviceProvider;
         this.assemblies = assemblies;
         this.typePredicate = typePredicate;
+        this.commandLineOptions = commandLineOptions;
     }
 
     public string Uid => "Conjecture.TestingPlatform";
@@ -169,6 +175,24 @@ internal sealed class PropertyTestFramework : ITestFramework, IDataProducer
 
         MtpLogger mtpLogger = new(this, bus, parentNodeUid, sessionUid);
         ConjectureSettings settings = ConjectureSettings.From(attr, mtpLogger);
+
+        if (commandLineOptions is not null)
+        {
+            // MTP guarantees args is non-empty when TryGetOptionArgumentList returns true.
+            if (commandLineOptions.TryGetOptionArgumentList(ConjectureCommandLineOptions.SeedOption, out string[]? seedArgs)
+                && ulong.TryParse(seedArgs[0], out ulong seed))
+            {
+                settings = settings with { Seed = seed };
+            }
+
+            // MTP guarantees args is non-empty when TryGetOptionArgumentList returns true.
+            if (commandLineOptions.TryGetOptionArgumentList(ConjectureCommandLineOptions.MaxExamplesOption, out string[]? maxArgs)
+                && int.TryParse(maxArgs[0], out int max))
+            {
+                settings = settings with { MaxExamples = max };
+            }
+        }
+
         using ExampleDatabase db = new(Path.Combine(settings.DatabasePath, "conjecture.db"), settings.Logger);
 
         Task Test(ConjectureData data)
