@@ -8,6 +8,18 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Version
 
 ## [Unreleased]
 
+---
+
+## [0.9.0] — 2026-04-15
+
+### Added
+
+**TestingPlatform** (new package `Conjecture.TestingPlatform`)
+- Native Microsoft Testing Platform adapter — test project runs as a self-contained executable (`OutputType=Exe`), no framework runner required
+- `[Property]` attribute with full settings surface: `MaxExamples`, `Seed`, `UseDatabase`, `MaxStrategyRejections`, `DeadlineMs`, `Targeting`, `TargetingProportion`, `ExportReproOnFailure`, `ReproOutputPath`
+- CLI options `--conjecture-seed` and `--conjecture-max-examples` to override settings globally at run time
+- `ITrxReportCapability` support for TRX report generation via `dotnet test --report-trx`
+
 ### Changed
 
 - `Conjecture.Interactive`: all output switched from HTML/SVG to plain text
@@ -156,6 +168,7 @@ First public alpha release. All seven implementation phases are complete.
 - GitHub Actions release workflow (`v*` tag → NuGet publish)
 - Public API tracking (`PublicAPI.Shipped.txt`)
 
+[0.9.0]: https://github.com/kommundsen/Conjecture/releases/tag/v0.9.0
 [0.8.0]: https://github.com/kommundsen/Conjecture/releases/tag/v0.8.0
 [0.7.0]: https://github.com/kommundsen/Conjecture/releases/tag/v0.7.0
 [0.6.0-alpha.1]: https://github.com/kommundsen/Conjecture/releases/tag/v0.6.0-alpha.1
