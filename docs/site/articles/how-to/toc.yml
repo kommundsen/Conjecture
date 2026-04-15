@@ -1,6 +1,8 @@
 items:
   - name: Install
     href: install.md
+  - name: Use the MTP adapter
+    href: use-mtp-adapter.md
   - name: Reproduce a failure
     href: reproduce-a-failure.md
   - name: Export counterexamples to files
