@@ -7,6 +7,7 @@ using System.Reflection;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
 
+using Microsoft.Testing.Extensions.TrxReport.Abstractions;
 using Microsoft.Testing.Platform.CommandLine;
 using Microsoft.Testing.Platform.Extensions.Messages;
 using Microsoft.Testing.Platform.Extensions.TestFramework;
@@ -22,6 +23,7 @@ internal sealed class PropertyTestFramework : ITestFramework, IDataProducer
     private readonly IEnumerable<Assembly> assemblies;
     private readonly Func<Type, bool>? typePredicate;
     private readonly ICommandLineOptions? commandLineOptions;
+    private readonly PropertyTestFrameworkCapabilities? capabilities;
 
     internal PropertyTestFramework(IServiceProvider serviceProvider)
         : this(serviceProvider, AppDomain.CurrentDomain.GetAssemblies(), null,
@@ -33,12 +35,14 @@ internal sealed class PropertyTestFramework : ITestFramework, IDataProducer
         IServiceProvider serviceProvider,
         IEnumerable<Assembly> assemblies,
         Func<Type, bool>? typePredicate = null,
-        ICommandLineOptions? commandLineOptions = null)
+        ICommandLineOptions? commandLineOptions = null,
+        PropertyTestFrameworkCapabilities? capabilities = null)
     {
         _ = serviceProvider;
         this.assemblies = assemblies;
         this.typePredicate = typePredicate;
         this.commandLineOptions = commandLineOptions;
+        this.capabilities = capabilities;
     }
 
     public string Uid => "Conjecture.TestingPlatform";
@@ -154,6 +158,11 @@ internal sealed class PropertyTestFramework : ITestFramework, IDataProducer
             {
                 string msg = TestCaseHelper.BuildExampleFailureMessage(example, parameters, ex);
                 childNode.Properties.Add(new FailedTestNodeStateProperty(ex, msg));
+                if (capabilities?.TrxEnabled == true)
+                {
+                    childNode.Properties.Add(new TrxExceptionProperty(msg, ex.StackTrace));
+                }
+
                 await bus.PublishAsync(this, new TestNodeUpdateMessage(sessionUid, childNode, parentNodeUid));
 
                 TestNode parentNode = new()
@@ -162,6 +171,11 @@ internal sealed class PropertyTestFramework : ITestFramework, IDataProducer
                     DisplayName = displayName,
                 };
                 parentNode.Properties.Add(new FailedTestNodeStateProperty(ex, msg));
+                if (capabilities?.TrxEnabled == true)
+                {
+                    parentNode.Properties.Add(new TrxExceptionProperty(msg, ex.StackTrace));
+                }
+
                 await bus.PublishAsync(this, new TestNodeUpdateMessage(sessionUid, parentNode));
                 exampleFailed = true;
                 break;
@@ -223,6 +237,10 @@ internal sealed class PropertyTestFramework : ITestFramework, IDataProducer
         {
             string failureMessage = TestCaseHelper.BuildFailureMessage(result, parameters);
             resultNode.Properties.Add(new FailedTestNodeStateProperty(failureMessage));
+            if (capabilities?.TrxEnabled == true)
+            {
+                resultNode.Properties.Add(new TrxExceptionProperty(failureMessage, null));
+            }
         }
 
         await bus.PublishAsync(this, new TestNodeUpdateMessage(sessionUid, resultNode));
