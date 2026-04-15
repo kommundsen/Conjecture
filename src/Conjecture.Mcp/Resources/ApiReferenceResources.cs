@@ -21,6 +21,7 @@ internal static class ApiReferenceResources
         ("attributes",           "Test Attributes",            "[Property], [Example], [From<T>], [FromFactory], [ConjectureSettings]"),
         ("targeted-testing",     "Targeted Testing",           "Target.Maximize, Target.Minimize, IGeneratorContext.Target, and targeting settings"),
         ("recursive-strategies", "Recursive Strategies",       "Generate.Recursive<T> for tree-shaped and self-referential types"),
+        ("testing-platform",     "Microsoft Testing Platform Adapter", "Conjecture.TestingPlatform setup, [Property] attribute, CLI options, TRX reports, and CrashDump"),
     ];
 
     internal static ValueTask<ListResourcesResult> HandleListResources(

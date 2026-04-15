@@ -2,7 +2,7 @@
 
 ## `[Property]`
 
-Marks a method as a Conjecture property test. Available on all adapters (xUnit, NUnit, MSTest).
+Marks a method as a Conjecture property test. Available on all adapters (xUnit, NUnit, MSTest, and Microsoft Testing Platform).
 
 ```csharp
 // xUnit
@@ -19,14 +19,35 @@ public void MyProperty(int x, string s) { ... }
 using Conjecture.MSTest;
 [Property]
 public void MyProperty(int x, string s) { ... }
+
+// Microsoft Testing Platform
+using Conjecture.TestingPlatform;
+[Property]
+public void MyProperty(int x, string s) { ... }
 ```
 
-**Parameters:**
+**Parameters (xUnit / NUnit / MSTest adapters):**
 
 | Parameter | Type | Default | Notes |
 |-----------|------|---------|-------|
 | `Seed` | `ulong` | random | Hex literal for deterministic replay, e.g. `0xDEAD` |
 | `MaxExamples` | `int` | 100 | Override the example count for this test |
+
+**Parameters (Microsoft Testing Platform adapter — `Conjecture.TestingPlatform`):**
+
+`PropertyAttribute` in the MTP adapter carries the **full settings surface directly** — no separate `[ConjectureSettings]` attribute exists in that namespace.
+
+| Parameter | Type | Default | Notes |
+|-----------|------|---------|-------|
+| `Seed` | `ulong?` | `null` (random) | Fixed seed for deterministic replay |
+| `MaxExamples` | `int` | `100` | Number of examples to generate |
+| `UseDatabase` | `bool` | `true` | Whether to use the SQLite example cache |
+| `MaxStrategyRejections` | `int` | `5` | Max strategy rejections per value |
+| `DeadlineMs` | `int` | `0` | Per-example deadline in ms; `0` = no deadline |
+| `Targeting` | `bool` | `true` | Whether to run a targeting phase |
+| `TargetingProportion` | `double` | `0.5` | Fraction of budget for targeting |
+| `ExportReproOnFailure` | `bool` | `false` | Write reproduction file on failure |
+| `ReproOutputPath` | `string` | `".conjecture/repros/"` | Output path for reproduction files |
 
 ## `[ConjectureSettings]`
 

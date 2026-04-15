@@ -84,3 +84,17 @@ public void MyTest(int x) { ... }
 ```
 
 On failure, a file is written to `ReproOutputPath` with the seed and minimal counterexample, ready to paste into a test class for deterministic replay.
+
+## CLI Overrides (MTP Adapter Only)
+
+When running under `Conjecture.TestingPlatform`, two CLI flags override settings globally for all properties in the run:
+
+- `--conjecture-seed <ulong>` — forces a fixed seed for all property runs
+- `--conjecture-max-examples <int>` — overrides `MaxExamples` for all properties
+
+```bash
+dotnet run -- --conjecture-seed 42
+dotnet test -- --conjecture-max-examples 1000
+```
+
+These flags are not available in the xUnit, NUnit, or MSTest adapters.
