@@ -6,6 +6,7 @@ using Conjecture.TestingPlatform.Internal;
 using Microsoft.Testing.Platform.Builder;
 
 ITestApplicationBuilder builder = await TestApplication.CreateBuilderAsync(args);
+builder.CommandLine.AddProvider(static () => new ConjectureCommandLineOptions());
 builder.RegisterTestFramework(
     _ => new PropertyTestFrameworkCapabilities(),
     (_, services) => new PropertyTestFramework(services));
