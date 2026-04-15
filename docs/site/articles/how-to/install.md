@@ -12,6 +12,7 @@ Install the package for your test framework. Each adapter transitively reference
 | xUnit v3 | `Conjecture.Xunit.V3` |
 | NUnit 4 | `Conjecture.NUnit` |
 | MSTest | `Conjecture.MSTest` |
+| MTP (no framework) | `Conjecture.TestingPlatform` |
 
 # [xUnit v2](#tab/xunit-v2)
 
@@ -36,6 +37,14 @@ dotnet add package Conjecture.NUnit
 ```bash
 dotnet add package Conjecture.MSTest
 ```
+
+# [MTP](#tab/mtp)
+
+```bash
+dotnet add package Conjecture.TestingPlatform
+```
+
+Also set `OutputType=Exe` in the `.csproj`. See [How to use the MTP adapter](use-mtp-adapter.md) for full setup.
 
 ***
 
@@ -69,6 +78,13 @@ using Conjecture.NUnit;  // [Property], [Example], [From<T>], [FromFactory], ...
 ```csharp
 using Conjecture.Core;    // Generate, Strategy<T>, Assume, ConjectureSettings, ...
 using Conjecture.MSTest;  // [Property], [Example], [From<T>], [FromFactory], ...
+```
+
+# [MTP](#tab/mtp)
+
+```csharp
+using Conjecture.Core;              // Generate, Strategy<T>, Assume, ...
+using Conjecture.TestingPlatform;   // [Property], [Example], [From<T>], [FromFactory], ...
 ```
 
 ***

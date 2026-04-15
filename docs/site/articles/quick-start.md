@@ -36,6 +36,16 @@ cd MyProject.Tests
 dotnet add package Conjecture.MSTest
 ```
 
+# [MTP](#tab/mtp)
+
+```bash
+dotnet new classlib -n MyProject.Tests
+cd MyProject.Tests
+dotnet add package Conjecture.TestingPlatform
+```
+
+Then edit `MyProject.Tests.csproj` and add `<OutputType>Exe</OutputType>` inside `<PropertyGroup>`.
+
 ***
 
 ## 2. Write a Property Test
@@ -148,6 +158,32 @@ public class MathTests
 }
 ```
 
+# [MTP](#tab/mtp)
+
+```csharp
+using Conjecture.Core;
+using Conjecture.TestingPlatform;
+
+namespace MyProject.Tests;
+
+public class MathTests
+{
+    [Property]
+    public bool Addition_is_commutative(int a, int b)
+    {
+        return a + b == b + a;
+    }
+
+    [Property]
+    public bool Abs_is_non_negative(int value)
+    {
+        // Skip int.MinValue — Math.Abs throws for it
+        Assume.That(value != int.MinValue);
+        return Math.Abs(value) >= 0;
+    }
+}
+```
+
 ***
 
 ## 3. Run
@@ -217,6 +253,20 @@ public void Sorting_preserves_length(List<int> items)
 {
     var sorted = items.OrderBy(x => x).ToList();
     Assert.AreEqual(items.Count, sorted.Count);
+}
+```
+
+# [MTP](#tab/mtp)
+
+```csharp
+[Property]
+public void Sorting_preserves_length(List<int> items)
+{
+    List<int> sorted = items.OrderBy(x => x).ToList();
+    if (sorted.Count != items.Count)
+    {
+        throw new Exception($"Expected {items.Count} items, got {sorted.Count}");
+    }
 }
 ```
 
