@@ -12,3 +12,7 @@ static Conjecture.Interactive.StrategyExtensionsInteractive.Histogram<T>(this Co
 static Conjecture.Interactive.StrategyExtensionsInteractive.Preview<T>(this Conjecture.Core.Strategy<T>! strategy, int count = 20, ulong? seed = null) -> string!
 static Conjecture.Interactive.StrategyExtensionsInteractive.SampleTable<T>(this Conjecture.Core.Strategy<T>! strategy, int count = 10, ulong? seed = null) -> string!
 static Conjecture.Interactive.StrategyExtensionsInteractive.ShrinkTrace<T>(this Conjecture.Core.Strategy<T>! strategy, ulong seed, System.Func<T, bool>! failingProperty) -> Conjecture.Interactive.ShrinkTraceResult<T>!
+Conjecture.Interactive.ShrinkTraceResult<T>.ShrinkTraceResult(System.Collections.Generic.IReadOnlyList<Conjecture.Interactive.ShrinkStep<T>>! steps, string! text) -> void
+Conjecture.Interactive.ShrinkTraceResult<T>.Text.get -> string!
+Conjecture.Interactive.TextHistogram
+static Conjecture.Interactive.TextHistogram.Render(System.Collections.Generic.IReadOnlyList<double>! values, int bucketCount = 20) -> string!

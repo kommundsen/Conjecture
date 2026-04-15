@@ -1,5 +1,1 @@
 #nullable enable
-Conjecture.Interactive.ShrinkTraceResult<T>.ShrinkTraceResult(System.Collections.Generic.IReadOnlyList<Conjecture.Interactive.ShrinkStep<T>>! steps, string! text) -> void
-Conjecture.Interactive.ShrinkTraceResult<T>.Text.get -> string!
-Conjecture.Interactive.TextHistogram
-static Conjecture.Interactive.TextHistogram.Render(System.Collections.Generic.IReadOnlyList<double>! values, int bucketCount = 20) -> string!
