@@ -5,6 +5,8 @@ namespace Conjecture.Core.Internal;
 
 internal sealed class NumericAwareShrinkPass : IShrinkPass
 {
+    public string PassName => "numeric_aware";
+
     public async ValueTask<bool> TryReduce(ShrinkState state)
     {
         int i = 0;

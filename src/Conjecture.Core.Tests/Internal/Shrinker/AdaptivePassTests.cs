@@ -21,6 +21,8 @@ public class AdaptivePassTests
     /// </summary>
     private sealed class IndexAwareReductionPass : IShrinkPass
     {
+        public string PassName => "test_index_aware";
+
         public async ValueTask<bool> TryReduce(ShrinkState state)
         {
             for (int i = 0; i < state.Nodes.Count; i++)

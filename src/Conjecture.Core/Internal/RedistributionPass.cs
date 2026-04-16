@@ -8,6 +8,8 @@ namespace Conjecture.Core.Internal;
 
 internal sealed class RedistributionPass : IShrinkPass
 {
+    public string PassName => "redistribution";
+
     public async ValueTask<bool> TryReduce(ShrinkState state)
     {
         for (int i = 0; i < state.Nodes.Count - 1; i++)

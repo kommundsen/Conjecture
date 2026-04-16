@@ -5,6 +5,9 @@ namespace Conjecture.Core.Internal;
 
 internal interface IShrinkPass
 {
+    /// <summary>Gets the stable metric tag name for this pass (snake_case, never changes).</summary>
+    string PassName { get; }
+
     /// <summary>Attempt one reduction step. Returns true if progress was made.</summary>
     ValueTask<bool> TryReduce(ShrinkState state);
 }

@@ -10,6 +10,8 @@ namespace Conjecture.Core.Internal;
 
 internal sealed class CommandSequenceShrinkPass : IShrinkPass
 {
+    public string PassName => "command_sequence";
+
     public async ValueTask<bool> TryReduce(ShrinkState state)
     {
         List<int> sentinels = FindSentinels(state.Nodes);

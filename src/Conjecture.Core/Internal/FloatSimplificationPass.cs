@@ -10,6 +10,8 @@ namespace Conjecture.Core.Internal;
 
 internal sealed class FloatSimplificationPass : IShrinkPass
 {
+    public string PassName => "float_simplification";
+
     private static readonly ulong Zero64 = Unsafe.BitCast<double, ulong>(0.0);
     private static readonly ulong MaxFinite64 = Unsafe.BitCast<double, ulong>(double.MaxValue);
     private static readonly ulong MinFinite64 = Unsafe.BitCast<double, ulong>(double.MinValue);

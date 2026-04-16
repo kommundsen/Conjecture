@@ -8,6 +8,8 @@ namespace Conjecture.Core.Internal;
 
 internal sealed class ZeroBlocksPass : IShrinkPass
 {
+    public string PassName => "zero_blocks";
+
     public async ValueTask<bool> TryReduce(ShrinkState state)
     {
         bool progress = false;

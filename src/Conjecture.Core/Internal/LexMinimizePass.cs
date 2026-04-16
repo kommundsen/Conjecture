@@ -8,6 +8,8 @@ namespace Conjecture.Core.Internal;
 
 internal sealed class LexMinimizePass : IShrinkPass
 {
+    public string PassName => "lex_minimize";
+
     public async ValueTask<bool> TryReduce(ShrinkState state)
     {
         bool progress = false;
