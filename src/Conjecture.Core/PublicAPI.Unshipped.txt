@@ -1,1 +1,4 @@
 #nullable enable
+Conjecture.Core.PartialConstructorContext
+static Conjecture.Core.PartialConstructorContext.Current.get -> Conjecture.Core.IGeneratorContext!
+static Conjecture.Core.PartialConstructorContext.Use(Conjecture.Core.IGeneratorContext! ctx) -> System.IDisposable!
