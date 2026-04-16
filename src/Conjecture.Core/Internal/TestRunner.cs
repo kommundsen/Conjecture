@@ -58,13 +58,17 @@ internal static class TestRunner
             foreach (byte[] buffer in stored)
             {
                 List<IRNode> nodes = DeserializeNodes(buffer);
+                Instruments.DatabaseReplaysTotal.Add(1);
                 Status replayStatus = await ReplayAsync(nodes, test);
                 if (replayStatus == Status.Interesting)
                 {
+                    Instruments.ExamplesTotal.Add(1);
+                    Instruments.FailuresTotal.Add(1);
                     (IReadOnlyList<IRNode> shrunk, int shrinkCount) = await Shrinker.ShrinkAsync(
                         nodes, n => ReplayAsync(n, test), settings.Logger);
                     db.Delete(testIdHash);
                     db.Save(testIdHash, SerializeNodes(shrunk));
+                    Instruments.DatabaseSavesTotal.Add(1);
                     return TestRunResult.Fail(shrunk, nodes, 0UL, 1, shrinkCount);
                 }
             }
@@ -126,6 +130,7 @@ internal static class TestRunner
                 }
 
                 valid++;
+                Instruments.ExamplesTotal.Add(1);
                 foreach (var (label, score) in data.Observations)
                 {
                     if (!bestPerLabel.TryGetValue(label, out var current) || score > current.Score)
@@ -147,6 +152,7 @@ internal static class TestRunner
             {
                 data.MarkInvalid();
                 unsatisfied++;
+                Instruments.RejectionsTotal.Add(1);
                 if (!unsatisfiedWarnLogged && valid > 0 && unsatisfied > valid * settings.MaxUnsatisfiedRatio / 2)
                 {
                     unsatisfiedWarnLogged = true;
@@ -165,6 +171,8 @@ internal static class TestRunner
             catch (Exception failureEx)
             {
                 data.MarkInteresting();
+                Instruments.ExamplesTotal.Add(1);
+                Instruments.FailuresTotal.Add(1);
                 string? stackTrace = failureEx.StackTrace;
                 IReadOnlyList<IRNode> firstFailureNodes = data.IRNodes;
                 (IReadOnlyList<IRNode> shrunk, int shrinkCount) = await Shrinker.ShrinkAsync(
@@ -172,8 +180,11 @@ internal static class TestRunner
                 if (dbContext is DbContext ctx)
                 {
                     ctx.Database.Save(ctx.TestIdHash, SerializeNodes(shrunk));
+                    Instruments.DatabaseSavesTotal.Add(1);
                 }
 
+                generationSw.Stop();
+                Instruments.DurationSeconds.Record(generationSw.Elapsed.TotalSeconds);
                 Log.PropertyTestFailure(logger, valid + 1, $"0x{seed:X16}");
                 return TestRunResult.Fail(shrunk, firstFailureNodes, seed, valid + 1, shrinkCount, stackTrace);
             }
@@ -185,6 +196,7 @@ internal static class TestRunner
         }
 
         generationSw.Stop();
+        Instruments.DurationSeconds.Record(generationSw.Elapsed.TotalSeconds);
         Log.GenerationCompleted(logger, valid, unsatisfied, generationSw.Elapsed.TotalMilliseconds);
 
         // Targeting phase: round-robin HillClimber across labels, one step per label per cycle.
@@ -229,6 +241,10 @@ internal static class TestRunner
 
             string targetingBestScores = string.Join(", ", currentScores.Select(kvp => $"{kvp.Key}:{kvp.Value}"));
             Log.TargetingCompleted(logger, targetingLabels, targetingBestScores);
+            foreach (KeyValuePair<string, double> kvp in currentScores)
+            {
+                Instruments.TargetingBestScore.Record(kvp.Value);
+            }
 
             if (failingNodes is not null)
             {
@@ -237,8 +253,10 @@ internal static class TestRunner
                 if (dbContext is DbContext ctx)
                 {
                     ctx.Database.Save(ctx.TestIdHash, SerializeNodes(shrunk));
+                    Instruments.DatabaseSavesTotal.Add(1);
                 }
 
+                Instruments.FailuresTotal.Add(1);
                 Log.PropertyTestFailure(logger, valid + 1, $"0x{seed:X16}");
                 return TestRunResult.Fail(shrunk, failingNodes, seed, valid + 1, shrinkCount);
             }

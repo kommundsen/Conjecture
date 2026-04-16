@@ -8,6 +8,8 @@ namespace Conjecture.Core.Internal;
 
 internal sealed class StringAwarePass : IShrinkPass
 {
+    public string PassName => "string_aware";
+
     private const ulong ACodepoint = 'a';
     private const ulong SpaceCodepoint = 32;
     private static readonly ulong[] CharTargets = [ACodepoint, SpaceCodepoint];

@@ -50,7 +50,8 @@ internal static class Shrinker
                     {
                         bool madeProgress = await pass.TryReduce(state);
                         tierProgress |= madeProgress;
-                        Log.ShrinkPassProgress(logger, pass.GetType().Name, madeProgress);
+                        Instruments.ShrinkPassesTotal.Add(1, new KeyValuePair<string, object?>("pass_name", pass.PassName));
+                        Log.ShrinkPassProgress(logger, pass.PassName, madeProgress);
                     }
                     outerProgress |= tierProgress;
                 } while (tierProgress);
@@ -58,6 +59,7 @@ internal static class Shrinker
         } while (outerProgress);
 
         sw.Stop();
+        Instruments.ShrinkReductionsTotal.Add(state.ShrinkCount);
         Log.ShrinkingCompleted(logger, state.Nodes.Count, state.ShrinkCount, sw.Elapsed.TotalMilliseconds);
         return (state.Nodes, state.ShrinkCount);
     }

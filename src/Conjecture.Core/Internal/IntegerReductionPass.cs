@@ -8,6 +8,8 @@ namespace Conjecture.Core.Internal;
 
 internal sealed class IntegerReductionPass : IShrinkPass
 {
+    public string PassName => "integer_reduction";
+
     public async ValueTask<bool> TryReduce(ShrinkState state)
     {
         bool progress = false;

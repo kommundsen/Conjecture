@@ -10,6 +10,8 @@ internal sealed class AdaptivePass(IShrinkPass inner) : IShrinkPass
 {
     private readonly HashSet<int> productiveIndices = [];
 
+    public string PassName => inner.PassName;
+
     public async ValueTask<bool> TryReduce(ShrinkState state)
     {
         if (productiveIndices.Count > 0)

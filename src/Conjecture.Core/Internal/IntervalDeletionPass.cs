@@ -8,6 +8,8 @@ namespace Conjecture.Core.Internal;
 
 internal sealed class IntervalDeletionPass : IShrinkPass
 {
+    public string PassName => "interval_deletion";
+
     private static readonly int[] Sizes = [8, 4, 2];
 
     public async ValueTask<bool> TryReduce(ShrinkState state)
