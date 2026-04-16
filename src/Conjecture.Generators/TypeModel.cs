@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Conjecture.Generators;
 
-internal enum ConstructionMode { Constructor, ObjectInitializer }
+internal enum ConstructionMode { Constructor, ObjectInitializer, PartialConstructor }
 
 internal enum MemberGenerationKind { Primitive, Enum, NullableValue, List, ArbitraryReference, ExternalStrategyProvider, Unsupported }
 
