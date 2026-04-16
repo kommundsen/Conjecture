@@ -45,5 +45,5 @@ The Conjecture framework has zero observability. Users cannot see assumption rej
 
 - **DI-based ILoggerFactory**: Rejected — Core has no DI container; adds unnecessary complexity
 - **EventSource**: Rejected — `ILogger` is the modern standard for .NET libraries; EventSource is lower-level infrastructure
-- **ActivitySource/Meter**: Deferred — designed for distributed tracing and metrics in services; not appropriate for single-process test runs
+- **ActivitySource/Meter**: Deferred at the time of this ADR — later accepted in ADR-0050 for distributed tracing and aggregate metrics; `ILogger` remains the human-readable diagnostics layer
 - **Per-draw/per-shrink instrumentation**: Rejected — these are tight inner loops; instrumentation would meaningfully degrade performance
