@@ -29,6 +29,18 @@ internal static class TypeModelExtractor
             return (null, ImmutableArray.Create(Diagnostic.Create(DiagnosticDescriptors.Con201, location, symbol.Name)));
         }
 
+        List<ConstructorDeclarationSyntax> partialCtors = FindPartialConstructors(symbol);
+
+        if (partialCtors.Count > 1)
+        {
+            return (null, ImmutableArray.Create(Diagnostic.Create(DiagnosticDescriptors.Con203, location)));
+        }
+
+        if (partialCtors.Count == 1 && HasPrimaryConstructor(symbol))
+        {
+            return (null, ImmutableArray.Create(Diagnostic.Create(DiagnosticDescriptors.Con204, location)));
+        }
+
         IMethodSymbol? bestCtor = FindBestConstructor(symbol);
 
         string ns = symbol.ContainingNamespace.IsGlobalNamespace
@@ -41,7 +53,12 @@ internal static class TypeModelExtractor
         ImmutableArray<MemberModel> members;
         ConstructionMode mode;
 
-        if (bestCtor is not null)
+        if (partialCtors.Count == 1)
+        {
+            members = BuildInitPropertyMembers(symbol, warnings, providerRegistry);
+            mode = ConstructionMode.PartialConstructor;
+        }
+        else if (bestCtor is not null)
         {
             members = BuildMembers(bestCtor, warnings, providerRegistry);
             mode = ConstructionMode.Constructor;
@@ -69,19 +86,63 @@ internal static class TypeModelExtractor
         return (model, warnings.ToImmutableArray());
     }
 
+    private static bool HasModifier(SyntaxTokenList modifiers, SyntaxKind kind)
+    {
+        foreach (SyntaxToken modifier in modifiers)
+        {
+            if (modifier.IsKind(kind))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private static bool IsPartial(INamedTypeSymbol symbol)
     {
         foreach (SyntaxReference syntaxRef in symbol.DeclaringSyntaxReferences)
         {
             if (syntaxRef.GetSyntax() is TypeDeclarationSyntax typeDecl)
             {
-                foreach (SyntaxToken modifier in typeDecl.Modifiers)
+                if (HasModifier(typeDecl.Modifiers, SyntaxKind.PartialKeyword))
                 {
-                    if (modifier.IsKind(SyntaxKind.PartialKeyword))
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private static List<ConstructorDeclarationSyntax> FindPartialConstructors(INamedTypeSymbol symbol)
+    {
+        List<ConstructorDeclarationSyntax> result = [];
+        foreach (SyntaxReference syntaxRef in symbol.DeclaringSyntaxReferences)
+        {
+            if (syntaxRef.GetSyntax() is TypeDeclarationSyntax typeDecl)
+            {
+                foreach (MemberDeclarationSyntax member in typeDecl.Members)
+                {
+                    if (member is ConstructorDeclarationSyntax ctorDecl
+                        && HasModifier(ctorDecl.Modifiers, SyntaxKind.PartialKeyword))
                     {
-                        return true;
+                        result.Add(ctorDecl);
                     }
                 }
+            }
+        }
+
+        return result;
+    }
+
+    private static bool HasPrimaryConstructor(INamedTypeSymbol symbol)
+    {
+        foreach (SyntaxReference syntaxRef in symbol.DeclaringSyntaxReferences)
+        {
+            if (syntaxRef.GetSyntax() is TypeDeclarationSyntax { ParameterList: not null })
+            {
+                return true;
             }
         }
 

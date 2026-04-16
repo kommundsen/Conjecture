@@ -30,4 +30,20 @@ internal static class DiagnosticDescriptors
         category: "Conjecture",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true);
+
+    internal static readonly DiagnosticDescriptor Con203 = new(
+        id: "CON203",
+        title: "Multiple partial constructors",
+        messageFormat: "[Arbitrary] type declares more than one partial constructor",
+        category: "Conjecture",
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true);
+
+    internal static readonly DiagnosticDescriptor Con204 = new(
+        id: "CON204",
+        title: "Primary constructor combined with partial constructor",
+        messageFormat: "[Arbitrary] type combines a primary constructor with a partial constructor declaration; use the standard path without a partial constructor",
+        category: "Conjecture",
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true);
 }
