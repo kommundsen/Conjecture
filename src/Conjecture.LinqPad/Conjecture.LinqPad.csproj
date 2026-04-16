@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Conjecture.Core\Conjecture.Core.csproj" />
+    <ProjectReference Include="..\Conjecture.Interactive\Conjecture.Interactive.csproj" />
   </ItemGroup>
 
   <ItemGroup>
