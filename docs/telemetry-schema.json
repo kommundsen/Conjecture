@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Conjecture Telemetry Schema",
+  "description": "Canonical metric names, descriptions, units, and attribute keys for Conjecture OTel instrumentation.",
+  "source": "Conjecture.Core",
+  "metrics": [
+    {
+      "name": "conjecture.database.replays_total",
+      "type": "Counter",
+      "unit": "{replays}",
+      "description": "Number of test-case replays read from the example database.",
+      "attributes": [
+        { "key": "test.name", "description": "Test method name." },
+        { "key": "test.class.name", "description": "Test class name." }
+      ]
+    },
+    {
+      "name": "conjecture.database.saves_total",
+      "type": "Counter",
+      "unit": "{saves}",
+      "description": "Number of test cases saved to the example database.",
+      "attributes": [
+        { "key": "test.name", "description": "Test method name." },
+        { "key": "test.class.name", "description": "Test class name." }
+      ]
+    }
+  ],
+  "traces": {
+    "activitySource": "Conjecture.Core",
+    "activities": [
+      {
+        "name": "conjecture.test",
+        "description": "Root span for a single property-based test run.",
+        "attributes": [
+          { "key": "test.name", "description": "Test method name." },
+          { "key": "test.class.name", "description": "Test class name." },
+          { "key": "test.framework", "description": "Test framework (e.g. xunit, nunit, mstest)." },
+          { "key": "conjecture.seed", "description": "Reproducibility seed." },
+          { "key": "conjecture.max_examples", "description": "Configured max_examples setting." }
+        ]
+      },
+      {
+        "name": "conjecture.generation",
+        "description": "Span wrapping the generation loop phase."
+      },
+      {
+        "name": "conjecture.shrinking",
+        "description": "Span wrapping the shrink loop phase."
+      },
+      {
+        "name": "conjecture.targeting",
+        "description": "Span wrapping the targeting / hill-climbing phase."
+      }
+    ]
+  }
+}
