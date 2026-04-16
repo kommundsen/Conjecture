@@ -5,5 +5,7 @@ namespace Conjecture.LinqPad;
 
 internal static class SeedHelpers
 {
+    internal static ulong ToUlong(int seed) => (ulong)seed;
+
     internal static ulong? ToUlong(int? seed) => seed.HasValue ? (ulong)seed.Value : null;
 }

@@ -4,3 +4,5 @@ Conjecture.LinqPad.StrategyCustomMemberProvider<T>.StrategyCustomMemberProvider(
 Conjecture.LinqPad.StrategyCustomMemberProvider<T>.GetNames() -> System.Collections.Generic.IEnumerable<string!>!
 Conjecture.LinqPad.StrategyCustomMemberProvider<T>.GetTypes() -> System.Collections.Generic.IEnumerable<System.Type!>!
 Conjecture.LinqPad.StrategyCustomMemberProvider<T>.GetValues() -> System.Collections.Generic.IEnumerable<object?>!
+Conjecture.LinqPad.StrategyLinqPadExtensions
+static Conjecture.LinqPad.StrategyLinqPadExtensions.ShrinkTraceHtml<T>(this Conjecture.Core.Strategy<T>! strategy, int seed, System.Func<T, bool>! failingProperty) -> object!
