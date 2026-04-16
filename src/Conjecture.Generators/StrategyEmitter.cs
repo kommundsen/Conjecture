@@ -38,47 +38,83 @@ internal static class StrategyEmitter
         sb.AppendLine("internal sealed class " + className + " : global::Conjecture.Core.IStrategyProvider<" + fqn + ">");
         sb.AppendLine("{");
 
+        bool isPartialCtor = model.ConstructionMode == ConstructionMode.PartialConstructor;
+        string fieldVisibility = isPartialCtor ? "internal" : "private";
+
         if (!model.Members.IsEmpty)
         {
             for (int i = 0; i < model.Members.Length; i++)
             {
                 MemberModel member = model.Members[i];
-                sb.AppendLine("    private static readonly global::Conjecture.Core.Strategy<" + ResolveStrategyType(member) + "> _s" + i + " = " + ResolveGenExpr(member) + ";");
+                sb.AppendLine("    " + fieldVisibility + " static readonly global::Conjecture.Core.Strategy<" + ResolveStrategyType(member) + "> _s" + i + " = " + ResolveGenExpr(member) + ";");
             }
             sb.AppendLine();
         }
 
-        sb.AppendLine("    public global::Conjecture.Core.Strategy<" + fqn + "> Create() =>");
-
-        if (model.Members.IsEmpty)
+        if (isPartialCtor)
         {
-            sb.AppendLine("        global::Conjecture.Core.Generate.Compose<" + fqn + ">(_ => new " + fqn + "());");
-        }
-        else if (model.ConstructionMode == ConstructionMode.ObjectInitializer)
-        {
-            sb.AppendLine("        global::Conjecture.Core.Generate.Compose<" + fqn + ">(ctx => new " + fqn + " {");
-
-            for (int i = 0; i < model.Members.Length; i++)
-            {
-                MemberModel member = model.Members[i];
-                bool isLast = i == model.Members.Length - 1;
-                string suffix = isLast ? " });" : ",";
-                sb.AppendLine("            " + member.Name + " = ctx.Generate(_s" + i + ")" + suffix);
-            }
+            sb.AppendLine("    public global::Conjecture.Core.Strategy<" + fqn + "> Create()");
+            sb.AppendLine("    {");
+            sb.AppendLine("        return global::Conjecture.Core.Generate.Compose<" + fqn + ">(ctx =>");
+            sb.AppendLine("        {");
+            sb.AppendLine("            using global::System.IDisposable _scope = global::Conjecture.Core.PartialConstructorContext.Use(ctx);");
+            sb.AppendLine("            return new " + fqn + "();");
+            sb.AppendLine("        });");
+            sb.AppendLine("    }");
         }
         else
         {
-            sb.AppendLine("        global::Conjecture.Core.Generate.Compose<" + fqn + ">(ctx => new " + fqn + "(");
+            sb.AppendLine("    public global::Conjecture.Core.Strategy<" + fqn + "> Create() =>");
 
-            for (int i = 0; i < model.Members.Length; i++)
+            if (model.Members.IsEmpty)
             {
-                bool isLast = i == model.Members.Length - 1;
-                string suffix = isLast ? "));" : ",";
-                sb.AppendLine("            ctx.Generate(_s" + i + ")" + suffix);
+                sb.AppendLine("        global::Conjecture.Core.Generate.Compose<" + fqn + ">(_ => new " + fqn + "());");
+            }
+            else if (model.ConstructionMode == ConstructionMode.ObjectInitializer)
+            {
+                sb.AppendLine("        global::Conjecture.Core.Generate.Compose<" + fqn + ">(ctx => new " + fqn + " {");
+
+                for (int i = 0; i < model.Members.Length; i++)
+                {
+                    MemberModel member = model.Members[i];
+                    bool isLast = i == model.Members.Length - 1;
+                    string suffix = isLast ? " });" : ",";
+                    sb.AppendLine("            " + member.Name + " = ctx.Generate(_s" + i + ")" + suffix);
+                }
+            }
+            else
+            {
+                sb.AppendLine("        global::Conjecture.Core.Generate.Compose<" + fqn + ">(ctx => new " + fqn + "(");
+
+                for (int i = 0; i < model.Members.Length; i++)
+                {
+                    bool isLast = i == model.Members.Length - 1;
+                    string suffix = isLast ? "));" : ",";
+                    sb.AppendLine("            ctx.Generate(_s" + i + ")" + suffix);
+                }
             }
         }
 
         sb.AppendLine("}");
+
+        if (isPartialCtor && !model.Members.IsEmpty)
+        {
+            sb.AppendLine();
+            sb.AppendLine("partial class " + model.TypeName);
+            sb.AppendLine("{");
+            sb.AppendLine("    public partial " + model.TypeName + "()");
+            sb.AppendLine("    {");
+
+            for (int i = 0; i < model.Members.Length; i++)
+            {
+                MemberModel member = model.Members[i];
+                sb.AppendLine("        " + member.Name + " = global::Conjecture.Core.PartialConstructorContext.Current.Generate(" + className + "._s" + i + ");");
+            }
+
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+        }
+
         return sb.ToString();
     }
 
