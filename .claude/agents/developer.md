@@ -1,6 +1,6 @@
 ---
 name: developer
-model: sonnet
+model: haiku
 color: green
 description: >
   Writes minimal production code to make failing tests pass (TDD Green phase)

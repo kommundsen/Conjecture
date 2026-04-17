@@ -1,6 +1,6 @@
 ---
 name: test-developer
-model: sonnet
+model: haiku
 color: red
 description: >
   Writes failing xUnit tests for the Conjecture .NET project (TDD Red phase).
@@ -19,7 +19,7 @@ You will receive:
 
 ## Steps
 
-1. Explore the relevant production project to understand existing types, patterns, and conventions. Check `docs/decisions/` for relevant ADRs.
+1. Read the files explicitly referenced in the `## Test` section (type names, file paths). Only explore the broader production project if types or conventions are unclear from those files. Check `docs/decisions/` for relevant ADRs only if the issue references a design decision.
 2. Determine the test file location using the production→test mapping in CLAUDE.md.
 3. Write tests that:
    - Cover the happy path, boundary values, and at least one failure/edge case

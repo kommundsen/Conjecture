@@ -22,7 +22,7 @@ You will receive one or more of:
 ## Steps
 
 1. Run `dotnet format src/ --include <changed_cs_files> --exclude-diagnostics IDE0130 --verify-no-changes` — all formatting must be correct. If this fails, report as FIX_IMPLEMENTATION.
-2. Run `dotnet test src/` — full regression. All tests must pass. If any fail, report as FIX_IMPLEMENTATION.
+2. Run `dotnet test` scoped to the affected test project(s) — e.g. `dotnet test src/Conjecture.Core.Tests/`. Only run the full `dotnet test src/` if the change touches shared infrastructure (types in `Conjecture.Core` used across multiple projects). All tests must pass. If any fail, report as FIX_IMPLEMENTATION.
 3. Review the changed production files for reuse, quality, and efficiency issues (see below).
 
 ## Output format
