@@ -108,21 +108,25 @@ public class ExampleDatabaseBenchmarks : IDisposable
     public void Cleanup()
     {
         db.Dispose();
-        if (File.Exists(dbPath))
-        {
-            File.Delete(dbPath);
-        }
 
-        string? walPath = dbPath + "-wal";
-        string? shmPath = dbPath + "-shm";
-        if (File.Exists(walPath))
-        {
-            File.Delete(walPath);
-        }
+        // On Windows, SQLite WAL mode may briefly hold a lock on the .db file
+        // after Dispose(). Swallow deletion errors — leaked temp files are
+        // acceptable in a benchmark harness and BenchmarkDotNet discards results
+        // when GlobalCleanup throws.
+        TryDelete(dbPath);
+        TryDelete(dbPath + "-wal");
+        TryDelete(dbPath + "-shm");
 
-        if (File.Exists(shmPath))
+        static void TryDelete(string path)
         {
-            File.Delete(shmPath);
+            try
+            {
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+            }
+            catch (IOException) { }
         }
     }
 

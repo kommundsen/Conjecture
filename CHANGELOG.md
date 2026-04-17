@@ -10,6 +10,24 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Version
 
 ---
 
+## [0.10.0] — 2026-04-17
+
+### Added
+
+**Core** (`Conjecture.Core`)
+- `ConjectureObservability` — static `ActivitySource` and `Meter` singletons (name `"Conjecture.Core"`) for OpenTelemetry trace and metrics integration; zero overhead when no listener is attached
+- `PartialConstructorContext` — context carrier for partial constructor generation; exposes `Current` and `Use()` for strategy emitters
+- `ConjectureSettings.TestName` — optional test method name; populated by framework adapters to tag the `test.name` attribute on the `PropertyTest` trace span
+- `ConjectureSettings.TestClassName` — optional test class name; populated by framework adapters to tag the `test.class.name` attribute on the `PropertyTest` trace span
+- OTel Activity spans in `TestRunner`: `PropertyTest` (root), `PropertyTest.Generation`, `PropertyTest.Shrinking`, `PropertyTest.Targeting` — each with relevant tags (seed, examples, reductions, labels, etc.)
+- OTel metrics instruments: `conjecture.property.examples_total`, `conjecture.property.failures_total`, `conjecture.property.duration_seconds`, `conjecture.generation.rejections_total`, `conjecture.shrink.passes_total`, `conjecture.shrink.reductions_total`, `conjecture.targeting.best_score`, `conjecture.database.replays_total`, `conjecture.database.saves_total`
+
+**LinqPad** (`Conjecture.LinqPad`)
+- `StrategyCustomMemberProvider<T>` — LINQPad custom member provider for `Strategy<T>`; surfaces generated sample values in the LINQPad results panel
+- `StrategyLinqPadExtensions.ShrinkTraceHtml<T>` — extension that renders a shrink trace as an HTML object for LINQPad output
+
+---
+
 ## [0.9.0] — 2026-04-15
 
 ### Added
