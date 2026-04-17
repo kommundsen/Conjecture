@@ -41,6 +41,31 @@ Print a summary line so the user knows what is being worked on:
 Cycle <cycle-number>: <title>  (#<sub-issue-number>)
 ```
 
+Mark the sub-issue **and its parent** as **In Progress** on the Conjecture Roadmap project
+(skip the parent update if it is already In Progress):
+
+```bash
+# Helper: set an issue to In Progress by issue number
+set_in_progress() {
+  local number=$1
+  local item_id=$(gh project item-list 2 --owner kommundsen --format json \
+    --jq ".items[] | select(.content.number == $number) | .id")
+  gh project item-edit --project-id PVT_kwHOAAZ3vM4BTArq --id "$item_id" \
+    --field-id PVTSSF_lAHOAAZ3vM4BTArqzhAYMcQ \
+    --single-select-option-id 47fc9ee4
+}
+
+# Mark sub-issue In Progress
+set_in_progress <sub-issue-number>
+
+# Mark parent In Progress only if not already
+PARENT_STATUS=$(gh project item-list 2 --owner kommundsen --format json \
+  --jq ".items[] | select(.content.number == <parent-number>) | .status")
+if [ "$PARENT_STATUS" != "In Progress" ]; then
+  set_in_progress <parent-number>
+fi
+```
+
 ### 2. Create a branch
 
 Branch name format: `feat/#<parent>-#<sub>-<slug>`

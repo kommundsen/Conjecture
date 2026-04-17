@@ -129,11 +129,54 @@ Key points to document: [bullet the main decisions already resolved in Steps 3�
 ```
 No `## Test` section for ADR sub-issues.
 
+**Assess cross-cutting concerns** after designing the implementation sub-issues:
+
+- Does `Conjecture.Mcp` expose this feature? If yes, append an MCP sub-issue.
+- Does the docs site need a new or updated page? If yes, append a docs sub-issue.
+
+Append them **in that order** after the last implementation sub-issue. They use the same
+milestone and labels as the other sub-issues.
+
+**MCP sub-issue body:**
+```markdown
+Part of #<parent>.
+
+## Dependencies
+- #<last-impl-sub-issue>
+
+## Implement
+
+Update `Conjecture.Mcp/` to expose the new feature as an MCP tool or update existing
+tool definitions. Key changes: [specific tools/resources to add or modify]
+
+## Test
+
+Verify the MCP tool surfaces the feature correctly.
+```
+
+**Docs sub-issue body:**
+```markdown
+Part of #<parent>.
+
+## Dependencies
+- #<mcp-sub-issue-or-last-impl>
+
+## Implement
+
+Invoke the `diataxis` skill to write or update documentation for <feature>.
+Key sections: [which doc types are needed — tutorial / how-to / reference / explanation]
+
+## Test
+
+N/A — reviewed by author.
+```
+
 **Sequencing rules:**
 - Dependencies flow forward — later sub-issues depend on earlier ones, never the reverse.
 - Shared infrastructure (a renderer, a base class) comes before anything that uses it.
 - CLI commands come after the core logic they call.
-- MCP/integration changes come last.
+- MCP sub-issues come after all implementation sub-issues.
+- Docs sub-issues come after MCP sub-issues (or after the last implementation sub-issue if no MCP).
 
 ## Step 8 — Create and link sub-issues
 
@@ -157,6 +200,13 @@ gh api repos/kommundsen/Conjecture/issues/<parent>/sub_issues \
 
 > Note: `jq` may not be available — use `--jq '.id'` in the `gh api` call directly (gh has
 > built-in jq support).
+
+Then add **every issue** — the parent and each sub-issue — to the Conjecture Roadmap project:
+
+```bash
+gh project item-add 2 --owner kommundsen \
+  --url "https://github.com/kommundsen/Conjecture/issues/<number>"
+```
 
 ## Step 9 — Add a tasklist comment to the parent issue
 
