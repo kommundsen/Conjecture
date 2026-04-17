@@ -104,4 +104,10 @@ public record ConjectureSettings
 
     /// <summary>Output path for exported reproduction files. Defaults to <c>.conjecture/repros/</c>.</summary>
     public string ReproOutputPath { get; init; } = ".conjecture/repros/";
+
+    /// <summary>Set by test framework adapters to populate the <c>test.name</c> tag on trace spans.</summary>
+    public string? TestName { get; init; }
+
+    /// <summary>Set by test framework adapters to populate the <c>test.class.name</c> tag on trace spans.</summary>
+    public string? TestClassName { get; init; }
 }
