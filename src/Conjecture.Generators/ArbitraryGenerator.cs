@@ -24,10 +24,14 @@ public sealed class ArbitraryGenerator : IIncrementalGenerator
         IncrementalValueProvider<ImmutableDictionary<string, string>> registry =
             context.CompilationProvider.Select(static (compilation, _) => ProviderRegistry.Build(compilation));
 
-        IncrementalValuesProvider<(INamedTypeSymbol Symbol, ImmutableDictionary<string, string> Registry)> combined =
-            types.Combine(registry);
+        // Concrete pipeline: filter out abstract types
+        IncrementalValuesProvider<INamedTypeSymbol> concreteTypes = types
+            .Where(static symbol => !symbol.IsAbstract);
 
-        context.RegisterSourceOutput(combined, static (ctx, item) =>
+        IncrementalValuesProvider<(INamedTypeSymbol Symbol, ImmutableDictionary<string, string> Registry)> concreteCombined =
+            concreteTypes.Combine(registry);
+
+        context.RegisterSourceOutput(concreteCombined, static (ctx, item) =>
         {
             (INamedTypeSymbol symbol, ImmutableDictionary<string, string> reg) = item;
             (TypeModel? model, ImmutableArray<Diagnostic> diagnostics) = TypeModelExtractor.Extract(symbol, reg);
@@ -49,6 +53,39 @@ public sealed class ArbitraryGenerator : IIncrementalGenerator
 
             string source = StrategyEmitter.Emit(model!);
             ctx.AddSource(model!.TypeName + ".g", source);
+        });
+
+        // Hierarchy pipeline: only abstract types
+        IncrementalValuesProvider<INamedTypeSymbol> abstractTypes = types
+            .Where(static symbol => symbol.IsAbstract);
+
+        IncrementalValueProvider<ImmutableArray<INamedTypeSymbol>> allArbitrarySymbols = types.Collect();
+
+        IncrementalValuesProvider<(INamedTypeSymbol BaseSymbol, ImmutableArray<INamedTypeSymbol> AllSymbols)> hierarchyCombined =
+            abstractTypes.Combine(allArbitrarySymbols);
+
+        context.RegisterSourceOutput(hierarchyCombined, static (ctx, item) =>
+        {
+            (INamedTypeSymbol baseSymbol, ImmutableArray<INamedTypeSymbol> allSymbols) = item;
+            (HierarchyTypeModel? model, ImmutableArray<Diagnostic> diagnostics) = HierarchyTypeModelExtractor.Extract(baseSymbol, allSymbols);
+
+            bool hasHierarchyError = false;
+            foreach (Diagnostic d in diagnostics)
+            {
+                ctx.ReportDiagnostic(d);
+                if (d.Severity == DiagnosticSeverity.Error)
+                {
+                    hasHierarchyError = true;
+                }
+            }
+
+            if (hasHierarchyError || model is null)
+            {
+                return;
+            }
+
+            string source = HierarchyStrategyEmitter.Emit(model);
+            ctx.AddSource(model.TypeName + ".g", source);
         });
     }
 }
