@@ -46,4 +46,28 @@ internal static class DiagnosticDescriptors
         category: "Conjecture",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true);
+
+    internal static readonly DiagnosticDescriptor Con300 = new(
+        id: "CON300",
+        title: "Base type must be abstract",
+        messageFormat: "Type '{0}' must be abstract",
+        category: "Conjecture",
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true);
+
+    internal static readonly DiagnosticDescriptor Con301 = new(
+        id: "CON301",
+        title: "Base type must be a class or record",
+        messageFormat: "Type '{0}' must be a class or record, not {1}",
+        category: "Conjecture",
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true);
+
+    internal static readonly DiagnosticDescriptor Con302 = new(
+        id: "CON302",
+        title: "No concrete subtypes found",
+        messageFormat: "No concrete subtypes found for abstract type '{0}'",
+        category: "Conjecture",
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true);
 }
