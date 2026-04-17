@@ -8,6 +8,7 @@
 - [ ] New feature / strategy
 - [ ] Refactor (no behavior change)
 - [ ] Documentation / chore
+- [ ] AI tools adjustments
 
 ## Checklist
 
