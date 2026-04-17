@@ -19,6 +19,8 @@ items:
     href: use-source-generators.md
   - name: Configure logging
     href: configure-logging.md
+  - name: Configure OpenTelemetry observability
+    href: configure-otel.md
   - name: Use DataGen outside tests
     href: use-data-gen.md
   - name: Use the CLI tool

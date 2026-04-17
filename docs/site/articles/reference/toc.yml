@@ -15,3 +15,5 @@ items:
     href: time-strategies.md
   - name: Formatters
     href: formatters.md
+  - name: Telemetry
+    href: telemetry.md
