@@ -51,7 +51,7 @@
     <PackageVersion Include="Microsoft.Extensions.TimeProvider.Testing" Version="9.6.0" />
 
     <!-- Logging -->
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.5" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.6" />
 
     <!-- MCP server -->
     <PackageVersion Include="ModelContextProtocol" Version="1.2.0" />
