@@ -26,6 +26,8 @@ Settings are resolved in this order (most specific wins):
 | `Logger` | `ILogger` | `NullLogger.Instance` | Structured logging sink. Adapters auto-wire framework output. |
 | `ExportReproOnFailure` | `bool` | `false` | Write the shrunk counterexample byte buffer to a file on failure. |
 | `ReproOutputPath` | `string` | `".conjecture/repros/"` | Directory for exported repro files. Used when `ExportReproOnFailure = true`. |
+| `TestName` | `string?` | `null` | Test method name. Populated automatically by framework adapters; populates the `test.name` tag on the `PropertyTest` trace span. |
+| `TestClassName` | `string?` | `null` | Test class name. Populated automatically by framework adapters; populates the `test.class.name` tag on the `PropertyTest` trace span. |
 
 ## `[Property]` attribute properties
 
