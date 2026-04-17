@@ -1,5 +1,5 @@
 - Be extremely concise in your responses. Sacrifice grammer for concision
-- Never auto-commit code. Commits are to be done by user.
+- Never auto-commit code. Commits are only to be done if explicitly prompted for.
 - Follow .editorconfig rules when writing code.
 - Use workspace-relative paths in all tool calls (not absolute paths)
 
@@ -66,6 +66,9 @@ Solution file: `src/Conjecture.slnx`
 | `src/Conjecture.Time/` | `src/Conjecture.Time.Tests/` |
 | `src/Conjecture.FSharp/` | `src/Conjecture.FSharp.Tests/` |
 | `src/Conjecture.FSharp.Expecto/` | `src/Conjecture.FSharp.Expecto.Tests/` |
+| `src/Conjecture.Interactive/` | `src/Conjecture.Interactive.Tests/` |
+| `src/Conjecture.LinqPad/` | `src/Conjecture.LinqPad.Tests/` |
+| `src/Conjecture.TestingPlatform/` | `src/Conjecture.TestingPlatform.Tests/` |
 | `src/Conjecture.Benchmarks/` | _(benchmark project, not a test project)_ |
 | `src/Conjecture.SelfTests/` | _(integration self-tests, no paired prod project)_ |
 
