@@ -9,6 +9,7 @@ using Conjecture.Core.Internal;
 
 namespace Conjecture.Core.Tests;
 
+[Collection("Sequential")]
 public sealed class MetricsInstrumentationTests
 {
     [Fact]
@@ -23,10 +24,7 @@ public sealed class MetricsInstrumentationTests
                 l.EnableMeasurementEvents(instrument);
             }
         };
-        listener.SetMeasurementEventCallback<long>((instrument, measurement, _, _) =>
-        {
-            measurements.AddOrUpdate(instrument.Name, static (_, delta) => delta, static (_, existing, delta) => existing + delta, measurement);
-        });
+        listener.SetMeasurementEventCallback<long>((instrument, measurement, _, _) => measurements.AddOrUpdate(instrument.Name, static (_, delta) => delta, static (_, existing, delta) => existing + delta, measurement));
         listener.Start();
 
         ConjectureSettings settings = new() { MaxExamples = 10, Seed = 1UL };
@@ -51,10 +49,7 @@ public sealed class MetricsInstrumentationTests
                 l.EnableMeasurementEvents(instrument);
             }
         };
-        listener.SetMeasurementEventCallback<long>((instrument, measurement, _, _) =>
-        {
-            measurements.AddOrUpdate(instrument.Name, static (_, delta) => delta, static (_, existing, delta) => existing + delta, measurement);
-        });
+        listener.SetMeasurementEventCallback<long>((instrument, measurement, _, _) => measurements.AddOrUpdate(instrument.Name, static (_, delta) => delta, static (_, existing, delta) => existing + delta, measurement));
         listener.Start();
 
         ConjectureSettings settings = new() { MaxExamples = 10, Seed = 1UL };
@@ -80,10 +75,7 @@ public sealed class MetricsInstrumentationTests
                 l.EnableMeasurementEvents(instrument);
             }
         };
-        listener.SetMeasurementEventCallback<long>((instrument, measurement, _, _) =>
-        {
-            measurements.AddOrUpdate(instrument.Name, static (_, delta) => delta, static (_, existing, delta) => existing + delta, measurement);
-        });
+        listener.SetMeasurementEventCallback<long>((instrument, measurement, _, _) => measurements.AddOrUpdate(instrument.Name, static (_, delta) => delta, static (_, existing, delta) => existing + delta, measurement));
         listener.Start();
 
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 1UL };
@@ -108,10 +100,7 @@ public sealed class MetricsInstrumentationTests
                 l.EnableMeasurementEvents(instrument);
             }
         };
-        listener.SetMeasurementEventCallback<long>((instrument, measurement, _, _) =>
-        {
-            measurements.AddOrUpdate(instrument.Name, static (_, delta) => delta, static (_, existing, delta) => existing + delta, measurement);
-        });
+        listener.SetMeasurementEventCallback<long>((instrument, measurement, _, _) => measurements.AddOrUpdate(instrument.Name, static (_, delta) => delta, static (_, existing, delta) => existing + delta, measurement));
         listener.Start();
 
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 1UL };
@@ -136,10 +125,7 @@ public sealed class MetricsInstrumentationTests
                 l.EnableMeasurementEvents(instrument);
             }
         };
-        listener.SetMeasurementEventCallback<long>((instrument, measurement, _, _) =>
-        {
-            measurements.AddOrUpdate(instrument.Name, static (_, delta) => delta, static (_, existing, delta) => existing + delta, measurement);
-        });
+        listener.SetMeasurementEventCallback<long>((instrument, measurement, _, _) => measurements.AddOrUpdate(instrument.Name, static (_, delta) => delta, static (_, existing, delta) => existing + delta, measurement));
         listener.Start();
 
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 1UL };
@@ -165,10 +151,7 @@ public sealed class MetricsInstrumentationTests
                 l.EnableMeasurementEvents(instrument);
             }
         };
-        listener.SetMeasurementEventCallback<long>((instrument, measurement, _, _) =>
-        {
-            measurements.AddOrUpdate(instrument.Name, static (_, delta) => delta, static (_, existing, delta) => existing + delta, measurement);
-        });
+        listener.SetMeasurementEventCallback<long>((instrument, measurement, _, _) => measurements.AddOrUpdate(instrument.Name, static (_, delta) => delta, static (_, existing, delta) => existing + delta, measurement));
         listener.Start();
 
         // Use a seed that ensures some odd numbers are generated so Assume.That rejects them
@@ -194,10 +177,7 @@ public sealed class MetricsInstrumentationTests
                 l.EnableMeasurementEvents(instrument);
             }
         };
-        listener.SetMeasurementEventCallback<double>((instrument, measurement, _, _) =>
-        {
-            doubleMeasurements.AddOrUpdate(instrument.Name, static (_, delta) => delta, static (_, existing, delta) => existing + delta, measurement);
-        });
+        listener.SetMeasurementEventCallback<double>((instrument, measurement, _, _) => doubleMeasurements.AddOrUpdate(instrument.Name, static (_, delta) => delta, static (_, existing, delta) => existing + delta, measurement));
         listener.Start();
 
         ConjectureSettings settings = new() { MaxExamples = 10, Seed = 1UL };
