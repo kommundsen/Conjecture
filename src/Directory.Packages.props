@@ -12,7 +12,7 @@
     <PackageVersion Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.4" />
 
     <!-- Breaking change gating (CI) -->
-    <PackageVersion Include="Microsoft.DotNet.ApiCompat.Task" Version="10.0.201" />
+    <PackageVersion Include="Microsoft.DotNet.ApiCompat.Task" Version="10.0.202" />
 
     <!-- Database -->
     <PackageVersion Include="Microsoft.Data.Sqlite" Version="10.0.5" />
