@@ -15,7 +15,7 @@
     <PackageVersion Include="Microsoft.DotNet.ApiCompat.Task" Version="10.0.201" />
 
     <!-- Database -->
-    <PackageVersion Include="Microsoft.Data.Sqlite" Version="10.0.5" />
+    <PackageVersion Include="Microsoft.Data.Sqlite" Version="10.0.6" />
 
     <!-- Benchmarking -->
     <PackageVersion Include="BenchmarkDotNet" Version="0.15.8" />
