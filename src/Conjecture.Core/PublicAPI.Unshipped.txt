@@ -1,11 +1,1 @@
 #nullable enable
-Conjecture.Core.ConjectureObservability
-Conjecture.Core.PartialConstructorContext
-Conjecture.Core.ConjectureSettings.TestClassName.get -> string?
-Conjecture.Core.ConjectureSettings.TestClassName.init -> void
-Conjecture.Core.ConjectureSettings.TestName.get -> string?
-Conjecture.Core.ConjectureSettings.TestName.init -> void
-static Conjecture.Core.ConjectureObservability.ActivitySource.get -> System.Diagnostics.ActivitySource!
-static Conjecture.Core.ConjectureObservability.Meter.get -> System.Diagnostics.Metrics.Meter!
-static Conjecture.Core.PartialConstructorContext.Current.get -> Conjecture.Core.IGeneratorContext!
-static Conjecture.Core.PartialConstructorContext.Use(Conjecture.Core.IGeneratorContext! ctx) -> System.IDisposable!
