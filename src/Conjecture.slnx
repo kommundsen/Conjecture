@@ -32,4 +32,6 @@
   <Project Path="Conjecture.LinqPad.Tests/Conjecture.LinqPad.Tests.csproj" />
   <Project Path="Conjecture.FSharp/Conjecture.FSharp.fsproj" />
   <Project Path="Conjecture.FSharp.Tests/Conjecture.FSharp.Tests.fsproj" />
+  <Project Path="Conjecture.FSharp.Expecto/Conjecture.FSharp.Expecto.fsproj" />
+  <Project Path="Conjecture.FSharp.Expecto.Tests/Conjecture.FSharp.Expecto.Tests.fsproj" />
 </Solution>
