@@ -143,6 +143,18 @@ internal sealed class ConjectureData
         observations[label] = value;
     }
 
+    internal int NodeCount => nodes.Count;
+
+    internal void TruncateNodes(int length)
+    {
+        if (length < 0 || length > nodes.Count)
+        {
+            throw new ArgumentOutOfRangeException(nameof(length), length,
+                $"Cannot truncate to {length}; current node count is {nodes.Count}.");
+        }
+        nodes.RemoveRange(length, nodes.Count - length);
+    }
+
     internal void MarkInvalid() => Status = Status.Invalid;
     internal void MarkInteresting() => Status = Status.Interesting;
     internal void Freeze() => frozen = true;

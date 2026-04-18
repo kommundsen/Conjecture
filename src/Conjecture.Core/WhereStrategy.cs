@@ -14,14 +14,15 @@ internal sealed class WhereStrategy<T>(Strategy<T> source, Func<T, bool> predica
 
     internal override T Generate(ConjectureData data)
     {
-        for (var i = 0; i < MaxAttempts; i++)
+        for (int i = 0; i < MaxAttempts; i++)
         {
-            var value = source.Generate(data);
+            int snapshot = data.NodeCount;
+            T value = source.Generate(data);
             if (predicate(value))
             {
                 return value;
             }
-
+            data.TruncateNodes(snapshot);
         }
         data.MarkInvalid();
         throw new UnsatisfiedAssumptionException();
