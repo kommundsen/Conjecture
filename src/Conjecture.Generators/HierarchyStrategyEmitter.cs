@@ -35,7 +35,7 @@ internal static class HierarchyStrategyEmitter
 
         sb.AppendLine("internal sealed class " + classNameWithTypeParams + " : " + interfaceType);
         sb.AppendLine("{");
-        sb.AppendLine("    public global::Conjecture.Core.Strategy<global::" + fqn + "> GetStrategy() =>");
+        sb.AppendLine("    public global::Conjecture.Core.Strategy<global::" + fqn + "> Create() =>");
         sb.AppendLine("        global::Conjecture.Core.Generate.OneOf(");
 
         for (int i = 0; i < model.Subtypes.Length; i++)
@@ -43,7 +43,7 @@ internal static class HierarchyStrategyEmitter
             string providerTypeName = model.Subtypes[i].ProviderTypeName + typeArgsSuffix;
             bool isLast = i == model.Subtypes.Length - 1;
             string suffix = isLast ? "" : ",";
-            sb.AppendLine("            new " + providerTypeName + "().GetStrategy()");
+            sb.AppendLine("            new " + providerTypeName + "().Create()");
             sb.AppendLine("                .Select(static x => (global::" + fqn + ")x)" + suffix);
         }
 
