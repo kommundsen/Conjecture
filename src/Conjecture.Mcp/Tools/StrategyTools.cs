@@ -16,11 +16,20 @@ internal static class StrategyTools
         "Handles primitives (int, bool, string, float, double, byte[]), date/time types " +
         "(DateTimeOffset, TimeSpan, DateOnly, TimeOnly), collections " +
         "(List<T>, IReadOnlySet<T>, IReadOnlyDictionary<K,V>), nullable types, value " +
-        "tuples, enums, and custom types.")]
+        "tuples, enums, and custom types. For sealed abstract class hierarchies, use " +
+        "the suggest-strategy-for-sealed-hierarchy tool instead.")]
     public static string SuggestStrategy(
         [Description("The C# type name, e.g. 'int', 'string', 'List<int>', 'MyEnum', 'MyRecord'")] string typeName)
     {
         return SuggestForType(typeName.Trim());
+    }
+
+    [McpServerTool(Name = "suggest-strategy-for-sealed-hierarchy")]
+    [Description("Suggests the [Arbitrary] + Generate.OneOf pattern for sealed abstract class hierarchies. Use when the type is an abstract base of a sealed class hierarchy.")]
+    public static string SuggestSealedHierarchyStrategy(
+        [Description("The C# abstract base type name, e.g. 'Shape', 'Animal'")] string typeName)
+    {
+        return SuggestForSealedAbstractType(typeName.Trim());
     }
 
     internal static string SuggestForType(string typeName) => typeName switch
@@ -194,6 +203,27 @@ internal static class StrategyTools
         For `{inner}?`:
         - Value type: `Generate.Nullable({Inline(inner)})` → `Strategy<{inner}?>`
         - Reference type: `{Inline(inner)}.OrNull()` → `Strategy<{inner}?>`
+        """;
+
+    internal static string SuggestForSealedAbstractType(string typeName) =>
+        $$"""
+        For sealed abstract type `{{typeName}}`, annotate the abstract base with `[Arbitrary]` and each concrete subtype with `[Arbitrary]`.
+        The source generator will emit a `Generate.OneOf(...)` strategy automatically — no manual wiring required.
+
+        ```csharp
+        [Arbitrary]
+        public abstract partial class {{typeName}} { }
+
+        [Arbitrary]
+        public partial class ConcreteSubtype1 : {{typeName}} { }
+
+        [Arbitrary]
+        public partial class ConcreteSubtype2 : {{typeName}} { }
+
+        // → {{typeName}}Arbitrary emitted automatically
+        ```
+
+        **Note:** Every concrete subtype of a sealed abstract base must be annotated with `[Arbitrary]`, or the analyzer will raise CON205.
         """;
 
     private static string Inline(string typeName) => typeName switch
