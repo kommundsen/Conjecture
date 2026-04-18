@@ -67,5 +67,8 @@
     <PackageVersion Include="Microsoft.Testing.Platform" Version="1.9.1" />
     <PackageVersion Include="Microsoft.Testing.Platform.MSBuild" Version="1.9.1" />
     <PackageVersion Include="Microsoft.Testing.Extensions.TrxReport.Abstractions" Version="1.9.1" />
+
+    <!-- F# -->
+    <PackageVersion Include="FSharp.Core" Version="10.1.201" />
   </ItemGroup>
 </Project>
