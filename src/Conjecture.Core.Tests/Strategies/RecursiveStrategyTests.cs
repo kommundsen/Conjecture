@@ -114,6 +114,57 @@ public class RecursiveStrategyTests
         _ => throw new InvalidOperationException($"Unknown Expr type: {expr.GetType().Name}")
     };
 
+    [Fact]
+    public void RecursiveStrategy_AtMaxDepth10_GeneratesValuesIn0To10()
+    {
+        RecursiveStrategy<int> strategy = IntRecursive(10);
+        HashSet<int> seen = [];
+
+        for (ulong seed = 0; seed < 20; seed++)
+        {
+            ConjectureData data = MakeData(seed);
+            for (int i = 0; i < 10; i++)
+            {
+                int value = strategy.Generate(data);
+                Assert.InRange(value, 0, 10);
+                seen.Add(value);
+            }
+        }
+
+        Assert.NotEmpty(seen);
+    }
+
+    [Fact]
+    public void RecursiveStrategy_Depth5_AllocatesAtMost256BytesPerGenerate()
+    {
+        RecursiveStrategy<int> strategy = IntRecursive(5);
+        // Force depth = 5; remaining draws come from the always-recurse branch (OneOf picks index 1 each level)
+        ConjectureData data = ConjectureData.ForRecord(
+        [
+            IRNode.ForInteger(5UL, 0UL, 5UL), // depth draw
+            IRNode.ForInteger(1UL, 0UL, 1UL), // level 5 OneOf → recurse
+            IRNode.ForInteger(1UL, 0UL, 1UL), // level 4 OneOf → recurse
+            IRNode.ForInteger(1UL, 0UL, 1UL), // level 3 OneOf → recurse
+            IRNode.ForInteger(1UL, 0UL, 1UL), // level 2 OneOf → recurse
+            IRNode.ForInteger(1UL, 0UL, 1UL), // level 1 OneOf → recurse
+            IRNode.ForInteger(0UL, 0UL, 0UL), // base-case Just(0)
+        ]);
+
+        // Warm up JIT so first-call allocations don't pollute the measurement
+        RecursiveStrategy<int> warmup = IntRecursive(5);
+        ConjectureData warmupData = MakeData(0UL);
+        warmup.Generate(warmupData);
+
+        long before = GC.GetAllocatedBytesForCurrentThread();
+        int result = strategy.Generate(data);
+        long after = GC.GetAllocatedBytesForCurrentThread();
+
+        long allocBytes = after - before;
+        Assert.InRange(result, 0, 5);
+        Assert.True(allocBytes <= 256,
+            $"Expected <= 256 bytes allocated per Generate at depth 5, but got {allocBytes} bytes.");
+    }
+
     private abstract class Expr { }
     private sealed class Num(int value) : Expr { internal int Value { get; } = value; }
     private sealed class Add(Expr left, Expr right) : Expr

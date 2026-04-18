@@ -73,6 +73,7 @@ public class StrategyCompositionBenchmarks
         return chainThreeOps.Generate(data);
     }
 
+    // Budget: baseline + ≤128 B (levels[] pre-built in ctor; Generate allocates only ConjectureData)
     [Benchmark]
     public int Recursive_Depth5()
     {

@@ -13,7 +13,7 @@ internal sealed class ConjectureData
     private readonly IRandom? rng;
     private readonly IReadOnlyList<IRNode>? replayNodes;
     private int cursor;
-    private readonly List<IRNode> nodes = [];
+    private readonly List<IRNode> nodes;
     private readonly Dictionary<string, double> observations = [];
     private bool frozen;
 
@@ -22,8 +22,17 @@ internal sealed class ConjectureData
     internal IReadOnlyDictionary<string, double> Observations => observations;
     internal bool IsReplay => replayNodes is not null;
 
-    private ConjectureData(IRandom rng) => this.rng = rng;
-    private ConjectureData(IReadOnlyList<IRNode> nodes) => replayNodes = nodes;
+    private ConjectureData(IRandom rng)
+    {
+        this.rng = rng;
+        this.nodes = [];
+    }
+
+    private ConjectureData(IReadOnlyList<IRNode> nodes)
+    {
+        replayNodes = nodes;
+        this.nodes = new(nodes.Count);
+    }
 
     internal static ConjectureData ForGeneration(IRandom rng) => new(rng);
     internal static ConjectureData ForRecord(IReadOnlyList<IRNode> nodes) => new(nodes);
