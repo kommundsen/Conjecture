@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Description>F# support for Conjecture.NET property-based testing</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Gen.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FSharp.Core" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Conjecture.Core\Conjecture.Core.csproj" />
+  </ItemGroup>
+
+</Project>

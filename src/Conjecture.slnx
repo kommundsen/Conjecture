@@ -30,4 +30,6 @@
   <Project Path="Conjecture.TestingPlatform.Tests/Conjecture.TestingPlatform.Tests.csproj" />
   <Project Path="Conjecture.LinqPad/Conjecture.LinqPad.csproj" />
   <Project Path="Conjecture.LinqPad.Tests/Conjecture.LinqPad.Tests.csproj" />
+  <Project Path="Conjecture.FSharp/Conjecture.FSharp.fsproj" />
+  <Project Path="Conjecture.FSharp.Tests/Conjecture.FSharp.Tests.fsproj" />
 </Solution>
