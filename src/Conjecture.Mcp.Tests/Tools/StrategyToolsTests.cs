@@ -65,4 +65,34 @@ public class StrategyToolsTests
         var result = StrategyTools.SuggestForType("MyRecord");
         Assert.Contains("Generate.Compose", result);
     }
+
+    [Fact]
+    public void SuggestForSealedAbstractType_SealedAbstractBase_ContainsArbitraryAttribute()
+    {
+        string result = StrategyTools.SuggestForSealedAbstractType("MyAbstractBase");
+        Assert.Contains("[Arbitrary]", result);
+    }
+
+    [Fact]
+    public void SuggestForSealedAbstractType_SealedAbstractBase_ContainsGenerateOneOf()
+    {
+        string result = StrategyTools.SuggestForSealedAbstractType("MyAbstractBase");
+        Assert.Contains("Generate.OneOf", result);
+    }
+
+    [Fact]
+    public void SuggestForSealedAbstractType_SealedAbstractBase_DoesNotMentionComposeAsMainRecommendation()
+    {
+        string result = StrategyTools.SuggestForSealedAbstractType("MyAbstractBase");
+        Assert.DoesNotContain("Generate.Compose (recommended", result);
+    }
+
+    [Fact]
+    public void SuggestForSealedAbstractType_SealedAbstractBase_MentionsArbitraryOnAbstractAndConcreteTypes()
+    {
+        string result = StrategyTools.SuggestForSealedAbstractType("Shape");
+        Assert.True(
+            result.Contains("[Arbitrary]"),
+            "Should mention [Arbitrary] attribute for strategy implementation");
+    }
 }
