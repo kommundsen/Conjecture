@@ -217,11 +217,27 @@ var pos = Generate.Integers<int>().Positive;
 
 The `[Arbitrary]` source generator reports its own set of diagnostics:
 
+### Concrete type diagnostics (CON200–CON202)
+
 | ID | Severity | Description |
 |---|---|---|
 | CON200 | Error | No accessible constructor found on `[Arbitrary]` type |
 | CON201 | Error | `[Arbitrary]` type is not `partial` |
 | CON202 | Warning | Constructor parameter type has no resolvable strategy |
+
+### Sealed hierarchy diagnostics (CON205, CON300–CON302)
+
+These fire when `[Arbitrary]` is applied to an abstract class (hierarchy mode).
+
+| ID | Severity | Description |
+|---|---|---|
+| CON205 | Warning | Concrete subtype of `[Arbitrary]`-decorated abstract base lacks `[Arbitrary]`; it will not be included in the generated `OneOf` strategy |
+| CON300 | Error | `[Arbitrary]` base type is not abstract |
+| CON301 | Error | `[Arbitrary]` base type is not a class or record (interfaces are not supported) |
+| CON302 | Error | No concrete `[Arbitrary]`-decorated subtypes found in compilation |
+
+> [!NOTE]
+> The generator only detects subtypes in the same compilation. Subtypes defined in external assemblies are silently excluded — CON205 does not fire for them. See [Understanding sealed hierarchy strategies](../explanation/sealed-hierarchy-strategies.md#the-same-compilation-constraint) for details.
 
 ## Suppressing diagnostics
 
