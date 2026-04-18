@@ -47,6 +47,14 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true);
 
+    internal static readonly DiagnosticDescriptor Con205 = new(
+        id: "CON205",
+        title: "Concrete subtype excluded from sealed hierarchy strategy",
+        messageFormat: "'{0}' is a concrete subtype of '{1}' but lacks [Arbitrary]; it will not be included in the generated OneOf strategy. Add [Arbitrary] to include it.",
+        category: "Conjecture",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true);
+
     internal static readonly DiagnosticDescriptor Con300 = new(
         id: "CON300",
         title: "Base type must be abstract",
