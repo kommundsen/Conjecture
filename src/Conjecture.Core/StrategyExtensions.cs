@@ -4,6 +4,8 @@
 // Derived from the Python Hypothesis library.
 // Original copyright: Copyright (c) 2013-present, David R. MacIver and contributors.
 
+using Conjecture.Core.Internal;
+
 namespace Conjecture.Core;
 
 /// <summary>LINQ-style extension methods for composing strategies.</summary>
@@ -80,6 +82,16 @@ public static class StrategyExtensions
         ArgumentNullException.ThrowIfNull(source);
         ArgumentNullException.ThrowIfNull(label);
         return new LabeledStrategy<T>(source, label);
+    }
+
+    /// <summary>Projects each generated value through a direct generator that receives both the source value and the data stream. Internal hot-path overload — avoids per-Generate Strategy allocation.</summary>
+    internal static Strategy<TResult> SelectMany<TSource, TResult>(
+        this Strategy<TSource> source,
+        Func<TSource, ConjectureData, TResult> directGenerator)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(directGenerator);
+        return new SelectManyDirectStrategy<TSource, TResult>(source, directGenerator);
     }
 }
 

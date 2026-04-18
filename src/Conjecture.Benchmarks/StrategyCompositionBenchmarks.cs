@@ -33,7 +33,7 @@ public class StrategyCompositionBenchmarks
         integersBaseline = Generate.Integers<int>();
         selectSingle = Generate.Integers<int>().Select(x => x + 1);
         whereSingle = Generate.Integers<int>(0, 100).Where(x => x > 50);
-        selectManySingle = Generate.Integers<int>().SelectMany(x => Generate.Integers<int>(0, x));
+        selectManySingle = Generate.Integers<int>(0, 100).SelectMany(static (x, d) => (int)d.NextInteger(0UL, (ulong)x));
         chainThreeOps = Generate.Integers<int>().Select(x => x * 2).Where(x => x > 10).Select(x => x.ToString());
         recursiveDepth5 = Generate.Recursive(Generate.Integers<int>(), s => s.Select(x => x + 1), maxDepth: 5);
     }
