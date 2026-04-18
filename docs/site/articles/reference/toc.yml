@@ -17,3 +17,5 @@ items:
     href: formatters.md
   - name: Telemetry
     href: telemetry.md
+  - name: Conjecture.FSharp
+    href: fsharp-gen.md

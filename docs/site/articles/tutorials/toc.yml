@@ -13,3 +13,5 @@ items:
     href: 06-advanced-patterns.md
   - name: Data Generation Outside Tests
     href: 07-data-generation.md
+  - name: F# Property Tests
+    href: 08-fsharp-property-tests.md
