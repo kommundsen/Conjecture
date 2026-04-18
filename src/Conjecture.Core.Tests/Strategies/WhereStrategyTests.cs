@@ -14,9 +14,9 @@ public class WhereStrategyTests
     [Fact]
     public void Where_FiltersOutput()
     {
-        var strategy = Generate.Integers<int>(0, 10).Where(x => x % 2 == 0);
-        var data = MakeData();
-        for (var i = 0; i < 50; i++)
+        Strategy<int> strategy = Generate.Integers<int>(0, 10).Where(x => x % 2 == 0);
+        ConjectureData data = MakeData();
+        for (int i = 0; i < 50; i++)
         {
             Assert.True(strategy.Generate(data) % 2 == 0, "Where() returned a value that didn't satisfy the predicate");
         }
@@ -25,9 +25,9 @@ public class WhereStrategyTests
     [Fact]
     public void Where_AllowsValuesMatchingPredicate()
     {
-        var strategy = Generate.Booleans().Where(x => x);
-        var data = MakeData();
-        for (var i = 0; i < 20; i++)
+        Strategy<bool> strategy = Generate.Booleans().Where(x => x);
+        ConjectureData data = MakeData();
+        for (int i = 0; i < 20; i++)
         {
             Assert.True(strategy.Generate(data));
         }
@@ -36,9 +36,53 @@ public class WhereStrategyTests
     [Fact]
     public void Where_ExhaustedBudget_MarksInvalid()
     {
-        var data = MakeData();
-        var strategy = Generate.Integers<int>(0, 10).Where(_ => false);
+        ConjectureData data = MakeData();
+        Strategy<int> strategy = Generate.Integers<int>(0, 10).Where(_ => false);
         Assert.ThrowsAny<Exception>((Action)(() => strategy.Generate(data)));
         Assert.Equal(Status.Invalid, data.Status);
+    }
+
+    [Fact]
+    public void Where_RejectedAttempts_RolledBackFromIRNodes()
+    {
+        ConjectureData data = ConjectureData.ForRecord(
+        [
+            IRNode.ForInteger(0UL, 0UL, 1UL),
+            IRNode.ForInteger(1UL, 0UL, 1UL),
+        ]);
+
+        Strategy<int> strategy = Generate.Integers<int>(0, 1).Where(x => x == 1);
+        int result = strategy.Generate(data);
+
+        Assert.Equal(1, result);
+        Assert.Single(data.IRNodes);
+    }
+
+    [Fact]
+    public void Where_SingleAcceptedDraw_AllocatesAtMostBaselinePlus16Bytes()
+    {
+        Strategy<int> baseline = Generate.Integers<int>(0, 100);
+        Strategy<int> where = Generate.Integers<int>(0, 100).Where(_ => true);
+
+        ConjectureData warmupData = ConjectureData.ForRecord([IRNode.ForInteger(42UL, 0UL, 100UL)]);
+        baseline.Generate(warmupData);
+        ConjectureData warmupData2 = ConjectureData.ForRecord([IRNode.ForInteger(42UL, 0UL, 100UL)]);
+        where.Generate(warmupData2);
+
+        ConjectureData baselineData = ConjectureData.ForRecord([IRNode.ForInteger(42UL, 0UL, 100UL)]);
+        long beforeBaseline = GC.GetAllocatedBytesForCurrentThread();
+        baseline.Generate(baselineData);
+        long afterBaseline = GC.GetAllocatedBytesForCurrentThread();
+        long baselineAlloc = afterBaseline - beforeBaseline;
+
+        ConjectureData whereData = ConjectureData.ForRecord([IRNode.ForInteger(42UL, 0UL, 100UL)]);
+        long beforeWhere = GC.GetAllocatedBytesForCurrentThread();
+        where.Generate(whereData);
+        long afterWhere = GC.GetAllocatedBytesForCurrentThread();
+        long whereAlloc = afterWhere - beforeWhere;
+
+        Assert.True(
+            whereAlloc <= baselineAlloc + 16,
+            $"Expected where alloc ({whereAlloc}) <= baseline alloc ({baselineAlloc}) + 16");
     }
 }
