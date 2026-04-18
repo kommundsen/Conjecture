@@ -266,6 +266,44 @@ public sealed class HierarchyStrategyEmitterTests
         Assert.Empty(errors);
     }
 
+    // --- edge cases and guard conditions ---
+
+    [Fact]
+    public void EmptySubtypes_ThrowsArgumentException()
+    {
+        ImmutableArray<SubtypeModel> subtypes = ImmutableArray<SubtypeModel>.Empty;
+
+        HierarchyTypeModel model = new HierarchyTypeModel(
+            FullyQualifiedName: "Animal",
+            Namespace: "Zoo",
+            TypeName: "Animal",
+            TypeParameters: ImmutableArray<string>.Empty,
+            Subtypes: subtypes);
+
+        _ = Assert.Throws<ArgumentException>(() => HierarchyStrategyEmitter.Emit(model));
+    }
+
+    [Fact]
+    public void EmptyNamespace_DoesNotEmitNamespaceDeclaration()
+    {
+        ImmutableArray<SubtypeModel> subtypes = ImmutableArray.Create(
+            new SubtypeModel(FullyQualifiedName: "DogArbitrary", ProviderTypeName: "DogArbitrary"),
+            new SubtypeModel(FullyQualifiedName: "CatArbitrary", ProviderTypeName: "CatArbitrary"));
+
+        HierarchyTypeModel model = new HierarchyTypeModel(
+            FullyQualifiedName: "Animal",
+            Namespace: "",
+            TypeName: "Animal",
+            TypeParameters: ImmutableArray<string>.Empty,
+            Subtypes: subtypes);
+
+        string emitted = HierarchyStrategyEmitter.Emit(model);
+
+        // Verify no namespace declaration line exists
+        int namespaceLineCount = CountOccurrences(emitted, "\nnamespace ");
+        Assert.Equal(0, namespaceLineCount);
+    }
+
     // --- helper methods ---
 
     private static HierarchyTypeModel BuildTwoCaseHierarchyModel()
