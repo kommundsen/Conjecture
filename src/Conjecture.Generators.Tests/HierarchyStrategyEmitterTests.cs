@@ -12,27 +12,27 @@ namespace Conjecture.Generators.Tests;
 
 public sealed class HierarchyStrategyEmitterTests
 {
-    // --- method name is GetStrategy(), not Create() ---
+    // --- method name is Create(), matching IStrategyProvider<T>.Create() ---
 
     [Fact]
-    public void TwoCaseHierarchy_EmittedCodeContainsGetStrategyMethod()
+    public void TwoCaseHierarchy_EmittedCodeContainsCreateMethod()
     {
         HierarchyTypeModel model = BuildTwoCaseHierarchyModel();
         string emitted = HierarchyStrategyEmitter.Emit(model);
 
-        Assert.Contains("GetStrategy()", emitted);
+        Assert.Contains("Create()", emitted);
     }
 
     [Fact]
-    public void TwoCaseHierarchy_EmittedCodeDoesNotContainCreateMethod()
+    public void TwoCaseHierarchy_EmittedCodeDoesNotContainGetStrategyMethod()
     {
         HierarchyTypeModel model = BuildTwoCaseHierarchyModel();
         string emitted = HierarchyStrategyEmitter.Emit(model);
 
-        Assert.DoesNotContain("Create()", emitted);
+        Assert.DoesNotContain("GetStrategy()", emitted);
     }
 
-    // --- emits IStrategyProvider interface with GetStrategy() return type ---
+    // --- emits IStrategyProvider interface with Create() return type ---
 
     [Fact]
     public void TwoCaseHierarchy_ImplementsIStrategyProviderInterface()
@@ -44,12 +44,12 @@ public sealed class HierarchyStrategyEmitterTests
     }
 
     [Fact]
-    public void TwoCaseHierarchy_GetStrategyReturnsStrategyOfBaseType()
+    public void TwoCaseHierarchy_CreateReturnsStrategyOfBaseType()
     {
         HierarchyTypeModel model = BuildTwoCaseHierarchyModel();
         string emitted = HierarchyStrategyEmitter.Emit(model);
 
-        Assert.Contains("global::Conjecture.Core.Strategy<global::Animal> GetStrategy()", emitted);
+        Assert.Contains("global::Conjecture.Core.Strategy<global::Animal> Create()", emitted);
     }
 
     // --- uses Generate.OneOf with .Select() projection, not array initialization ---
@@ -139,12 +139,12 @@ public sealed class HierarchyStrategyEmitterTests
     }
 
     [Fact]
-    public void GenericBaseType_GetStrategyReturnTypeIncludesTypeParameters()
+    public void GenericBaseType_CreateReturnTypeIncludesTypeParameters()
     {
         HierarchyTypeModel model = BuildGenericHierarchyModel();
         string emitted = HierarchyStrategyEmitter.Emit(model);
 
-        Assert.Contains("global::Conjecture.Core.Strategy<global::Container<T>> GetStrategy()", emitted);
+        Assert.Contains("global::Conjecture.Core.Strategy<global::Container<T>> Create()", emitted);
     }
 
     // --- file header and namespace are correct ---
@@ -198,10 +198,10 @@ public sealed class HierarchyStrategyEmitterTests
             public sealed class Dog : Animal { }
             public sealed class Cat : Animal { }
             public sealed class DogArbitrary : IStrategyProvider<Animal> {
-                public Strategy<Animal> GetStrategy() => throw new System.NotImplementedException();
+                public Strategy<Animal> Create() => throw new System.NotImplementedException();
             }
             public sealed class CatArbitrary : IStrategyProvider<Animal> {
-                public Strategy<Animal> GetStrategy() => throw new System.NotImplementedException();
+                public Strategy<Animal> Create() => throw new System.NotImplementedException();
             }
             """;
 
@@ -224,13 +224,13 @@ public sealed class HierarchyStrategyEmitterTests
             public sealed class Cat : Animal { }
             public sealed class Bird : Animal { }
             public sealed class DogArbitrary : IStrategyProvider<Animal> {
-                public Strategy<Animal> GetStrategy() => throw new System.NotImplementedException();
+                public Strategy<Animal> Create() => throw new System.NotImplementedException();
             }
             public sealed class CatArbitrary : IStrategyProvider<Animal> {
-                public Strategy<Animal> GetStrategy() => throw new System.NotImplementedException();
+                public Strategy<Animal> Create() => throw new System.NotImplementedException();
             }
             public sealed class BirdArbitrary : IStrategyProvider<Animal> {
-                public Strategy<Animal> GetStrategy() => throw new System.NotImplementedException();
+                public Strategy<Animal> Create() => throw new System.NotImplementedException();
             }
             """;
 
@@ -252,10 +252,10 @@ public sealed class HierarchyStrategyEmitterTests
             public sealed class ListContainer<T> : Container<T> { }
             public sealed class ArrayContainer<T> : Container<T> { }
             public sealed class ListContainerArbitrary<T> : IStrategyProvider<Container<T>> {
-                public Strategy<Container<T>> GetStrategy() => throw new System.NotImplementedException();
+                public Strategy<Container<T>> Create() => throw new System.NotImplementedException();
             }
             public sealed class ArrayContainerArbitrary<T> : IStrategyProvider<Container<T>> {
-                public Strategy<Container<T>> GetStrategy() => throw new System.NotImplementedException();
+                public Strategy<Container<T>> Create() => throw new System.NotImplementedException();
             }
             """;
 
