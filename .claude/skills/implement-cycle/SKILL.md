@@ -45,10 +45,13 @@ Mark the sub-issue **and its parent** as **In Progress** on the Conjecture Roadm
 (skip the parent update if it is already In Progress):
 
 ```bash
-# Helper: set an issue to In Progress by issue number
+# Helper: ensure an issue is in the project and set it to In Progress
 set_in_progress() {
   local number=$1
-  local item_id=$(gh project item-list 2 --owner kommundsen --format json \
+  local url="https://github.com/kommundsen/Conjecture/issues/$number"
+  # Add to project (idempotent — safe to call if already present)
+  gh project item-add 2 --owner kommundsen --url "$url" > /dev/null 2>&1 || true
+  local item_id=$(gh project item-list 2 --owner kommundsen --format json --limit 200 \
     --jq ".items[] | select(.content.number == $number) | .id")
   gh project item-edit --project-id PVT_kwHOAAZ3vM4BTArq --id "$item_id" \
     --field-id PVTSSF_lAHOAAZ3vM4BTArqzhAYMcQ \
@@ -59,7 +62,7 @@ set_in_progress() {
 set_in_progress <sub-issue-number>
 
 # Mark parent In Progress only if not already
-PARENT_STATUS=$(gh project item-list 2 --owner kommundsen --format json \
+PARENT_STATUS=$(gh project item-list 2 --owner kommundsen --format json --limit 200 \
   --jq ".items[] | select(.content.number == <parent-number>) | .status")
 if [ "$PARENT_STATUS" != "In Progress" ]; then
   set_in_progress <parent-number>
