@@ -2,7 +2,6 @@
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
 using System.Collections.Immutable;
-using System.Linq;
 
 using Microsoft.CodeAnalysis;
 
@@ -11,11 +10,10 @@ namespace Conjecture.Generators;
 internal static class HierarchyTypeModelExtractor
 {
     internal static (HierarchyTypeModel? Model, ImmutableArray<Diagnostic> Diagnostics)
-        Extract(INamedTypeSymbol baseSymbol, IEnumerable<INamedTypeSymbol> allArbitrarySymbols)
+        Extract(INamedTypeSymbol baseSymbol, IEnumerable<INamedTypeSymbol> allArbitrarySymbols, Compilation? compilation = null)
     {
         ImmutableArray<Diagnostic>.Builder diagnostics = ImmutableArray.CreateBuilder<Diagnostic>();
 
-        // Validate base is abstract
         if (!baseSymbol.IsAbstract)
         {
             diagnostics.Add(Diagnostic.Create(
@@ -25,7 +23,6 @@ internal static class HierarchyTypeModelExtractor
             return (null, diagnostics.ToImmutable());
         }
 
-        // Validate base is class or record (not interface or struct)
         if (baseSymbol.TypeKind is not TypeKind.Class)
         {
             diagnostics.Add(Diagnostic.Create(
@@ -36,51 +33,52 @@ internal static class HierarchyTypeModelExtractor
             return (null, diagnostics.ToImmutable());
         }
 
-        // Collect type parameters from base
         ImmutableArray<string>.Builder typeParams = ImmutableArray.CreateBuilder<string>();
         foreach (ITypeParameterSymbol typeParam in baseSymbol.TypeParameters)
         {
             typeParams.Add(typeParam.Name);
         }
 
-        // Get fully qualified name of base for comparison (use OriginalDefinition so generic Base<T> matches Base<int> in subtype chains)
+        // OriginalDefinition so generic Base<T> matches Base<int> in subtype chains
         string baseOriginalFqn = baseSymbol.OriginalDefinition.ToDisplayString(TypeModelExtractor.TypeNameFormat);
         string baseFullyQualifiedName = baseSymbol.ToDisplayString(TypeModelExtractor.TypeNameFormat);
 
-        // Filter arbitrary symbols to those in the base's type hierarchy and not abstract
+        HashSet<string> processedFqns = [];
+
         ImmutableArray<SubtypeModel>.Builder subtypes = ImmutableArray.CreateBuilder<SubtypeModel>();
         foreach (INamedTypeSymbol arbitrarySymbol in allArbitrarySymbols)
         {
-            // Skip abstract types
             if (arbitrarySymbol.IsAbstract)
             {
                 continue;
             }
 
-            // Check if arbitrarySymbol extends baseSymbol using display-name comparison so it works across compilations
-            INamedTypeSymbol? currentBase = arbitrarySymbol.BaseType;
-            bool isInHierarchy = false;
-
-            while (currentBase is not null)
+            if (!IsInHierarchy(arbitrarySymbol, baseOriginalFqn))
             {
-                if (currentBase.OriginalDefinition.ToDisplayString(TypeModelExtractor.TypeNameFormat) == baseOriginalFqn)
-                {
-                    isInHierarchy = true;
-                    break;
-                }
-
-                currentBase = currentBase.BaseType;
+                continue;
             }
 
-            if (isInHierarchy)
+            string fullyQualifiedName = arbitrarySymbol.ToDisplayString(TypeModelExtractor.TypeNameFormat);
+            processedFqns.Add(fullyQualifiedName);
+
+            if (!SymbolHelpers.HasArbitraryAttribute(arbitrarySymbol))
             {
-                string providerTypeName = arbitrarySymbol.Name + "Arbitrary";
-                string fullyQualifiedName = arbitrarySymbol.ToDisplayString(TypeModelExtractor.TypeNameFormat);
-                subtypes.Add(new SubtypeModel(fullyQualifiedName, providerTypeName));
+                diagnostics.Add(Diagnostic.Create(
+                    DiagnosticDescriptors.Con205,
+                    arbitrarySymbol.Locations.FirstOrDefault(),
+                    arbitrarySymbol.Name,
+                    baseSymbol.Name));
+                continue;
             }
+
+            subtypes.Add(new SubtypeModel(fullyQualifiedName, arbitrarySymbol.Name + "Arbitrary"));
         }
 
-        // Return null if no concrete subtypes found
+        if (compilation is not null)
+        {
+            WalkNamespace(compilation.GlobalNamespace, baseSymbol, baseOriginalFqn, diagnostics, processedFqns);
+        }
+
         if (subtypes.Count == 0)
         {
             diagnostics.Add(Diagnostic.Create(
@@ -90,7 +88,6 @@ internal static class HierarchyTypeModelExtractor
             return (null, diagnostics.ToImmutable());
         }
 
-        // Build the model
         string baseNamespace = baseSymbol.ContainingNamespace.ToDisplayString();
         string baseTypeName = baseSymbol.Name;
 
@@ -102,5 +99,82 @@ internal static class HierarchyTypeModelExtractor
             Subtypes: subtypes.ToImmutable());
 
         return (model, diagnostics.ToImmutable());
+    }
+
+    private static bool IsInHierarchy(INamedTypeSymbol symbol, string baseOriginalFqn)
+    {
+        INamedTypeSymbol? current = symbol.BaseType;
+        while (current is not null)
+        {
+            if (current.OriginalDefinition.ToDisplayString(TypeModelExtractor.TypeNameFormat) == baseOriginalFqn)
+            {
+                return true;
+            }
+
+            current = current.BaseType;
+        }
+
+        return false;
+    }
+
+    private static void WalkNamespace(
+        INamespaceSymbol ns,
+        INamedTypeSymbol baseSymbol,
+        string baseOriginalFqn,
+        ImmutableArray<Diagnostic>.Builder diagnostics,
+        HashSet<string> processedFqns)
+    {
+        foreach (INamedTypeSymbol typeSymbol in ns.GetTypeMembers())
+        {
+            CheckTypeForMissingArbitraryAttribute(typeSymbol, baseSymbol, baseOriginalFqn, diagnostics, processedFqns);
+        }
+
+        foreach (INamespaceSymbol childNs in ns.GetNamespaceMembers())
+        {
+            WalkNamespace(childNs, baseSymbol, baseOriginalFqn, diagnostics, processedFqns);
+        }
+    }
+
+    private static void CheckTypeForMissingArbitraryAttribute(
+        INamedTypeSymbol typeSymbol,
+        INamedTypeSymbol baseSymbol,
+        string baseOriginalFqn,
+        ImmutableArray<Diagnostic>.Builder diagnostics,
+        HashSet<string> processedFqns)
+    {
+        if (typeSymbol.IsAbstract)
+        {
+            return;
+        }
+
+        if (!IsInHierarchy(typeSymbol, baseOriginalFqn))
+        {
+            foreach (INamedTypeSymbol nestedType in typeSymbol.GetTypeMembers())
+            {
+                CheckTypeForMissingArbitraryAttribute(nestedType, baseSymbol, baseOriginalFqn, diagnostics, processedFqns);
+            }
+
+            return;
+        }
+
+        string typeFqn = typeSymbol.ToDisplayString(TypeModelExtractor.TypeNameFormat);
+        if (!processedFqns.Add(typeFqn))
+        {
+            return;
+        }
+
+        if (!SymbolHelpers.HasArbitraryAttribute(typeSymbol))
+        {
+            diagnostics.Add(Diagnostic.Create(
+                DiagnosticDescriptors.Con205,
+                typeSymbol.Locations.FirstOrDefault(),
+                typeSymbol.Name,
+                baseSymbol.Name));
+        }
+
+        foreach (INamedTypeSymbol nestedType in typeSymbol.GetTypeMembers())
+        {
+            CheckTypeForMissingArbitraryAttribute(nestedType, baseSymbol, baseOriginalFqn, diagnostics, processedFqns);
+        }
     }
 }

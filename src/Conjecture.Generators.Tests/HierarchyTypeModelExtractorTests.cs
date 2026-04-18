@@ -19,6 +19,7 @@ public sealed class HierarchyTypeModelExtractorTests
     {
         INamedTypeSymbol baseSymbol = CompileAndGetSymbol(
             """
+            using Conjecture.Core;
             namespace MyApp;
             public abstract class Shape { }
             [Arbitrary] public partial class Circle : Shape { public Circle(int radius) { } }
@@ -28,6 +29,7 @@ public sealed class HierarchyTypeModelExtractorTests
 
         INamedTypeSymbol circleSymbol = CompileAndGetSymbol(
             """
+            using Conjecture.Core;
             namespace MyApp;
             public abstract class Shape { }
             [Arbitrary] public partial class Circle : Shape { public Circle(int radius) { } }
@@ -37,6 +39,7 @@ public sealed class HierarchyTypeModelExtractorTests
 
         INamedTypeSymbol rectangleSymbol = CompileAndGetSymbol(
             """
+            using Conjecture.Core;
             namespace MyApp;
             public abstract class Shape { }
             [Arbitrary] public partial class Circle : Shape { public Circle(int radius) { } }
@@ -59,6 +62,7 @@ public sealed class HierarchyTypeModelExtractorTests
     {
         INamedTypeSymbol baseSymbol = CompileAndGetSymbol(
             """
+            using Conjecture.Core;
             namespace MyApp;
             public abstract record Figure;
             [Arbitrary] public sealed partial record Triangle(int Base, int Height) : Figure;
@@ -68,6 +72,7 @@ public sealed class HierarchyTypeModelExtractorTests
 
         INamedTypeSymbol triangleSymbol = CompileAndGetSymbol(
             """
+            using Conjecture.Core;
             namespace MyApp;
             public abstract record Figure;
             [Arbitrary] public sealed partial record Triangle(int Base, int Height) : Figure;
@@ -77,6 +82,7 @@ public sealed class HierarchyTypeModelExtractorTests
 
         INamedTypeSymbol diamondSymbol = CompileAndGetSymbol(
             """
+            using Conjecture.Core;
             namespace MyApp;
             public abstract record Figure;
             [Arbitrary] public sealed partial record Triangle(int Base, int Height) : Figure;
@@ -114,6 +120,7 @@ public sealed class HierarchyTypeModelExtractorTests
     {
         INamedTypeSymbol baseSymbol = CompileAndGetSymbol(
             """
+            using Conjecture.Core;
             namespace MyApp;
             public abstract class Animal { }
             public abstract class Quadruped : Animal { }
@@ -123,6 +130,7 @@ public sealed class HierarchyTypeModelExtractorTests
 
         INamedTypeSymbol dogSymbol = CompileAndGetSymbol(
             """
+            using Conjecture.Core;
             namespace MyApp;
             public abstract class Animal { }
             public abstract class Quadruped : Animal { }
@@ -144,6 +152,7 @@ public sealed class HierarchyTypeModelExtractorTests
     {
         INamedTypeSymbol baseSymbol = CompileAndGetSymbol(
             """
+            using Conjecture.Core;
             namespace MyApp;
             public abstract class Container<T> { }
             [Arbitrary] public partial class Box<T> : Container<T> { public Box(T value) { } }
@@ -152,6 +161,7 @@ public sealed class HierarchyTypeModelExtractorTests
 
         INamedTypeSymbol boxSymbol = CompileAndGetSymbol(
             """
+            using Conjecture.Core;
             namespace MyApp;
             public abstract class Container<T> { }
             [Arbitrary] public partial class Box<T> : Container<T> { public Box(T value) { } }
@@ -173,6 +183,7 @@ public sealed class HierarchyTypeModelExtractorTests
     {
         INamedTypeSymbol baseSymbol = CompileAndGetSymbol(
             """
+            using Conjecture.Core;
             namespace MyApp;
             public abstract class Shape { }
             [Arbitrary] public partial class Circle : Shape { public Circle(int radius) { } }
@@ -181,6 +192,7 @@ public sealed class HierarchyTypeModelExtractorTests
 
         INamedTypeSymbol circleSymbol = CompileAndGetSymbol(
             """
+            using Conjecture.Core;
             namespace MyApp;
             public abstract class Shape { }
             [Arbitrary] public partial class Circle : Shape { public Circle(int radius) { } }
@@ -201,6 +213,7 @@ public sealed class HierarchyTypeModelExtractorTests
     {
         INamedTypeSymbol baseSymbol = CompileAndGetSymbol(
             """
+            using Conjecture.Core;
             namespace MyApp;
             public abstract class Shape { }
             [Arbitrary] public partial class Circle : Shape { public Circle(int radius) { } }
@@ -209,6 +222,7 @@ public sealed class HierarchyTypeModelExtractorTests
 
         INamedTypeSymbol circleSymbol = CompileAndGetSymbol(
             """
+            using Conjecture.Core;
             namespace MyApp;
             public abstract class Shape { }
             [Arbitrary] public partial class Circle : Shape { public Circle(int radius) { } }
@@ -225,7 +239,149 @@ public sealed class HierarchyTypeModelExtractorTests
         Assert.EndsWith("Arbitrary", providerTypeName);
     }
 
+    [Fact]
+    public void Extract_ConcreteSubtypeWithoutArbitraryAttribute_EmitsCon205()
+    {
+        INamedTypeSymbol baseSymbol = CompileAndGetSymbol(
+            """
+            namespace MyApp;
+            public abstract class Shape { }
+            public partial class Circle : Shape { public Circle(int radius) { } }
+            """,
+            "MyApp.Shape");
+
+        INamedTypeSymbol circleSymbol = CompileAndGetSymbol(
+            """
+            namespace MyApp;
+            public abstract class Shape { }
+            public partial class Circle : Shape { public Circle(int radius) { } }
+            """,
+            "MyApp.Circle");
+
+        ImmutableArray<INamedTypeSymbol> arbitrarySymbols = [circleSymbol];
+        (HierarchyTypeModel? model, ImmutableArray<Diagnostic> diagnostics) = HierarchyTypeModelExtractor.Extract(baseSymbol, arbitrarySymbols);
+
+        Assert.Null(model);
+        Assert.Single(diagnostics.Where(d => d.Id == "CON302"));
+        Diagnostic con205 = Assert.Single(diagnostics.Where(d => d.Id == "CON205"));
+        Assert.Contains("Circle", con205.GetMessage());
+        Assert.Contains("Shape", con205.GetMessage());
+    }
+
+    [Fact]
+    public void Extract_ConcreteSubtypeWithArbitraryAttribute_DoesNotEmitCon205()
+    {
+        INamedTypeSymbol baseSymbol = CompileAndGetSymbol(
+            """
+            using Conjecture.Core;
+            namespace MyApp;
+            public abstract class Shape { }
+            [Arbitrary] public partial class Circle : Shape { public Circle(int radius) { } }
+            """,
+            "MyApp.Shape");
+
+        INamedTypeSymbol circleSymbol = CompileAndGetSymbol(
+            """
+            using Conjecture.Core;
+            namespace MyApp;
+            public abstract class Shape { }
+            [Arbitrary] public partial class Circle : Shape { public Circle(int radius) { } }
+            """,
+            "MyApp.Circle");
+
+        ImmutableArray<INamedTypeSymbol> arbitrarySymbols = [circleSymbol];
+        (HierarchyTypeModel? model, ImmutableArray<Diagnostic> diagnostics) = HierarchyTypeModelExtractor.Extract(baseSymbol, arbitrarySymbols);
+
+        Assert.Empty(diagnostics.Where(d => d.Id == "CON205"));
+    }
+
+    [Fact]
+    public void Extract_TwoNonDecoratedConcreteSubtypes_EmitsTwoCon205Diagnostics()
+    {
+        INamedTypeSymbol baseSymbol = CompileAndGetSymbol(
+            """
+            namespace MyApp;
+            public abstract class Shape { }
+            public partial class Circle : Shape { public Circle(int radius) { } }
+            public partial class Rectangle : Shape { public Rectangle(int width, int height) { } }
+            """,
+            "MyApp.Shape");
+
+        INamedTypeSymbol circleSymbol = CompileAndGetSymbol(
+            """
+            namespace MyApp;
+            public abstract class Shape { }
+            public partial class Circle : Shape { public Circle(int radius) { } }
+            public partial class Rectangle : Shape { public Rectangle(int width, int height) { } }
+            """,
+            "MyApp.Circle");
+
+        INamedTypeSymbol rectangleSymbol = CompileAndGetSymbol(
+            """
+            namespace MyApp;
+            public abstract class Shape { }
+            public partial class Circle : Shape { public Circle(int radius) { } }
+            public partial class Rectangle : Shape { public Rectangle(int width, int height) { } }
+            """,
+            "MyApp.Rectangle");
+
+        ImmutableArray<INamedTypeSymbol> arbitrarySymbols = [circleSymbol, rectangleSymbol];
+        (HierarchyTypeModel? model, ImmutableArray<Diagnostic> diagnostics) = HierarchyTypeModelExtractor.Extract(baseSymbol, arbitrarySymbols);
+
+        Assert.Null(model);
+        Assert.Single(diagnostics.Where(d => d.Id == "CON302"));
+        ImmutableArray<Diagnostic> con205Diagnostics = diagnostics.Where(d => d.Id == "CON205").ToImmutableArray();
+        Assert.Equal(2, con205Diagnostics.Length);
+    }
+
+    [Fact]
+    public void Extract_WithCompilation_SubtypeInBothArbitrarySymbolsAndCompilation_EmitsExactlyOneCon205()
+    {
+        const string source = """
+            using Conjecture.Core;
+            namespace MyApp;
+            [Arbitrary] public abstract partial class Shape { }
+            public partial class Circle : Shape { public Circle(int radius) { } }
+            """;
+
+        (INamedTypeSymbol baseSymbol, CSharpCompilation compilation) = CompileAndGetSymbolWithCompilation(source, "MyApp.Shape");
+        INamedTypeSymbol circleSymbol = compilation.GetTypeByMetadataName("MyApp.Circle")!;
+
+        ImmutableArray<INamedTypeSymbol> arbitrarySymbols = [circleSymbol];
+        (HierarchyTypeModel? model, ImmutableArray<Diagnostic> diagnostics) = HierarchyTypeModelExtractor.Extract(baseSymbol, arbitrarySymbols, compilation);
+
+        Assert.Single(diagnostics.Where(d => d.Id == "CON205"));
+    }
+
+    [Fact]
+    public void Extract_WithCompilation_EmitsCon205ForSubtypeAbsentFromArbitrarySymbols()
+    {
+        const string source = """
+            using Conjecture.Core;
+            namespace MyApp;
+            [Arbitrary] public abstract partial class Shape { }
+            [Arbitrary] public partial class Circle : Shape { public Circle(int radius) { } }
+            public partial class Square : Shape { public Square(int side) { } }
+            """;
+
+        (INamedTypeSymbol baseSymbol, CSharpCompilation compilation) = CompileAndGetSymbolWithCompilation(source, "MyApp.Shape");
+        INamedTypeSymbol circleSymbol = compilation.GetTypeByMetadataName("MyApp.Circle")!;
+
+        ImmutableArray<INamedTypeSymbol> arbitrarySymbols = [circleSymbol];
+        (HierarchyTypeModel? model, ImmutableArray<Diagnostic> diagnostics) = HierarchyTypeModelExtractor.Extract(baseSymbol, arbitrarySymbols, compilation);
+
+        Diagnostic con205 = Assert.Single(diagnostics.Where(d => d.Id == "CON205"));
+        Assert.Contains("Square", con205.GetMessage());
+        Assert.Contains("Shape", con205.GetMessage());
+    }
+
     private static INamedTypeSymbol CompileAndGetSymbol(string source, string metadataName)
+    {
+        (INamedTypeSymbol symbol, _) = CompileAndGetSymbolWithCompilation(source, metadataName);
+        return symbol;
+    }
+
+    private static (INamedTypeSymbol Symbol, CSharpCompilation Compilation) CompileAndGetSymbolWithCompilation(string source, string metadataName)
     {
         string runtimeDir = Path.GetDirectoryName(typeof(object).Assembly.Location)!;
         CSharpCompilation compilation = CSharpCompilation.Create(
@@ -241,6 +397,6 @@ public sealed class HierarchyTypeModelExtractorTests
 
         INamedTypeSymbol? symbol = compilation.GetTypeByMetadataName(metadataName);
         Assert.NotNull(symbol);
-        return symbol;
+        return (symbol, compilation);
     }
 }

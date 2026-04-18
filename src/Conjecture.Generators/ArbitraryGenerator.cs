@@ -61,13 +61,15 @@ public sealed class ArbitraryGenerator : IIncrementalGenerator
 
         IncrementalValueProvider<ImmutableArray<INamedTypeSymbol>> allArbitrarySymbols = types.Collect();
 
-        IncrementalValuesProvider<(INamedTypeSymbol BaseSymbol, ImmutableArray<INamedTypeSymbol> AllSymbols)> hierarchyCombined =
-            abstractTypes.Combine(allArbitrarySymbols);
+        IncrementalValueProvider<Compilation> compilationProvider = context.CompilationProvider;
+
+        IncrementalValuesProvider<((INamedTypeSymbol BaseSymbol, ImmutableArray<INamedTypeSymbol> AllSymbols) Left, Compilation Right)> hierarchyCombined =
+            abstractTypes.Combine(allArbitrarySymbols).Combine(compilationProvider);
 
         context.RegisterSourceOutput(hierarchyCombined, static (ctx, item) =>
         {
-            (INamedTypeSymbol baseSymbol, ImmutableArray<INamedTypeSymbol> allSymbols) = item;
-            (HierarchyTypeModel? model, ImmutableArray<Diagnostic> diagnostics) = HierarchyTypeModelExtractor.Extract(baseSymbol, allSymbols);
+            ((INamedTypeSymbol baseSymbol, ImmutableArray<INamedTypeSymbol> allSymbols), Compilation compilation) = item;
+            (HierarchyTypeModel? model, ImmutableArray<Diagnostic> diagnostics) = HierarchyTypeModelExtractor.Extract(baseSymbol, allSymbols, compilation);
 
             bool hasHierarchyError = false;
             foreach (Diagnostic d in diagnostics)
