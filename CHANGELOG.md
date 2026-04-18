@@ -10,6 +10,34 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Version
 
 ---
 
+## [0.11.0] — 2026-04-18
+
+### Added
+
+**FSharp** (new package `Conjecture.FSharp`)
+- `Gen<'a>` type — F#-native generator wrapping `Strategy<T>`
+- `Gen` module with primitives: `int`, `bool`, `float`, `string`, `guid`, `byte`, `char`; combinators: `list`, `option`, `result`, `set`, `seq`, `tuple2`
+- `Gen.auto<'a>` — automatic generator derivation via `FSharp.Reflection` for records, discriminated unions, and tuples
+- `gen { }` computation expression (`GenBuilder`) for monadic generator composition
+- `PropertyRunner` — runs property tests from F# using `ConjectureSettings`
+- `FSharpFormatter` — pretty-printer for F# union and record values in failure output
+
+**FSharp.Expecto** (new package `Conjecture.FSharp.Expecto`)
+- `property` combinator — integrates Conjecture property tests with the Expecto test framework
+
+**Generators** (`Conjecture.Generators`)
+- `HierarchyTypeModel` and `HierarchyTypeModelExtractor` — model for sealed class hierarchies
+- `HierarchyStrategyEmitter` — emits `Generate.OneOf(…)` strategies for abstract base types with sealed concrete subtypes
+- Hierarchy pipeline wired into `ArbitraryGenerator` for auto-generation of sealed hierarchies
+
+**Analyzers** (`Conjecture.Analyzers`)
+- CON205 — warns when a concrete subtype of a sealed hierarchy is missing an `[Arbitrary]` attribute
+
+**MCP** (`Conjecture.Mcp`)
+- `suggest-strategy-for-sealed-hierarchy` tool — suggests generation strategies for sealed class hierarchies
+
+---
+
 ## [0.10.0] — 2026-04-17
 
 ### Added
