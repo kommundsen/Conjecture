@@ -1,6 +1,6 @@
 ---
 name: test-developer
-model: haiku
+model: sonnet
 color: red
 description: >
   Writes failing xUnit tests for the Conjecture .NET project (TDD Red phase).
