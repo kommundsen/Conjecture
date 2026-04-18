@@ -8,6 +8,8 @@
   <ItemGroup>
     <Compile Include="Gen.fs" />
     <Compile Include="GenBuilder.fs" />
+    <Compile Include="FSharpFormatter.fs" />
+    <Compile Include="PropertyRunner.fs" />
   </ItemGroup>
 
   <ItemGroup>
