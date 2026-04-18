@@ -47,3 +47,39 @@ module Gen =
 
     let bool : Gen<bool> =
         Gen(Generate.Booleans())
+
+    let list (gen: Gen<'a>) : Gen<'a list> =
+        let inner = unwrap gen
+        Gen(StrategyExtensions.Select(Generate.Lists(inner), System.Func<_, _>(fun (lst: System.Collections.Generic.List<'a>) -> lst |> Seq.toList)))
+
+    let option (gen: Gen<'a>) : Gen<'a option> =
+        Gen(StrategyExtensions.SelectMany(
+            Generate.Booleans(),
+            System.Func<_, _>(fun flag ->
+                if flag then
+                    StrategyExtensions.Select(unwrap gen, System.Func<_, _>(Some))
+                else
+                    Generate.Just(None))))
+
+    let result (okGen: Gen<'ok>) (errGen: Gen<'err>) : Gen<Result<'ok, 'err>> =
+        Gen(StrategyExtensions.SelectMany(
+            Generate.Booleans(),
+            System.Func<_, _>(fun flag ->
+                if flag then
+                    StrategyExtensions.Select(unwrap okGen, System.Func<_, _>(Ok))
+                else
+                    StrategyExtensions.Select(unwrap errGen, System.Func<_, _>(Error)))))
+
+    let set (gen: Gen<'a>) : Gen<Set<'a>> =
+        let inner = unwrap gen
+        Gen(StrategyExtensions.Select(Generate.Lists(inner), System.Func<_, _>(fun (lst: System.Collections.Generic.List<'a>) -> lst |> Set.ofSeq)))
+
+    let seq (gen: Gen<'a>) : Gen<seq<'a>> =
+        let inner = unwrap gen
+        Gen(StrategyExtensions.Select(Generate.Lists(inner), System.Func<_, _>(fun (lst: System.Collections.Generic.List<'a>) -> lst :> seq<'a>)))
+
+    let tuple2 (genA: Gen<'a>) (genB: Gen<'b>) : Gen<'a * 'b> =
+        Gen(StrategyExtensions.SelectMany(
+            unwrap genA,
+            System.Func<_, _>(fun a ->
+                StrategyExtensions.Select(unwrap genB, System.Func<_, _>(fun b -> (a, b))))))

@@ -8,6 +8,7 @@
   <ItemGroup>
     <Compile Include="GenTests.fs" />
     <Compile Include="GenBuilderTests.fs" />
+    <Compile Include="GenFSharpTypesTests.fs" />
   </ItemGroup>
 
   <ItemGroup>
