@@ -3,6 +3,8 @@ items:
     href: property-based-testing.md
   - name: Shrinking
     href: shrinking.md
+  - name: Sealed hierarchy strategies
+    href: sealed-hierarchy-strategies.md
   - name: Targeted testing
     href: targeted-testing.md
   - name: The example database
