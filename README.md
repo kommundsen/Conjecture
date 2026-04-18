@@ -1,5 +1,14 @@
 # Conjecture.NET
 
+[![CI](https://github.com/kommundsen/Conjecture/actions/workflows/ci.yml/badge.svg)](https://github.com/kommundsen/Conjecture/actions/workflows/ci.yml)
+[![Docs](https://img.shields.io/badge/docs-ommundsen.dev-blue)](https://ommundsen.dev/Conjecture/)
+
+[![NuGet: Conjecture.Core](https://img.shields.io/nuget/v/Conjecture.Core?label=Conjecture.Core)](https://www.nuget.org/packages/Conjecture.Core)
+[![NuGet: Conjecture.Xunit](https://img.shields.io/nuget/v/Conjecture.Xunit?label=Conjecture.Xunit)](https://www.nuget.org/packages/Conjecture.Xunit)
+[![NuGet: Conjecture.Xunit.V3](https://img.shields.io/nuget/v/Conjecture.Xunit.V3?label=Conjecture.Xunit.V3)](https://www.nuget.org/packages/Conjecture.Xunit.V3)
+[![NuGet: Conjecture.NUnit](https://img.shields.io/nuget/v/Conjecture.NUnit?label=Conjecture.NUnit)](https://www.nuget.org/packages/Conjecture.NUnit)
+[![NuGet: Conjecture.MSTest](https://img.shields.io/nuget/v/Conjecture.MSTest?label=Conjecture.MSTest)](https://www.nuget.org/packages/Conjecture.MSTest)
+
 **Property-based testing for .NET** — a ground-up port of Python's [Hypothesis](https://github.com/HypothesisWorks/hypothesis).
 
 ## What is it?
