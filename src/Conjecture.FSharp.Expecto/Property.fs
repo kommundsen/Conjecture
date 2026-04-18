@@ -1,0 +1,23 @@
+// Copyright (c) 2026 Kim Ommundsen. Licensed under the MPL-2.0.
+// See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
+
+module Conjecture.FSharp.Expecto
+
+open Expecto
+open Conjecture
+
+let property (name: string) (test: 'a -> 'r) : Test =
+    testCase name (fun () ->
+        let handleResult result =
+            match result with
+            | PropertyResult.Passed -> ()
+            | PropertyResult.Failed msg -> failwith msg
+        let returnType = typeof<'r>
+        if returnType = typeof<bool> then
+            let boolTest = fun a -> test a |> box |> unbox<bool>
+            PropertyRunner.runBool (Gen.auto<'a> ()) boolTest |> Async.AwaitTask |> Async.RunSynchronously |> handleResult
+        elif returnType = typeof<unit> then
+            let unitTest = test >> ignore
+            PropertyRunner.runUnit (Gen.auto<'a> ()) unitTest |> Async.AwaitTask |> Async.RunSynchronously |> handleResult
+        else
+            failwithf "property: unsupported return type '%s'. Use 'a -> bool or 'a -> unit." typeof<'r>.Name)

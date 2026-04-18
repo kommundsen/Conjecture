@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Description>Expecto integration for Conjecture.FSharp property-based testing</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Property.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Expecto" />
+    <PackageReference Include="FSharp.Core" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Conjecture.FSharp\Conjecture.FSharp.fsproj" />
+  </ItemGroup>
+
+</Project>
