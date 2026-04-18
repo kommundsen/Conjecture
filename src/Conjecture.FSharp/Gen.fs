@@ -3,7 +3,11 @@
 
 namespace Conjecture
 
+open System
+open System.Collections.Generic
+open System.Diagnostics.CodeAnalysis
 open Conjecture.Core
+open Microsoft.FSharp.Reflection
 
 [<Struct>]
 type Gen<'a> = internal Gen of Strategy: Strategy<'a>
@@ -83,3 +87,75 @@ module Gen =
             unwrap genA,
             System.Func<_, _>(fun a ->
                 StrategyExtensions.Select(unwrap genB, System.Func<_, _>(fun b -> (a, b))))))
+
+    let private combineFieldGens (gens: Gen<obj> list) : Gen<obj list> =
+        gens
+        |> List.fold
+            (fun accGen fieldGen ->
+                accGen
+                |> bind (fun (acc: obj list) ->
+                    fieldGen |> map (fun v -> v :: acc)))
+            (constant [])
+
+    [<RequiresUnreferencedCode("Uses FSharp.Reflection and is not trim-safe.")>]
+    let rec private autoWithDepth (cache: Dictionary<struct (int * Type), Gen<obj>>) (depth: int) (t: Type) : Gen<obj> =
+        let key = struct (depth, t)
+        match cache.TryGetValue(key) with
+        | true, cached -> cached
+        | false, _ ->
+            let gen =
+                if FSharpType.IsRecord(t) then
+                    let fields = FSharpType.GetRecordFields(t)
+                    if depth <= 0 && fields.Length > 0 then
+                        raise (NotSupportedException($"Gen.auto cannot generate type '{t.FullName}': depth limit reached."))
+                    let fieldGens =
+                        fields
+                        |> Array.map (fun f -> autoWithDepth cache (depth - 1) f.PropertyType)
+                        |> Array.toList
+                    combineFieldGens fieldGens
+                    |> map (fun values ->
+                        let result = FSharpValue.MakeRecord(t, values |> List.rev |> List.toArray)
+                        Unchecked.nonNull result)
+                elif FSharpType.IsUnion(t) then
+                    let cases = FSharpType.GetUnionCases(t)
+                    let baseCases = cases |> Array.filter (fun c -> c.GetFields().Length = 0)
+                    if depth <= 0 && baseCases.Length = 0 then
+                        raise (NotSupportedException($"Gen.auto cannot generate type '{t.FullName}': depth limit reached with no base cases."))
+                    let effectiveCases =
+                        if depth <= 0 && baseCases.Length > 0 then baseCases else cases
+                    let caseGens =
+                        effectiveCases
+                        |> Array.map (fun case ->
+                            let fieldTypes = case.GetFields()
+                            if fieldTypes.Length = 0 then
+                                constant (Unchecked.nonNull (FSharpValue.MakeUnion(case, [||])))
+                            else
+                                let fieldGens =
+                                    fieldTypes
+                                    |> Array.map (fun f -> autoWithDepth cache (depth - 1) f.PropertyType)
+                                    |> Array.toList
+                                combineFieldGens fieldGens
+                                |> map (fun values ->
+                                    Unchecked.nonNull (FSharpValue.MakeUnion(case, values |> List.rev |> List.toArray))))
+                        |> Array.toList
+                    oneOf caseGens
+                elif t = typeof<int> then
+                    int (-1000, 1000) |> map (fun x -> x :> obj)
+                elif t = typeof<string> then
+                    string (0, 20) |> map (fun x -> x :> obj)
+                elif t = typeof<bool> then
+                    bool |> map (fun x -> x :> obj)
+                elif t = typeof<float> then
+                    float (-1000.0, 1000.0) |> map (fun x -> x :> obj)
+                elif t = typeof<float32> then
+                    float (-1000.0, 1000.0) |> map (fun x -> float32 x :> obj)
+                else
+                    raise (NotSupportedException($"Gen.auto does not support type: {t.FullName}"))
+            cache[key] <- gen
+            gen
+
+    [<RequiresUnreferencedCode("Uses FSharp.Reflection and is not trim-safe.")>]
+    let auto<'a> () : Gen<'a> =
+        let cache = Dictionary<struct (int * Type), Gen<obj>>()
+        autoWithDepth cache 3 typeof<'a> |> map (fun o -> o :?> 'a)
+
