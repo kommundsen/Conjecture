@@ -90,19 +90,19 @@ internal static class StrategyTools
 
         "Regex" =>
             """
-            Use `RegexGenerate.Matching(pattern)` or `RegexGenerate.NotMatching(pattern)` from the `Conjecture.Regex` package:
+            Use `Generate.Matching(pattern)` or `Generate.NotMatching(pattern)` from the `Conjecture.Regex` package:
             ```csharp
-            RegexGenerate.Matching(@"^\d{3}-\d{4}$")
+            Generate.Matching(@"^\d{3}-\d{4}$")
             // → Strategy<string> of strings matching the pattern
 
-            RegexGenerate.NotMatching(@"^\d{3}-\d{4}$")
+            Generate.NotMatching(@"^\d{3}-\d{4}$")
             // → Strategy<string> of strings NOT matching the pattern
             ```
 
-            For common patterns, use `RegexGenerate` helpers:
+            For common patterns, use the `Generate` helpers contributed by `Conjecture.Regex`:
             ```csharp
-            RegexGenerate.Email()    // → Strategy<string> of valid email addresses
-            RegexGenerate.Url()      // → Strategy<string> of valid URLs
+            Generate.Email()    // → Strategy<string> of valid email addresses
+            Generate.Url()      // → Strategy<string> of valid URLs
             ```
 
             Add the NuGet package: `Conjecture.Regex`
@@ -110,9 +110,9 @@ internal static class StrategyTools
 
         "email" or "Email" =>
             """
-            Use `RegexGenerate.Email()` from the `Conjecture.Regex` package:
+            Use `Generate.Email()` from the `Conjecture.Regex` package:
             ```csharp
-            RegexGenerate.Email()
+            Generate.Email()
             // → Strategy<string> of valid email address strings
             ```
 

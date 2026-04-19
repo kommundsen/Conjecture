@@ -18,14 +18,14 @@ public class KnownPatternsTests
     [Fact]
     public void Email_AllSamplesMatchEmailRegex()
     {
-        IReadOnlyList<string> samples = DataGen.Sample(RegexGenerate.Email(), SampleSize, Seed);
+        IReadOnlyList<string> samples = DataGen.Sample(Generate.Email(), SampleSize, Seed);
         Assert.All(samples, s => Assert.Matches(KnownRegex.Email, s));
     }
 
     [Fact]
     public void NotEmail_NoSampleMatchesEmailRegex()
     {
-        IReadOnlyList<string> samples = DataGen.Sample(RegexGenerate.NotEmail(), SampleSize, Seed);
+        IReadOnlyList<string> samples = DataGen.Sample(Generate.NotEmail(), SampleSize, Seed);
         Assert.All(samples, s => Assert.DoesNotMatch(KnownRegex.Email, s));
     }
 
@@ -34,14 +34,14 @@ public class KnownPatternsTests
     [Fact]
     public void Url_AllSamplesMatchUrlRegex()
     {
-        IReadOnlyList<string> samples = DataGen.Sample(RegexGenerate.Url(), SampleSize, Seed);
+        IReadOnlyList<string> samples = DataGen.Sample(Generate.Url(), SampleSize, Seed);
         Assert.All(samples, s => Assert.Matches(KnownRegex.Url, s));
     }
 
     [Fact]
     public void NotUrl_NoSampleMatchesUrlRegex()
     {
-        IReadOnlyList<string> samples = DataGen.Sample(RegexGenerate.NotUrl(), SampleSize, Seed);
+        IReadOnlyList<string> samples = DataGen.Sample(Generate.NotUrl(), SampleSize, Seed);
         Assert.All(samples, s => Assert.DoesNotMatch(KnownRegex.Url, s));
     }
 
@@ -50,14 +50,14 @@ public class KnownPatternsTests
     [Fact]
     public void Uuid_AllSamplesMatchUuidRegex()
     {
-        IReadOnlyList<string> samples = DataGen.Sample(RegexGenerate.Uuid(), SampleSize, Seed);
+        IReadOnlyList<string> samples = DataGen.Sample(Generate.Uuid(), SampleSize, Seed);
         Assert.All(samples, s => Assert.Matches(KnownRegex.Uuid, s));
     }
 
     [Fact]
     public void NotUuid_NoSampleMatchesUuidRegex()
     {
-        IReadOnlyList<string> samples = DataGen.Sample(RegexGenerate.NotUuid(), SampleSize, Seed);
+        IReadOnlyList<string> samples = DataGen.Sample(Generate.NotUuid(), SampleSize, Seed);
         Assert.All(samples, s => Assert.DoesNotMatch(KnownRegex.Uuid, s));
     }
 
@@ -66,14 +66,14 @@ public class KnownPatternsTests
     [Fact]
     public void IsoDate_AllSamplesMatchIsoDateRegex()
     {
-        IReadOnlyList<string> samples = DataGen.Sample(RegexGenerate.IsoDate(), SampleSize, Seed);
+        IReadOnlyList<string> samples = DataGen.Sample(Generate.IsoDate(), SampleSize, Seed);
         Assert.All(samples, s => Assert.Matches(KnownRegex.IsoDate, s));
     }
 
     [Fact]
     public void NotIsoDate_NoSampleMatchesIsoDateRegex()
     {
-        IReadOnlyList<string> samples = DataGen.Sample(RegexGenerate.NotIsoDate(), SampleSize, Seed);
+        IReadOnlyList<string> samples = DataGen.Sample(Generate.NotIsoDate(), SampleSize, Seed);
         Assert.All(samples, s => Assert.DoesNotMatch(KnownRegex.IsoDate, s));
     }
 
@@ -82,14 +82,14 @@ public class KnownPatternsTests
     [Fact]
     public void CreditCard_AllSamplesMatchCreditCardRegex()
     {
-        IReadOnlyList<string> samples = DataGen.Sample(RegexGenerate.CreditCard(), SampleSize, Seed);
+        IReadOnlyList<string> samples = DataGen.Sample(Generate.CreditCard(), SampleSize, Seed);
         Assert.All(samples, s => Assert.Matches(KnownRegex.CreditCard, s));
     }
 
     [Fact]
     public void NotCreditCard_NoSampleMatchesCreditCardRegex()
     {
-        IReadOnlyList<string> samples = DataGen.Sample(RegexGenerate.NotCreditCard(), SampleSize, Seed);
+        IReadOnlyList<string> samples = DataGen.Sample(Generate.NotCreditCard(), SampleSize, Seed);
         Assert.All(samples, s => Assert.DoesNotMatch(KnownRegex.CreditCard, s));
     }
 }

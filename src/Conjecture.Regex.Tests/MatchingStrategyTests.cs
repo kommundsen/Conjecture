@@ -22,7 +22,7 @@ public class MatchingStrategyTests
         DotNetRegex regex = new(pattern);
         ulong seed = 42UL;
 
-        IReadOnlyList<string> samples = DataGen.Sample(RegexGenerate.Matching(pattern), 100, seed);
+        IReadOnlyList<string> samples = DataGen.Sample(Generate.Matching(pattern), 100, seed);
 
         Assert.All(samples, s => Assert.Matches(regex, s));
     }
@@ -35,7 +35,7 @@ public class MatchingStrategyTests
         DotNetRegex regex = new(@"[a-z]+", RegexOptions.IgnoreCase);
         ulong seed = 42UL;
 
-        IReadOnlyList<string> samples = DataGen.Sample(RegexGenerate.Matching(regex), 100, seed);
+        IReadOnlyList<string> samples = DataGen.Sample(Generate.Matching(regex), 100, seed);
 
         Assert.All(samples, s => Assert.Matches(regex, s));
         Assert.Contains(samples, static s => s.Any(static c => c is >= 'A' and <= 'Z'));
@@ -49,7 +49,7 @@ public class MatchingStrategyTests
         DotNetRegex regex = new(@".+", RegexOptions.Singleline);
         ulong seed = 42UL;
 
-        IReadOnlyList<string> samples = DataGen.Sample(RegexGenerate.Matching(regex), 100, seed);
+        IReadOnlyList<string> samples = DataGen.Sample(Generate.Matching(regex), 100, seed);
 
         Assert.All(samples, s => Assert.Matches(regex, s));
         Assert.Contains(samples, static s => s.Contains('\n'));
@@ -63,7 +63,7 @@ public class MatchingStrategyTests
         DotNetRegex regex = new(@"^\d+$", RegexOptions.Multiline);
         ulong seed = 42UL;
 
-        IReadOnlyList<string> samples = DataGen.Sample(RegexGenerate.Matching(regex), 100, seed);
+        IReadOnlyList<string> samples = DataGen.Sample(Generate.Matching(regex), 100, seed);
 
         Assert.All(samples, s => Assert.Matches(regex, s));
     }
@@ -76,7 +76,7 @@ public class MatchingStrategyTests
         string pattern = @"\p{L}+";
         ulong seed = 42UL;
 
-        IReadOnlyList<string> samples = DataGen.Sample(RegexGenerate.Matching(pattern), 100, seed);
+        IReadOnlyList<string> samples = DataGen.Sample(Generate.Matching(pattern), 100, seed);
 
         Assert.All(samples, static s => Assert.All(s, static c => Assert.True(char.IsLetter(c) && c <= '\u007F',
                     $"Character '{c}' (U+{(int)c:X4}) is not an ASCII letter")));
@@ -92,7 +92,7 @@ public class MatchingStrategyTests
         DotNetRegex regex = new(pattern);
         ulong seed = 42UL;
 
-        IReadOnlyList<string> samples = DataGen.Sample(RegexGenerate.Matching(pattern, options), 200, seed);
+        IReadOnlyList<string> samples = DataGen.Sample(Generate.Matching(pattern, options), 200, seed);
 
         Assert.All(samples, s => Assert.Matches(regex, s));
         Assert.Contains(samples, static s => s.Any(static c => c > '\u007F'));
@@ -110,7 +110,7 @@ public class MatchingStrategyTests
         DotNetRegex regex = new(pattern);
         ulong seed = 1UL;
 
-        IReadOnlyList<string> samples = DataGen.Sample(RegexGenerate.Matching(pattern), 200, seed);
+        IReadOnlyList<string> samples = DataGen.Sample(Generate.Matching(pattern), 200, seed);
 
         Assert.All(samples, s => Assert.Matches(regex, s));
         Assert.Contains(samples, static s => s.Length == 2);
