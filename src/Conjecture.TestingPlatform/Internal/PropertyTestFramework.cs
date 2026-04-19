@@ -187,6 +187,35 @@ internal sealed class PropertyTestFramework : ITestFramework, IDataProducer
             return;
         }
 
+        if (parameters.Length == 0)
+        {
+            TestNode node = new() { Uid = parentNodeUid, DisplayName = displayName };
+            try
+            {
+                if (TestCaseHelper.IsAsyncReturnType(method.ReturnType))
+                {
+                    await TestCaseHelper.InvokeAsync(method, null, []);
+                }
+                else
+                {
+                    TestCaseHelper.InvokeSync(method, null, []);
+                }
+
+                node.Properties.Add(PassedTestNodeStateProperty.CachedInstance);
+            }
+            catch (Exception ex)
+            {
+                node.Properties.Add(new FailedTestNodeStateProperty(ex, ex.Message));
+                if (capabilities?.TrxEnabled == true)
+                {
+                    node.Properties.Add(new TrxExceptionProperty(ex.Message, ex.StackTrace));
+                }
+            }
+
+            await bus.PublishAsync(this, new TestNodeUpdateMessage(sessionUid, node));
+            return;
+        }
+
         MtpLogger mtpLogger = new(this, bus, parentNodeUid, sessionUid);
         ConjectureSettings settings = ConjectureSettings.From(attr, mtpLogger);
 
