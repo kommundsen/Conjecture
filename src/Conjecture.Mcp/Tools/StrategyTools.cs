@@ -12,12 +12,14 @@ internal static class StrategyTools
 {
     [McpServerTool(Name = "suggest-strategy")]
     [Description(
-        "Suggests the Conjecture Generate.* strategy to use for a given C# type. " +
+        "Suggests the Conjecture Generate.* strategy to use for a given C# type or description. " +
         "Handles primitives (int, bool, string, float, double, byte[]), date/time types " +
         "(DateTimeOffset, TimeSpan, DateOnly, TimeOnly), collections " +
         "(List<T>, IReadOnlySet<T>, IReadOnlyDictionary<K,V>), nullable types, value " +
-        "tuples, enums, and custom types. For sealed abstract class hierarchies, use " +
-        "the suggest-strategy-for-sealed-hierarchy tool instead.")]
+        "tuples, enums, and custom types. Also handles regex-constrained strings via the " +
+        "Conjecture.Regex package: pass 'Regex' for pattern-matching strategies, or a " +
+        "description keyword such as 'email' for curated RegexGenerate helpers. " +
+        "For sealed abstract class hierarchies, use the suggest-strategy-for-sealed-hierarchy tool instead.")]
     public static string SuggestStrategy(
         [Description("The C# type name, e.g. 'int', 'string', 'List<int>', 'MyEnum', 'MyRecord'")] string typeName)
     {
@@ -85,6 +87,37 @@ internal static class StrategyTools
 
         "byte[]" =>
             "Use `Generate.Bytes(size)` for a fixed-length byte array → `Strategy<byte[]>`.",
+
+        "Regex" =>
+            """
+            Use `RegexGenerate.Matching(pattern)` or `RegexGenerate.NotMatching(pattern)` from the `Conjecture.Regex` package:
+            ```csharp
+            RegexGenerate.Matching(@"^\d{3}-\d{4}$")
+            // → Strategy<string> of strings matching the pattern
+
+            RegexGenerate.NotMatching(@"^\d{3}-\d{4}$")
+            // → Strategy<string> of strings NOT matching the pattern
+            ```
+
+            For common patterns, use `RegexGenerate` helpers:
+            ```csharp
+            RegexGenerate.Email()    // → Strategy<string> of valid email addresses
+            RegexGenerate.Url()      // → Strategy<string> of valid URLs
+            ```
+
+            Add the NuGet package: `Conjecture.Regex`
+            """,
+
+        "email" or "Email" =>
+            """
+            Use `RegexGenerate.Email()` from the `Conjecture.Regex` package:
+            ```csharp
+            RegexGenerate.Email()
+            // → Strategy<string> of valid email address strings
+            ```
+
+            Add the NuGet package: `Conjecture.Regex`
+            """,
 
         _ when typeName.StartsWith("List<", StringComparison.Ordinal) =>
             SuggestList(InnerType(typeName)),
