@@ -42,7 +42,7 @@ public static class RegexGenerate
     {
         RegexGenOptions effectiveOptions = options ?? new();
         RegexNode root = RegexParser.Parse(regex.ToString(), regex.Options);
-        return new MatchingStrategy(root, regex.Options, effectiveOptions);
+        return new MatchingStrategy(root, regex, regex.Options, effectiveOptions);
     }
 #pragma warning restore RS0026
 }
