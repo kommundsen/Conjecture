@@ -11,3 +11,19 @@ static Conjecture.Regex.RegexGenerate.NotMatching(System.Text.RegularExpressions
 Conjecture.Regex.UnicodeCoverage
 Conjecture.Regex.UnicodeCoverage.Ascii = 0 -> Conjecture.Regex.UnicodeCoverage
 Conjecture.Regex.UnicodeCoverage.Full = 1 -> Conjecture.Regex.UnicodeCoverage
+Conjecture.Regex.KnownRegex
+static readonly Conjecture.Regex.KnownRegex.CreditCard -> System.Text.RegularExpressions.Regex!
+static readonly Conjecture.Regex.KnownRegex.Email -> System.Text.RegularExpressions.Regex!
+static readonly Conjecture.Regex.KnownRegex.IsoDate -> System.Text.RegularExpressions.Regex!
+static readonly Conjecture.Regex.KnownRegex.Url -> System.Text.RegularExpressions.Regex!
+static readonly Conjecture.Regex.KnownRegex.Uuid -> System.Text.RegularExpressions.Regex!
+static Conjecture.Regex.RegexGenerate.CreditCard() -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Regex.RegexGenerate.Email() -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Regex.RegexGenerate.IsoDate() -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Regex.RegexGenerate.NotCreditCard() -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Regex.RegexGenerate.NotEmail() -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Regex.RegexGenerate.NotIsoDate() -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Regex.RegexGenerate.NotUrl() -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Regex.RegexGenerate.NotUuid() -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Regex.RegexGenerate.Url() -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Regex.RegexGenerate.Uuid() -> Conjecture.Core.Strategy<string!>!

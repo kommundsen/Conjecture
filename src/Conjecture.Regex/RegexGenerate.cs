@@ -51,6 +51,36 @@ public static class RegexGenerate
     }
 #pragma warning restore RS0026
 
+    /// <summary>Returns a strategy that generates strings matching <see cref="KnownRegex.Email"/>.</summary>
+    public static Strategy<string> Email() => Matching(KnownRegex.Email);
+
+    /// <summary>Returns a strategy that generates strings that do not match <see cref="KnownRegex.Email"/>.</summary>
+    public static Strategy<string> NotEmail() => NotMatching(KnownRegex.Email);
+
+    /// <summary>Returns a strategy that generates strings matching <see cref="KnownRegex.Url"/>.</summary>
+    public static Strategy<string> Url() => Matching(KnownRegex.Url);
+
+    /// <summary>Returns a strategy that generates strings that do not match <see cref="KnownRegex.Url"/>.</summary>
+    public static Strategy<string> NotUrl() => NotMatching(KnownRegex.Url);
+
+    /// <summary>Returns a strategy that generates strings matching <see cref="KnownRegex.Uuid"/>.</summary>
+    public static Strategy<string> Uuid() => Matching(KnownRegex.Uuid);
+
+    /// <summary>Returns a strategy that generates strings that do not match <see cref="KnownRegex.Uuid"/>.</summary>
+    public static Strategy<string> NotUuid() => NotMatching(KnownRegex.Uuid);
+
+    /// <summary>Returns a strategy that generates strings matching <see cref="KnownRegex.IsoDate"/>.</summary>
+    public static Strategy<string> IsoDate() => Matching(KnownRegex.IsoDate);
+
+    /// <summary>Returns a strategy that generates strings that do not match <see cref="KnownRegex.IsoDate"/>.</summary>
+    public static Strategy<string> NotIsoDate() => NotMatching(KnownRegex.IsoDate);
+
+    /// <summary>Returns a strategy that generates strings matching <see cref="KnownRegex.CreditCard"/>.</summary>
+    public static Strategy<string> CreditCard() => Matching(KnownRegex.CreditCard);
+
+    /// <summary>Returns a strategy that generates strings that do not match <see cref="KnownRegex.CreditCard"/>.</summary>
+    public static Strategy<string> NotCreditCard() => NotMatching(KnownRegex.CreditCard);
+
     private static DotNetRegex GetOrAddCached(string pattern)
     {
         return Cache.GetOrAdd(pattern, static p =>
