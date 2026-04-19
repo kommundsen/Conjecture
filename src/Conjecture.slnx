@@ -28,7 +28,6 @@
   <Project Path="Conjecture.Interactive/Conjecture.Interactive.csproj" />
   <Project Path="Conjecture.Interactive.Tests/Conjecture.Interactive.Tests.csproj" />
   <Project Path="Conjecture.TestingPlatform/Conjecture.TestingPlatform.csproj" />
-  <Project Path="Conjecture.TestingPlatform.Tests/Conjecture.TestingPlatform.Tests.csproj" />
   <Project Path="Conjecture.LinqPad/Conjecture.LinqPad.csproj" />
   <Project Path="Conjecture.LinqPad.Tests/Conjecture.LinqPad.Tests.csproj" />
   <Project Path="Conjecture.FSharp/Conjecture.FSharp.fsproj" />
