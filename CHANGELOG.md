@@ -8,6 +8,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Version
 
 ## [Unreleased]
 
+### Changed
+
+**Regex** (`Conjecture.Regex`)
+- `Matching`, `NotMatching`, `Email`, `NotEmail`, `Url`, `NotUrl`, `Uuid`, `NotUuid`, `IsoDate`, `NotIsoDate`, `CreditCard`, `NotCreditCard` now surface on `Generate.*` via a C# 14 `extension(Generate)` block on `Conjecture.Core.RegexGenerateExtensions`. A single `using Conjecture.Core;` is enough to see them — no `using Conjecture.Regex;` required. The `RegexGenerate` static factory has been removed (pre-release, no forwarder)
+
 ---
 
 ## [0.13.0] — 2026-04-19

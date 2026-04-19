@@ -12,11 +12,11 @@ Namespace: `Conjecture.Regex`
 
 ---
 
-## `RegexGenerate.Matching`
+## `Generate.Matching`
 
 ```csharp
-Strategy<string> RegexGenerate.Matching(string pattern, RegexGenOptions? options = null)
-Strategy<string> RegexGenerate.Matching(Regex regex,   RegexGenOptions? options = null)
+Strategy<string> Generate.Matching(string pattern, RegexGenOptions? options = null)
+Strategy<string> Generate.Matching(Regex regex,   RegexGenOptions? options = null)
 ```
 
 Returns a strategy that generates strings that match `pattern` or `regex`.
@@ -33,11 +33,11 @@ counts and character indices shrink automatically alongside the generated value.
 
 ---
 
-## `RegexGenerate.NotMatching`
+## `Generate.NotMatching`
 
 ```csharp
-Strategy<string> RegexGenerate.NotMatching(string pattern, RegexGenOptions? options = null)
-Strategy<string> RegexGenerate.NotMatching(Regex regex,   RegexGenOptions? options = null)
+Strategy<string> Generate.NotMatching(string pattern, RegexGenOptions? options = null)
+Strategy<string> Generate.NotMatching(Regex regex,   RegexGenOptions? options = null)
 ```
 
 Returns a strategy that generates strings that do **not** match `pattern` or `regex`.
@@ -53,11 +53,11 @@ Convenience factories for common formats. Each has a `Not*` variant.
 
 | Method | Pattern description | Counterpart |
 |---|---|---|
-| `RegexGenerate.Email()` | RFC-5322 simplified address | `RegexGenerate.NotEmail()` |
-| `RegexGenerate.Url()` | HTTP/HTTPS URL | `RegexGenerate.NotUrl()` |
-| `RegexGenerate.Uuid()` | UUID v4 hyphenated lowercase | `RegexGenerate.NotUuid()` |
-| `RegexGenerate.IsoDate()` | ISO 8601 date (`YYYY-MM-DD`) | `RegexGenerate.NotIsoDate()` |
-| `RegexGenerate.CreditCard()` | 13–19 digit Luhn-valid number | `RegexGenerate.NotCreditCard()` |
+| `Generate.Email()` | RFC-5322 simplified address | `Generate.NotEmail()` |
+| `Generate.Url()` | HTTP/HTTPS URL | `Generate.NotUrl()` |
+| `Generate.Uuid()` | UUID v4 hyphenated lowercase | `Generate.NotUuid()` |
+| `Generate.IsoDate()` | ISO 8601 date (`YYYY-MM-DD`) | `Generate.NotIsoDate()` |
+| `Generate.CreditCard()` | 13–19 digit Luhn-valid number | `Generate.NotCreditCard()` |
 
 The underlying patterns are exposed on `KnownRegex` as compiled `Regex` instances:
 
@@ -96,10 +96,10 @@ public sealed class RegexGenOptions
 
 ```csharp
 // Default: ASCII only
-Strategy<string> s1 = RegexGenerate.Matching(@"\p{L}+");
+Strategy<string> s1 = Generate.Matching(@"\p{L}+");
 
 // Opt in to full Unicode range
-Strategy<string> s2 = RegexGenerate.Matching(
+Strategy<string> s2 = Generate.Matching(
     @"\p{L}+",
     new RegexGenOptions { UnicodeCategories = UnicodeCoverage.Full });
 ```
@@ -140,7 +140,7 @@ are not recognised.
 
 ## Upcoming
 
-**`RegexGenerate.ReDoSHunter`** — adversarial timing generation for detecting catastrophic
+**`Generate.ReDoSHunter`** — adversarial timing generation for detecting catastrophic
 backtracking — is planned for v0.15.0. See [issue #366](https://github.com/kommundsen/Conjecture/issues/366).
 
 ---

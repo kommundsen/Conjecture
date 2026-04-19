@@ -101,16 +101,16 @@ public class StrategyToolsTests
     {
         string result = StrategyTools.SuggestForType("Regex");
         Assert.True(
-            result.Contains("Gen.Matching") || result.Contains("RegexGenerate.Matching"),
-            $"Expected Gen.Matching or RegexGenerate.Matching in: {result}");
+            result.Contains("Generate.Matching"),
+            $"Expected Generate.Matching in: {result}");
     }
 
     [Theory]
     [InlineData("email")]
     [InlineData("Email")]
-    public void SuggestForType_EmailKeyword_ContainsRegexGenerateEmail(string typeName)
+    public void SuggestForType_EmailKeyword_ContainsGenerateEmail(string typeName)
     {
         string result = StrategyTools.SuggestForType(typeName);
-        Assert.Contains("RegexGenerate.Email()", result);
+        Assert.Contains("Generate.Email()", result);
     }
 }
