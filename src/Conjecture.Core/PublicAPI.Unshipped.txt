@@ -1,1 +1,4 @@
 #nullable enable
+Conjecture.Core.GenForRegistry
+static Conjecture.Core.GenForRegistry.Register(System.Type! type, System.Func<Conjecture.Core.IStrategyProvider!>! factory) -> void
+static Conjecture.Core.Generate.For<T>() -> Conjecture.Core.Strategy<T>!
