@@ -1,3 +1,4 @@
 #nullable enable
 Conjecture.TestingPlatform.ConjectureTestingPlatformExtensions
 static Conjecture.TestingPlatform.ConjectureTestingPlatformExtensions.RegisterConjectureFramework(this Microsoft.Testing.Platform.Builder.ITestApplicationBuilder! builder) -> Microsoft.Testing.Platform.Builder.ITestApplicationBuilder!
+static Conjecture.TestingPlatform.ConjectureTestingPlatformExtensions.AddExtensions(Microsoft.Testing.Platform.Builder.ITestApplicationBuilder! builder, string![]! args) -> void
