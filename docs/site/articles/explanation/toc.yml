@@ -11,3 +11,5 @@ items:
     href: example-database.md
   - name: Why F# has its own package
     href: fsharp-wrapper.md
+  - name: Allocation model
+    href: allocation-model.md
