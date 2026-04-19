@@ -25,6 +25,8 @@
   <Project Path="Conjecture.Tool.Tests/Conjecture.Tool.Tests.csproj" />
   <Project Path="Conjecture.Time/Conjecture.Time.csproj" />
   <Project Path="Conjecture.Time.Tests/Conjecture.Time.Tests.csproj" />
+  <Project Path="Conjecture.Regex/Conjecture.Regex.csproj" />
+  <Project Path="Conjecture.Regex.Tests/Conjecture.Regex.Tests.csproj" />
   <Project Path="Conjecture.Interactive/Conjecture.Interactive.csproj" />
   <Project Path="Conjecture.Interactive.Tests/Conjecture.Interactive.Tests.csproj" />
   <Project Path="Conjecture.TestingPlatform/Conjecture.TestingPlatform.csproj" />
