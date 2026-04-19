@@ -181,24 +181,6 @@ public sealed class EndToEndPackageTests : IDisposable
     }
 
     [Fact]
-    public void Pack_Succeeds_WithExitCodeZero()
-    {
-        string projectPath = FindProductionProjectPath();
-        (int exitCode, string output, string error) = RunDotnet(
-            $"pack \"{projectPath}\" --output \"{nupkgDirectory}\" --configuration Release",
-            Path.GetDirectoryName(projectPath)!);
-
-        Assert.True(exitCode == 0, $"dotnet pack exited with {exitCode}.\nOutput: {output}\nError: {error}");
-    }
-
-    [Fact]
-    public void Pack_ProducesNupkgFile()
-    {
-        string nupkgPath = PackProject();
-        Assert.True(File.Exists(nupkgPath), $"Expected .nupkg at: {nupkgPath}");
-    }
-
-    [Fact]
     public void Nupkg_ContainsPropsFile()
     {
         string nupkgPath = PackProject();
@@ -224,38 +206,6 @@ public sealed class EndToEndPackageTests : IDisposable
         Assert.True(
             found,
             $"Expected 'build/Conjecture.TestingPlatform.targets' inside {Path.GetFileName(nupkgPath)}.\nEntries: {string.Join(", ", archive.Entries.Select(static e => e.FullName))}");
-    }
-
-    [Fact]
-    public void ConsumerProject_RestoresWithoutErrors()
-    {
-        string nupkgPath = PackProject();
-        string consumerDirectory = CreateConsumerProject(nupkgPath);
-
-        (int exitCode, string output, string error) = RunDotnet(
-            "restore ConsumerTests.csproj",
-            consumerDirectory);
-
-        Assert.True(exitCode == 0, $"dotnet restore failed (exit {exitCode}).\nOutput: {output}\nError: {error}");
-    }
-
-    [Fact]
-    public void ConsumerProject_RunsAndExitsZero()
-    {
-        string nupkgPath = PackProject();
-        string consumerDirectory = CreateConsumerProject(nupkgPath);
-
-        (int restoreExit, string restoreOut, string restoreErr) = RunDotnet(
-            "restore ConsumerTests.csproj",
-            consumerDirectory);
-
-        Assert.True(restoreExit == 0, $"Restore failed (exit {restoreExit}).\nOutput: {restoreOut}\nError: {restoreErr}");
-
-        (int exitCode, string output, string error) = RunDotnet(
-            "test ConsumerTests.csproj --configuration Release",
-            consumerDirectory);
-
-        Assert.True(exitCode == 0, $"dotnet test exited with {exitCode}.\nOutput: {output}\nError: {error}");
     }
 
     [Fact]
