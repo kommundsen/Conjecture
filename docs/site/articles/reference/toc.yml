@@ -13,6 +13,8 @@ items:
     href: analyzers.md
   - name: Time strategies
     href: time-strategies.md
+  - name: Regex strategies
+    href: regex-strategies.md
   - name: Formatters
     href: formatters.md
   - name: Telemetry

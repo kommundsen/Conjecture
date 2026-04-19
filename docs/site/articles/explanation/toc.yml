@@ -15,3 +15,5 @@ items:
     href: allocation-model.md
   - name: Why MTP tests are executables
     href: mtp-model.md
+  - name: How Conjecture.Regex works
+    href: regex-engine.md
