@@ -13,3 +13,5 @@ items:
     href: fsharp-wrapper.md
   - name: Allocation model
     href: allocation-model.md
+  - name: Why MTP tests are executables
+    href: mtp-model.md

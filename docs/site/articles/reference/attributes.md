@@ -41,6 +41,26 @@ public async Task<bool> Api_returns_200(int id)
 | `ExportReproOnFailure` | `bool` | `false` | Write shrunk counterexample to file on failure |
 | `ReproOutputPath` | `string` | `".conjecture/repros/"` | Output directory for repro files |
 
+### MTP-specific notes
+
+When using `Conjecture.TestingPlatform`, `[Property]` is defined in that package rather than in the framework adapter. Two differences apply:
+
+**`Seed` type is `ulong?`.** A `null` value means random (the default). In xUnit, NUnit, and MSTest adapters, `Seed` is `ulong` and `0` means random.
+
+```csharp
+// Conjecture.TestingPlatform — pin with a non-null value
+[Property(Seed = 42UL)]
+public bool My_property(int value) => ...;
+
+// Other adapters — 0 means random, any other value pins
+[Property(Seed = 42UL)]
+public bool My_property(int value) => ...;
+```
+
+**CLI overrides take precedence.** The `--conjecture-seed` and `--conjecture-max-examples` options (passed after `--` to `dotnet test`) override the corresponding attribute values for every property in the run. See [How to use the MTP adapter](../how-to/use-mtp-adapter.md#cli-options).
+
+For runner-level configuration options provided by Microsoft Testing Platform itself, see the [MTP documentation](https://learn.microsoft.com/dotnet/core/testing/microsoft-testing-platform-intro).
+
 ## `[ConjectureSettings]`
 
 Applies settings to a test method, or at assembly level to all tests in the assembly.
