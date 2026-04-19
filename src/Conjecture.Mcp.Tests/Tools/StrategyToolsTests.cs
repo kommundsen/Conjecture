@@ -95,4 +95,22 @@ public class StrategyToolsTests
             result.Contains("[Arbitrary]"),
             "Should mention [Arbitrary] attribute for strategy implementation");
     }
+
+    [Fact]
+    public void SuggestForType_Regex_ContainsGenMatching()
+    {
+        string result = StrategyTools.SuggestForType("Regex");
+        Assert.True(
+            result.Contains("Gen.Matching") || result.Contains("RegexGenerate.Matching"),
+            $"Expected Gen.Matching or RegexGenerate.Matching in: {result}");
+    }
+
+    [Theory]
+    [InlineData("email")]
+    [InlineData("Email")]
+    public void SuggestForType_EmailKeyword_ContainsRegexGenerateEmail(string typeName)
+    {
+        string result = StrategyTools.SuggestForType(typeName);
+        Assert.Contains("RegexGenerate.Email()", result);
+    }
 }
