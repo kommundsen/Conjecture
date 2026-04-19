@@ -10,6 +10,17 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Version
 
 ---
 
+## [0.13.0] — 2026-04-19
+
+### Added
+
+**TestingPlatform** (`Conjecture.TestingPlatform`)
+- `ConjectureTestingPlatformExtensions` — extension class for integrating Conjecture with Microsoft Testing Platform (MTP)
+- `RegisterConjectureFramework` extension on `ITestApplicationBuilder` — registers the Conjecture test framework with MTP in one call
+- `AddExtensions` helper — wires up MTP extensions from command-line args
+
+---
+
 ## [0.12.0] — 2026-04-19
 
 ### Added
