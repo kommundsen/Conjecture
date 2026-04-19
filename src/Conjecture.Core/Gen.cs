@@ -244,4 +244,7 @@ public static class Generate
     /// </summary>
     public static Strategy<T> FromBytes<T>(ReadOnlySpan<byte> buffer)
         => new Internal.FromBytesStrategy<T>(buffer, Internal.SharedParameterStrategyResolver.GetDefault<T>());
+
+    /// <summary>Returns a strategy for <typeparamref name="T"/> using its registered <see cref="IStrategyProvider{T}"/>. The type must be decorated with <c>[Arbitrary]</c>.</summary>
+    public static Strategy<T> For<T>() => GenForRegistry.Resolve<T>();
 }
