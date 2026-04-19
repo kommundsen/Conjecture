@@ -22,4 +22,13 @@ public static class ConjectureTestingPlatformExtensions
             (_, services) => new PropertyTestFramework(services));
         return builder;
     }
+
+    /// <summary>
+    /// Required by <c>Microsoft.Testing.Platform.MSBuild</c>: the generated <c>SelfRegisteredExtensions.cs</c>
+    /// always calls <c>TypeName.AddExtensions(builder, args)</c> — <c>MethodName</c> on the
+    /// <c>TestingPlatformBuilderHook</c> item is ignored. The <paramref name="args"/> parameter is
+    /// part of the mandated signature but is not used here.
+    /// </summary>
+    public static void AddExtensions(ITestApplicationBuilder builder, string[] args) =>
+        builder.RegisterConjectureFramework();
 }

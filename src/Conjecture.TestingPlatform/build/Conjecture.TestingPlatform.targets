@@ -1,6 +1,8 @@
 <Project>
   <ItemGroup>
-    <TestingPlatformBuilderHook Include="Conjecture.TestingPlatform" AssemblyName="Conjecture.TestingPlatform" TypeFullName="Conjecture.TestingPlatform.ConjectureTestingPlatformExtensions" MethodName="RegisterConjectureFramework" />
+    <TestingPlatformBuilderHook Include="Conjecture.TestingPlatform" AssemblyName="Conjecture.TestingPlatform" TypeFullName="Conjecture.TestingPlatform.ConjectureTestingPlatformExtensions" MethodName="RegisterConjectureFramework">
+      <DisplayName>Conjecture</DisplayName>
+    </TestingPlatformBuilderHook>
   </ItemGroup>
 
   <!-- Suppress MTP entry-point generation for VSTest/xUnit test projects that install this
