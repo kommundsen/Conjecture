@@ -1,0 +1,14 @@
+<Project>
+  <!-- Prevent Microsoft.Testing.Platform.MSBuild from generating a second entry point in
+       VSTest/xUnit test projects. These projects already have their own entry point supplied
+       by the test framework runner and do not need the auto-generated
+       MicrosoftTestingPlatformEntryPoint.cs that would otherwise be produced when
+       IsTestingPlatformApplication=true (set transitively by Microsoft.Testing.Platform). -->
+  <Target Name="_SuppressMtpEntryPointForVsTestProjects"
+          BeforeTargets="_CalculateGenerateTestingPlatformEntryPoint"
+          Condition="'$(IsTestProject)' == 'true'">
+    <PropertyGroup>
+      <GenerateTestingPlatformEntryPoint>false</GenerateTestingPlatformEntryPoint>
+    </PropertyGroup>
+  </Target>
+</Project>
