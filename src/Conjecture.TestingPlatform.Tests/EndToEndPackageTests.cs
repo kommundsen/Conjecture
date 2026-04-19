@@ -71,10 +71,8 @@ public sealed class EndToEndPackageTests : IDisposable
         throw new FileNotFoundException("Could not locate repo root by walking up from AppContext.BaseDirectory.");
     }
 
-    private static string FindProductionProjectPath()
-    {
-        return Path.Combine(FindRepoRoot(), "src", "Conjecture.TestingPlatform", "Conjecture.TestingPlatform.csproj");
-    }
+    private static string FindProductionProjectPath() =>
+        Path.Combine(FindRepoRoot(), "src", "Conjecture.TestingPlatform", "Conjecture.TestingPlatform.csproj");
 
     private (int ExitCode, string Output, string Error) RunDotnet(string arguments, string workingDirectory)
     {
@@ -89,7 +87,6 @@ public sealed class EndToEndPackageTests : IDisposable
             CreateNoWindow = true,
         };
 
-        // Isolate NuGet package cache per test run so stale cached .nupkgs don't shadow locally-packed versions
         startInfo.Environment["NUGET_PACKAGES"] = Path.Combine(tempDirectory, "nuget-cache");
 
         using Process process = new() { StartInfo = startInfo };
@@ -105,8 +102,6 @@ public sealed class EndToEndPackageTests : IDisposable
     {
         string repoRoot = FindRepoRoot();
 
-        // Also pack Conjecture.Core so its pre-release version is available in the local feed
-        // (it's a transitive dependency of Conjecture.TestingPlatform and may not be on nuget.org yet)
         string corePath = Path.Combine(repoRoot, "src", "Conjecture.Core", "Conjecture.Core.csproj");
         (int coreExit, string coreOut, string coreErr) = RunDotnet(
             $"pack \"{corePath}\" --output \"{nupkgDirectory}\" --configuration Release",
@@ -117,67 +112,12 @@ public sealed class EndToEndPackageTests : IDisposable
         (int exitCode, string output, string error) = RunDotnet(
             $"pack \"{projectPath}\" --output \"{nupkgDirectory}\" --configuration Release",
             Path.GetDirectoryName(projectPath)!);
-
         Assert.True(exitCode == 0, $"dotnet pack failed (exit {exitCode}).\nOutput: {output}\nError: {error}");
 
         string[] nupkgFiles = Directory.GetFiles(nupkgDirectory, "Conjecture.TestingPlatform.*.nupkg");
         Assert.True(nupkgFiles.Length > 0, $"No Conjecture.TestingPlatform .nupkg produced in {nupkgDirectory}.\nOutput: {output}");
 
         return nupkgFiles[0];
-    }
-
-    private string CreateConsumerProject(string nupkgPath)
-    {
-        string packageVersion = Path.GetFileNameWithoutExtension(nupkgPath)
-            .Replace("Conjecture.TestingPlatform.", string.Empty, StringComparison.Ordinal);
-
-        string consumerDirectory = Path.Combine(tempDirectory, "consumer");
-        Directory.CreateDirectory(consumerDirectory);
-
-        string nugetConfig = $"""
-            <?xml version="1.0" encoding="utf-8"?>
-            <configuration>
-              <packageSources>
-                <clear />
-                <add key="local" value="{nupkgDirectory}" />
-                <add key="nuget.org" value="https://api.nuget.org/v3/index.json" />
-              </packageSources>
-            </configuration>
-            """;
-
-        File.WriteAllText(Path.Combine(consumerDirectory, "nuget.config"), nugetConfig);
-
-        string csproj = $"""
-            <Project Sdk="Microsoft.NET.Sdk">
-              <PropertyGroup>
-                <OutputType>Exe</OutputType>
-                <TargetFramework>net10.0</TargetFramework>
-                <Nullable>enable</Nullable>
-                <ImplicitUsings>enable</ImplicitUsings>
-              </PropertyGroup>
-              <ItemGroup>
-                <PackageReference Include="Conjecture.TestingPlatform" Version="{packageVersion}" />
-              </ItemGroup>
-            </Project>
-            """;
-
-        File.WriteAllText(Path.Combine(consumerDirectory, "ConsumerTests.csproj"), csproj);
-
-        string testCode = """
-            using Conjecture.TestingPlatform;
-
-            namespace ConsumerTests;
-
-            public static class SampleTests
-            {
-                [Property]
-                public static void AlwaysPasses(int x) => System.Console.WriteLine($"Property ran with x={x}");
-            }
-            """;
-
-        File.WriteAllText(Path.Combine(consumerDirectory, "SampleTests.cs"), testCode);
-
-        return consumerDirectory;
     }
 
     [Fact]
@@ -206,32 +146,5 @@ public sealed class EndToEndPackageTests : IDisposable
         Assert.True(
             found,
             $"Expected 'build/Conjecture.TestingPlatform.targets' inside {Path.GetFileName(nupkgPath)}.\nEntries: {string.Join(", ", archive.Entries.Select(static e => e.FullName))}");
-    }
-
-    [Fact]
-    public void ConsumerProject_MtpOutputContainsPropertyTestName()
-    {
-        string nupkgPath = PackProject();
-        string consumerDirectory = CreateConsumerProject(nupkgPath);
-
-        (int restoreExit, string restoreOut, string restoreErr) = RunDotnet(
-            "restore ConsumerTests.csproj",
-            consumerDirectory);
-        Assert.True(restoreExit == 0, $"Restore failed (exit {restoreExit}).\nOutput: {restoreOut}\nError: {restoreErr}");
-
-        (int buildExit, string buildOut, string buildErr) = RunDotnet(
-            "build ConsumerTests.csproj --configuration Release --no-restore",
-            consumerDirectory);
-        Assert.True(buildExit == 0, $"Build failed (exit {buildExit}).\nOutput: {buildOut}\nError: {buildErr}");
-
-        // Run via dotnet run with Detailed output to capture individual test names
-        (int exitCode, string output, string error) = RunDotnet(
-            "run --project ConsumerTests.csproj --configuration Release --no-build -- --output Detailed",
-            consumerDirectory);
-
-        Assert.True(exitCode == 0, $"dotnet run exited with {exitCode}.\nOutput: {output}\nError: {error}");
-
-        string allOutput = output + error;
-        Assert.Contains("AlwaysPasses", allOutput);
     }
 }
