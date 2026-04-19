@@ -8,6 +8,7 @@
 [![NuGet: Conjecture.Xunit.V3](https://img.shields.io/nuget/v/Conjecture.Xunit.V3?label=Conjecture.Xunit.V3)](https://www.nuget.org/packages/Conjecture.Xunit.V3)
 [![NuGet: Conjecture.NUnit](https://img.shields.io/nuget/v/Conjecture.NUnit?label=Conjecture.NUnit)](https://www.nuget.org/packages/Conjecture.NUnit)
 [![NuGet: Conjecture.MSTest](https://img.shields.io/nuget/v/Conjecture.MSTest?label=Conjecture.MSTest)](https://www.nuget.org/packages/Conjecture.MSTest)
+[![NuGet: Conjecture.TestingPlatform](https://img.shields.io/nuget/v/Conjecture.TestingPlatform?label=Conjecture.TestingPlatform)](https://www.nuget.org/packages/Conjecture.TestingPlatform)
 
 **Property-based testing for .NET** — a ground-up port of Python's [Hypothesis](https://github.com/HypothesisWorks/hypothesis).
 
