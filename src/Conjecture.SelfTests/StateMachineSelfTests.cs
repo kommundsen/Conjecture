@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 using Conjecture.Core;
 using Conjecture.Core.Internal;
+using Conjecture.TestingPlatform;
 
 using Xunit;
 
@@ -78,7 +79,7 @@ public class StateMachineSelfTests
 
     // ─── Tests ────────────────────────────────────────────────────────────────
 
-    [Fact]
+    [Property]
     public async Task MonotoneShrinking_CommandSequence_ShrunkStepCountLeqOriginal()
     {
         ConjectureSettings settings = new() { Seed = 1UL, MaxExamples = 100, UseDatabase = false };
@@ -92,7 +93,7 @@ public class StateMachineSelfTests
             $"Shrinking increased step count from {originalSteps} to {shrunkSteps}");
     }
 
-    [Fact]
+    [Property]
     public async Task ShrinkingPreservesFailure_ShrunkCounterexample_ReplaysAsInteresting()
     {
         ConjectureSettings settings = new() { Seed = 1UL, MaxExamples = 100, UseDatabase = false };
@@ -105,7 +106,7 @@ public class StateMachineSelfTests
         Assert.Equal(Status.Interesting, status);
     }
 
-    [Fact]
+    [Property]
     public async Task CommandSequenceShrinkPass_Idempotent_NoFurtherProgressAfterShrink()
     {
         ConjectureSettings settings = new() { Seed = 1UL, MaxExamples = 100, UseDatabase = false };

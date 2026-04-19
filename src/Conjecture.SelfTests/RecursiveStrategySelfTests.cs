@@ -3,6 +3,7 @@
 
 using Conjecture.Core;
 using Conjecture.Core.Internal;
+using Conjecture.TestingPlatform;
 
 using Xunit;
 
@@ -27,7 +28,7 @@ public class RecursiveStrategySelfTests
         return depth;
     }
 
-    [Fact]
+    [Property]
     public async Task RecursiveStrategy_SameIRNodes_ProduceSameValue()
     {
         ConjectureSettings settings = new() { Seed = 7UL, MaxExamples = 50, UseDatabase = false };
@@ -46,7 +47,7 @@ public class RecursiveStrategySelfTests
         Assert.Equal(first, second);
     }
 
-    [Fact]
+    [Property]
     public async Task RecursiveStrategy_ShrunkValue_HasDepthAtMostOriginal()
     {
         ConjectureSettings settings = new() { Seed = 42UL, MaxExamples = 50, UseDatabase = false };

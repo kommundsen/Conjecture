@@ -3,6 +3,7 @@
 
 using Conjecture.Core;
 using Conjecture.Core.Internal;
+using Conjecture.TestingPlatform;
 
 using Xunit;
 
@@ -15,7 +16,7 @@ public class TargetingSelfTests
     private static readonly Strategy<List<int>> ListStrategy =
         Generate.Lists(Generate.Just(0), 0, 100);
 
-    [Fact]
+    [Property]
     public async Task HillClimbing_MonotoneScoredProperty_ScoreNeverRegressesBelowGenerationBest()
     {
         const ulong seed = 99UL;
@@ -63,7 +64,7 @@ public class TargetingSelfTests
             $"Targeting score {targetedScore} regressed below generation best {generationBest}");
     }
 
-    [Fact]
+    [Property]
     public async Task TargetingPhase_ExampleCount_NeverExceedsBudget()
     {
         ConjectureSettings settings = new()
@@ -85,7 +86,7 @@ public class TargetingSelfTests
             $"ExampleCount {result.ExampleCount} exceeds MaxExamples {settings.MaxExamples}");
     }
 
-    [Fact]
+    [Property]
     public async Task TargetingPhase_RecordedScores_AreAllFinite()
     {
         ConjectureSettings settings = new()
