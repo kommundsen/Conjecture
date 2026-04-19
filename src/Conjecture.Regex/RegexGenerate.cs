@@ -25,15 +25,7 @@ public static class RegexGenerate
     /// <summary>Returns a strategy that generates strings matching <paramref name="pattern"/>.</summary>
     public static Strategy<string> Matching(string pattern, RegexGenOptions? options = null)
     {
-        DotNetRegex regex = Cache.GetOrAdd(pattern, static p =>
-        {
-            if (Cache.Count >= CacheCapacity)
-            {
-                Cache.Clear();
-            }
-
-            return new DotNetRegex(p);
-        });
+        DotNetRegex regex = GetOrAddCached(pattern);
         return Matching(regex, options);
     }
 
@@ -44,5 +36,31 @@ public static class RegexGenerate
         RegexNode root = RegexParser.Parse(regex.ToString(), regex.Options);
         return new MatchingStrategy(root, regex, regex.Options, effectiveOptions);
     }
+
+    /// <summary>Returns a strategy that generates strings that do not match <paramref name="pattern"/>.</summary>
+    public static Strategy<string> NotMatching(string pattern, RegexGenOptions? options = null)
+    {
+        DotNetRegex regex = GetOrAddCached(pattern);
+        return NotMatching(regex, options);
+    }
+
+    /// <summary>Returns a strategy that generates strings that do not match <paramref name="regex"/>.</summary>
+    public static Strategy<string> NotMatching(DotNetRegex regex, RegexGenOptions? options = null)
+    {
+        return new NotMatchingStrategy(regex, regex.ToString(), options);
+    }
 #pragma warning restore RS0026
+
+    private static DotNetRegex GetOrAddCached(string pattern)
+    {
+        return Cache.GetOrAdd(pattern, static p =>
+        {
+            if (Cache.Count >= CacheCapacity)
+            {
+                Cache.Clear();
+            }
+
+            return new DotNetRegex(p);
+        });
+    }
 }
