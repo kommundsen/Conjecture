@@ -35,5 +35,7 @@ items:
     href: explore-strategies.md
   - name: Use the MCP server
     href: use-mcp-server.md
+  - name: Test a regex validator
+    href: test-regex-validator.md
   - name: Troubleshoot
     href: troubleshoot.md
