@@ -68,6 +68,37 @@ dotnet test
 
 Each `[Property]` method runs against 100 randomly generated inputs by default. A failure shows the shrunk counterexample.
 
+## Configure per-test behaviour
+
+Set `[Property]` attribute properties to control individual test runs:
+
+```csharp
+[Property(MaxExamples = 500, DeadlineMs = 200)]
+public bool Reverse_preserves_length(List<int> xs) =>
+    xs.AsEnumerable().Reverse().Count() == xs.Count;
+
+[Property(Seed = 42UL, UseDatabase = false)]
+public void Deterministic_property(int value)
+{
+    Assert.True(value < int.MaxValue);
+}
+
+[Property(ExportReproOnFailure = true, ReproOutputPath = "failures/")]
+public bool Serialisation_roundtrips(string input) =>
+    Deserialise(Serialise(input)) == input;
+```
+
+For the full list of properties and their defaults, see [Attributes reference](../reference/attributes.md#property).
+
+To apply defaults across the whole assembly, use `[assembly: ConjectureSettings(...)]`:
+
+```csharp
+[assembly: ConjectureSettings(MaxExamples = 500, UseDatabase = false)]
+```
+
+> [!NOTE]
+> The `--conjecture-seed` and `--conjecture-max-examples` CLI flags override the corresponding attribute values for every property in the run. See [CLI options](#cli-options) below.
+
 ## CLI options
 
 Two CLI flags override settings globally for all properties in the run:
