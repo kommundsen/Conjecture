@@ -10,6 +10,22 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Version
 
 ---
 
+## [0.12.0] — 2026-04-19
+
+### Added
+
+**Core** (`Conjecture.Core`)
+- `SelectManyDirectStrategy<TSource, TResult>` — internal zero-alloc `SelectMany` path; accepts `Func<TSource, ConjectureData, TResult>` directly, eliminating the per-`Generate` wrapper allocation (~32 B/call saving)
+- Internal `StrategyExtensions.SelectMany` overload routing to `SelectManyDirectStrategy` for hot-path composition
+
+### Changed
+
+**Core** (`Conjecture.Core`)
+- `RecursiveStrategy<T>` pre-builds the full depth-level array at construction time, eliminating per-`Generate` `DepthLimitedStrategy` heap allocations
+- `WhereStrategy` now rolls back rejected IR nodes (`data.TruncateNodes`) to prevent unbounded node accumulation on filtered-out values
+
+---
+
 ## [0.11.0] — 2026-04-18
 
 ### Added
