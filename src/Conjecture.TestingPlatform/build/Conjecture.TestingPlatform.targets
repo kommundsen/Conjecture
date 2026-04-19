@@ -1,0 +1,16 @@
+<Project>
+  <ItemGroup>
+    <TestingPlatformBuilderHook Include="Conjecture.TestingPlatform" AssemblyName="Conjecture.TestingPlatform" TypeFullName="Conjecture.TestingPlatform.ConjectureTestingPlatformExtensions" MethodName="RegisterConjectureFramework" />
+  </ItemGroup>
+
+  <!-- Suppress MTP entry-point generation for VSTest/xUnit test projects that install this
+       NuGet package. Those projects already have their own entry point and do not need the
+       auto-generated MicrosoftTestingPlatformEntryPoint. -->
+  <Target Name="_ConjectureSuppressEntryPointForTestProjects"
+          BeforeTargets="_CalculateGenerateTestingPlatformEntryPoint"
+          Condition="'$(IsTestProject)' == 'true'">
+    <PropertyGroup>
+      <GenerateTestingPlatformEntryPoint>false</GenerateTestingPlatformEntryPoint>
+    </PropertyGroup>
+  </Target>
+</Project>
