@@ -10,10 +10,13 @@ using System.Text.RegularExpressions;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
 
+using DotNetRegex = System.Text.RegularExpressions.Regex;
+
 namespace Conjecture.Regex;
 
 internal sealed class MatchingStrategy(
     RegexNode root,
+    DotNetRegex regex,
     RegexOptions regexOptions,
     RegexGenOptions genOptions) : Strategy<string>
 {
@@ -47,10 +50,57 @@ internal sealed class MatchingStrategy(
 
     private readonly bool ignoreCase = (regexOptions & RegexOptions.IgnoreCase) != 0;
     private readonly bool singleline = (regexOptions & RegexOptions.Singleline) != 0;
+    private readonly bool hasLookaround = ContainsLookaround(root);
+
+    private static bool ContainsLookaround(RegexNode node)
+    {
+        return node switch
+        {
+            LookaroundAssertion => true,
+            Sequence seq => ContainsLookaroundInList(seq.Items),
+            Alternation alt => ContainsLookaroundInList(alt.Arms),
+            Group grp => ContainsLookaround(grp.Inner),
+            Quantifier q => ContainsLookaround(q.Inner),
+            _ => false,
+        };
+    }
+
+    private static bool ContainsLookaroundInList(IReadOnlyList<RegexNode> items)
+    {
+        foreach (RegexNode item in items)
+        {
+            if (ContainsLookaround(item))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     internal override string Generate(ConjectureData data)
     {
-        return Conjecture.Core.Generate.Compose<string>(ctx =>
+        return hasLookaround
+            ? Conjecture.Core.Generate.Compose<string>(ctx =>
+            {
+                const int maxAttempts = 50;
+                for (int attempt = 0; attempt < maxAttempts; attempt++)
+                {
+                    StringBuilder sb = new();
+                    Dictionary<int, string> captures = [];
+                    Dictionary<string, string> namedCaptures = [];
+                    GenerateNode(ctx, root, sb, captures, namedCaptures);
+                    string candidate = sb.ToString();
+                    if (regex.IsMatch(candidate))
+                    {
+                        return candidate;
+                    }
+                }
+
+                data.MarkInvalid();
+                throw new UnsatisfiedAssumptionException();
+            }).Generate(data)
+            : Conjecture.Core.Generate.Compose<string>(ctx =>
         {
             StringBuilder sb = new();
             Dictionary<int, string> captures = [];
@@ -89,11 +139,7 @@ internal sealed class MatchingStrategy(
                 }
 
             case Sequence seq:
-                foreach (RegexNode item in seq.Items)
-                {
-                    GenerateNode(ctx, item, sb, captures, namedCaptures);
-                }
-
+                GenerateSequence(ctx, seq, sb, captures, namedCaptures);
                 break;
 
             case Group grp:
@@ -135,11 +181,198 @@ internal sealed class MatchingStrategy(
                 break;
 
             case LookaroundAssertion:
-                throw new NotImplementedException("Lookaround is implemented in cycle 294.3.");
+                // Lookarounds are handled at the Sequence level; a lone lookaround produces no output.
+                break;
 
             default:
                 throw new NotSupportedException($"Unsupported node type: {node.GetType().Name}");
         }
+    }
+
+    private void GenerateSequence(
+        IGeneratorContext ctx,
+        Sequence seq,
+        StringBuilder sb,
+        Dictionary<int, string> captures,
+        Dictionary<string, string> namedCaptures)
+    {
+        LookaroundStrategy.AnalyzeSequence(
+            seq.Items,
+            out List<IReadOnlyList<CharRange>> positiveReqs,
+            out List<IReadOnlyList<CharRange>> negativeFirstCharForbidden,
+            out bool skipBody);
+
+        // Emit any positive-lookbehind prefixes so IsMatch can find the required preceding char.
+        foreach (RegexNode item in seq.Items)
+        {
+            if (item is LookaroundAssertion { IsAhead: false, IsPositive: true } posLb)
+            {
+                IReadOnlyList<CharRange> reqs = CharRequirementExtractor.ExtractRequired(posLb.Inner);
+                if (reqs.Count > 0)
+                {
+                    // Prepend a char that satisfies the lookbehind requirement.
+                    char prefix = CharRangeHelpers.SampleFromRanges(reqs, ctx);
+                    sb.Append(prefix);
+                }
+
+                break; // Only one lookbehind prefix needed.
+            }
+        }
+
+        // Collect negative-lookahead forbidden-first-char constraints.
+        List<CharRange> combinedForbidden = [];
+        foreach (IReadOnlyList<CharRange> forbidden in negativeFirstCharForbidden)
+        {
+            foreach (CharRange r in forbidden)
+            {
+                combinedForbidden.Add(r);
+            }
+        }
+
+        bool firstCharConstrained = combinedForbidden.Count > 0;
+        bool firstBodyChar = firstCharConstrained;
+
+        if (skipBody)
+        {
+            // (?![\s\S]) — impossible lookahead: produce empty string.
+            return;
+        }
+
+        // Normal path: emit body nodes, applying first-char constraint where needed.
+        int bodyStart = sb.Length;
+        foreach (RegexNode item in seq.Items)
+        {
+            if (item is LookaroundAssertion)
+            {
+                // Already processed above; skip generation.
+                continue;
+            }
+
+            if (firstBodyChar && sb.Length == bodyStart)
+            {
+                // Intercept the first char-producing node to apply the forbidden constraint.
+                firstBodyChar = false;
+                GenerateNodeWithForbiddenFirst(ctx, item, sb, captures, namedCaptures, combinedForbidden);
+            }
+            else
+            {
+                GenerateNode(ctx, item, sb, captures, namedCaptures);
+            }
+        }
+
+        // Post-process: splice in any missing required chars for positive lookaheads.
+        if (positiveReqs.Count > 0)
+        {
+            LookaroundStrategy.SatisfyPositiveRequirements(ctx, sb, positiveReqs, firstCharConstrained);
+        }
+    }
+
+    /// <summary>
+    /// Generates a node that must not begin with a char in <paramref name="forbidden"/>.
+    /// Applies only to the first character-producing leaf of the node.
+    /// </summary>
+    private void GenerateNodeWithForbiddenFirst(
+        IGeneratorContext ctx,
+        RegexNode node,
+        StringBuilder sb,
+        Dictionary<int, string> captures,
+        Dictionary<string, string> namedCaptures,
+        List<CharRange> forbidden)
+    {
+        switch (node)
+        {
+            case CharClass cc:
+                GenerateCharClassExcluding(ctx, cc, sb, forbidden);
+                break;
+
+            case Quantifier q when q.Min >= 1:
+                // The first iteration of the quantifier must obey the constraint.
+                GenerateNodeWithForbiddenFirst(ctx, q.Inner, sb, captures, namedCaptures, forbidden);
+                // Remaining repetitions are unconstrained.
+                int maxCount = q.Max ?? (q.Min + 16);
+                int count = ctx.Generate(Conjecture.Core.Generate.Integers<int>(q.Min, maxCount));
+                for (int i = 1; i < count; i++)
+                {
+                    GenerateNode(ctx, q.Inner, sb, captures, namedCaptures);
+                }
+
+                break;
+
+            case Group grp:
+                {
+                    int startPos = sb.Length;
+                    GenerateNodeWithForbiddenFirst(ctx, grp.Inner, sb, captures, namedCaptures, forbidden);
+                    string captured = sb.ToString(startPos, sb.Length - startPos);
+                    if (grp.CaptureIndex.HasValue)
+                    {
+                        captures[grp.CaptureIndex.Value] = captured;
+                    }
+
+                    if (grp.Name is not null)
+                    {
+                        namedCaptures[grp.Name] = captured;
+                    }
+
+                    break;
+                }
+
+            case Alternation alt:
+                {
+                    int idx = ctx.Generate(Conjecture.Core.Generate.Integers<int>(0, alt.Arms.Count - 1));
+                    RegexNode chosenArm = alt.Arms[idx];
+                    // Recurse into the chosen arm with the forbidden constraint on its first node.
+                    if (chosenArm is Sequence armSeq && armSeq.Items.Count > 0)
+                    {
+                        GenerateNodeWithForbiddenFirst(ctx, armSeq.Items[0], sb, captures, namedCaptures, forbidden);
+                        for (int i = 1; i < armSeq.Items.Count; i++)
+                        {
+                            GenerateNode(ctx, armSeq.Items[i], sb, captures, namedCaptures);
+                        }
+                    }
+                    else
+                    {
+                        GenerateNodeWithForbiddenFirst(ctx, chosenArm, sb, captures, namedCaptures, forbidden);
+                    }
+
+                    break;
+                }
+
+            case Literal lit:
+                // If literal char is in the forbidden set, emit it anyway (unresolvable contradiction).
+                GenerateLiteral(ctx, lit.Ch, sb);
+                break;
+
+            default:
+                // Fall back to unconstrained generation for other node types.
+                GenerateNode(ctx, node, sb, captures, namedCaptures);
+                break;
+        }
+    }
+
+    private void GenerateCharClassExcluding(
+        IGeneratorContext ctx,
+        CharClass cc,
+        StringBuilder sb,
+        List<CharRange> forbidden)
+    {
+        IReadOnlyList<CharRange> allowed = cc.Negated
+            ? CharRangeHelpers.ComplementRanges(cc.Ranges, '\u0000', '\uFFFF')
+            : (IReadOnlyList<CharRange>)cc.Ranges;
+
+        if (ignoreCase)
+        {
+            allowed = ExpandCaseInsensitive(allowed);
+        }
+
+        IReadOnlyList<CharRange> filtered = LookaroundStrategy.ExcludeForbidden(allowed, forbidden);
+        if (filtered.Count == 0)
+        {
+            // No valid chars after exclusion — fall back to unconstrained.
+            filtered = allowed;
+        }
+
+        char ch = CharRangeHelpers.SampleFromRanges(filtered, ctx);
+        sb.Append(ch);
     }
 
     private void GenerateLiteral(IGeneratorContext ctx, char ch, StringBuilder sb)
@@ -166,13 +399,13 @@ internal sealed class MatchingStrategy(
 
         if (cc.Negated)
         {
-            IReadOnlyList<CharRange> complement = ComplementRanges(ranges, '\u0000', '\uFFFF');
-            char ch = SampleFromRanges(ctx, complement);
+            IReadOnlyList<CharRange> complement = CharRangeHelpers.ComplementRanges(ranges, '\u0000', '\uFFFF');
+            char ch = CharRangeHelpers.SampleFromRanges(complement, ctx);
             sb.Append(ch);
         }
         else
         {
-            char ch = SampleFromRanges(ctx, ranges);
+            char ch = CharRangeHelpers.SampleFromRanges(ranges, ctx);
             sb.Append(ch);
         }
     }
@@ -243,70 +476,6 @@ internal sealed class MatchingStrategy(
         }
 
         return expanded;
-    }
-
-    private static char SampleFromRanges(IGeneratorContext ctx, IReadOnlyList<CharRange> ranges)
-    {
-        // Count total chars
-        int total = 0;
-        foreach (CharRange r in ranges)
-        {
-            total += r.High - r.Low + 1;
-        }
-
-        if (total == 0)
-        {
-            return '\0';
-        }
-
-        int pick = ctx.Generate(Conjecture.Core.Generate.Integers<int>(0, total - 1));
-        foreach (CharRange r in ranges)
-        {
-            int size = r.High - r.Low + 1;
-            if (pick < size)
-            {
-                return (char)(r.Low + pick);
-            }
-
-            pick -= size;
-        }
-
-        return ranges[0].Low;
-    }
-
-    private static IReadOnlyList<CharRange> ComplementRanges(IReadOnlyList<CharRange> ranges, char lo, char hi)
-    {
-        // Normalise: sort and merge
-        List<(int, int)> sorted = [];
-        foreach (CharRange r in ranges)
-        {
-            sorted.Add((r.Low, r.High));
-        }
-
-        sorted.Sort(static (a, b) => a.Item1.CompareTo(b.Item1));
-
-        List<CharRange> result = [];
-        int cursor = lo;
-        foreach ((int rLo, int rHi) in sorted)
-        {
-            if (rLo > cursor)
-            {
-                result.Add(new CharRange((char)cursor, (char)(rLo - 1)));
-            }
-
-            cursor = Math.Max(cursor, rHi + 1);
-            if (cursor > hi)
-            {
-                break;
-            }
-        }
-
-        if (cursor <= hi)
-        {
-            result.Add(new CharRange((char)cursor, hi));
-        }
-
-        return result;
     }
 
     private void GenerateQuantifier(
