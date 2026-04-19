@@ -126,6 +126,7 @@ internal sealed class PropertyTestFramework : ITestFramework, IDataProducer
         TestNodeUid parentNodeUid = new(uid);
         ParameterInfo[] parameters = method.GetParameters();
         bool exampleFailed = false;
+        object? instance = method.IsStatic ? null : Activator.CreateInstance(method.DeclaringType!);
 
         ExampleAttribute[] examples = method.GetCustomAttributes<ExampleAttribute>().ToArray();
         for (int i = 0; i < examples.Length; i++)
@@ -144,11 +145,11 @@ internal sealed class PropertyTestFramework : ITestFramework, IDataProducer
                 TestCaseHelper.ValidateExampleArgs(example, parameters);
                 if (TestCaseHelper.IsAsyncReturnType(method.ReturnType))
                 {
-                    await TestCaseHelper.InvokeAsync(method, null, example.Arguments!);
+                    await TestCaseHelper.InvokeAsync(method, instance, example.Arguments!);
                 }
                 else
                 {
-                    TestCaseHelper.InvokeSync(method, null, example.Arguments!);
+                    TestCaseHelper.InvokeSync(method, instance, example.Arguments!);
                 }
 
                 childNode.Properties.Add(PassedTestNodeStateProperty.CachedInstance);
@@ -194,11 +195,11 @@ internal sealed class PropertyTestFramework : ITestFramework, IDataProducer
             {
                 if (TestCaseHelper.IsAsyncReturnType(method.ReturnType))
                 {
-                    await TestCaseHelper.InvokeAsync(method, null, []);
+                    await TestCaseHelper.InvokeAsync(method, instance, []);
                 }
                 else
                 {
-                    TestCaseHelper.InvokeSync(method, null, []);
+                    TestCaseHelper.InvokeSync(method, instance, []);
                 }
 
                 node.Properties.Add(PassedTestNodeStateProperty.CachedInstance);
@@ -243,10 +244,10 @@ internal sealed class PropertyTestFramework : ITestFramework, IDataProducer
             object[] args = SharedParameterStrategyResolver.Resolve(parameters, data);
             if (TestCaseHelper.IsAsyncReturnType(method.ReturnType))
             {
-                return TestCaseHelper.InvokeAsync(method, null, args);
+                return TestCaseHelper.InvokeAsync(method, instance, args);
             }
 
-            TestCaseHelper.InvokeSync(method, null, args);
+            TestCaseHelper.InvokeSync(method, instance, args);
             return Task.CompletedTask;
         }
 
@@ -264,7 +265,18 @@ internal sealed class PropertyTestFramework : ITestFramework, IDataProducer
         }
         else
         {
-            string failureMessage = TestCaseHelper.BuildFailureMessage(result, parameters);
+            string failureMessage;
+            try
+            {
+                failureMessage = TestCaseHelper.BuildFailureMessage(result, parameters);
+            }
+            catch (Exception)
+            {
+                failureMessage = result.FailureStackTrace is not null
+                    ? $"Property failed.{Environment.NewLine}{result.FailureStackTrace}"
+                    : "Property failed.";
+            }
+
             resultNode.Properties.Add(new FailedTestNodeStateProperty(failureMessage));
             if (capabilities?.TrxEnabled == true)
             {

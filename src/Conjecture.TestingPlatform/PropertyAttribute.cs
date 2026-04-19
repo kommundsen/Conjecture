@@ -9,12 +9,11 @@ namespace Conjecture.TestingPlatform;
 [AttributeUsage(AttributeTargets.Method)]
 public sealed class PropertyAttribute : Attribute, IPropertyTest, IReproductionExport
 {
-    ulong IPropertyTest.Seed => Seed ?? 0;
     /// <summary>Maximum number of examples to generate. Defaults to 100.</summary>
     public int MaxExamples { get; set; } = 100;
 
-    /// <summary>Optional fixed seed for deterministic runs. Null means use a random seed.</summary>
-    public ulong? Seed { get; set; }
+    /// <summary>Optional fixed seed for deterministic runs. 0 means use a random seed.</summary>
+    public ulong Seed { get; set; }
 
     /// <summary>Whether to use the example database. Defaults to <see langword="true"/>.</summary>
     public bool UseDatabase { get; set; } = true;

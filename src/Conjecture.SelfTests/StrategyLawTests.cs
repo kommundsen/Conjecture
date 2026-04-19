@@ -3,7 +3,7 @@
 
 using Conjecture.Core;
 using Conjecture.Core.Internal;
-using Conjecture.Xunit.V3;
+using Conjecture.TestingPlatform;
 
 using Xunit;
 
@@ -11,7 +11,7 @@ namespace Conjecture.SelfTests;
 
 public class StrategyLawTests
 {
-    [Fact]
+    [Property]
     public async Task FunctorIdentity_SelectIdentity_ProducesSameValue()
     {
         ConjectureSettings settings = new() { Seed = 0xC0FFEEul, MaxExamples = 1, UseDatabase = false };
@@ -25,7 +25,7 @@ public class StrategyLawTests
         Assert.Equal(baseline, mapped);
     }
 
-    [Fact]
+    [Property]
     public async Task FilterTrue_WhereAlwaysTrue_ProducesSameValue()
     {
         ConjectureSettings settings = new() { Seed = 0xDEADBEEFul, MaxExamples = 1, UseDatabase = false };
@@ -39,7 +39,7 @@ public class StrategyLawTests
         Assert.Equal(baseline, filtered);
     }
 
-    [Fact]
+    [Property]
     public async Task FilterFalse_WhereNeverTrue_NoValidExamplesProduced()
     {
         // MaxExamples = 1 keeps the test fast; all attempts are filtered so no valid examples run.
@@ -51,7 +51,7 @@ public class StrategyLawTests
         Assert.Equal(0, result.ExampleCount);
     }
 
-    [Fact]
+    [Property]
     public async Task SelectManyAssociativity_ConstantStrategies_BothSidesEqual()
     {
         ConjectureSettings settings = new() { Seed = 777ul, MaxExamples = 1, UseDatabase = false };

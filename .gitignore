@@ -6,6 +6,9 @@
 # Claude Code local settings (user-specific tool permissions)
 .claude/settings.local.json
 
+# Conjecture example database (local shrink cache)
+.conjecture/
+
 # dotenv files
 .env
 

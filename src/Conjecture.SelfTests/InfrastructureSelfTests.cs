@@ -3,7 +3,7 @@
 
 using Conjecture.Core;
 using Conjecture.Core.Internal;
-using Conjecture.Xunit.V3;
+using Conjecture.TestingPlatform;
 
 using Xunit;
 
@@ -64,7 +64,7 @@ public class InfrastructureSelfTests
 
     // Verifies ShrinkCount in TestRunResult matches actual shrink iterations produced by
     // running Shrinker.ShrinkAsync independently on the same original counterexample.
-    [Fact]
+    [Property]
     public async Task ReportingAccuracy_ShrinkCount_MatchesActualShrinkIterations()
     {
         ConjectureSettings settings = new() { Seed = 42ul, MaxExamples = 20, UseDatabase = false };

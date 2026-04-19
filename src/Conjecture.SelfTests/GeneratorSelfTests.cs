@@ -3,7 +3,7 @@
 
 using Conjecture.Core;
 using Conjecture.Core.Internal;
-using Conjecture.Xunit.V3;
+using Conjecture.TestingPlatform;
 
 using Xunit;
 
@@ -26,7 +26,7 @@ public class GeneratorSelfTests
         Assert.NotNull(p);
     }
 
-    [Fact]
+    [Property]
     public async Task GeneratedStrategy_Select_TransformsValues()
     {
         Strategy<int> xStrategy = new SelfPointArbitrary().Create().Select(p => p.X);
@@ -37,7 +37,7 @@ public class GeneratorSelfTests
         Assert.True(result.Passed);
     }
 
-    [Fact]
+    [Property]
     public async Task GeneratedStrategy_Where_FiltersValues()
     {
         Strategy<SelfPoint> positivePoints = new SelfPointArbitrary().Create()
@@ -64,7 +64,7 @@ public class GeneratorSelfTests
         Assert.NotNull(e.Label.Text);
     }
 
-    [Fact]
+    [Property]
     public async Task GeneratedStrategy_SelectMany_ComposesCorrectly()
     {
         Strategy<SelfLabel> labelStrategy = new SelfLabelArbitrary().Create();

@@ -3,6 +3,7 @@
 
 using Conjecture.Core;
 using Conjecture.Core.Internal;
+using Conjecture.TestingPlatform;
 
 using Xunit;
 
@@ -30,7 +31,7 @@ public class ShrinkerInvariantTests
         }
     }
 
-    [Fact]
+    [Property]
     public async Task Idempotent_ReshrinkingFullyShrunkResult_MakesNoProgress()
     {
         ConjectureSettings settings = new() { Seed = 42ul, MaxExamples = 20, UseDatabase = false };
@@ -46,7 +47,7 @@ public class ShrinkerInvariantTests
         Assert.Equal(0, additionalShrinks);
     }
 
-    [Fact]
+    [Property]
     public async Task PreservesFailure_ShrunkCounterexample_StillInteresting()
     {
         ConjectureSettings settings = new() { Seed = 1ul, MaxExamples = 20, UseDatabase = false };
@@ -57,7 +58,7 @@ public class ShrinkerInvariantTests
         Assert.Equal(Status.Interesting, SelfTestHelpers.Replay(result.Counterexample!, FailIfOver5));
     }
 
-    [Fact]
+    [Property]
     public async Task Reduces_ShrunkCounterexample_IsLexicographicallyLeqOriginal()
     {
         ConjectureSettings settings = new() { Seed = 99ul, MaxExamples = 20, UseDatabase = false };
@@ -77,7 +78,7 @@ public class ShrinkerInvariantTests
             "Shrunk counterexample must be lexicographically <= the original failing example.");
     }
 
-    [Fact]
+    [Property]
     public async Task BoundsRespected_ShrunkNodes_AllWithinStrategyBounds()
     {
         ConjectureSettings settings = new() { Seed = 7ul, MaxExamples = 20, UseDatabase = false };

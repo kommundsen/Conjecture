@@ -11,7 +11,7 @@ Conjecture.TestingPlatform.PropertyAttribute.MaxStrategyRejections.get -> int
 Conjecture.TestingPlatform.PropertyAttribute.MaxStrategyRejections.set -> void
 Conjecture.TestingPlatform.PropertyAttribute.ReproOutputPath.get -> string!
 Conjecture.TestingPlatform.PropertyAttribute.ReproOutputPath.set -> void
-Conjecture.TestingPlatform.PropertyAttribute.Seed.get -> ulong?
+Conjecture.TestingPlatform.PropertyAttribute.Seed.get -> ulong
 Conjecture.TestingPlatform.PropertyAttribute.Seed.set -> void
 Conjecture.TestingPlatform.PropertyAttribute.Targeting.get -> bool
 Conjecture.TestingPlatform.PropertyAttribute.Targeting.set -> void
