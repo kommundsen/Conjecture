@@ -16,6 +16,14 @@ public static class GenForRegistry
 {
     private static readonly ConcurrentDictionary<Type, Func<IStrategyProvider>> Providers = new();
 
+    private static readonly ConcurrentDictionary<Type, Func<object, object>> OverrideProviders = new();
+
+    /// <summary>Registers an override-aware factory for <paramref name="type"/>. Called by source-generated module initializers.</summary>
+    public static void RegisterOverride(Type type, Func<object, object> factory)
+    {
+        OverrideProviders[type] = factory;
+    }
+
     /// <summary>Registers a provider factory for <paramref name="type"/>. Called by source-generated module initializers.</summary>
     public static void Register(Type type, Func<IStrategyProvider> factory)
     {
@@ -24,12 +32,19 @@ public static class GenForRegistry
 
     internal static Strategy<T> Resolve<T>()
     {
-        if (!Providers.TryGetValue(typeof(T), out Func<IStrategyProvider>? factory))
-        {
-            throw new InvalidOperationException(
-                $"No IStrategyProvider<T> is registered for '{typeof(T).FullName}'. Decorate the type with [Arbitrary].");
-        }
+        return !Providers.TryGetValue(typeof(T), out Func<IStrategyProvider>? factory)
+            ? throw new InvalidOperationException(
+                $"No IStrategyProvider<T> is registered for '{typeof(T).FullName}'. Decorate the type with [Arbitrary].")
+            : ((IStrategyProvider<T>)factory()).Create();
+    }
 
-        return ((IStrategyProvider<T>)factory()).Create();
+    /// <summary>Resolves an override-aware strategy for <typeparamref name="T"/> using the registered factory and the provided <paramref name="cfg"/>. Throws if the type is not registered.</summary>
+    public static Strategy<T> ResolveWithOverrides<T>(ForConfiguration<T> cfg)
+    {
+        Type key = typeof(T);
+        return !OverrideProviders.TryGetValue(key, out Func<object, object>? factory)
+            ? throw new InvalidOperationException(
+                $"No IStrategyProvider<T> is registered for '{key.FullName}'. Decorate the type with [Arbitrary].")
+            : (Strategy<T>)factory(cfg);
     }
 }

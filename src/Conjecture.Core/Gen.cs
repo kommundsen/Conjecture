@@ -247,4 +247,13 @@ public static class Generate
 
     /// <summary>Returns a strategy for <typeparamref name="T"/> using its registered <see cref="IStrategyProvider{T}"/>. The type must be decorated with <c>[Arbitrary]</c>.</summary>
     public static Strategy<T> For<T>() => GenForRegistry.Resolve<T>();
+
+    /// <summary>Returns a strategy for <typeparamref name="T"/> with property overrides applied via <paramref name="configure"/>. The type must be decorated with <c>[Arbitrary]</c>.</summary>
+    public static Strategy<T> For<T>(Action<ForConfiguration<T>> configure)
+    {
+        ArgumentNullException.ThrowIfNull(configure);
+        ForConfiguration<T> cfg = new();
+        configure(cfg);
+        return Compose<T>(ctx => ctx.Generate(GenForRegistry.ResolveWithOverrides(cfg)));
+    }
 }
