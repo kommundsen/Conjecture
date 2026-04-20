@@ -78,4 +78,12 @@ internal static class DiagnosticDescriptors
         category: "Conjecture",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true);
+
+    internal static readonly DiagnosticDescriptor Con313MutualRecursionWithoutMaxDepth = new(
+        id: "CON313",
+        title: "Mutual recursion without [GenMaxDepth]",
+        messageFormat: "Types '{0}' and '{1}' are mutually recursive but neither has [GenMaxDepth]. Add [GenMaxDepth(n)] to cap generation depth.",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true);
 }

@@ -26,3 +26,6 @@ Conjecture.Core.GenRegexAttribute.Pattern.get -> string!
 static Conjecture.Core.Generate.DateTimes() -> Conjecture.Core.Strategy<System.DateTime>!
 static Conjecture.Core.Generate.DateTimes(System.DateTime min, System.DateTime max) -> Conjecture.Core.Strategy<System.DateTime>!
 static Conjecture.Core.Generate.Chars() -> Conjecture.Core.Strategy<char>!
+Conjecture.Core.GenMaxDepthAttribute
+Conjecture.Core.GenMaxDepthAttribute.GenMaxDepthAttribute(int maxDepth) -> void
+Conjecture.Core.GenMaxDepthAttribute.MaxDepth.get -> int

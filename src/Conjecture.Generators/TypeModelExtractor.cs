@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -21,13 +22,14 @@ internal static class TypeModelExtractor
     internal static (TypeModel? Model, ImmutableArray<Diagnostic> Diagnostics) Extract(
         INamedTypeSymbol symbol,
         IReadOnlyDictionary<string, string>? providerRegistry = null)
+        => Extract(symbol, providerRegistry, ImmutableHashSet<string>.Empty);
+
+    private static (TypeModel? Model, ImmutableArray<Diagnostic> Diagnostics) Extract(
+        INamedTypeSymbol symbol,
+        IReadOnlyDictionary<string, string>? providerRegistry,
+        ImmutableHashSet<string> recursionStack)
     {
         Location location = symbol.Locations.Length > 0 ? symbol.Locations[0] : Location.None;
-
-        if (!IsPartial(symbol))
-        {
-            return (null, ImmutableArray.Create(Diagnostic.Create(DiagnosticDescriptors.Con201, location, symbol.Name)));
-        }
 
         List<ConstructorDeclarationSyntax> partialCtors = FindPartialConstructors(symbol);
 
@@ -49,41 +51,135 @@ internal static class TypeModelExtractor
 
         ImmutableArray<string> typeParameters = BuildTypeParameters(symbol);
 
+        string currentFqn = symbol.ToDisplayString(TypeNameFormat);
+        ImmutableHashSet<string> newStack = recursionStack.Add(currentFqn);
+
+        int maxDepth = ReadMaxDepth(symbol);
+        bool isPartial = IsPartial(symbol);
+
         List<Diagnostic> warnings = [];
+        List<INamedTypeSymbol> arbitraryRefSymbols = [];
         ImmutableArray<MemberModel> members;
         ConstructionMode mode;
 
         if (partialCtors.Count == 1)
         {
-            members = BuildInitPropertyMembers(symbol, warnings, providerRegistry);
+            if (!isPartial)
+            {
+                return (null, ImmutableArray.Create(Diagnostic.Create(DiagnosticDescriptors.Con201, location, symbol.Name)));
+            }
+
+            members = BuildInitPropertyMembers(symbol, warnings, providerRegistry, newStack, arbitraryRefSymbols);
             mode = ConstructionMode.PartialConstructor;
         }
         else if (bestCtor is not null)
         {
-            members = BuildMembers(bestCtor, symbol, warnings, providerRegistry);
+            if (!isPartial)
+            {
+                return (null, ImmutableArray.Create(Diagnostic.Create(DiagnosticDescriptors.Con201, location, symbol.Name)));
+            }
+
+            members = BuildMembers(bestCtor, symbol, warnings, providerRegistry, newStack, arbitraryRefSymbols);
             mode = ConstructionMode.Constructor;
         }
         else
         {
-            members = BuildInitPropertyMembers(symbol, warnings, providerRegistry);
+            members = BuildInitPropertyMembers(symbol, warnings, providerRegistry, newStack, arbitraryRefSymbols);
             if (members.IsEmpty)
             {
-                return (null, ImmutableArray.Create(Diagnostic.Create(DiagnosticDescriptors.Con200, location, symbol.Name)));
+                return !isPartial
+                    ? (null, ImmutableArray.Create(Diagnostic.Create(DiagnosticDescriptors.Con201, location, symbol.Name)))
+                    : (null, ImmutableArray.Create(Diagnostic.Create(DiagnosticDescriptors.Con200, location, symbol.Name)));
             }
 
             mode = ConstructionMode.ObjectInitializer;
         }
 
+        // Detect mutual recursion: if any [Arbitrary] member type (not self-recursive) references
+        // back to the current type, and neither has [GenMaxDepth], emit CON313.
+        if (maxDepth < 0)
+        {
+            foreach (INamedTypeSymbol refSymbol in arbitraryRefSymbols)
+            {
+                if (ReadMaxDepth(refSymbol) < 0
+                    && TypeReferencesBack(refSymbol, currentFqn))
+                {
+                    warnings.Add(Diagnostic.Create(
+                        DiagnosticDescriptors.Con313MutualRecursionWithoutMaxDepth,
+                        location,
+                        currentFqn,
+                        refSymbol.ToDisplayString(TypeNameFormat)));
+                    break;
+                }
+            }
+        }
+
         TypeModel model = new(
-            FullyQualifiedName: symbol.ToDisplayString(TypeNameFormat),
+            FullyQualifiedName: currentFqn,
             Namespace: ns,
             TypeName: symbol.Name,
             TypeKind: symbol.TypeKind,
             TypeParameters: typeParameters,
             Members: members,
-            ConstructionMode: mode);
+            ConstructionMode: mode,
+            MaxDepth: maxDepth < 0 ? 5 : maxDepth,
+            IsPartial: isPartial);
 
         return (model, warnings.ToImmutableArray());
+    }
+
+    private static int ReadMaxDepth(INamedTypeSymbol symbol)
+    {
+        foreach (AttributeData attr in symbol.GetAttributes())
+        {
+            if (attr.AttributeClass?.ToDisplayString() == "Conjecture.Core.GenMaxDepthAttribute"
+                && attr.ConstructorArguments.Length == 1
+                && attr.ConstructorArguments[0].Value is int depth)
+            {
+                return depth;
+            }
+        }
+
+        return -1;
+    }
+
+    private static bool TypeReferencesBack(INamedTypeSymbol symbol, string targetFqn)
+    {
+        IMethodSymbol? ctor = FindBestConstructor(symbol);
+        if (ctor is not null)
+        {
+            foreach (IParameterSymbol param in ctor.Parameters)
+            {
+                ITypeSymbol paramType = param.Type.WithNullableAnnotation(NullableAnnotation.None);
+                string fqn = paramType.ToDisplayString(TypeNameFormat);
+                if (fqn == targetFqn)
+                {
+                    return true;
+                }
+            }
+        }
+
+        foreach (ISymbol member in symbol.GetMembers())
+        {
+            if (member is not IPropertySymbol prop)
+            {
+                continue;
+            }
+
+            if (prop.DeclaredAccessibility != Accessibility.Public || prop.SetMethod is null || !prop.SetMethod.IsInitOnly)
+            {
+                continue;
+            }
+
+            ITypeSymbol propType = prop.Type.WithNullableAnnotation(NullableAnnotation.None);
+            string fqn = propType.ToDisplayString(TypeNameFormat);
+            if (fqn == targetFqn)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static bool HasModifier(SyntaxTokenList modifiers, SyntaxKind kind)
@@ -188,7 +284,9 @@ internal static class TypeModelExtractor
         IMethodSymbol ctor,
         INamedTypeSymbol containingType,
         List<Diagnostic> warnings,
-        IReadOnlyDictionary<string, string>? providerRegistry)
+        IReadOnlyDictionary<string, string>? providerRegistry,
+        ImmutableHashSet<string> recursionStack,
+        List<INamedTypeSymbol> arbitraryRefSymbols)
     {
         if (ctor.Parameters.IsEmpty)
         {
@@ -200,12 +298,17 @@ internal static class TypeModelExtractor
         {
             string typeName = param.Type.ToDisplayString(TypeNameFormat);
             bool isNullable = param.NullableAnnotation == NullableAnnotation.Annotated;
-            (MemberGenerationKind kind, string innerFqn) = ClassifyMemberType(param.Type, providerRegistry);
+            (MemberGenerationKind kind, string innerFqn) = ClassifyMemberType(param.Type, providerRegistry, recursionStack);
 
             if (kind == MemberGenerationKind.Unsupported)
             {
                 Location loc = param.Locations.Length > 0 ? param.Locations[0] : Location.None;
                 warnings.Add(Diagnostic.Create(DiagnosticDescriptors.Con202, loc, param.Name, typeName));
+            }
+
+            if (kind == MemberGenerationKind.ArbitraryReference && param.Type is INamedTypeSymbol refNamed)
+            {
+                arbitraryRefSymbols.Add(refNamed);
             }
 
             (double? rMin, double? rMax, int? sMin, int? sMax, bool required) = ReadConstraints(param, containingType);
@@ -220,7 +323,9 @@ internal static class TypeModelExtractor
     private static ImmutableArray<MemberModel> BuildInitPropertyMembers(
         INamedTypeSymbol symbol,
         List<Diagnostic> warnings,
-        IReadOnlyDictionary<string, string>? providerRegistry)
+        IReadOnlyDictionary<string, string>? providerRegistry,
+        ImmutableHashSet<string> recursionStack,
+        List<INamedTypeSymbol> arbitraryRefSymbols)
     {
         ImmutableArray<MemberModel>.Builder builder = ImmutableArray.CreateBuilder<MemberModel>();
         foreach (ISymbol member in symbol.GetMembers())
@@ -242,12 +347,17 @@ internal static class TypeModelExtractor
 
             string typeName = prop.Type.ToDisplayString(TypeNameFormat);
             bool isNullable = prop.NullableAnnotation == NullableAnnotation.Annotated;
-            (MemberGenerationKind kind, string innerFqn) = ClassifyMemberType(prop.Type, providerRegistry);
+            (MemberGenerationKind kind, string innerFqn) = ClassifyMemberType(prop.Type, providerRegistry, recursionStack);
 
             if (kind == MemberGenerationKind.Unsupported)
             {
                 Location loc = prop.Locations.Length > 0 ? prop.Locations[0] : Location.None;
                 warnings.Add(Diagnostic.Create(DiagnosticDescriptors.Con202, loc, prop.Name, typeName));
+            }
+
+            if (kind == MemberGenerationKind.ArbitraryReference && prop.Type is INamedTypeSymbol refNamed)
+            {
+                arbitraryRefSymbols.Add(refNamed);
             }
 
             (double? rMin, double? rMax, int? sMin, int? sMax, bool required) = ReadConstraints(prop);
@@ -506,7 +616,8 @@ internal static class TypeModelExtractor
 
     private static (MemberGenerationKind Kind, string InnerFqn) ClassifyMemberType(
         ITypeSymbol type,
-        IReadOnlyDictionary<string, string>? providerRegistry)
+        IReadOnlyDictionary<string, string>? providerRegistry,
+        ImmutableHashSet<string> recursionStack)
     {
         if (IsPrimitive(type.SpecialType))
         {
@@ -572,7 +683,9 @@ internal static class TypeModelExtractor
 
         if (type is INamedTypeSymbol namedType && SymbolHelpers.HasArbitraryAttribute(namedType))
         {
-            return (MemberGenerationKind.ArbitraryReference, "");
+            return recursionStack.Contains(typeFqn)
+                ? (MemberGenerationKind.Recursive, "")
+                : (MemberGenerationKind.ArbitraryReference, "");
         }
 
         if (providerRegistry is not null && providerRegistry.TryGetValue(typeFqn, out string? providerFqn))
