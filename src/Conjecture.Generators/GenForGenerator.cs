@@ -6,6 +6,7 @@ using System.Collections.Immutable;
 using System.Text;
 
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Conjecture.Generators;
@@ -17,15 +18,17 @@ public sealed class GenForGenerator : IIncrementalGenerator
     /// <inheritdoc/>
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+        IncrementalValueProvider<ImmutableDictionary<string, string>> registry =
+            context.CompilationProvider.Select(static (compilation, _) => ProviderRegistry.Build(compilation));
+
+        RegisterCallSiteDiagnosticPipeline(context, registry);
+
         IncrementalValuesProvider<INamedTypeSymbol> types = context.SyntaxProvider
             .ForAttributeWithMetadataName(
                 "Conjecture.Core.ArbitraryAttribute",
                 predicate: static (node, _) => node is TypeDeclarationSyntax,
                 transform: static (ctx, _) => (INamedTypeSymbol)ctx.TargetSymbol)
             .Where(static symbol => !symbol.IsAbstract && !ImplementsStrategyProvider(symbol));
-
-        IncrementalValueProvider<ImmutableDictionary<string, string>> registry =
-            context.CompilationProvider.Select(static (compilation, _) => ProviderRegistry.Build(compilation));
 
         IncrementalValuesProvider<(INamedTypeSymbol Symbol, ImmutableDictionary<string, string> Registry)> combined =
             types.Combine(registry);
@@ -79,6 +82,199 @@ public sealed class GenForGenerator : IIncrementalGenerator
                 ctx.AddSource(model.TypeName + "Arbitrary.g.cs", arbitrarySource);
             }
         });
+    }
+
+    private static void RegisterCallSiteDiagnosticPipeline(
+        IncrementalGeneratorInitializationContext context,
+        IncrementalValueProvider<ImmutableDictionary<string, string>> registryProvider)
+    {
+        IncrementalValuesProvider<InvocationExpressionSyntax> forCallSites =
+            context.SyntaxProvider.CreateSyntaxProvider(
+                predicate: static (node, _) => node is InvocationExpressionSyntax invocation
+                    && IsForCallSite(invocation),
+                transform: static (ctx, _) => (InvocationExpressionSyntax)ctx.Node);
+
+        IncrementalValuesProvider<(ITypeSymbol? TypeArg, Location Location, Compilation Compilation)> resolvedCalls =
+            forCallSites.Combine(context.CompilationProvider)
+                .Select(static (pair, _) => ResolveForTypeArg(pair.Left, pair.Right));
+
+        IncrementalValuesProvider<((ITypeSymbol? TypeArg, Location Location, Compilation Compilation) Left, ImmutableDictionary<string, string> Right)> withRegistry =
+            resolvedCalls.Combine(registryProvider);
+
+        context.RegisterSourceOutput(withRegistry, static (ctx, pair) =>
+        {
+            (ITypeSymbol? typeArg, Location location, Compilation compilation) = pair.Left;
+            ImmutableDictionary<string, string> registry = pair.Right;
+
+            if (typeArg is null)
+            {
+                return;
+            }
+
+            string typeName = typeArg.ToDisplayString(TypeModelExtractor.TypeNameFormat);
+
+            if (typeArg.TypeKind == TypeKind.Interface)
+            {
+                ctx.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.Con310, location, typeName));
+                return;
+            }
+
+            if (typeArg.IsAbstract)
+            {
+                if (!HasArbitraryConcreteSubtype(typeArg, compilation))
+                {
+                    ctx.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.Con311, location, typeName));
+                }
+
+                return;
+            }
+
+            if (!registry.ContainsKey(typeName) && !SymbolHelpers.HasArbitraryAttribute((INamedTypeSymbol)typeArg))
+            {
+                ctx.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.Con312, location, typeName));
+            }
+        });
+    }
+
+    private static bool IsForCallSite(InvocationExpressionSyntax invocation)
+    {
+        if (invocation.Expression is not MemberAccessExpressionSyntax memberAccess)
+        {
+            return false;
+        }
+
+        if (memberAccess.Name is not GenericNameSyntax genericName)
+        {
+            return false;
+        }
+
+        if (genericName.Identifier.Text != "For")
+        {
+            return false;
+        }
+
+        if (genericName.TypeArgumentList.Arguments.Count != 1)
+        {
+            return false;
+        }
+
+        if (invocation.ArgumentList.Arguments.Count != 0)
+        {
+            return false;
+        }
+
+        string receiverName = memberAccess.Expression switch
+        {
+            IdentifierNameSyntax id => id.Identifier.Text,
+            MemberAccessExpressionSyntax nested => nested.Name.Identifier.Text,
+            _ => string.Empty,
+        };
+
+        return receiverName == "Generate";
+    }
+
+    private static (ITypeSymbol? TypeArg, Location Location, Compilation Compilation) ResolveForTypeArg(
+        InvocationExpressionSyntax invocation,
+        Compilation compilation)
+    {
+        SemanticModel semanticModel = compilation.GetSemanticModel(invocation.SyntaxTree);
+
+        if (invocation.Expression is not MemberAccessExpressionSyntax memberAccess ||
+            memberAccess.Name is not GenericNameSyntax genericName ||
+            genericName.TypeArgumentList.Arguments.Count == 0)
+        {
+            return (null, invocation.GetLocation(), compilation);
+        }
+
+        TypeSyntax typeArgSyntax = genericName.TypeArgumentList.Arguments[0];
+        ITypeSymbol? typeArg = semanticModel.GetTypeInfo(typeArgSyntax).Type;
+
+        if (semanticModel.GetSymbolInfo(invocation).Symbol is IMethodSymbol method &&
+            method.ContainingType.ToDisplayString() != "Conjecture.Core.Generate")
+        {
+            return (null, invocation.GetLocation(), compilation);
+        }
+
+        return (typeArg, invocation.GetLocation(), compilation);
+    }
+
+    private static bool HasArbitraryConcreteSubtype(ITypeSymbol abstractType, Compilation compilation)
+    {
+        if (SearchNamespaceForArbitrarySubtype(compilation.Assembly.GlobalNamespace, abstractType))
+        {
+            return true;
+        }
+
+        foreach (MetadataReference reference in compilation.References)
+        {
+            if (compilation.GetAssemblyOrModuleSymbol(reference) is IAssemblySymbol referencedAssembly &&
+                SearchNamespaceForArbitrarySubtype(referencedAssembly.GlobalNamespace, abstractType))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool SearchNamespaceForArbitrarySubtype(INamespaceSymbol ns, ITypeSymbol abstractType)
+    {
+        foreach (INamedTypeSymbol type in ns.GetTypeMembers())
+        {
+            if (!type.IsAbstract && InheritsFromClass(type, abstractType) && SymbolHelpers.HasArbitraryAttribute(type))
+            {
+                return true;
+            }
+
+            if (SearchTypeForArbitrarySubtype(type, abstractType))
+            {
+                return true;
+            }
+        }
+
+        foreach (INamespaceSymbol subNs in ns.GetNamespaceMembers())
+        {
+            if (SearchNamespaceForArbitrarySubtype(subNs, abstractType))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool SearchTypeForArbitrarySubtype(INamedTypeSymbol containingType, ITypeSymbol abstractType)
+    {
+        foreach (INamedTypeSymbol nested in containingType.GetTypeMembers())
+        {
+            if (!nested.IsAbstract && InheritsFromClass(nested, abstractType) && SymbolHelpers.HasArbitraryAttribute(nested))
+            {
+                return true;
+            }
+
+            if (SearchTypeForArbitrarySubtype(nested, abstractType))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool InheritsFromClass(ITypeSymbol type, ITypeSymbol baseType)
+    {
+        ITypeSymbol? current = type.BaseType;
+        while (current is not null)
+        {
+            if (SymbolEqualityComparer.Default.Equals(current, baseType))
+            {
+                return true;
+            }
+
+            current = current.BaseType;
+        }
+
+        return false;
     }
 
     private static string EmitArbitraryWithOverrides(TypeModel model)

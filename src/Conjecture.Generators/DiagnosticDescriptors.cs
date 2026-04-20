@@ -79,6 +79,30 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true);
 
+    internal static readonly DiagnosticDescriptor Con310 = new(
+        id: "CON310",
+        title: "Generate.For<T>() target is an interface",
+        messageFormat: "Generate.For<{0}>() cannot generate a strategy because '{0}' is an interface; apply [Arbitrary] to each concrete implementation and compose with Generate.OneOf()",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true);
+
+    internal static readonly DiagnosticDescriptor Con311 = new(
+        id: "CON311",
+        title: "Generate.For<T>() target is abstract with no [Arbitrary] subtypes",
+        messageFormat: "Generate.For<{0}>() cannot generate a strategy because '{0}' is abstract and has no [Arbitrary]-decorated concrete subtypes",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true);
+
+    internal static readonly DiagnosticDescriptor Con312 = new(
+        id: "CON312",
+        title: "Generate.For<T>() has no registered provider",
+        messageFormat: "Generate.For<{0}>() cannot generate a strategy because no IStrategyProvider<{0}> is registered; decorate '{0}' with [Arbitrary]",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true);
+
     internal static readonly DiagnosticDescriptor Con313MutualRecursionWithoutMaxDepth = new(
         id: "CON313",
         title: "Mutual recursion without [GenMaxDepth]",
