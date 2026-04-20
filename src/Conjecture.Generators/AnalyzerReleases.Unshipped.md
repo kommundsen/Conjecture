@@ -8,3 +8,4 @@ CON205 | Conjecture | Warning | Concrete subtype excluded from sealed hierarchy 
 CON300 | Conjecture | Error | [Arbitrary] base type must be abstract
 CON301 | Conjecture | Error | [Arbitrary] base type must be a class or record, not an interface or struct
 CON302 | Conjecture | Error | No concrete [Arbitrary] subtypes found for abstract base type
+CON313 | Usage | Warning | Mutually recursive [Arbitrary] types without [GenMaxDepth]

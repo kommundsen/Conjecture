@@ -52,7 +52,8 @@ public sealed class ArbitraryGenerator : IIncrementalGenerator
             }
 
             string source = StrategyEmitter.Emit(model!);
-            ctx.AddSource(model!.TypeName + ".g", source);
+            string hintName = model!.IsPartial ? model.TypeName + ".g" : model.TypeName + "Arbitrary.g";
+            ctx.AddSource(hintName, source);
         });
 
         // Hierarchy pipeline: only abstract types

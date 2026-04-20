@@ -54,12 +54,19 @@ internal static class StrategyEmitter
 
         bool isPartialCtor = model.ConstructionMode == ConstructionMode.PartialConstructor;
         string fieldVisibility = isPartialCtor ? "internal" : "private";
+        bool hasRecursive = HasAnyRecursiveMember(model);
 
         if (!model.Members.IsEmpty)
         {
             for (int i = 0; i < model.Members.Length; i++)
             {
                 MemberModel member = model.Members[i];
+                // Recursive members have no static field — they are resolved via `inner` at emit time
+                if (member.Kind == MemberGenerationKind.Recursive)
+                {
+                    continue;
+                }
+
                 sb.AppendLine("    " + fieldVisibility + " static readonly global::Conjecture.Core.Strategy<" + ResolveStrategyType(member) + "> _s" + i + " = " + ResolveGenExpr(member) + ";");
             }
             sb.AppendLine();
@@ -75,6 +82,10 @@ internal static class StrategyEmitter
             sb.AppendLine("            return new " + fqn + "();");
             sb.AppendLine("        });");
             sb.AppendLine("    }");
+        }
+        else if (hasRecursive)
+        {
+            EmitRecursiveCreate(sb, model, fqn);
         }
         else
         {
@@ -107,7 +118,6 @@ internal static class StrategyEmitter
                     sb.AppendLine("            ctx.Generate(_s" + i + ")" + suffix);
                 }
             }
-
         }
 
         sb.AppendLine("}");
@@ -131,6 +141,91 @@ internal static class StrategyEmitter
         }
 
         return sb.ToString();
+    }
+
+    private static bool HasAnyRecursiveMember(TypeModel model)
+    {
+        foreach (MemberModel m in model.Members)
+        {
+            if (m.Kind == MemberGenerationKind.Recursive)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static void EmitRecursiveCreate(StringBuilder sb, TypeModel model, string fqn)
+    {
+        sb.AppendLine("    public global::Conjecture.Core.Strategy<" + fqn + "> Create() =>");
+        sb.AppendLine("        global::Conjecture.Core.Generate.Recursive<" + fqn + ">(");
+
+        if (model.ConstructionMode == ConstructionMode.ObjectInitializer)
+        {
+            EmitObjectInitializerRecursiveCases(sb, model, fqn);
+        }
+        else
+        {
+            // Base case: all recursive members get null, others use their strategy
+            sb.Append("            global::Conjecture.Core.Generate.Compose<" + fqn + ">(ctx => new " + fqn + "(");
+            EmitConstructorArgs(sb, model, isBaseCase: true);
+            sb.AppendLine("),");
+
+            // Recursive case: recursive members use ctx.Generate(inner)
+            sb.Append("            inner => global::Conjecture.Core.Generate.Compose<" + fqn + ">(ctx => new " + fqn + "(");
+            EmitConstructorArgs(sb, model, isBaseCase: false);
+            sb.AppendLine("),");
+        }
+
+        sb.AppendLine("            maxDepth: " + model.MaxDepth + ");");
+    }
+
+    private static void EmitObjectInitializerRecursiveCases(StringBuilder sb, TypeModel model, string fqn)
+    {
+        // Base case
+        sb.AppendLine("            global::Conjecture.Core.Generate.Compose<" + fqn + ">(ctx => new " + fqn + " {");
+        for (int i = 0; i < model.Members.Length; i++)
+        {
+            MemberModel member = model.Members[i];
+            bool isLast = i == model.Members.Length - 1;
+            string arg = member.Kind == MemberGenerationKind.Recursive ? "null" : "ctx.Generate(_s" + i + ")";
+            string suffix = isLast ? " })," : ",";
+            sb.AppendLine("                " + member.Name + " = " + arg + suffix);
+        }
+
+        // Recursive case
+        sb.AppendLine("            inner => global::Conjecture.Core.Generate.Compose<" + fqn + ">(ctx => new " + fqn + " {");
+        for (int i = 0; i < model.Members.Length; i++)
+        {
+            MemberModel member = model.Members[i];
+            bool isLast = i == model.Members.Length - 1;
+            string arg = member.Kind == MemberGenerationKind.Recursive ? "ctx.Generate(inner)" : "ctx.Generate(_s" + i + ")";
+            string suffix = isLast ? " })," : ",";
+            sb.AppendLine("                " + member.Name + " = " + arg + suffix);
+        }
+    }
+
+    private static void EmitConstructorArgs(StringBuilder sb, TypeModel model, bool isBaseCase)
+    {
+        if (model.Members.IsEmpty)
+        {
+            sb.Append("))");
+            return;
+        }
+
+        sb.AppendLine();
+        for (int i = 0; i < model.Members.Length; i++)
+        {
+            MemberModel member = model.Members[i];
+            bool isLast = i == model.Members.Length - 1;
+            string suffix = isLast ? "))" : ",";
+            string arg = member.Kind == MemberGenerationKind.Recursive
+                ? (isBaseCase ? "null" : "ctx.Generate(inner)")
+                : "ctx.Generate(_s" + i + ")";
+
+            sb.AppendLine("                " + arg + suffix);
+        }
     }
 
     internal static string ResolveStrategyType(MemberModel member) => member.Kind switch
@@ -160,6 +255,8 @@ internal static class StrategyEmitter
         MemberGenerationKind.ArbitraryReference =>
             "global::" + member.TypeFullName,
         MemberGenerationKind.ExternalStrategyProvider =>
+            "global::" + member.TypeFullName,
+        MemberGenerationKind.Recursive =>
             "global::" + member.TypeFullName,
         _ =>
             "/* unsupported */",
@@ -191,6 +288,8 @@ internal static class StrategyEmitter
                 "((global::Conjecture.Core.IStrategyProvider<global::" + member.TypeFullName + ">)new global::" + member.AuxiliaryTypeName + "()).Create()",
             MemberGenerationKind.Primitive =>
                 BuildPrimitiveExpr(member),
+            MemberGenerationKind.Recursive =>
+                "inner",
             _ =>
                 $"/* unsupported type: {member.TypeFullName} */",
         };
