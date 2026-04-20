@@ -17,6 +17,13 @@ internal static class StrategyEmitter
         ["System.String"] = ("global::Conjecture.Core.Generate.Strings()", "string"),
         ["System.Double"] = ("global::Conjecture.Core.Generate.Doubles()", "double"),
         ["System.Single"] = ("global::Conjecture.Core.Generate.Floats()", "float"),
+        ["System.Decimal"] = ("global::Conjecture.Core.Generate.Just(default(decimal))", "decimal"),
+        ["System.Guid"] = ("global::Conjecture.Core.Generate.Just(default(global::System.Guid))", "global::System.Guid"),
+        ["System.UInt32"] = ("global::Conjecture.Core.Generate.Integers<uint>()", "uint"),
+        ["System.UInt64"] = ("global::Conjecture.Core.Generate.Integers<ulong>()", "ulong"),
+        ["System.Int16"] = ("global::Conjecture.Core.Generate.Integers<short>()", "short"),
+        ["System.UInt16"] = ("global::Conjecture.Core.Generate.Integers<ushort>()", "ushort"),
+        ["System.SByte"] = ("global::Conjecture.Core.Generate.Integers<sbyte>()", "sbyte"),
     };
 
     internal static string Emit(TypeModel model)
@@ -93,6 +100,7 @@ internal static class StrategyEmitter
                     sb.AppendLine("            ctx.Generate(_s" + i + ")" + suffix);
                 }
             }
+
         }
 
         sb.AppendLine("}");
@@ -118,7 +126,7 @@ internal static class StrategyEmitter
         return sb.ToString();
     }
 
-    private static string ResolveStrategyType(MemberModel member) => member.Kind switch
+    internal static string ResolveStrategyType(MemberModel member) => member.Kind switch
     {
         MemberGenerationKind.Primitive =>
             PrimitiveData.TryGetValue(member.TypeFullName, out (string GenExpr, string ShortName) p) ? p.ShortName : "/* unsupported */",
@@ -138,7 +146,7 @@ internal static class StrategyEmitter
             "/* unsupported */",
     };
 
-    private static string ResolveGenExpr(MemberModel member)
+    internal static string ResolveGenExpr(MemberModel member)
     {
         return member.Kind switch
         {

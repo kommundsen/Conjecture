@@ -1,4 +1,11 @@
 #nullable enable
+Conjecture.Core.ForConfiguration<T>
+Conjecture.Core.ForConfiguration<T>.ForConfiguration() -> void
+Conjecture.Core.ForConfiguration<T>.Override<TProp>(System.Linq.Expressions.Expression<System.Func<T, TProp>!>! selector, Conjecture.Core.Strategy<TProp>! strategy) -> Conjecture.Core.ForConfiguration<T>!
+Conjecture.Core.ForConfiguration<T>.TryGet<TProp>(string! propertyName) -> Conjecture.Core.Strategy<TProp>?
 Conjecture.Core.GenForRegistry
+static Conjecture.Core.Generate.For<T>(System.Action<Conjecture.Core.ForConfiguration<T>!>! configure) -> Conjecture.Core.Strategy<T>!
 static Conjecture.Core.GenForRegistry.Register(System.Type! type, System.Func<Conjecture.Core.IStrategyProvider!>! factory) -> void
 static Conjecture.Core.Generate.For<T>() -> Conjecture.Core.Strategy<T>!
+static Conjecture.Core.GenForRegistry.RegisterOverride(System.Type! type, System.Func<object!, object!>! factory) -> void
+static Conjecture.Core.GenForRegistry.ResolveWithOverrides<T>(Conjecture.Core.ForConfiguration<T>! cfg) -> Conjecture.Core.Strategy<T>!
