@@ -252,11 +252,28 @@ internal static class TypeModelExtractor
         return builder.ToImmutable();
     }
 
+    private static readonly HashSet<string> KnownNonSpecialPrimitives =
+    [
+        "System.Guid",
+        "System.DateTime",
+        "System.DateTimeOffset",
+        "System.DateOnly",
+        "System.TimeOnly",
+        "System.TimeSpan",
+    ];
+
     private static (MemberGenerationKind Kind, string InnerFqn) ClassifyMemberType(
         ITypeSymbol type,
         IReadOnlyDictionary<string, string>? providerRegistry)
     {
         if (IsPrimitive(type.SpecialType))
+        {
+            return (MemberGenerationKind.Primitive, "");
+        }
+
+        string typeFqn = type.ToDisplayString(TypeNameFormat);
+
+        if (KnownNonSpecialPrimitives.Contains(typeFqn))
         {
             return (MemberGenerationKind.Primitive, "");
         }
@@ -272,16 +289,43 @@ internal static class TypeModelExtractor
             return (MemberGenerationKind.NullableValue, innerFqn);
         }
 
-        if (type is INamedTypeSymbol { Name: "List", TypeArguments.Length: 1 } listType
-            && listType.ContainingNamespace is
-            {
-                Name: "Generic",
-                ContainingNamespace.Name: "Collections",
-                ContainingNamespace.ContainingNamespace.Name: "System"
-            })
+        if (type is INamedTypeSymbol { IsTupleType: true } tupleType
+            && tupleType.TypeArguments.Length is >= 2 and <= 4)
         {
-            string innerFqn = listType.TypeArguments[0].ToDisplayString(TypeNameFormat);
-            return (MemberGenerationKind.List, innerFqn);
+            ImmutableArray<string>.Builder parts = ImmutableArray.CreateBuilder<string>(tupleType.TypeArguments.Length);
+            foreach (ITypeSymbol arg in tupleType.TypeArguments)
+            {
+                parts.Add(arg.ToDisplayString(TypeNameFormat));
+            }
+
+            return (MemberGenerationKind.ValueTuple, string.Join("|", parts));
+        }
+
+        if (type is INamedTypeSymbol { TypeArguments.Length: 1 } singleArgType
+            && IsInSystemCollectionsGeneric(singleArgType))
+        {
+            string innerFqn = singleArgType.TypeArguments[0].ToDisplayString(TypeNameFormat);
+            return singleArgType.Name switch
+            {
+                "List" or "IReadOnlyList" or "IList" => (MemberGenerationKind.List, innerFqn),
+                "HashSet" or "IReadOnlySet" => (MemberGenerationKind.Set, innerFqn),
+                _ => (MemberGenerationKind.Unsupported, ""),
+            };
+        }
+
+        if (type is INamedTypeSymbol { Name: "ImmutableArray", TypeArguments.Length: 1 } immArrType
+            && IsInSystemCollectionsImmutable(immArrType))
+        {
+            string innerFqn = immArrType.TypeArguments[0].ToDisplayString(TypeNameFormat);
+            return (MemberGenerationKind.ImmutableArray, innerFqn);
+        }
+
+        if (type is INamedTypeSymbol { Name: "Dictionary", TypeArguments.Length: 2 } dictType
+            && IsInSystemCollectionsGeneric(dictType))
+        {
+            string keyFqn = dictType.TypeArguments[0].ToDisplayString(TypeNameFormat);
+            string valFqn = dictType.TypeArguments[1].ToDisplayString(TypeNameFormat);
+            return (MemberGenerationKind.Dictionary, keyFqn + "|" + valFqn);
         }
 
         if (type is INamedTypeSymbol namedType && SymbolHelpers.HasArbitraryAttribute(namedType))
@@ -289,23 +333,37 @@ internal static class TypeModelExtractor
             return (MemberGenerationKind.ArbitraryReference, "");
         }
 
-        if (providerRegistry is not null)
+        if (providerRegistry is not null && providerRegistry.TryGetValue(typeFqn, out string? providerFqn))
         {
-            string typeFqn = type.ToDisplayString(TypeNameFormat);
-            if (providerRegistry.TryGetValue(typeFqn, out string? providerFqn))
-            {
-                return (MemberGenerationKind.ExternalStrategyProvider, providerFqn);
-            }
+            return (MemberGenerationKind.ExternalStrategyProvider, providerFqn);
         }
 
         return (MemberGenerationKind.Unsupported, "");
     }
 
+    private static bool IsInSystemCollectionsGeneric(INamedTypeSymbol type)
+        => type.ContainingNamespace is
+        {
+            Name: "Generic",
+            ContainingNamespace.Name: "Collections",
+            ContainingNamespace.ContainingNamespace.Name: "System",
+            ContainingNamespace.ContainingNamespace.ContainingNamespace.IsGlobalNamespace: true,
+        };
+
+    private static bool IsInSystemCollectionsImmutable(INamedTypeSymbol type)
+        => type.ContainingNamespace is
+        {
+            Name: "Immutable",
+            ContainingNamespace.Name: "Collections",
+            ContainingNamespace.ContainingNamespace.Name: "System",
+            ContainingNamespace.ContainingNamespace.ContainingNamespace.IsGlobalNamespace: true,
+        };
+
     private static bool IsPrimitive(SpecialType st)
     {
         return st is SpecialType.System_Int32 or SpecialType.System_Int64 or SpecialType.System_Byte
             or SpecialType.System_Boolean or SpecialType.System_String
-            or SpecialType.System_Double or SpecialType.System_Single
+            or SpecialType.System_Double or SpecialType.System_Single or SpecialType.System_Char
             or SpecialType.System_Decimal or SpecialType.System_UInt32 or SpecialType.System_UInt64
             or SpecialType.System_Int16 or SpecialType.System_UInt16 or SpecialType.System_SByte;
     }

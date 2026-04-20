@@ -76,7 +76,7 @@ public sealed class NestedTypeGeneratorTests
         string text = GetGeneratedText(
             "using Conjecture.Core; using System.Collections.Generic; namespace MyApp; [Arbitrary] public partial record W(List<int> Items);",
             "W.g.cs");
-        Assert.Contains("Generate.Lists<int>(", text);
+        Assert.Contains("Generate.Lists(", text);
         Assert.Contains("Generate.Integers<int>()", text);
     }
 
