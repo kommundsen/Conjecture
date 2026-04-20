@@ -25,4 +25,8 @@ internal sealed record MemberModel(
     string TypeFullName,
     bool IsNullable,
     MemberGenerationKind Kind = MemberGenerationKind.Primitive,
-    string AuxiliaryTypeName = "");
+    string AuxiliaryTypeName = "",
+    double? RangeMin = null,
+    double? RangeMax = null,
+    int? StringMinLength = null,
+    int? StringMaxLength = null);

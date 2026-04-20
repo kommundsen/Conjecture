@@ -1,9 +1,9 @@
 // Copyright (c) 2026 Kim Ommundsen. Licensed under the MPL-2.0.
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -60,7 +60,7 @@ internal static class TypeModelExtractor
         }
         else if (bestCtor is not null)
         {
-            members = BuildMembers(bestCtor, warnings, providerRegistry);
+            members = BuildMembers(bestCtor, symbol, warnings, providerRegistry);
             mode = ConstructionMode.Constructor;
         }
         else
@@ -186,6 +186,7 @@ internal static class TypeModelExtractor
 
     private static ImmutableArray<MemberModel> BuildMembers(
         IMethodSymbol ctor,
+        INamedTypeSymbol containingType,
         List<Diagnostic> warnings,
         IReadOnlyDictionary<string, string>? providerRegistry)
     {
@@ -207,7 +208,10 @@ internal static class TypeModelExtractor
                 warnings.Add(Diagnostic.Create(DiagnosticDescriptors.Con202, loc, param.Name, typeName));
             }
 
-            builder.Add(new(param.Name, typeName, isNullable, kind, innerFqn));
+            (double? rMin, double? rMax, int? sMin, int? sMax, bool required) = ReadConstraints(param, containingType);
+            bool effectiveNullable = isNullable && !(required && param.Type.IsReferenceType);
+
+            builder.Add(new(param.Name, typeName, effectiveNullable, kind, innerFqn, rMin, rMax, sMin, sMax));
         }
 
         return builder.ToImmutable();
@@ -246,10 +250,248 @@ internal static class TypeModelExtractor
                 warnings.Add(Diagnostic.Create(DiagnosticDescriptors.Con202, loc, prop.Name, typeName));
             }
 
-            builder.Add(new(prop.Name, typeName, isNullable, kind, innerFqn));
+            (double? rMin, double? rMax, int? sMin, int? sMax, bool required) = ReadConstraints(prop);
+            bool effectiveNullable = isNullable && !(required && prop.Type.IsReferenceType);
+
+            builder.Add(new(prop.Name, typeName, effectiveNullable, kind, innerFqn, rMin, rMax, sMin, sMax));
         }
 
         return builder.ToImmutable();
+    }
+
+    private static (double? RangeMin, double? RangeMax, int? StringMinLength, int? StringMaxLength, bool Required)
+        ReadConstraints(ISymbol memberSymbol, INamedTypeSymbol? containingType = null)
+    {
+        double? rangeMin = null;
+        double? rangeMax = null;
+        int? strMin = null;
+        int? strMax = null;
+        bool required = false;
+
+        bool hasGenRange = false;
+        bool hasGenStringLength = false;
+
+        ApplyAttributeConstraints(
+            memberSymbol.GetAttributes(),
+            ref rangeMin, ref rangeMax, ref strMin, ref strMax, ref required,
+            ref hasGenRange, ref hasGenStringLength);
+
+        // For primary constructor parameters, also check the synthesized property —
+        // some attributes targeting [property:] end up there.
+        if (memberSymbol is IParameterSymbol paramSym && containingType is not null)
+        {
+            IPropertySymbol? synthProp = null;
+            foreach (ISymbol member in containingType.GetMembers())
+            {
+                if (member is IPropertySymbol prop
+                    && string.Equals(prop.Name, paramSym.Name, StringComparison.Ordinal))
+                {
+                    synthProp = prop;
+                    break;
+                }
+            }
+
+            if (synthProp is not null)
+            {
+                ApplyAttributeConstraints(
+                    synthProp.GetAttributes(),
+                    ref rangeMin, ref rangeMax, ref strMin, ref strMax, ref required,
+                    ref hasGenRange, ref hasGenStringLength);
+            }
+        }
+
+        return (rangeMin, rangeMax, strMin, strMax, required);
+    }
+
+    private static void ApplyAttributeConstraints(
+        ImmutableArray<AttributeData> attrs,
+        ref double? rangeMin, ref double? rangeMax,
+        ref int? strMin, ref int? strMax,
+        ref bool required,
+        ref bool hasGenRange, ref bool hasGenStringLength)
+    {
+        foreach (AttributeData attr in attrs)
+        {
+            INamedTypeSymbol? attrClass = attr.AttributeClass;
+            string? attrFqn = attrClass?.TypeKind == TypeKind.Error
+                ? null
+                : attrClass?.ToDisplayString();
+
+            // For resolved attributes, match by FQN.
+            // For unresolved (error) attributes, fall back to short-name syntax inspection.
+            string shortName = GetAttributeShortName(attr);
+
+            if (attrFqn == "Conjecture.Core.GenRangeAttribute")
+            {
+                if (!hasGenRange && attr.ConstructorArguments.Length >= 2)
+                {
+                    rangeMin = Convert.ToDouble(attr.ConstructorArguments[0].Value);
+                    rangeMax = Convert.ToDouble(attr.ConstructorArguments[1].Value);
+                    hasGenRange = true;
+                }
+            }
+            else if (attrFqn == "Conjecture.Core.GenStringLengthAttribute")
+            {
+                if (!hasGenStringLength && attr.ConstructorArguments.Length >= 2)
+                {
+                    strMin = Convert.ToInt32(attr.ConstructorArguments[0].Value);
+                    strMax = Convert.ToInt32(attr.ConstructorArguments[1].Value);
+                    hasGenStringLength = true;
+                }
+            }
+            else if (!hasGenRange
+                && (attrFqn == "System.ComponentModel.DataAnnotations.RangeAttribute"
+                    || (attrFqn is null && (shortName == "Range" || shortName == "RangeAttribute"))))
+            {
+                if (attr.ConstructorArguments.Length >= 2)
+                {
+                    TypedConstant arg0 = attr.ConstructorArguments[0];
+                    TypedConstant arg1 = attr.ConstructorArguments[1];
+                    if (arg0.Value is not null && arg1.Value is not null)
+                    {
+                        rangeMin = Convert.ToDouble(arg0.Value);
+                        rangeMax = Convert.ToDouble(arg1.Value);
+                    }
+                }
+                else if (attrFqn is null)
+                {
+                    TryReadRangeFromSyntax(attr, ref rangeMin, ref rangeMax);
+                }
+            }
+            else if (!hasGenStringLength
+                && (attrFqn == "System.ComponentModel.DataAnnotations.StringLengthAttribute"
+                    || (attrFqn is null && (shortName == "StringLength" || shortName == "StringLengthAttribute"))))
+            {
+                if (attr.ConstructorArguments.Length >= 1)
+                {
+                    strMax = Convert.ToInt32(attr.ConstructorArguments[0].Value);
+                    strMin = 0;
+                    foreach (KeyValuePair<string, TypedConstant> named in attr.NamedArguments)
+                    {
+                        if (named.Key == "MinimumLength" && named.Value.Value is not null)
+                        {
+                            strMin = Convert.ToInt32(named.Value.Value);
+                        }
+                    }
+
+                    hasGenStringLength = true;
+                }
+                else if (attrFqn is null)
+                {
+                    TryReadStringLengthFromSyntax(attr, ref strMin, ref strMax);
+                    hasGenStringLength = strMax.HasValue;
+                }
+            }
+            else if (attrFqn == "System.ComponentModel.DataAnnotations.RequiredAttribute"
+                || (attrFqn is null && (shortName == "Required" || shortName == "RequiredAttribute")))
+            {
+                required = true;
+            }
+        }
+    }
+
+    private static string GetAttributeShortName(AttributeData attr)
+    {
+        return attr.ApplicationSyntaxReference?.GetSyntax() is AttributeSyntax syntax
+            ? syntax.Name switch
+            {
+                SimpleNameSyntax simple => simple.Identifier.Text,
+                QualifiedNameSyntax qualified => qualified.Right.Identifier.Text,
+                _ => string.Empty,
+            }
+            : attr.AttributeClass?.Name ?? string.Empty;
+    }
+
+    private static void TryReadStringLengthFromSyntax(AttributeData attr, ref int? strMin, ref int? strMax)
+    {
+        if (attr.ApplicationSyntaxReference?.GetSyntax() is not AttributeSyntax syntax
+            || syntax.ArgumentList is null)
+        {
+            return;
+        }
+
+        AttributeArgumentSyntax[] args = [.. syntax.ArgumentList.Arguments];
+        int posIdx = 0;
+        foreach (AttributeArgumentSyntax arg in args)
+        {
+            if (arg.NameEquals is not null)
+            {
+                // Named argument
+                string argName = arg.NameEquals.Name.Identifier.Text;
+                if (argName == "MinimumLength" && TryParseIntLiteral(arg.Expression, out int minVal))
+                {
+                    strMin = minVal;
+                }
+            }
+            else
+            {
+                // Positional: first is maxLength
+                if (posIdx == 0 && TryParseIntLiteral(arg.Expression, out int maxVal))
+                {
+                    strMax = maxVal;
+                    strMin ??= 0;
+                }
+
+                posIdx++;
+            }
+        }
+    }
+
+    private static void TryReadRangeFromSyntax(AttributeData attr, ref double? rangeMin, ref double? rangeMax)
+    {
+        if (attr.ApplicationSyntaxReference?.GetSyntax() is not AttributeSyntax syntax
+            || syntax.ArgumentList is null)
+        {
+            return;
+        }
+
+        AttributeArgumentSyntax[] args = [.. syntax.ArgumentList.Arguments];
+        if (args.Length >= 2
+            && TryParseDoubleLiteral(args[0].Expression, out double minVal)
+            && TryParseDoubleLiteral(args[1].Expression, out double maxVal))
+        {
+            rangeMin = minVal;
+            rangeMax = maxVal;
+        }
+    }
+
+    private static bool TryParseIntLiteral(ExpressionSyntax expr, out int value)
+    {
+        if (expr is LiteralExpressionSyntax { Token.Value: int intVal })
+        {
+            value = intVal;
+            return true;
+        }
+
+        value = 0;
+        return false;
+    }
+
+    private static bool TryParseDoubleLiteral(ExpressionSyntax expr, out double value)
+    {
+        if (expr is LiteralExpressionSyntax literal)
+        {
+            if (literal.Token.Value is double dVal)
+            {
+                value = dVal;
+                return true;
+            }
+
+            if (literal.Token.Value is int iVal)
+            {
+                value = iVal;
+                return true;
+            }
+
+            if (literal.Token.Value is float fVal)
+            {
+                value = fVal;
+                return true;
+            }
+        }
+
+        value = 0;
+        return false;
     }
 
     private static readonly HashSet<string> KnownNonSpecialPrimitives =
