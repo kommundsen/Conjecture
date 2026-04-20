@@ -9,7 +9,7 @@ namespace Conjecture.Generators;
 
 internal enum ConstructionMode { Constructor, ObjectInitializer, PartialConstructor }
 
-internal enum MemberGenerationKind { Primitive, Enum, NullableValue, List, ArbitraryReference, ExternalStrategyProvider, Unsupported }
+internal enum MemberGenerationKind { Primitive, Enum, NullableValue, List, ArbitraryReference, ExternalStrategyProvider, Unsupported, Dictionary, ImmutableArray, Set, ValueTuple }
 
 internal sealed record TypeModel(
     string FullyQualifiedName,

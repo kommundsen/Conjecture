@@ -9,3 +9,8 @@ static Conjecture.Core.GenForRegistry.Register(System.Type! type, System.Func<Co
 static Conjecture.Core.Generate.For<T>() -> Conjecture.Core.Strategy<T>!
 static Conjecture.Core.GenForRegistry.RegisterOverride(System.Type! type, System.Func<object!, object!>! factory) -> void
 static Conjecture.Core.GenForRegistry.ResolveWithOverrides<T>(Conjecture.Core.ForConfiguration<T>! cfg) -> Conjecture.Core.Strategy<T>!
+static Conjecture.Core.Generate.Guids() -> Conjecture.Core.Strategy<System.Guid>!
+static Conjecture.Core.Generate.Decimals() -> Conjecture.Core.Strategy<decimal>!
+static Conjecture.Core.Generate.DateTimes() -> Conjecture.Core.Strategy<System.DateTime>!
+static Conjecture.Core.Generate.DateTimes(System.DateTime min, System.DateTime max) -> Conjecture.Core.Strategy<System.DateTime>!
+static Conjecture.Core.Generate.Chars() -> Conjecture.Core.Strategy<char>!

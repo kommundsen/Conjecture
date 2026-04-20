@@ -245,6 +245,23 @@ public static class Generate
     public static Strategy<T> FromBytes<T>(ReadOnlySpan<byte> buffer)
         => new Internal.FromBytesStrategy<T>(buffer, Internal.SharedParameterStrategyResolver.GetDefault<T>());
 
+    /// <summary>Returns a strategy that generates random <see cref="Guid"/> values.</summary>
+    public static Strategy<Guid> Guids() => new GuidStrategy();
+
+    /// <summary>Returns a strategy that generates random <see cref="decimal"/> values.</summary>
+    public static Strategy<decimal> Decimals() => new DecimalStrategy();
+
+    /// <summary>Returns a strategy that generates random <see cref="DateTime"/> values across the full range.</summary>
+    public static Strategy<DateTime> DateTimes()
+        => new DateTimeStrategy(DateTime.MinValue, DateTime.MaxValue);
+
+    /// <summary>Returns a strategy that generates random <see cref="DateTime"/> values in [<paramref name="min"/>, <paramref name="max"/>].</summary>
+    public static Strategy<DateTime> DateTimes(DateTime min, DateTime max)
+        => new DateTimeStrategy(min, max);
+
+    /// <summary>Returns a strategy that generates random <see cref="char"/> values across the full Unicode range.</summary>
+    public static Strategy<char> Chars() => new CharStrategy();
+
     /// <summary>Returns a strategy for <typeparamref name="T"/> using its registered <see cref="IStrategyProvider{T}"/>. The type must be decorated with <c>[Arbitrary]</c>.</summary>
     public static Strategy<T> For<T>() => GenForRegistry.Resolve<T>();
 

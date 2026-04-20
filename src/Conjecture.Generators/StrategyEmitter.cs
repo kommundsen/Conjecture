@@ -17,8 +17,14 @@ internal static class StrategyEmitter
         ["System.String"] = ("global::Conjecture.Core.Generate.Strings()", "string"),
         ["System.Double"] = ("global::Conjecture.Core.Generate.Doubles()", "double"),
         ["System.Single"] = ("global::Conjecture.Core.Generate.Floats()", "float"),
-        ["System.Decimal"] = ("global::Conjecture.Core.Generate.Just(default(decimal))", "decimal"),
-        ["System.Guid"] = ("global::Conjecture.Core.Generate.Just(default(global::System.Guid))", "global::System.Guid"),
+        ["System.Decimal"] = ("global::Conjecture.Core.Generate.Decimals()", "decimal"),
+        ["System.Char"] = ("global::Conjecture.Core.Generate.Chars()", "char"),
+        ["System.Guid"] = ("global::Conjecture.Core.Generate.Guids()", "global::System.Guid"),
+        ["System.DateTime"] = ("global::Conjecture.Core.Generate.DateTimes()", "global::System.DateTime"),
+        ["System.DateTimeOffset"] = ("global::Conjecture.Core.Generate.DateTimeOffsets()", "global::System.DateTimeOffset"),
+        ["System.DateOnly"] = ("global::Conjecture.Core.Generate.DateOnlyValues()", "global::System.DateOnly"),
+        ["System.TimeOnly"] = ("global::Conjecture.Core.Generate.TimeOnlyValues()", "global::System.TimeOnly"),
+        ["System.TimeSpan"] = ("global::Conjecture.Core.Generate.TimeSpans()", "global::System.TimeSpan"),
         ["System.UInt32"] = ("global::Conjecture.Core.Generate.Integers<uint>()", "uint"),
         ["System.UInt64"] = ("global::Conjecture.Core.Generate.Integers<ulong>()", "ulong"),
         ["System.Int16"] = ("global::Conjecture.Core.Generate.Integers<short>()", "short"),
@@ -138,6 +144,18 @@ internal static class StrategyEmitter
             PrimitiveData.TryGetValue(member.AuxiliaryTypeName, out (string GenExpr, string ShortName) l)
                 ? "global::System.Collections.Generic.List<" + l.ShortName + ">"
                 : "/* unsupported */",
+        MemberGenerationKind.Dictionary =>
+            BuildDictionaryStrategyType(member.AuxiliaryTypeName),
+        MemberGenerationKind.ImmutableArray =>
+            PrimitiveData.TryGetValue(member.AuxiliaryTypeName, out (string GenExpr, string ShortName) ia)
+                ? "global::System.Collections.Immutable.ImmutableArray<" + ia.ShortName + ">"
+                : "/* unsupported */",
+        MemberGenerationKind.Set =>
+            PrimitiveData.TryGetValue(member.AuxiliaryTypeName, out (string GenExpr, string ShortName) s)
+                ? "global::System.Collections.Generic.IReadOnlySet<" + s.ShortName + ">"
+                : "/* unsupported */",
+        MemberGenerationKind.ValueTuple =>
+            BuildValueTupleStrategyType(member.AuxiliaryTypeName),
         MemberGenerationKind.ArbitraryReference =>
             "global::" + member.TypeFullName,
         MemberGenerationKind.ExternalStrategyProvider =>
@@ -153,9 +171,19 @@ internal static class StrategyEmitter
             MemberGenerationKind.Enum =>
                 "global::Conjecture.Core.Generate.Enums<global::" + member.TypeFullName + ">()",
             MemberGenerationKind.NullableValue =>
-                BuildWrappedExpr(member.AuxiliaryTypeName, "Nullable"),
+                PrimitiveData.TryGetValue(member.AuxiliaryTypeName, out (string GenExpr, string ShortName) nv)
+                    ? "global::Conjecture.Core.Generate.Nullable<" + nv.ShortName + ">(" + nv.GenExpr + ")"
+                    : $"/* unsupported nullable inner type: {member.AuxiliaryTypeName} */",
             MemberGenerationKind.List =>
                 BuildWrappedExpr(member.AuxiliaryTypeName, "Lists"),
+            MemberGenerationKind.Dictionary =>
+                BuildDictionaryGenExpr(member.AuxiliaryTypeName),
+            MemberGenerationKind.ImmutableArray =>
+                BuildWrappedExpr(member.AuxiliaryTypeName, "Lists") + ".Select(global::System.Collections.Immutable.ImmutableArray.CreateRange)",
+            MemberGenerationKind.Set =>
+                BuildWrappedExpr(member.AuxiliaryTypeName, "Sets"),
+            MemberGenerationKind.ValueTuple =>
+                BuildValueTupleGenExpr(member.AuxiliaryTypeName),
             MemberGenerationKind.ArbitraryReference =>
                 "new global::" + member.TypeFullName + "Arbitrary().Create()",
             MemberGenerationKind.ExternalStrategyProvider =>
@@ -170,7 +198,73 @@ internal static class StrategyEmitter
     private static string BuildWrappedExpr(string innerFqn, string wrapper)
     {
         return PrimitiveData.TryGetValue(innerFqn, out (string GenExpr, string ShortName) data)
-            ? "global::Conjecture.Core.Generate." + wrapper + "<" + data.ShortName + ">(" + data.GenExpr + ")"
+            ? "global::Conjecture.Core.Generate." + wrapper + "(" + data.GenExpr + ")"
             : $"/* unsupported {wrapper} inner type: {innerFqn} */";
+    }
+
+    private static string BuildDictionaryStrategyType(string aux)
+    {
+        int pipe = aux.IndexOf('|');
+        if (pipe < 0)
+        {
+            return "/* unsupported */";
+        }
+
+        string keyFqn = aux.Substring(0, pipe);
+        string valFqn = aux.Substring(pipe + 1);
+        string keyShort = PrimitiveData.TryGetValue(keyFqn, out (string GenExpr, string ShortName) k) ? k.ShortName : "/* unsupported */";
+        string valShort = PrimitiveData.TryGetValue(valFqn, out (string GenExpr, string ShortName) v) ? v.ShortName : "/* unsupported */";
+        return "global::System.Collections.Generic.IReadOnlyDictionary<" + keyShort + ", " + valShort + ">";
+    }
+
+    private static string BuildDictionaryGenExpr(string aux)
+    {
+        int pipe = aux.IndexOf('|');
+        if (pipe < 0)
+        {
+            return "/* unsupported */";
+        }
+
+        string keyFqn = aux.Substring(0, pipe);
+        string valFqn = aux.Substring(pipe + 1);
+        string keyExpr = PrimitiveData.TryGetValue(keyFqn, out (string GenExpr, string ShortName) k) ? k.GenExpr : "/* unsupported */";
+        string valExpr = PrimitiveData.TryGetValue(valFqn, out (string GenExpr, string ShortName) v) ? v.GenExpr : "/* unsupported */";
+        return "global::Conjecture.Core.Generate.Dictionaries(" + keyExpr + ", " + valExpr + ")";
+    }
+
+    private static string BuildValueTupleStrategyType(string aux)
+    {
+        string[] parts = aux.Split('|');
+        StringBuilder sb = new("(");
+        for (int i = 0; i < parts.Length; i++)
+        {
+            if (i > 0)
+            {
+                sb.Append(", ");
+            }
+
+            sb.Append(PrimitiveData.TryGetValue(parts[i], out (string GenExpr, string ShortName) p) ? p.ShortName : "/* unsupported */");
+        }
+
+        sb.Append(')');
+        return sb.ToString();
+    }
+
+    private static string BuildValueTupleGenExpr(string aux)
+    {
+        string[] parts = aux.Split('|');
+        StringBuilder sb = new("global::Conjecture.Core.Generate.Tuples(");
+        for (int i = 0; i < parts.Length; i++)
+        {
+            if (i > 0)
+            {
+                sb.Append(", ");
+            }
+
+            sb.Append(PrimitiveData.TryGetValue(parts[i], out (string GenExpr, string ShortName) p) ? p.GenExpr : "/* unsupported */");
+        }
+
+        sb.Append(')');
+        return sb.ToString();
     }
 }
