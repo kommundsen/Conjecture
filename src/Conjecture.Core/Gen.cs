@@ -251,6 +251,9 @@ public static class Generate
     /// <summary>Returns a strategy that generates random <see cref="decimal"/> values.</summary>
     public static Strategy<decimal> Decimals() => new DecimalStrategy();
 
+    /// <summary>Returns a strategy that generates random <see cref="decimal"/> values in [<paramref name="min"/>, <paramref name="max"/>].</summary>
+    public static Strategy<decimal> Decimals(decimal min, decimal max) => new DecimalStrategy(min, max);
+
     /// <summary>Returns a strategy that generates random <see cref="DateTime"/> values across the full range.</summary>
     public static Strategy<DateTime> DateTimes()
         => new DateTimeStrategy(DateTime.MinValue, DateTime.MaxValue);

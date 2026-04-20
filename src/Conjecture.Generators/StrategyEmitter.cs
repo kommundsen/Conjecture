@@ -2,6 +2,7 @@
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace Conjecture.Generators;
@@ -189,10 +190,54 @@ internal static class StrategyEmitter
             MemberGenerationKind.ExternalStrategyProvider =>
                 "((global::Conjecture.Core.IStrategyProvider<global::" + member.TypeFullName + ">)new global::" + member.AuxiliaryTypeName + "()).Create()",
             MemberGenerationKind.Primitive =>
-                PrimitiveData.TryGetValue(member.TypeFullName, out (string GenExpr, string ShortName) d) ? d.GenExpr : $"/* unsupported type: {member.TypeFullName} */",
+                BuildPrimitiveExpr(member),
             _ =>
                 $"/* unsupported type: {member.TypeFullName} */",
         };
+    }
+
+    private static string BuildPrimitiveExpr(MemberModel m)
+    {
+        bool hasBounds = m.RangeMin.HasValue && m.RangeMax.HasValue;
+        bool hasStrLen = m.StringMinLength.HasValue || m.StringMaxLength.HasValue;
+
+        if (hasBounds)
+        {
+            double min = m.RangeMin!.Value;
+            double max = m.RangeMax!.Value;
+
+            string expr = m.TypeFullName switch
+            {
+                "System.Int32" => $"global::Conjecture.Core.Generate.Integers<int>({(int)min}, {(int)max})",
+                "System.Int64" => $"global::Conjecture.Core.Generate.Integers<long>({(long)min}, {(long)max})",
+                "System.Int16" => $"global::Conjecture.Core.Generate.Integers<short>({(short)min}, {(short)max})",
+                "System.Byte" => $"global::Conjecture.Core.Generate.Integers<byte>({(byte)min}, {(byte)max})",
+                "System.UInt32" => $"global::Conjecture.Core.Generate.Integers<uint>({(uint)min}, {(uint)max})",
+                "System.UInt64" => $"global::Conjecture.Core.Generate.Integers<ulong>({(ulong)min}, {(ulong)max})",
+                "System.UInt16" => $"global::Conjecture.Core.Generate.Integers<ushort>({(ushort)min}, {(ushort)max})",
+                "System.SByte" => $"global::Conjecture.Core.Generate.Integers<sbyte>({(sbyte)min}, {(sbyte)max})",
+                "System.Double" => $"global::Conjecture.Core.Generate.Doubles({min.ToString("R", CultureInfo.InvariantCulture)}D, {max.ToString("R", CultureInfo.InvariantCulture)}D)",
+                "System.Single" => $"global::Conjecture.Core.Generate.Floats({((float)min).ToString("R", CultureInfo.InvariantCulture)}F, {((float)max).ToString("R", CultureInfo.InvariantCulture)}F)",
+                "System.Decimal" => $"global::Conjecture.Core.Generate.Decimals({((decimal)min).ToString("G", CultureInfo.InvariantCulture)}m, {((decimal)max).ToString("G", CultureInfo.InvariantCulture)}m)",
+                _ => string.Empty,
+            };
+
+            if (!string.IsNullOrEmpty(expr))
+            {
+                return expr;
+            }
+        }
+
+        if (hasStrLen && m.TypeFullName == "System.String")
+        {
+            int minLen = m.StringMinLength ?? 0;
+            int maxLen = m.StringMaxLength ?? 20;
+            return $"global::Conjecture.Core.Generate.Strings(minLength: {minLen}, maxLength: {maxLen})";
+        }
+
+        return PrimitiveData.TryGetValue(m.TypeFullName, out (string GenExpr, string ShortName) d)
+            ? d.GenExpr
+            : $"/* unsupported type: {m.TypeFullName} */";
     }
 
     private static string BuildWrappedExpr(string innerFqn, string wrapper)
