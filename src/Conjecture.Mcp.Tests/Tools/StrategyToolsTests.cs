@@ -113,4 +113,39 @@ public class StrategyToolsTests
         string result = StrategyTools.SuggestForType(typeName);
         Assert.Contains("Generate.Email()", result);
     }
+
+    [Fact]
+    public void SuggestForType_WithArbitraryAttribute_ReturnsGenerateFor()
+    {
+        string result = StrategyTools.SuggestForType("MyRecord", hasArbitraryAttribute: true);
+        Assert.Contains("Generate.For<MyRecord>()", result);
+    }
+
+    [Fact]
+    public void SuggestForType_WithArbitraryAttribute_IncludesOverrideDsl()
+    {
+        string result = StrategyTools.SuggestForType("MyDto", hasArbitraryAttribute: true);
+        Assert.Contains("cfg => cfg.Override", result);
+    }
+
+    [Fact]
+    public void SuggestForType_WithArbitraryAttribute_DoesNotRecommendCompose()
+    {
+        string result = StrategyTools.SuggestForType("MyRecord", hasArbitraryAttribute: true);
+        Assert.DoesNotContain("Generate.Compose (recommended", result);
+    }
+
+    [Fact]
+    public void SuggestForType_WithoutArbitraryAttribute_FallsBackToCompose()
+    {
+        string result = StrategyTools.SuggestForType("MyRecord");
+        Assert.Contains("Generate.Compose", result);
+    }
+
+    [Fact]
+    public void SuggestStrategy_WithArbitraryAttribute_ReturnsGenerateFor()
+    {
+        string result = StrategyTools.SuggestStrategy(typeName: "MyRecord", hasArbitraryAttribute: true);
+        Assert.Contains("Generate.For<MyRecord>()", result);
+    }
 }
