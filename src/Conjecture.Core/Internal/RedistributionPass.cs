@@ -12,6 +12,7 @@ internal sealed class RedistributionPass : IShrinkPass
 
     public async ValueTask<bool> TryReduce(ShrinkState state)
     {
+        bool progress = false;
         for (int i = 0; i < state.Nodes.Count - 1; i++)
         {
             IRNode left = state.Nodes[i];
@@ -23,18 +24,35 @@ internal sealed class RedistributionPass : IShrinkPass
             }
 
             ulong maxShift = Math.Min(left.Value - left.Min, right.Max - right.Value);
-
-            for (ulong delta = 1; delta <= maxShift; delta++)
+            if (maxShift == 0)
             {
-                IRNode[] candidate = [.. state.Nodes];
-                candidate[i] = IRNode.ForInteger(state.Nodes[i].Value - delta, state.Nodes[i].Min, state.Nodes[i].Max);
-                candidate[i + 1] = IRNode.ForInteger(state.Nodes[i + 1].Value + delta, state.Nodes[i + 1].Min, state.Nodes[i + 1].Max);
+                continue;
+            }
+
+            ulong lo = 1, hi = maxShift;
+            bool pairProgress = false;
+            while (lo <= hi)
+            {
+                ulong mid = lo + ((hi - lo) / 2);
+                IRNode[] candidate = ShrinkHelper.Replace(state.Nodes, i, left.WithValue(left.Value - mid));
+                candidate[i + 1] = right.WithValue(right.Value + mid);
                 if (await state.TryUpdate(candidate))
                 {
-                    return true;
+                    pairProgress = true;
+                    lo = mid + 1;
+                }
+                else
+                {
+                    if (mid == 0)
+                    {
+                        break;
+                    }
+                    hi = mid - 1;
                 }
             }
+
+            progress |= pairProgress;
         }
-        return false;
+        return progress;
     }
 }
