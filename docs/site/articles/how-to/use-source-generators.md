@@ -97,5 +97,7 @@ public partial struct Point
 
 ## See also
 
+- [How to use Gen.For&lt;T&gt;()](use-gen-for.md) — overrides, constraint attributes, recursive types
+- [Reference: Gen.For&lt;T&gt;()](../reference/gen-for.md) — attribute table, primitive mapping, diagnostics
 - [Reference: Analyzers](../reference/analyzers.md) — runtime analyzer rules (CON100–CON111, CJ0050)
 - [Reference: Attributes](../reference/attributes.md) — `[Arbitrary]`, `[From<T>]` full reference

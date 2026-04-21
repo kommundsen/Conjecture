@@ -168,6 +168,17 @@ Requirements:
 
 See [How to use source generators](../how-to/use-source-generators.md) for full usage and supported types.
 
+## Gen.For&lt;T&gt;() constraint attributes
+
+Applied to constructor parameters or `init` properties of `[Arbitrary]` types to constrain what the source generator produces. See [Reference: Gen.For&lt;T&gt;()](gen-for.md) for the full attribute reference.
+
+| Attribute | Target | Effect |
+|---|---|---|
+| `[GenRange(min, max)]` | Numeric parameters | Constrains generated value to [`min`, `max`] |
+| `[GenStringLength(min, max)]` | `string` parameters | Constrains generated string length |
+| `[GenRegex(pattern)]` | `string` parameters | Constrains generated strings to match the pattern |
+| `[GenMaxDepth(n)]` | The type itself | Caps recursive generation depth to `n` |
+
 ## `[assembly: ConjectureSettings]`
 
 Applies `ConjectureSettings` to every `[Property]` test in the assembly. See `[ConjectureSettings]` above for properties.

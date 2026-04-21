@@ -225,6 +225,17 @@ The `[Arbitrary]` source generator reports its own set of diagnostics:
 | CON201 | Error | `[Arbitrary]` type is not `partial` |
 | CON202 | Warning | Constructor parameter type has no resolvable strategy |
 
+### `Generate.For<T>()` call-site diagnostics (CON310–CON313)
+
+These fire at `Generate.For<T>()` or `[From<T>]` call sites. See [Reference: Gen.For&lt;T&gt;()](gen-for.md#generatefort-call-site-diagnostics) for resolution steps.
+
+| ID | Severity | Description |
+|---|---|---|
+| CON310 | Error | `Generate.For<T>()` target is an interface |
+| CON311 | Error | `Generate.For<T>()` target is abstract with no `[Arbitrary]` subtypes |
+| CON312 | Error | `Generate.For<T>()` has no registered provider — type lacks `[Arbitrary]` |
+| CON313 | Warning | Mutually recursive `[Arbitrary]` types without `[GenMaxDepth]` |
+
 ### Sealed hierarchy diagnostics (CON205, CON300–CON302)
 
 These fire when `[Arbitrary]` is applied to an abstract class (hierarchy mode).

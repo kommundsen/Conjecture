@@ -9,6 +9,8 @@ items:
     href: extension-properties.md
   - name: Attributes
     href: attributes.md
+  - name: Gen.For&lt;T&gt;()
+    href: gen-for.md
   - name: Analyzers
     href: analyzers.md
   - name: Time strategies

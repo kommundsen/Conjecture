@@ -5,6 +5,8 @@ items:
     href: shrinking.md
   - name: Sealed hierarchy strategies
     href: sealed-hierarchy-strategies.md
+  - name: Gen.For&lt;T&gt;() source generation
+    href: gen-for-source-generator.md
   - name: Targeted testing
     href: targeted-testing.md
   - name: The example database
