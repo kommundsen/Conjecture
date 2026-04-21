@@ -8,10 +8,31 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Version
 
 ## [Unreleased]
 
+---
+
+## [0.14.0] — 2026-04-21
+
+### Added
+
+**Core** (`Conjecture.Core`)
+- `Generate.For<T>()` / `Generate.For<T>(configure)` — automatic data generation for arbitrary types, with optional per-property strategy overrides via `ForConfiguration<T>`
+- `ForConfiguration<T>` — fluent builder for overriding individual property strategies and reading them back by name
+- `GenForRegistry` — low-level registry for custom type factories and per-property overrides (`Register`, `RegisterOverride`, `ResolveWithOverrides`)
+- `Generate.Guids()` — generates random `Guid` values
+- `Generate.Decimals()` / `Generate.Decimals(min, max)` — generates `decimal` values
+- `Generate.DateTimes()` / `Generate.DateTimes(min, max)` — generates `DateTime` values
+- `Generate.Chars()` — generates random `char` values
+- `[GenRange]` attribute — annotate numeric properties with a `[min, max]` range hint for automatic generation
+- `[GenStringLength]` attribute — annotate string properties with `minLength`/`maxLength` hints
+- `[GenRegex]` attribute — annotate string properties with a regex pattern hint
+- `[GenMaxDepth]` attribute — annotate recursive types with a max recursion depth hint
+
 ### Changed
 
 **Regex** (`Conjecture.Regex`)
 - `Matching`, `NotMatching`, `Email`, `NotEmail`, `Url`, `NotUrl`, `Uuid`, `NotUuid`, `IsoDate`, `NotIsoDate`, `CreditCard`, `NotCreditCard` now surface on `Generate.*` via a C# 14 `extension(Generate)` block on `Conjecture.Core.RegexGenerateExtensions`. A single `using Conjecture.Core;` is enough to see them — no `using Conjecture.Regex;` required. The `RegexGenerate` static factory has been removed (pre-release, no forwarder)
+- `KnownRegex` — static class exposing compiled `Regex` instances for common patterns (`Email`, `Url`, `Uuid`, `IsoDate`, `CreditCard`)
+- `RegexGenOptions` / `UnicodeCoverage` — options type for controlling Unicode coverage (`Ascii` vs `Full`) in regex-based generators
 
 ---
 

@@ -60,7 +60,7 @@ dotnet test src/ --no-build
 ### 5. Run benchmarks (sanity check — not a hard gate)
 
 ```bash
-dotnet run -c Release --project src/Conjecture.Benchmarks/ -- --filter "*" --job short
+cd src/Conjecture.Benchmarks && dotnet run -c Release -- --filter "*" --job short
 ```
 
 - Summarise results: ops/sec and allocated bytes per operation for each benchmark.
