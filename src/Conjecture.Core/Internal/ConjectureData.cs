@@ -43,11 +43,16 @@ internal sealed class ConjectureData
         ThrowIfNotActive();
         if (replayNodes is not null)
         {
-            var node = ConsumeReplayNode();
+            IRNode node = ConsumeReplayNode();
+            if (node.Kind != IRNodeKind.Integer || node.Value < min || node.Value > max)
+            {
+                Status = Status.Overrun;
+                throw new InvalidOperationException("Replay node misaligned with requested Integer range.");
+            }
             nodes.Add(node);
             return node.Value;
         }
-        var value = PrngAdapter.NextUInt64(rng!, max - min) + min;
+        ulong value = PrngAdapter.NextUInt64(rng!, max - min) + min;
         nodes.Add(IRNode.ForInteger(value, min, max));
         return value;
     }
