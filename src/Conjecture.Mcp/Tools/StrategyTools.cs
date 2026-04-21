@@ -19,11 +19,13 @@ internal static class StrategyTools
         "tuples, enums, and custom types. Also handles regex-constrained strings via the " +
         "Conjecture.Regex package: pass 'Regex' for pattern-matching strategies, or a " +
         "description keyword such as 'email' for curated RegexGenerate helpers. " +
-        "For sealed abstract class hierarchies, use the suggest-strategy-for-sealed-hierarchy tool instead.")]
+        "For sealed abstract class hierarchies, use the suggest-strategy-for-sealed-hierarchy tool instead. " +
+        "If the target type is decorated with `[Arbitrary]`, set `hasArbitraryAttribute: true` to get a `Generate.For<T>()` recommendation instead of manual composition.")]
     public static string SuggestStrategy(
-        [Description("The C# type name, e.g. 'int', 'string', 'List<int>', 'MyEnum', 'MyRecord'")] string typeName)
+        [Description("The C# type name, e.g. 'int', 'string', 'List<int>', 'MyEnum', 'MyRecord'")] string typeName,
+        [Description("Set to true when the target type is decorated with [Arbitrary]; returns a Generate.For<T>() recommendation with optional property override DSL instead of manual composition.")] bool hasArbitraryAttribute = false)
     {
-        return SuggestForType(typeName.Trim());
+        return SuggestForType(typeName.Trim(), hasArbitraryAttribute);
     }
 
     [McpServerTool(Name = "suggest-strategy-for-sealed-hierarchy")]
@@ -34,40 +36,64 @@ internal static class StrategyTools
         return SuggestForSealedAbstractType(typeName.Trim());
     }
 
-    internal static string SuggestForType(string typeName) => typeName switch
+    internal static string SuggestForType(string typeName, bool hasArbitraryAttribute = false)
     {
-        "bool" =>
-            "Use `Generate.Booleans()` → `Strategy<bool>`.",
+        return hasArbitraryAttribute ? SuggestForArbitraryType(typeName) : SuggestForKnownType(typeName);
+    }
 
-        "int" =>
-            """
+    private static string SuggestForArbitraryType(string typeName)
+    {
+        return $$"""
+            The type `{{typeName}}` is decorated with `[Arbitrary]`. Use `Generate.For<{{typeName}}>()` — the source generator will emit the strategy automatically.
+
+            **Primary recommendation:**
+            ```csharp
+            Strategy<{{typeName}}> strategy = Generate.For<{{typeName}}>();
+            ```
+
+            **With property overrides:**
+            ```csharp
+            Strategy<{{typeName}}> strategy = Gen.For<{{typeName}}>(cfg => cfg.Override(x => x.SomeProperty, Generate.Integers<int>(min: 0, max: 100)));
+            ```
+            """;
+    }
+
+    private static string SuggestForKnownType(string typeName)
+    {
+        return typeName switch
+        {
+            "bool" =>
+                "Use `Generate.Booleans()` → `Strategy<bool>`.",
+
+            "int" =>
+                """
             Use `Generate.Integers<int>()` for the full range, or `Generate.Integers<int>(min, max)` for a bounded range.
             Works for all `IBinaryInteger<T>` types: `byte`, `short`, `long`, `uint`, `ulong`, `ushort`, `sbyte`.
             """,
 
-        "long" or "short" or "byte" or "uint" or "ulong" or "ushort" or "sbyte" =>
-            $"Use `Generate.Integers<{typeName}>()` for full range, or `Generate.Integers<{typeName}>(min, max)` for bounded.",
+            "long" or "short" or "byte" or "uint" or "ulong" or "ushort" or "sbyte" =>
+                $"Use `Generate.Integers<{typeName}>()` for full range, or `Generate.Integers<{typeName}>(min, max)` for bounded.",
 
-        "float" =>
-            "Use `Generate.Floats()` for the full range, or `Generate.Floats(min, max)` for bounded. Includes NaN and ±Infinity.",
+            "float" =>
+                "Use `Generate.Floats()` for the full range, or `Generate.Floats(min, max)` for bounded. Includes NaN and ±Infinity.",
 
-        "double" =>
-            "Use `Generate.Doubles()` for the full range, or `Generate.Doubles(min, max)` for bounded. Includes NaN and ±Infinity.",
+            "double" =>
+                "Use `Generate.Doubles()` for the full range, or `Generate.Doubles(min, max)` for bounded. Includes NaN and ±Infinity.",
 
-        "DateTimeOffset" =>
-            "Use `Generate.DateTimeOffsets()` for the full range, or `Generate.DateTimeOffsets(min, max)` for bounded.",
+            "DateTimeOffset" =>
+                "Use `Generate.DateTimeOffsets()` for the full range, or `Generate.DateTimeOffsets(min, max)` for bounded.",
 
-        "TimeSpan" =>
-            "Use `Generate.TimeSpans()` for the full range, or `Generate.TimeSpans(min, max)` for bounded.",
+            "TimeSpan" =>
+                "Use `Generate.TimeSpans()` for the full range, or `Generate.TimeSpans(min, max)` for bounded.",
 
-        "DateOnly" =>
-            "Use `Generate.DateOnlyValues()` for the full range, or `Generate.DateOnlyValues(min, max)` for bounded.",
+            "DateOnly" =>
+                "Use `Generate.DateOnlyValues()` for the full range, or `Generate.DateOnlyValues(min, max)` for bounded.",
 
-        "TimeOnly" =>
-            "Use `Generate.TimeOnlyValues()` for the full range, or `Generate.TimeOnlyValues(min, max)` for bounded.",
+            "TimeOnly" =>
+                "Use `Generate.TimeOnlyValues()` for the full range, or `Generate.TimeOnlyValues(min, max)` for bounded.",
 
-        "string" =>
-            """
+            "string" =>
+                """
             Use `Generate.Strings()` for random printable-ASCII strings (length 0–20 by default).
 
             Options:
@@ -77,19 +103,19 @@ internal static class StrategyTools
             - `Generate.Text()` — alias for Strings()
             """,
 
-        "char" =>
-            """
+            "char" =>
+                """
             There is no `Generate.Chars()` built in. Use:
             ```csharp
             Generate.Strings(minLength: 1, maxLength: 1).Select(s => s[0])
             ```
             """,
 
-        "byte[]" =>
-            "Use `Generate.Bytes(size)` for a fixed-length byte array → `Strategy<byte[]>`.",
+            "byte[]" =>
+                "Use `Generate.Bytes(size)` for a fixed-length byte array → `Strategy<byte[]>`.",
 
-        "Regex" =>
-            """
+            "Regex" =>
+                """
             Use `Generate.Matching(pattern)` or `Generate.NotMatching(pattern)` from the `Conjecture.Regex` package:
             ```csharp
             Generate.Matching(@"^\d{3}-\d{4}$")
@@ -108,8 +134,8 @@ internal static class StrategyTools
             Add the NuGet package: `Conjecture.Regex`
             """,
 
-        "email" or "Email" =>
-            """
+            "email" or "Email" =>
+                """
             Use `Generate.Email()` from the `Conjecture.Regex` package:
             ```csharp
             Generate.Email()
@@ -119,32 +145,32 @@ internal static class StrategyTools
             Add the NuGet package: `Conjecture.Regex`
             """,
 
-        _ when typeName.StartsWith("List<", StringComparison.Ordinal) =>
-            SuggestList(InnerType(typeName)),
+            _ when typeName.StartsWith("List<", StringComparison.Ordinal) =>
+                SuggestList(InnerType(typeName)),
 
-        _ when typeName.StartsWith("IReadOnlyList<", StringComparison.Ordinal)
-            || typeName.StartsWith("IList<", StringComparison.Ordinal)
-            || typeName.StartsWith("IEnumerable<", StringComparison.Ordinal) =>
-            SuggestList(InnerType(typeName)) + "\n\nNote: `Generate.Lists` returns `Strategy<List<T>>`, which satisfies `IReadOnlyList<T>` and `IEnumerable<T>`.",
+            _ when typeName.StartsWith("IReadOnlyList<", StringComparison.Ordinal)
+                || typeName.StartsWith("IList<", StringComparison.Ordinal)
+                || typeName.StartsWith("IEnumerable<", StringComparison.Ordinal) =>
+                SuggestList(InnerType(typeName)) + "\n\nNote: `Generate.Lists` returns `Strategy<List<T>>`, which satisfies `IReadOnlyList<T>` and `IEnumerable<T>`.",
 
-        _ when typeName.StartsWith("HashSet<", StringComparison.Ordinal)
-            || typeName.StartsWith("ISet<", StringComparison.Ordinal)
-            || typeName.StartsWith("IReadOnlySet<", StringComparison.Ordinal) =>
-            SuggestSet(InnerType(typeName)),
+            _ when typeName.StartsWith("HashSet<", StringComparison.Ordinal)
+                || typeName.StartsWith("ISet<", StringComparison.Ordinal)
+                || typeName.StartsWith("IReadOnlySet<", StringComparison.Ordinal) =>
+                SuggestSet(InnerType(typeName)),
 
-        _ when typeName.StartsWith("Dictionary<", StringComparison.Ordinal)
-            || typeName.StartsWith("IDictionary<", StringComparison.Ordinal)
-            || typeName.StartsWith("IReadOnlyDictionary<", StringComparison.Ordinal) =>
-            SuggestDictionary(),
+            _ when typeName.StartsWith("Dictionary<", StringComparison.Ordinal)
+                || typeName.StartsWith("IDictionary<", StringComparison.Ordinal)
+                || typeName.StartsWith("IReadOnlyDictionary<", StringComparison.Ordinal) =>
+                SuggestDictionary(),
 
-        _ when typeName.EndsWith("?", StringComparison.Ordinal) =>
-            SuggestNullable(typeName[..^1]),
+            _ when typeName.EndsWith("?", StringComparison.Ordinal) =>
+                SuggestNullable(typeName[..^1]),
 
-        _ when typeName.StartsWith("Nullable<", StringComparison.Ordinal) =>
-            SuggestNullable(typeName[9..^1]),
+            _ when typeName.StartsWith("Nullable<", StringComparison.Ordinal) =>
+                SuggestNullable(typeName[9..^1]),
 
-        _ when typeName.StartsWith("(", StringComparison.Ordinal) && typeName.EndsWith(")", StringComparison.Ordinal) =>
-            """
+            _ when typeName.StartsWith("(", StringComparison.Ordinal) && typeName.EndsWith(")", StringComparison.Ordinal) =>
+                """
             Use `Generate.Tuples(strategy1, strategy2)` for 2-element tuples (up to 4 elements):
             ```csharp
             Generate.Tuples(Generate.Integers<int>(), Generate.Strings())
@@ -155,8 +181,8 @@ internal static class StrategyTools
             ```
             """,
 
-        _ =>
-            $$"""
+            _ =>
+                $$"""
             For custom type `{{typeName}}`, choose one of:
 
             **Option 1 – `Generate.Compose` (recommended for simple types):**
@@ -194,7 +220,8 @@ internal static class StrategyTools
             Generate.Strings().Select(s => new {{typeName}}(s))
             ```
             """
-    };
+        };
+    }
 
     private static string SuggestList(string inner) =>
         $"""
