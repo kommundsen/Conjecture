@@ -20,34 +20,6 @@ internal sealed class MatchingStrategy(
     RegexOptions regexOptions,
     RegexGenOptions genOptions) : Strategy<string>
 {
-    // Precomputed BMP candidates per Unicode category, built once at class init.
-    private static readonly Dictionary<System.Globalization.UnicodeCategory, char[]> BmpCandidates =
-        BuildBmpCandidates();
-
-    private static Dictionary<System.Globalization.UnicodeCategory, char[]> BuildBmpCandidates()
-    {
-        Dictionary<System.Globalization.UnicodeCategory, List<char>> buckets = [];
-        foreach (System.Globalization.UnicodeCategory cat in Enum.GetValues<System.Globalization.UnicodeCategory>())
-        {
-            buckets[cat] = [];
-        }
-
-        for (int cp = 0; cp <= 0xFFFF; cp++)
-        {
-            char c = (char)cp;
-            System.Globalization.UnicodeCategory cat = CharUnicodeInfo.GetUnicodeCategory(c);
-            buckets[cat].Add(c);
-        }
-
-        Dictionary<System.Globalization.UnicodeCategory, char[]> result = [];
-        foreach (KeyValuePair<System.Globalization.UnicodeCategory, List<char>> kv in buckets)
-        {
-            result[kv.Key] = [.. kv.Value];
-        }
-
-        return result;
-    }
-
     private readonly bool ignoreCase = (regexOptions & RegexOptions.IgnoreCase) != 0;
     private readonly bool singleline = (regexOptions & RegexOptions.Singleline) != 0;
     private readonly bool hasLookaround = ContainsLookaround(root);
@@ -533,49 +505,13 @@ internal sealed class MatchingStrategy(
         }
         else
         {
-            // Full BMP: precomputed candidate lists per category — avoids Assume-based rejection
-            // which exhausts the filter budget for sparse categories (e.g. \p{Lt}).
-            HashSet<System.Globalization.UnicodeCategory> targetCats = MapCategoryGroup(uc.Category);
-
-            // Merge candidate arrays for all target categories into one list.
-            List<char> allCandidates = [];
-            foreach (System.Globalization.UnicodeCategory cat in targetCats)
-            {
-                if (BmpCandidates.TryGetValue(cat, out char[]? catChars))
-                {
-                    allCandidates.AddRange(catChars);
-                }
-            }
-
-            if (uc.Negated)
-            {
-                // Build complement: all BMP chars not in targetCats.
-                List<char> complement = [];
-                foreach (KeyValuePair<System.Globalization.UnicodeCategory, char[]> kv in BmpCandidates)
-                {
-                    if (!targetCats.Contains(kv.Key))
-                    {
-                        complement.AddRange(kv.Value);
-                    }
-                }
-
-                allCandidates = complement;
-            }
-
-            if (allCandidates.Count == 0)
-            {
-                sb.Append('a');
-                return;
-            }
-
-            char picked = ctx.Generate(Conjecture.Core.Generate.SampledFrom(allCandidates));
-            sb.Append(picked);
+            RegexNodeGenerator.GenerateUnicodeCategory(ctx, uc, sb);
         }
     }
 
     private static char[] BuildAsciiCandidatesForGroup(string category, bool negated)
     {
-        HashSet<System.Globalization.UnicodeCategory> targetCats = MapCategoryGroup(category);
+        HashSet<System.Globalization.UnicodeCategory> targetCats = RegexNodeGenerator.MapCategoryGroup(category);
         List<char> result = [];
         for (int i = 0; i < 128; i++)
         {
@@ -590,79 +526,5 @@ internal sealed class MatchingStrategy(
         }
 
         return [.. result];
-    }
-
-    private static HashSet<System.Globalization.UnicodeCategory> MapCategoryGroup(string name)
-    {
-        return name switch
-        {
-            "L" => [
-                System.Globalization.UnicodeCategory.UppercaseLetter,
-                System.Globalization.UnicodeCategory.LowercaseLetter,
-                System.Globalization.UnicodeCategory.TitlecaseLetter,
-                System.Globalization.UnicodeCategory.ModifierLetter,
-                System.Globalization.UnicodeCategory.OtherLetter,
-            ],
-            "Lu" => [System.Globalization.UnicodeCategory.UppercaseLetter],
-            "Ll" => [System.Globalization.UnicodeCategory.LowercaseLetter],
-            "Lt" => [System.Globalization.UnicodeCategory.TitlecaseLetter],
-            "Lm" => [System.Globalization.UnicodeCategory.ModifierLetter],
-            "Lo" => [System.Globalization.UnicodeCategory.OtherLetter],
-            "N" => [
-                System.Globalization.UnicodeCategory.DecimalDigitNumber,
-                System.Globalization.UnicodeCategory.LetterNumber,
-                System.Globalization.UnicodeCategory.OtherNumber,
-            ],
-            "Nd" => [System.Globalization.UnicodeCategory.DecimalDigitNumber],
-            "Nl" => [System.Globalization.UnicodeCategory.LetterNumber],
-            "No" => [System.Globalization.UnicodeCategory.OtherNumber],
-            "P" => [
-                System.Globalization.UnicodeCategory.ConnectorPunctuation,
-                System.Globalization.UnicodeCategory.DashPunctuation,
-                System.Globalization.UnicodeCategory.OpenPunctuation,
-                System.Globalization.UnicodeCategory.ClosePunctuation,
-                System.Globalization.UnicodeCategory.InitialQuotePunctuation,
-                System.Globalization.UnicodeCategory.FinalQuotePunctuation,
-                System.Globalization.UnicodeCategory.OtherPunctuation,
-            ],
-            "Pc" => [System.Globalization.UnicodeCategory.ConnectorPunctuation],
-            "Pd" => [System.Globalization.UnicodeCategory.DashPunctuation],
-            "Ps" => [System.Globalization.UnicodeCategory.OpenPunctuation],
-            "Pe" => [System.Globalization.UnicodeCategory.ClosePunctuation],
-            "Pi" => [System.Globalization.UnicodeCategory.InitialQuotePunctuation],
-            "Pf" => [System.Globalization.UnicodeCategory.FinalQuotePunctuation],
-            "Po" => [System.Globalization.UnicodeCategory.OtherPunctuation],
-            "S" => [
-                System.Globalization.UnicodeCategory.MathSymbol,
-                System.Globalization.UnicodeCategory.CurrencySymbol,
-                System.Globalization.UnicodeCategory.ModifierSymbol,
-                System.Globalization.UnicodeCategory.OtherSymbol,
-            ],
-            "Sm" => [System.Globalization.UnicodeCategory.MathSymbol],
-            "Sc" => [System.Globalization.UnicodeCategory.CurrencySymbol],
-            "Sk" => [System.Globalization.UnicodeCategory.ModifierSymbol],
-            "So" => [System.Globalization.UnicodeCategory.OtherSymbol],
-            "Z" => [
-                System.Globalization.UnicodeCategory.SpaceSeparator,
-                System.Globalization.UnicodeCategory.LineSeparator,
-                System.Globalization.UnicodeCategory.ParagraphSeparator,
-            ],
-            "Zs" => [System.Globalization.UnicodeCategory.SpaceSeparator],
-            "Zl" => [System.Globalization.UnicodeCategory.LineSeparator],
-            "Zp" => [System.Globalization.UnicodeCategory.ParagraphSeparator],
-            "C" => [
-                System.Globalization.UnicodeCategory.Control,
-                System.Globalization.UnicodeCategory.Format,
-                System.Globalization.UnicodeCategory.Surrogate,
-                System.Globalization.UnicodeCategory.PrivateUse,
-                System.Globalization.UnicodeCategory.OtherNotAssigned,
-            ],
-            "Cc" => [System.Globalization.UnicodeCategory.Control],
-            "Cf" => [System.Globalization.UnicodeCategory.Format],
-            "Cs" => [System.Globalization.UnicodeCategory.Surrogate],
-            "Co" => [System.Globalization.UnicodeCategory.PrivateUse],
-            "Cn" => [System.Globalization.UnicodeCategory.OtherNotAssigned],
-            _ => throw new ArgumentOutOfRangeException(nameof(name), name, "Unknown Unicode category name."),
-        };
     }
 }
