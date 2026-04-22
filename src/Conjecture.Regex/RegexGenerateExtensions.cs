@@ -59,6 +59,11 @@ public static class RegexGenerateExtensions
         /// <summary>Returns a strategy that generates strings that may trigger ReDoS for <paramref name="regex"/>.</summary>
         public static Strategy<string> ReDoSHunter(DotNetRegex regex, int maxMatchMs = 5)
         {
+            if (regex.Options.HasFlag(RegexOptions.NonBacktracking))
+            {
+                return new DelegatingStrategy<string>(Generate.Matching(regex), "redos:non-backtracking");
+            }
+
             RegexNode root = RegexParser.Parse(regex.ToString(), regex.Options);
             return new ReDoSHunterStrategy(root, regex, maxMatchMs);
         }
