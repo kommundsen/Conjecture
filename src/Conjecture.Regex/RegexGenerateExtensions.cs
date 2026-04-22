@@ -51,6 +51,17 @@ public static class RegexGenerateExtensions
         {
             return new NotMatchingStrategy(regex, regex.ToString(), options);
         }
+
+        /// <summary>Returns a strategy that generates strings that may trigger ReDoS for <paramref name="pattern"/>.</summary>
+        public static Strategy<string> ReDoSHunter(string pattern, int maxMatchMs = 5)
+            => Generate.ReDoSHunter(GetOrAddCached(pattern), maxMatchMs);
+
+        /// <summary>Returns a strategy that generates strings that may trigger ReDoS for <paramref name="regex"/>.</summary>
+        public static Strategy<string> ReDoSHunter(DotNetRegex regex, int maxMatchMs = 5)
+        {
+            RegexNode root = RegexParser.Parse(regex.ToString(), regex.Options);
+            return new ReDoSHunterStrategy(root, regex, maxMatchMs);
+        }
 #pragma warning restore RS0026
 
         /// <summary>Returns a strategy that generates strings matching <see cref="KnownRegex.Email"/>.</summary>
