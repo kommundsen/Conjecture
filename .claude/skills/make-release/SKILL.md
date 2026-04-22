@@ -69,6 +69,12 @@ cd src/Conjecture.Benchmarks && dotnet run -c Release -- --filter "*" --job shor
 
 ### 6. Update api-baseline DLLs
 
+**Wait for explicit user approval before this step.** After presenting benchmark results in Step 5, ask:
+
+> Benchmark results summarised above. Proceed to update api-baseline DLLs?
+
+Do not continue until the user says yes (or equivalent). If the user says no or asks for changes, stop here.
+
 The Release build from step 3/4 produces updated DLLs. Copy them:
 
 ```bash
@@ -131,4 +137,4 @@ Remind the user: pushing the tag triggers the GitHub Actions `release.yml` workf
 - Never commit or tag — committing, merging, and tagging are the user's responsibility. The skill pushes the branch and opens the PR.
 - Never skip a step even if the user says "just do the important bits".
 - If tests fail, do not proceed to benchmarks or baseline update.
-- If benchmarks look regressed, pause and report before continuing.
+- Always wait for explicit user approval (Step 6 gate) before updating api-baseline DLLs — even if benchmarks look fine.

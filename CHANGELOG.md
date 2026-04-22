@@ -10,6 +10,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Version
 
 ---
 
+## [0.15.0] — 2026-04-22
+
+### Added
+
+**Regex** (`Conjecture.Regex`)
+- `Generate.ReDoSHunter(string pattern, int maxMatchMs = 5)` — adversarial string generation that targets catastrophic backtracking; biases repetition draws toward maximum counts and appends a non-matching suffix to force anchor failure
+- `Generate.ReDoSHunter(Regex regex, int maxMatchMs = 5)` — same, accepting a pre-compiled `Regex` instance; `RegexOptions.NonBacktracking` falls back to `Generate.Matching` with diagnostic label `"redos:non-backtracking"`
+
+---
+
 ## [0.14.0] — 2026-04-21
 
 ### Added
