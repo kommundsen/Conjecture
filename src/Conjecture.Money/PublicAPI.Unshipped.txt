@@ -2,3 +2,6 @@
 Conjecture.Core.MoneyGenerateExtensions
 Conjecture.Core.MoneyGenerateExtensions.extension(Conjecture.Core.Generate!)
 static Conjecture.Core.MoneyGenerateExtensions.extension(Conjecture.Core.Generate!).Decimal(decimal min, decimal max, int? scale = null) -> Conjecture.Core.Strategy<decimal>!
+static Conjecture.Core.MoneyGenerateExtensions.extension(Conjecture.Core.Generate!).Iso4217Codes() -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Core.MoneyGenerateExtensions.extension(Conjecture.Core.Generate!).Amounts(string! currencyCode, decimal min = 0, decimal max = 10000) -> Conjecture.Core.Strategy<decimal>!
+static Conjecture.Core.MoneyGenerateExtensions.extension(Conjecture.Core.Generate!).RoundingModes() -> Conjecture.Core.Strategy<System.MidpointRounding>!

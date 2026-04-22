@@ -28,5 +28,28 @@ public static class MoneyGenerateExtensions
 
             return DecimalStrategy.Create(min, max, scale);
         }
+
+        /// <summary>Returns a strategy that samples uniformly from all active ISO 4217 currency codes.</summary>
+        public static Strategy<string> Iso4217Codes()
+        {
+            return Generate.SampledFrom(Iso4217Data.DecimalPlacesByCurrency.Keys.ToArray());
+        }
+
+        /// <summary>Returns a strategy that generates a decimal amount for <paramref name="currencyCode"/> within [<paramref name="min"/>, <paramref name="max"/>].</summary>
+        public static Strategy<decimal> Amounts(string currencyCode, decimal min = 0m, decimal max = 10_000m)
+        {
+            if (!Iso4217Data.DecimalPlacesByCurrency.TryGetValue(currencyCode, out int scale))
+            {
+                throw new ArgumentException($"Unknown ISO 4217 currency code: '{currencyCode}'.", nameof(currencyCode));
+            }
+
+            return DecimalStrategy.Create(min, max, scale);
+        }
+
+        /// <summary>Returns a strategy that samples uniformly from all <see cref="MidpointRounding"/> values.</summary>
+        public static Strategy<MidpointRounding> RoundingModes()
+        {
+            return Generate.Enums<MidpointRounding>();
+        }
     }
 }
