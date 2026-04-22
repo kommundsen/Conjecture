@@ -7,7 +7,7 @@ namespace Conjecture.Money.Internal;
 
 internal static class Iso4217Data
 {
-    static readonly FrozenDictionary<string, int> DecimalPlacesByCurrency =
+    internal static readonly FrozenDictionary<string, int> DecimalPlacesByCurrency =
         new Dictionary<string, int>
         {
             ["BIF"] = 0,
