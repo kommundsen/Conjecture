@@ -148,4 +148,21 @@ public class StrategyToolsTests
         string result = StrategyTools.SuggestStrategy(typeName: "MyRecord", hasArbitraryAttribute: true);
         Assert.Contains("Generate.For<MyRecord>()", result);
     }
+
+    [Fact]
+    public void SuggestForType_ReDoS_ContainsReDoSHunter()
+    {
+        string result = StrategyTools.SuggestForType("ReDoS");
+        Assert.Contains("ReDoSHunter", result);
+    }
+
+    [Theory]
+    [InlineData("backtracking")]
+    [InlineData("catastrophic")]
+    [InlineData("adversarial")]
+    public void SuggestForType_ReDoSKeywords_ContainsReDoSHunter(string typeName)
+    {
+        string result = StrategyTools.SuggestForType(typeName);
+        Assert.Contains("ReDoSHunter", result);
+    }
 }
