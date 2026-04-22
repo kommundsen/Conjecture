@@ -40,7 +40,7 @@ public class StrategyExtensionsInteractiveShrinkTraceTests
 
         ShrinkTraceResult<int> result = strategy.ShrinkTrace(seed, static x => x >= 10);
 
-        int finalValue = result.Steps[result.Steps.Count - 1].Value;
+        int finalValue = result.Steps[^1].Value;
         Assert.True(finalValue >= 10, $"Final shrunk value {finalValue} should satisfy the failing property (>= 10).");
     }
 
