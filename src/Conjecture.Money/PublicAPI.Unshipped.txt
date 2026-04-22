@@ -1,1 +1,4 @@
 #nullable enable
+Conjecture.Core.MoneyGenerateExtensions
+Conjecture.Core.MoneyGenerateExtensions.extension(Conjecture.Core.Generate!)
+static Conjecture.Core.MoneyGenerateExtensions.extension(Conjecture.Core.Generate!).Decimal(decimal min, decimal max, int? scale = null) -> Conjecture.Core.Strategy<decimal>!
