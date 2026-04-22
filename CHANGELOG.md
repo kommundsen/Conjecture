@@ -8,6 +8,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Version
 
 ## [Unreleased]
 
+### Added
+
+**Core** (`Conjecture.Core`)
+- `Generate.OneOf<T>(params ReadOnlySpan<Strategy<T>> strategies)` — span overload that avoids heap-array allocation at inline call sites (`Generate.OneOf(a, b, c)`). The array overload is retained for ABI compatibility and collection-passed call sites.
+
 ### Changed
 
 **Time** (`Conjecture.Time`)

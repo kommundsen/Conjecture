@@ -58,4 +58,74 @@ public class OneOfStrategyTests
     {
         Assert.Throws<ArgumentException>(() => Generate.OneOf<int>());
     }
+
+    [Fact]
+    public void OneOf_SpanOverload_ReturnsOnlyValuesFromSuppliedStrategies()
+    {
+        Strategy<int> strategy = Generate.OneOf(Generate.Just(1), Generate.Just(2));
+        ConjectureData data = MakeData();
+
+        for (int i = 0; i < 50; i++)
+        {
+            int value = strategy.Generate(data);
+            Assert.True(value == 1 || value == 2, $"Unexpected value: {value}");
+        }
+    }
+
+    [Fact]
+    public void OneOf_SpanOverload_ThreeArgs_CoversAllBranches()
+    {
+        Strategy<int> strategy = Generate.OneOf(Generate.Just(1), Generate.Just(2), Generate.Just(3));
+        ConjectureData data = MakeData();
+        HashSet<int> seen = [];
+
+        for (int i = 0; i < 1000; i++)
+        {
+            seen.Add(strategy.Generate(data));
+        }
+
+        Assert.Contains(1, seen);
+        Assert.Contains(2, seen);
+        Assert.Contains(3, seen);
+    }
+
+    [Fact]
+    public void OneOf_SpanOverload_SixArgs_CoversAllBranches()
+    {
+        Strategy<int> strategy = Generate.OneOf(
+            Generate.Just(1),
+            Generate.Just(2),
+            Generate.Just(3),
+            Generate.Just(4),
+            Generate.Just(5),
+            Generate.Just(6));
+        ConjectureData data = MakeData();
+        HashSet<int> seen = [];
+
+        for (int i = 0; i < 1000; i++)
+        {
+            seen.Add(strategy.Generate(data));
+        }
+
+        for (int expected = 1; expected <= 6; expected++)
+        {
+            Assert.Contains(expected, seen);
+        }
+    }
+
+    [Fact]
+    public void OneOf_SpanOverload_EmptySpan_ThrowsArgumentException()
+    {
+        ReadOnlySpan<Strategy<int>> span = ReadOnlySpan<Strategy<int>>.Empty;
+        bool threw = false;
+        try
+        {
+            Generate.OneOf(span);
+        }
+        catch (ArgumentException)
+        {
+            threw = true;
+        }
+        Assert.True(threw, "Expected ArgumentException for empty span.");
+    }
 }

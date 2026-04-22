@@ -42,6 +42,18 @@ public static class Generate
         return new OneOfStrategy<T>(strategies);
     }
 
+    /// <summary>Returns a strategy that picks uniformly among <paramref name="strategies"/>. Stack-allocated call sites avoid heap-array allocation.</summary>
+    public static Strategy<T> OneOf<T>(params ReadOnlySpan<Strategy<T>> strategies)
+    {
+        if (strategies.IsEmpty)
+        {
+            throw new ArgumentException("At least one strategy is required.", nameof(strategies));
+        }
+
+        Strategy<T>[] copy = strategies.ToArray();
+        return new OneOfStrategy<T>(copy);
+    }
+
     /// <summary>Returns a strategy that picks uniformly from <paramref name="values"/>.</summary>
     public static Strategy<T> SampledFrom<T>(IReadOnlyList<T> values)
     {
