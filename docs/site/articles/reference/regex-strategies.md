@@ -138,15 +138,84 @@ are not recognised.
 
 ---
 
-## Upcoming
+## `Generate.ReDoSHunter`
 
-**`Generate.ReDoSHunter`** — adversarial timing generation for detecting catastrophic
-backtracking — is planned for v0.15.0. See [issue #366](https://github.com/kommundsen/Conjecture/issues/366).
+```csharp
+Strategy<string> Generate.ReDoSHunter(string pattern, int maxMatchMs = 5)
+Strategy<string> Generate.ReDoSHunter(Regex regex,   int maxMatchMs = 5)
+```
+
+Returns a strategy that generates adversarial strings designed to trigger catastrophic
+backtracking in `pattern` or `regex`. Use this to audit a regex for
+[ReDoS vulnerabilities](../explanation/regex-catastrophic-backtracking.md) in property-based tests.
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `pattern` | `string` | — | A .NET regex pattern. Compiled and cached internally. |
+| `regex` | `Regex` | — | A pre-compiled `Regex` instance. `RegexOptions` are read from the instance. |
+| `maxMatchMs` | `int` | `5` | Internal engine-level timeout in milliseconds. Candidates that exceed this budget on ≥ 2 of 3 trials are marked as interesting, driving Conjecture's hill-climbing loop toward slower inputs. |
+
+### How it works
+
+The strategy walks the `RegexNode` AST looking for nested-quantifier sub-trees (e.g. `(a+)+`,
+`(a|aa)*`). When found, repetition-count draws for those nodes are biased toward the maximum to
+maximise the number of partial-match backtracks. A `\0` suffix is appended to each candidate to
+force trailing anchors (`$`) to fail, ensuring the engine must exhaust all backtracking paths
+rather than returning on first match.
+
+Targeting (`ctx.Target`) feeds elapsed wall-time back to Conjecture's hill-climbing loop on
+every non-timeout run, steering the engine toward progressively slower inputs. A candidate is
+only marked interesting after ≥ 2 out of 3 timed trials result in a `RegexMatchTimeoutException`
+— this guards against spurious single-run timeouts in noisy environments.
+
+IR-native shrinking (no custom `IShrinkPass` required) then minimises the byte buffer, converging
+toward the shortest string that still triggers the timeout.
+
+### Strategy labels
+
+The `Label` property reflects which code path was taken:
+
+| Label | Meaning |
+|---|---|
+| `"redos:hunter"` | Adversarial synthesis active — nested quantifiers found. |
+| `"redos:no-nested-quantifiers"` | No nested quantifiers detected; falls back to `Generate.Matching`. |
+| `"redos:non-backtracking"` | `RegexOptions.NonBacktracking` detected; falls back to `Generate.Matching`. The NFA engine cannot exhibit catastrophic backtracking by design. |
+
+### `RegexOptions` handling
+
+| Option | Behaviour |
+|---|---|
+| `NonBacktracking` | Falls back to `Generate.Matching` with label `"redos:non-backtracking"`. |
+| `Compiled` | No special handling — compiled regexes use the same backtracking engine. |
+| All others | Passed through unchanged. |
+
+### Example
+
+```csharp
+using System.Diagnostics;
+using System.Text.RegularExpressions;
+using Conjecture.Core;
+using Conjecture.Regex;
+
+[Property]
+public bool UserInput_RegexIsNotVulnerableToReDoS()
+{
+    string input = DataGen.SampleOne(Generate.ReDoSHunter(@"(a+)+$", maxMatchMs: 25));
+
+    Stopwatch sw = Stopwatch.StartNew();
+    Regex.IsMatch(input, @"(a+)+$");
+    sw.Stop();
+
+    return sw.ElapsedMilliseconds < 25;
+}
+```
 
 ---
 
 ## See also
 
+- [How to audit a regex for catastrophic backtracking](../how-to/audit-regex-for-redos.md)
 - [How to test a regex validator](../how-to/test-regex-validator.md)
 - [Explanation: How Conjecture.Regex works](../explanation/regex-engine.md)
+- [Explanation: Why nested quantifiers cause catastrophic backtracking](../explanation/regex-catastrophic-backtracking.md)
 - [Reference: String strategies](string-strategies.md)

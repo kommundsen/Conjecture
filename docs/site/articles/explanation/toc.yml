@@ -19,3 +19,5 @@ items:
     href: mtp-model.md
   - name: How Conjecture.Regex works
     href: regex-engine.md
+  - name: Why nested quantifiers cause catastrophic backtracking
+    href: regex-catastrophic-backtracking.md

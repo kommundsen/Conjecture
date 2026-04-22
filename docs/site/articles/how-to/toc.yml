@@ -39,5 +39,7 @@ items:
     href: use-mcp-server.md
   - name: Test a regex validator
     href: test-regex-validator.md
+  - name: Audit a regex for catastrophic backtracking
+    href: audit-regex-for-redos.md
   - name: Troubleshoot
     href: troubleshoot.md
