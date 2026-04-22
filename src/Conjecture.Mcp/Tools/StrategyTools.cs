@@ -17,8 +17,9 @@ internal static class StrategyTools
         "(DateTimeOffset, TimeSpan, DateOnly, TimeOnly), collections " +
         "(List<T>, IReadOnlySet<T>, IReadOnlyDictionary<K,V>), nullable types, value " +
         "tuples, enums, and custom types. Also handles regex-constrained strings via the " +
-        "Conjecture.Regex package: pass 'Regex' for pattern-matching strategies, or a " +
-        "description keyword such as 'email' for curated RegexGenerate helpers. " +
+        "Conjecture.Regex package: pass 'Regex' for pattern-matching strategies, 'ReDoS' or " +
+        "'backtracking' for adversarial ReDoS-hunting strategies, or a description keyword " +
+        "such as 'email' for curated RegexGenerate helpers. " +
         "For sealed abstract class hierarchies, use the suggest-strategy-for-sealed-hierarchy tool instead. " +
         "If the target type is decorated with `[Arbitrary]`, set `hasArbitraryAttribute: true` to get a `Generate.For<T>()` recommendation instead of manual composition.")]
     public static string SuggestStrategy(
@@ -140,6 +141,24 @@ internal static class StrategyTools
             ```csharp
             Generate.Email()
             // → Strategy<string> of valid email address strings
+            ```
+
+            Add the NuGet package: `Conjecture.Regex`
+            """,
+
+            "ReDoS" or "redos" or "backtracking" or "Backtracking" or "catastrophic" or "Catastrophic" or "adversarial" or "Adversarial" =>
+                """
+            Use `Generate.ReDoSHunter(pattern, maxMatchMs: 5)` from the `Conjecture.Regex` package to generate adversarial strings that trigger catastrophic backtracking:
+            ```csharp
+            Generate.ReDoSHunter(@"(a+)+$", maxMatchMs: 5)
+            // → Strategy<string> biased toward inputs that cause ReDoS timeouts
+            ```
+
+            Use with a timing assertion in your property:
+            ```csharp
+            var sw = Stopwatch.StartNew();
+            Regex.IsMatch(input, pattern);
+            Assert.True(sw.ElapsedMilliseconds < 100, $"Slow on: {input}");
             ```
 
             Add the NuGet package: `Conjecture.Regex`
