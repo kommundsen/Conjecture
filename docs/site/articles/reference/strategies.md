@@ -140,7 +140,7 @@ Strategy<TimeOnly> Generate.TimeOnlyValues(TimeOnly min, TimeOnly max)
 
 Generates `TimeOnly` values in `[min, max]`.
 
-For boundary-focused extensions (`.NearMidnight()`, `.NearDstTransition()`, etc.) and `TimeGenerate` factory methods, see [Time strategies reference](time-strategies.md).
+For boundary-focused extensions (`.NearMidnight()`, `.NearDstTransition()`, etc.) and `Generate.TimeZones`/`Generate.ClockSet` factory methods, see [Time strategies reference](time-strategies.md).
 
 ## Byte buffer strategies
 

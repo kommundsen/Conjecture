@@ -42,7 +42,7 @@ Generate a cluster of `FakeTimeProvider` instances with bounded skew for distrib
 public bool LeaderElection_ConvergesUnderSkew(int x)
 {
     FakeTimeProvider[] clocks = DataGen.SampleOne(
-        TimeGenerate.ClockSet(nodeCount: 3, maxSkew: TimeSpan.FromSeconds(5)));
+        Generate.ClockSet(nodeCount: 3, maxSkew: TimeSpan.FromSeconds(5)));
 
     Cluster cluster = new(clocks);
     cluster.RunElection();
