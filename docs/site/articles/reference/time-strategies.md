@@ -5,18 +5,18 @@ Strategies in the `Conjecture.Time` package for generating time-related values w
 > [!NOTE]
 > Requires the `Conjecture.Time` NuGet package. The core `Generate.DateTimeOffsets()`, `Generate.TimeSpans()`, `Generate.DateOnlyValues()`, and `Generate.TimeOnlyValues()` methods are in `Conjecture.Core` and do not require this package.
 
-## `TimeGenerate.TimeZones()`
+## `Generate.TimeZones()`
 
 ```csharp
-Strategy<TimeZoneInfo> TimeGenerate.TimeZones()
+Strategy<TimeZoneInfo> Generate.TimeZones()
 ```
 
 Picks uniformly from system time zones. Shrinks toward `TimeZoneInfo.Utc`.
 
-## `TimeGenerate.ClockSet(int nodeCount, TimeSpan maxSkew)`
+## `Generate.ClockSet(int nodeCount, TimeSpan maxSkew)`
 
 ```csharp
-Strategy<FakeTimeProvider[]> TimeGenerate.ClockSet(int nodeCount, TimeSpan maxSkew)
+Strategy<FakeTimeProvider[]> Generate.ClockSet(int nodeCount, TimeSpan maxSkew)
 ```
 
 Generates an array of `nodeCount` `FakeTimeProvider` instances, each with a clock offset in `[-maxSkew/2, +maxSkew/2]` relative to `DateTimeOffset.UtcNow`. `nodeCount` must be >= 2.

@@ -8,12 +8,12 @@ using Microsoft.Extensions.Time.Testing;
 
 namespace Conjecture.Time.Tests;
 
-public class TimeGenerateTests
+public class TimeGenerateExtensionsTests
 {
     [Fact]
     public void TimeZones_ReturnsStrategy()
     {
-        Strategy<TimeZoneInfo> strategy = TimeGenerate.TimeZones();
+        Strategy<TimeZoneInfo> strategy = Generate.TimeZones();
 
         Assert.NotNull(strategy);
     }
@@ -21,7 +21,7 @@ public class TimeGenerateTests
     [Fact]
     public void TimeZones_GeneratesOnlySystemZones()
     {
-        Strategy<TimeZoneInfo> strategy = TimeGenerate.TimeZones();
+        Strategy<TimeZoneInfo> strategy = Generate.TimeZones();
         System.Collections.ObjectModel.ReadOnlyCollection<TimeZoneInfo> systemZones = TimeZoneInfo.GetSystemTimeZones();
         System.Collections.Generic.HashSet<string> systemIds = [.. systemZones.Select(static z => z.Id)];
 
@@ -33,7 +33,7 @@ public class TimeGenerateTests
     [Fact]
     public void ClockSet_ReturnsArrayOfExactNodeCount()
     {
-        Strategy<FakeTimeProvider[]> strategy = TimeGenerate.ClockSet(3, TimeSpan.FromSeconds(5));
+        Strategy<FakeTimeProvider[]> strategy = Generate.ClockSet(3, TimeSpan.FromSeconds(5));
 
         FakeTimeProvider[] clocks = DataGen.SampleOne(strategy, seed: 1UL);
 
@@ -44,7 +44,7 @@ public class TimeGenerateTests
     public void ClockSet_EachClockIsWithinMaxSkewOfOthers()
     {
         TimeSpan maxSkew = TimeSpan.FromSeconds(1);
-        Strategy<FakeTimeProvider[]> strategy = TimeGenerate.ClockSet(3, maxSkew);
+        Strategy<FakeTimeProvider[]> strategy = Generate.ClockSet(3, maxSkew);
 
         FakeTimeProvider[] clocks = DataGen.SampleOne(strategy, seed: 1UL);
 
@@ -62,13 +62,13 @@ public class TimeGenerateTests
     public void ClockSet_NodeCountLessThanTwo_ThrowsArgumentOutOfRangeException()
     {
         Assert.Throws<ArgumentOutOfRangeException>(
-            static () => TimeGenerate.ClockSet(1, TimeSpan.FromSeconds(1)));
+            static () => Generate.ClockSet(1, TimeSpan.FromSeconds(1)));
     }
 
     [Fact]
     public void ClockSet_ClocksAreIndependent()
     {
-        Strategy<FakeTimeProvider[]> strategy = TimeGenerate.ClockSet(3, TimeSpan.FromSeconds(5));
+        Strategy<FakeTimeProvider[]> strategy = Generate.ClockSet(3, TimeSpan.FromSeconds(5));
 
         FakeTimeProvider[] clocks = DataGen.SampleOne(strategy, seed: 1UL);
 
@@ -85,7 +85,7 @@ public class TimeGenerateTests
     [Fact]
     public void ClockSet_EachElementIsFakeTimeProvider()
     {
-        Strategy<FakeTimeProvider[]> strategy = TimeGenerate.ClockSet(2, TimeSpan.FromSeconds(1));
+        Strategy<FakeTimeProvider[]> strategy = Generate.ClockSet(2, TimeSpan.FromSeconds(1));
 
         FakeTimeProvider[] clocks = DataGen.SampleOne(strategy, seed: 1UL);
 

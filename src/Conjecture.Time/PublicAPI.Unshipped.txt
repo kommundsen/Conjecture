@@ -1,1 +1,4 @@
 #nullable enable
+Conjecture.Time.TimeGenerateExtensions.extension(Conjecture.Core.Generate!)
+static Conjecture.Time.TimeGenerateExtensions.extension(Conjecture.Core.Generate!).TimeZones() -> Conjecture.Core.Strategy<System.TimeZoneInfo!>!
+static Conjecture.Time.TimeGenerateExtensions.extension(Conjecture.Core.Generate!).ClockSet(int nodeCount, System.TimeSpan maxSkew) -> Conjecture.Core.Strategy<Microsoft.Extensions.Time.Testing.FakeTimeProvider![]!>!

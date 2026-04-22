@@ -8,6 +8,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Version
 
 ## [Unreleased]
 
+### Changed
+
+**Time** (`Conjecture.Time`)
+- `TimeGenerate.TimeZones()` and `TimeGenerate.ClockSet(...)` are now exposed as `Generate.TimeZones()` and `Generate.ClockSet(...)` via a C# 14 `extension(Generate)` block on `TimeGenerateExtensions`. A single `using Conjecture.Time;` is enough — no separate `TimeGenerate` class needed. The `TimeGenerate` static class has been removed (breaking change, pre-1.0).
+
 ---
 
 ## [0.15.0] — 2026-04-22
