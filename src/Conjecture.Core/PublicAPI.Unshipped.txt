@@ -1,1 +1,2 @@
 #nullable enable
+static Conjecture.Core.Generate.OneOf<T>(params System.ReadOnlySpan<Conjecture.Core.Strategy<T>!> strategies) -> Conjecture.Core.Strategy<T>!
