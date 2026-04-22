@@ -19,7 +19,7 @@ internal sealed class ReDoSHunterStrategy(
     DotNetRegex regex,
     int maxMatchMs) : Strategy<string>("redos:hunter")
 {
-    private const int AdversarialCap = 8;
+    private const int AdversarialCap = 32;
     private const int InnerCap = 4;
     private const int Trials = 3;
     private const int HitsRequired = 2;
