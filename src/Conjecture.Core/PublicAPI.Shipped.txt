@@ -34,17 +34,18 @@ Conjecture.Core.Strategy<T>
 Conjecture.Core.Strategy<T>.Label.get -> string?
 Conjecture.Core.Strategy<T>.Strategy(string? label = null) -> void
 Conjecture.Core.StrategyExtensions
-static Conjecture.Core.StrategyExtensions.Select<TSource, TResult>(this Conjecture.Core.Strategy<TSource>! source, System.Func<TSource, TResult>! selector) -> Conjecture.Core.Strategy<TResult>!
-static Conjecture.Core.StrategyExtensions.SelectMany<TSource, TResult>(this Conjecture.Core.Strategy<TSource>! source, System.Func<TSource, Conjecture.Core.Strategy<TResult>!>! selector) -> Conjecture.Core.Strategy<TResult>!
-static Conjecture.Core.StrategyExtensions.SelectMany<TSource, TCollection, TResult>(this Conjecture.Core.Strategy<TSource>! source, System.Func<TSource, Conjecture.Core.Strategy<TCollection>!>! collectionSelector, System.Func<TSource, TCollection, TResult>! resultSelector) -> Conjecture.Core.Strategy<TResult>!
-static Conjecture.Core.StrategyExtensions.Where<T>(this Conjecture.Core.Strategy<T>! source, System.Func<T, bool>! predicate) -> Conjecture.Core.Strategy<T>!
-static Conjecture.Core.StrategyExtensions.Zip<TFirst, TSecond>(this Conjecture.Core.Strategy<TFirst>! first, Conjecture.Core.Strategy<TSecond>! second) -> Conjecture.Core.Strategy<(TFirst, TSecond)>!
-static Conjecture.Core.StrategyExtensions.Zip<TFirst, TSecond, TResult>(this Conjecture.Core.Strategy<TFirst>! first, Conjecture.Core.Strategy<TSecond>! second, System.Func<TFirst, TSecond, TResult>! resultSelector) -> Conjecture.Core.Strategy<TResult>!
+Conjecture.Core.StrategyExtensions.extension<T>(Conjecture.Core.Strategy<T>!)
+Conjecture.Core.StrategyExtensions.extension<T>(Conjecture.Core.Strategy<T>!).Select<TResult>(System.Func<T, TResult>! selector) -> Conjecture.Core.Strategy<TResult>!
+Conjecture.Core.StrategyExtensions.extension<T>(Conjecture.Core.Strategy<T>!).Where(System.Func<T, bool>! predicate) -> Conjecture.Core.Strategy<T>!
+Conjecture.Core.StrategyExtensions.extension<T>(Conjecture.Core.Strategy<T>!).SelectMany<TResult>(System.Func<T, Conjecture.Core.Strategy<TResult>!>! selector) -> Conjecture.Core.Strategy<TResult>!
+Conjecture.Core.StrategyExtensions.extension<T>(Conjecture.Core.Strategy<T>!).SelectMany<TCollection, TResult>(System.Func<T, Conjecture.Core.Strategy<TCollection>!>! collectionSelector, System.Func<T, TCollection, TResult>! resultSelector) -> Conjecture.Core.Strategy<TResult>!
+Conjecture.Core.StrategyExtensions.extension<T>(Conjecture.Core.Strategy<T>!).Zip<TSecond>(Conjecture.Core.Strategy<TSecond>! second) -> Conjecture.Core.Strategy<(T, TSecond)>!
+Conjecture.Core.StrategyExtensions.extension<T>(Conjecture.Core.Strategy<T>!).Zip<TSecond, TResult>(Conjecture.Core.Strategy<TSecond>! second, System.Func<T, TSecond, TResult>! resultSelector) -> Conjecture.Core.Strategy<TResult>!
+Conjecture.Core.StrategyExtensions.extension<T>(Conjecture.Core.Strategy<T>!).WithLabel(string! label) -> Conjecture.Core.Strategy<T>!
 static Conjecture.Core.Generate.Strings(int minLength = 0, int maxLength = 20, int minCodepoint = 32, int maxCodepoint = 126, string? alphabet = null) -> Conjecture.Core.Strategy<string!>!
 static Conjecture.Core.Generate.Text(int minLength = 0, int maxLength = 20) -> Conjecture.Core.Strategy<string!>!
 static Conjecture.Core.Generate.Nullable<T>(Conjecture.Core.Strategy<T>! inner) -> Conjecture.Core.Strategy<T?>!
-static Conjecture.Core.StrategyExtensions.OrNull<T>(this Conjecture.Core.Strategy<T>! source) -> Conjecture.Core.Strategy<T?>!
-static Conjecture.Core.StrategyExtensions.WithLabel<T>(this Conjecture.Core.Strategy<T>! source, string! label) -> Conjecture.Core.Strategy<T>!
+Conjecture.Core.StrategyExtensions.extension<T>(Conjecture.Core.Strategy<T>!).OrNull() -> Conjecture.Core.Strategy<T?>!
 static Conjecture.Core.Generate.Tuples<T1, T2>(Conjecture.Core.Strategy<T1>! first, Conjecture.Core.Strategy<T2>! second) -> Conjecture.Core.Strategy<(T1, T2)>!
 static Conjecture.Core.Generate.Tuples<T1, T2, T3>(Conjecture.Core.Strategy<T1>! first, Conjecture.Core.Strategy<T2>! second, Conjecture.Core.Strategy<T3>! third) -> Conjecture.Core.Strategy<(T1, T2, T3)>!
 static Conjecture.Core.Generate.Tuples<T1, T2, T3, T4>(Conjecture.Core.Strategy<T1>! first, Conjecture.Core.Strategy<T2>! second, Conjecture.Core.Strategy<T3>! third, Conjecture.Core.Strategy<T4>! fourth) -> Conjecture.Core.Strategy<(T1, T2, T3, T4)>!

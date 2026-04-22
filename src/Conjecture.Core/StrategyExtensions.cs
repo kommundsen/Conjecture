@@ -11,87 +11,84 @@ namespace Conjecture.Core;
 /// <summary>LINQ-style extension methods for composing strategies.</summary>
 public static class StrategyExtensions
 {
-    /// <summary>Projects each generated value through <paramref name="selector"/>.</summary>
-    public static Strategy<TResult> Select<TSource, TResult>(
-        this Strategy<TSource> source, Func<TSource, TResult> selector)
+    extension<T>(Strategy<T> source)
     {
-        ArgumentNullException.ThrowIfNull(source);
-        ArgumentNullException.ThrowIfNull(selector);
-        return new SelectStrategy<TSource, TResult>(source, selector);
+        /// <summary>Projects each generated value through <paramref name="selector"/>.</summary>
+        public Strategy<TResult> Select<TResult>(Func<T, TResult> selector)
+        {
+            ArgumentNullException.ThrowIfNull(source);
+            ArgumentNullException.ThrowIfNull(selector);
+            return new SelectStrategy<T, TResult>(source, selector);
+        }
+
+        /// <summary>Filters generated values to those satisfying <paramref name="predicate"/>.</summary>
+        public Strategy<T> Where(Func<T, bool> predicate)
+        {
+            ArgumentNullException.ThrowIfNull(source);
+            ArgumentNullException.ThrowIfNull(predicate);
+            return new WhereStrategy<T>(source, predicate);
+        }
+
+        /// <summary>Projects each generated value to a strategy and flattens the result.</summary>
+        public Strategy<TResult> SelectMany<TResult>(Func<T, Strategy<TResult>> selector)
+        {
+            ArgumentNullException.ThrowIfNull(source);
+            ArgumentNullException.ThrowIfNull(selector);
+            return new SelectManyStrategy<T, TResult, TResult>(source, selector, (_, r) => r);
+        }
+
+        /// <summary>Projects each generated value to a strategy, flattens, and applies a result selector (enables C# query syntax).</summary>
+        public Strategy<TResult> SelectMany<TCollection, TResult>(
+            Func<T, Strategy<TCollection>> collectionSelector,
+            Func<T, TCollection, TResult> resultSelector)
+        {
+            ArgumentNullException.ThrowIfNull(source);
+            ArgumentNullException.ThrowIfNull(collectionSelector);
+            ArgumentNullException.ThrowIfNull(resultSelector);
+            return new SelectManyStrategy<T, TCollection, TResult>(source, collectionSelector, resultSelector);
+        }
+
+        /// <summary>Combines two strategies into a strategy of tuples.</summary>
+        public Strategy<(T, TSecond)> Zip<TSecond>(Strategy<TSecond> second)
+        {
+            ArgumentNullException.ThrowIfNull(source);
+            ArgumentNullException.ThrowIfNull(second);
+            return new ZipStrategy<T, TSecond, (T, TSecond)>(source, second, (a, b) => (a, b));
+        }
+
+        /// <summary>Combines two strategies using a result selector.</summary>
+        public Strategy<TResult> Zip<TSecond, TResult>(Strategy<TSecond> second, Func<T, TSecond, TResult> resultSelector)
+        {
+            ArgumentNullException.ThrowIfNull(source);
+            ArgumentNullException.ThrowIfNull(second);
+            ArgumentNullException.ThrowIfNull(resultSelector);
+            return new ZipStrategy<T, TSecond, TResult>(source, second, resultSelector);
+        }
+
+        /// <summary>Annotates the strategy with a label used in counterexample output.</summary>
+        public Strategy<T> WithLabel(string label)
+        {
+            ArgumentNullException.ThrowIfNull(source);
+            ArgumentNullException.ThrowIfNull(label);
+            return new LabeledStrategy<T>(source, label);
+        }
+
+        /// <summary>Projects each generated value through a direct generator that receives both the source value and the data stream. Internal hot-path overload — avoids per-Generate Strategy allocation.</summary>
+        internal Strategy<TResult> SelectMany<TResult>(Func<T, ConjectureData, TResult> directGenerator)
+        {
+            ArgumentNullException.ThrowIfNull(source);
+            ArgumentNullException.ThrowIfNull(directGenerator);
+            return new SelectManyDirectStrategy<T, TResult>(source, directGenerator);
+        }
     }
 
-    /// <summary>Filters generated values to those satisfying <paramref name="predicate"/>.</summary>
-    public static Strategy<T> Where<T>(this Strategy<T> source, Func<T, bool> predicate)
+    extension<T>(Strategy<T> source) where T : struct
     {
-        ArgumentNullException.ThrowIfNull(source);
-        ArgumentNullException.ThrowIfNull(predicate);
-        return new WhereStrategy<T>(source, predicate);
-    }
-
-    /// <summary>Projects each generated value to a strategy and flattens the result.</summary>
-    public static Strategy<TResult> SelectMany<TSource, TResult>(
-        this Strategy<TSource> source,
-        Func<TSource, Strategy<TResult>> selector)
-    {
-        ArgumentNullException.ThrowIfNull(source);
-        ArgumentNullException.ThrowIfNull(selector);
-        return new SelectManyStrategy<TSource, TResult, TResult>(source, selector, (_, r) => r);
-    }
-
-    /// <summary>Projects each generated value to a strategy, flattens, and applies a result selector (enables C# query syntax).</summary>
-    public static Strategy<TResult> SelectMany<TSource, TCollection, TResult>(
-        this Strategy<TSource> source,
-        Func<TSource, Strategy<TCollection>> collectionSelector,
-        Func<TSource, TCollection, TResult> resultSelector)
-    {
-        ArgumentNullException.ThrowIfNull(source);
-        ArgumentNullException.ThrowIfNull(collectionSelector);
-        ArgumentNullException.ThrowIfNull(resultSelector);
-        return new SelectManyStrategy<TSource, TCollection, TResult>(source, collectionSelector, resultSelector);
-    }
-
-    /// <summary>Combines two strategies into a strategy of tuples.</summary>
-    public static Strategy<(TFirst, TSecond)> Zip<TFirst, TSecond>(
-        this Strategy<TFirst> first, Strategy<TSecond> second)
-    {
-        ArgumentNullException.ThrowIfNull(first);
-        ArgumentNullException.ThrowIfNull(second);
-        return new ZipStrategy<TFirst, TSecond, (TFirst, TSecond)>(first, second, (a, b) => (a, b));
-    }
-
-    /// <summary>Combines two strategies using a result selector.</summary>
-    public static Strategy<TResult> Zip<TFirst, TSecond, TResult>(
-        this Strategy<TFirst> first, Strategy<TSecond> second, Func<TFirst, TSecond, TResult> resultSelector)
-    {
-        ArgumentNullException.ThrowIfNull(first);
-        ArgumentNullException.ThrowIfNull(second);
-        ArgumentNullException.ThrowIfNull(resultSelector);
-        return new ZipStrategy<TFirst, TSecond, TResult>(first, second, resultSelector);
-    }
-
-    /// <summary>Wraps the strategy so it may also produce null, with ~10% null probability.</summary>
-    public static Strategy<T?> OrNull<T>(this Strategy<T> source) where T : struct
-    {
-        ArgumentNullException.ThrowIfNull(source);
-        return new NullableStrategy<T>(source);
-    }
-
-    /// <summary>Annotates the strategy with a label used in counterexample output.</summary>
-    public static Strategy<T> WithLabel<T>(this Strategy<T> source, string label)
-    {
-        ArgumentNullException.ThrowIfNull(source);
-        ArgumentNullException.ThrowIfNull(label);
-        return new LabeledStrategy<T>(source, label);
-    }
-
-    /// <summary>Projects each generated value through a direct generator that receives both the source value and the data stream. Internal hot-path overload — avoids per-Generate Strategy allocation.</summary>
-    internal static Strategy<TResult> SelectMany<TSource, TResult>(
-        this Strategy<TSource> source,
-        Func<TSource, ConjectureData, TResult> directGenerator)
-    {
-        ArgumentNullException.ThrowIfNull(source);
-        ArgumentNullException.ThrowIfNull(directGenerator);
-        return new SelectManyDirectStrategy<TSource, TResult>(source, directGenerator);
+        /// <summary>Wraps the strategy so it may also produce null, with ~10% null probability.</summary>
+        public Strategy<T?> OrNull()
+        {
+            ArgumentNullException.ThrowIfNull(source);
+            return new NullableStrategy<T>(source);
+        }
     }
 }
-
