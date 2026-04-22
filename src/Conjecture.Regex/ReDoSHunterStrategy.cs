@@ -19,7 +19,8 @@ internal sealed class ReDoSHunterStrategy(
     DotNetRegex regex,
     int maxMatchMs) : Strategy<string>("redos:hunter")
 {
-    private const int AdversarialCap = 32;
+    private const int AdversarialCap = 8;
+    private const int InnerCap = 4;
     private const int Trials = 3;
     private const int HitsRequired = 2;
 
@@ -31,9 +32,7 @@ internal sealed class ReDoSHunterStrategy(
 
     private static Strategy<string>? BuildFallback(RegexNode root, DotNetRegex regex)
     {
-        return regex.Options.HasFlag(RegexOptions.NonBacktracking)
-            ? new DelegatingStrategy<string>(Conjecture.Core.Generate.Matching(regex), "redos:non-backtracking")
-            : !NestedQuantifierDetector.HasNestedQuantifiers(root)
+        return !NestedQuantifierDetector.HasNestedQuantifiers(root)
             ? new DelegatingStrategy<string>(Conjecture.Core.Generate.Matching(regex), "redos:no-nested-quantifiers")
             : (Strategy<string>?)null;
     }
@@ -48,6 +47,7 @@ internal sealed class ReDoSHunterStrategy(
             Dictionary<int, string> captures = [];
             Dictionary<string, string> namedCaptures = [];
             RegexNodeGenerator.GenerateNode(ctx, root, sb, captures, namedCaptures, SelectCount);
+            sb.Append('\x00');
             string candidate = sb.ToString();
 
             int hits = 0;
@@ -78,37 +78,37 @@ internal sealed class ReDoSHunterStrategy(
 
     private static int SelectCount(IGeneratorContext ctx, Quantifier q)
     {
-        bool innerHasQuantifier = q.Inner switch
+        bool isAdversarial = q.Inner switch
         {
             Quantifier => true,
-            Group grp => ContainsQuantifier(grp.Inner),
+            Alternation => true,
+            Group grp => ContainsQuantifierOrAlternation(grp.Inner),
             _ => false,
         };
 
-        int maxCount = q.Max ?? (q.Min + AdversarialCap);
+        int cap = isAdversarial ? AdversarialCap : InnerCap;
+        int maxCount = q.Max ?? (q.Min + cap);
 
-        return innerHasQuantifier
-            ? maxCount
-            : ctx.Generate(Conjecture.Core.Generate.Integers<int>(q.Min, maxCount));
+        return ctx.Generate(Conjecture.Core.Generate.Integers<int>(q.Min, maxCount));
     }
 
-    private static bool ContainsQuantifier(RegexNode node)
+    private static bool ContainsQuantifierOrAlternation(RegexNode node)
     {
         return node switch
         {
             Quantifier => true,
-            Group grp => ContainsQuantifier(grp.Inner),
-            Sequence seq => ContainsQuantifierInList(seq.Items),
-            Alternation alt => ContainsQuantifierInList(alt.Arms),
+            Alternation => true,
+            Group grp => ContainsQuantifierOrAlternation(grp.Inner),
+            Sequence seq => ContainsQuantifierOrAlternationInList(seq.Items),
             _ => false,
         };
     }
 
-    private static bool ContainsQuantifierInList(IReadOnlyList<RegexNode> items)
+    private static bool ContainsQuantifierOrAlternationInList(IReadOnlyList<RegexNode> items)
     {
         foreach (RegexNode item in items)
         {
-            if (ContainsQuantifier(item))
+            if (ContainsQuantifierOrAlternation(item))
             {
                 return true;
             }
