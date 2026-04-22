@@ -223,3 +223,4 @@ static Conjecture.Core.Generate.Chars() -> Conjecture.Core.Strategy<char>!
 Conjecture.Core.GenMaxDepthAttribute
 Conjecture.Core.GenMaxDepthAttribute.GenMaxDepthAttribute(int maxDepth) -> void
 Conjecture.Core.GenMaxDepthAttribute.MaxDepth.get -> int
+static Conjecture.Core.Generate.OneOf<T>(params System.ReadOnlySpan<Conjecture.Core.Strategy<T>!> strategies) -> Conjecture.Core.Strategy<T>!

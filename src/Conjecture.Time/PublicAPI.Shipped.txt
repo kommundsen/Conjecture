@@ -9,3 +9,6 @@ Conjecture.Time.DateTimeOffsetExtensions.extension(Conjecture.Core.Strategy<Syst
 Conjecture.Time.DateTimeOffsetExtensions.extension(Conjecture.Core.Strategy<System.DateTimeOffset>!).NearEpoch() -> Conjecture.Core.Strategy<System.DateTimeOffset>!
 Conjecture.Time.DateTimeOffsetExtensions.extension(Conjecture.Core.Strategy<System.DateTimeOffset>!).NearDstTransition(System.TimeZoneInfo? zone = null) -> Conjecture.Core.Strategy<System.DateTimeOffset>!
 Conjecture.Time.TimeGenerateExtensions
+Conjecture.Time.TimeGenerateExtensions.extension(Conjecture.Core.Generate!)
+static Conjecture.Time.TimeGenerateExtensions.extension(Conjecture.Core.Generate!).TimeZones() -> Conjecture.Core.Strategy<System.TimeZoneInfo!>!
+static Conjecture.Time.TimeGenerateExtensions.extension(Conjecture.Core.Generate!).ClockSet(int nodeCount, System.TimeSpan maxSkew) -> Conjecture.Core.Strategy<Microsoft.Extensions.Time.Testing.FakeTimeProvider![]!>!
