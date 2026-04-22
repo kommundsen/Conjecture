@@ -34,7 +34,7 @@ internal sealed class CON101Analyzer : DiagnosticAnalyzer
 
     private static void AnalyzeInvocation(SyntaxNodeAnalysisContext context)
     {
-        var invocation = (InvocationExpressionSyntax)context.Node;
+        InvocationExpressionSyntax invocation = (InvocationExpressionSyntax)context.Node;
 
         if (invocation.Expression is not MemberAccessExpressionSyntax memberAccess)
         {
@@ -46,13 +46,7 @@ internal sealed class CON101Analyzer : DiagnosticAnalyzer
             return;
         }
 
-        SymbolInfo symbolInfo = context.SemanticModel.GetSymbolInfo(invocation);
-        if (symbolInfo.Symbol is not IMethodSymbol method)
-        {
-            return;
-        }
-
-        if (method.ContainingType.ToDisplayString() != "Conjecture.Core.StrategyExtensions")
+        if (!IsStrategyReceiver(context.SemanticModel, memberAccess))
         {
             return;
         }
@@ -80,6 +74,51 @@ internal sealed class CON101Analyzer : DiagnosticAnalyzer
         {
             context.ReportDiagnostic(Diagnostic.Create(Rule, invocation.GetLocation()));
         }
+    }
+
+    private static bool IsStrategyReceiver(SemanticModel model, MemberAccessExpressionSyntax memberAccess)
+    {
+        ITypeSymbol? receiverType = model.GetTypeInfo(memberAccess.Expression).Type;
+        if (IsStrategyType(receiverType))
+        {
+            return true;
+        }
+
+        SymbolInfo symbolInfo = model.GetSymbolInfo(memberAccess);
+        if (symbolInfo.Symbol is IMethodSymbol sym && IsStrategyExtensionsContaining(sym.ContainingType))
+        {
+            return true;
+        }
+
+        foreach (ISymbol candidate in symbolInfo.CandidateSymbols)
+        {
+            if (candidate is IMethodSymbol cm && IsStrategyExtensionsContaining(cm.ContainingType))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool IsStrategyType(ITypeSymbol? type)
+    {
+        return type is INamedTypeSymbol named &&
+               named.Name == "Strategy" &&
+               named.IsGenericType &&
+               named.ContainingNamespace.ToDisplayString() == "Conjecture.Core";
+    }
+
+    private static bool IsStrategyExtensionsContaining(INamedTypeSymbol type)
+    {
+        if (type.ToDisplayString() == "Conjecture.Core.StrategyExtensions")
+        {
+            return true;
+        }
+
+        // C# 14 extension block: method's containing type is the extension group nested inside StrategyExtensions
+        return type.ContainingType is not null &&
+               type.ContainingType.ToDisplayString() == "Conjecture.Core.StrategyExtensions";
     }
 
     private static bool IsHighRejection(ExpressionSyntax body, SyntaxNodeAnalysisContext context)

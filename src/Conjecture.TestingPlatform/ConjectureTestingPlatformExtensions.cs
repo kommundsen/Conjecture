@@ -10,17 +10,18 @@ namespace Conjecture.TestingPlatform;
 /// <summary>Extension methods for registering Conjecture with the Microsoft Testing Platform.</summary>
 public static class ConjectureTestingPlatformExtensions
 {
-    /// <summary>Registers the Conjecture property-based test framework with the test application builder.</summary>
-    /// <param name="builder">The test application builder.</param>
-    /// <returns>The same <paramref name="builder"/> instance for chaining.</returns>
-    public static ITestApplicationBuilder RegisterConjectureFramework(
-        this ITestApplicationBuilder builder)
+    extension(ITestApplicationBuilder builder)
     {
-        builder.CommandLine.AddProvider(static () => new ConjectureCommandLineOptions());
-        builder.RegisterTestFramework(
-            _ => new PropertyTestFrameworkCapabilities(),
-            (_, services) => new PropertyTestFramework(services));
-        return builder;
+        /// <summary>Registers the Conjecture property-based test framework with the test application builder.</summary>
+        /// <returns>The same builder instance for chaining.</returns>
+        public ITestApplicationBuilder RegisterConjectureFramework()
+        {
+            builder.CommandLine.AddProvider(static () => new ConjectureCommandLineOptions());
+            builder.RegisterTestFramework(
+                _ => new PropertyTestFrameworkCapabilities(),
+                (_, services) => new PropertyTestFramework(services));
+            return builder;
+        }
     }
 
     /// <summary>
@@ -29,6 +30,8 @@ public static class ConjectureTestingPlatformExtensions
     /// <c>TestingPlatformBuilderHook</c> item is ignored. The <paramref name="args"/> parameter is
     /// part of the mandated signature but is not used here.
     /// </summary>
-    public static void AddExtensions(ITestApplicationBuilder builder, string[] args) =>
+    public static void AddExtensions(ITestApplicationBuilder builder, string[] args)
+    {
         builder.RegisterConjectureFramework();
+    }
 }

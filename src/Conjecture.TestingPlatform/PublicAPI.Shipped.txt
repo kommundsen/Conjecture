@@ -20,5 +20,6 @@ Conjecture.TestingPlatform.PropertyAttribute.TargetingProportion.set -> void
 Conjecture.TestingPlatform.PropertyAttribute.UseDatabase.get -> bool
 Conjecture.TestingPlatform.PropertyAttribute.UseDatabase.set -> void
 Conjecture.TestingPlatform.ConjectureTestingPlatformExtensions
-static Conjecture.TestingPlatform.ConjectureTestingPlatformExtensions.RegisterConjectureFramework(this Microsoft.Testing.Platform.Builder.ITestApplicationBuilder! builder) -> Microsoft.Testing.Platform.Builder.ITestApplicationBuilder!
+Conjecture.TestingPlatform.ConjectureTestingPlatformExtensions.extension(Microsoft.Testing.Platform.Builder.ITestApplicationBuilder!)
+Conjecture.TestingPlatform.ConjectureTestingPlatformExtensions.extension(Microsoft.Testing.Platform.Builder.ITestApplicationBuilder!).RegisterConjectureFramework() -> Microsoft.Testing.Platform.Builder.ITestApplicationBuilder!
 static Conjecture.TestingPlatform.ConjectureTestingPlatformExtensions.AddExtensions(Microsoft.Testing.Platform.Builder.ITestApplicationBuilder! builder, string![]! args) -> void

@@ -14,18 +14,20 @@ namespace Conjecture.LinqPad;
 /// <summary>LINQPad extension methods for shrink trace visualisation.</summary>
 public static class StrategyLinqPadExtensions
 {
-    /// <summary>Runs a shrink trace and returns an HTML table as a LINQPad raw-HTML object.</summary>
-    public static object ShrinkTraceHtml<T>(
-        this Strategy<T> strategy, int seed, Func<T, bool> failingProperty)
+    extension<T>(Strategy<T> strategy)
     {
-        ShrinkTraceResult<T> result = StrategyExtensionsInteractive.ShrinkTrace(strategy, SeedHelpers.ToUlong(seed), failingProperty);
-        List<T> values = new(result.Steps.Count);
-        foreach (ShrinkStep<T> step in result.Steps)
+        /// <summary>Runs a shrink trace and returns an HTML table as a LINQPad raw-HTML object.</summary>
+        public object ShrinkTraceHtml(int seed, Func<T, bool> failingProperty)
         {
-            values.Add(step.Value);
-        }
+            ShrinkTraceResult<T> result = strategy.ShrinkTrace(SeedHelpers.ToUlong(seed), failingProperty);
+            List<T> values = new(result.Steps.Count);
+            foreach (ShrinkStep<T> step in result.Steps)
+            {
+                values.Add(step.Value);
+            }
 
-        string html = HtmlShrinkTrace.Render(values);
-        return Util.RawHtml(html);
+            string html = HtmlShrinkTrace.Render(values);
+            return Util.RawHtml(html);
+        }
     }
 }
