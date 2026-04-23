@@ -162,4 +162,67 @@ public class DateTimeOffsetExtensionsTests
 
         Assert.False(ReferenceEquals(input, result));
     }
+
+    [Fact]
+    public void WithPrecision_Milliseconds_TicksAreRoundedToMillisecond()
+    {
+        Strategy<DateTimeOffset> strategy = Generate.DateTimeOffsets().WithPrecision(TimeSpan.FromMilliseconds(1));
+
+        IReadOnlyList<DateTimeOffset> samples = DataGen.Sample(strategy, count: 30, seed: 1UL);
+
+        Assert.All(samples, value => Assert.Equal(0L, value.Ticks % TimeSpan.TicksPerMillisecond));
+    }
+
+    [Fact]
+    public void WithPrecision_Seconds_TicksAreRoundedToSecond()
+    {
+        Strategy<DateTimeOffset> strategy = Generate.DateTimeOffsets().WithPrecision(TimeSpan.FromSeconds(1));
+
+        IReadOnlyList<DateTimeOffset> samples = DataGen.Sample(strategy, count: 30, seed: 1UL);
+
+        Assert.All(samples, value => Assert.Equal(0L, value.Ticks % TimeSpan.TicksPerSecond));
+    }
+
+    [Fact]
+    public void WithStrippedOffset_StrippedValueHasZeroOffset()
+    {
+        Strategy<(DateTimeOffset Original, DateTimeOffset Stripped)> strategy =
+            Generate.DateTimeOffsets().WithStrippedOffset();
+
+        IReadOnlyList<(DateTimeOffset Original, DateTimeOffset Stripped)> samples =
+            DataGen.Sample(strategy, count: 30, seed: 1UL);
+
+        Assert.All(samples, result => Assert.Equal(TimeSpan.Zero, result.Stripped.Offset));
+    }
+
+    [Fact]
+    public void WithStrippedOffset_OriginalPreservesOffset()
+    {
+        Strategy<(DateTimeOffset Original, DateTimeOffset Stripped)> strategy =
+            Generate.DateTimeOffsets().WithStrippedOffset();
+
+        IReadOnlyList<(DateTimeOffset Original, DateTimeOffset Stripped)> samples =
+            DataGen.Sample(strategy, count: 30, seed: 1UL);
+
+        Assert.Contains(samples, result => result.Original.Offset != TimeSpan.Zero);
+    }
+
+    [Fact]
+    public void WithStrippedOffset_TickValuesMatch()
+    {
+        Strategy<(DateTimeOffset Original, DateTimeOffset Stripped)> strategy =
+            Generate.DateTimeOffsets().WithStrippedOffset();
+
+        IReadOnlyList<(DateTimeOffset Original, DateTimeOffset Stripped)> samples =
+            DataGen.Sample(strategy, count: 30, seed: 1UL);
+
+        Assert.All(samples, result => Assert.Equal(result.Original.Ticks, result.Stripped.Ticks));
+    }
+
+    [Fact]
+    public void WithPrecision_ZeroPrecision_ThrowsArgumentOutOfRangeException()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(static () =>
+            Generate.DateTimeOffsets().WithPrecision(TimeSpan.Zero));
+    }
 }
