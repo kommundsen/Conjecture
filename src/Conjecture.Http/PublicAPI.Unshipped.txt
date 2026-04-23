@@ -35,3 +35,7 @@ Conjecture.Http.HttpStrategyBuilder.Build() -> Conjecture.Core.Strategy<Conjectu
 Conjecture.Http.HttpGenerateExtensions
 Conjecture.Http.HttpGenerateExtensions.extension(Conjecture.Core.Generate!)
 static Conjecture.Http.HttpGenerateExtensions.extension(Conjecture.Core.Generate!).Http(string! resourceName) -> Conjecture.Http.HttpStrategyBuilder!
+Conjecture.Http.HostHttpTarget
+Conjecture.Http.HostHttpTarget.HostHttpTarget(Microsoft.Extensions.Hosting.IHost! host, System.Net.Http.HttpClient! client) -> void
+Conjecture.Http.HostHttpTarget.ResolveClient(string! resourceName) -> System.Net.Http.HttpClient!
+Conjecture.Http.HostHttpTarget.DisposeAsync() -> System.Threading.Tasks.ValueTask
