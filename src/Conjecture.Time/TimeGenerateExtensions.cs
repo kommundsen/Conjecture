@@ -77,6 +77,46 @@ public static class TimeGenerateExtensions
                 return clocks;
             });
         }
+
+        /// <summary>
+        /// Returns a strategy that generates a <see cref="RecurringEventSample"/> by walking
+        /// <paramref name="nextOccurrence"/> from a random window start until <paramref name="window"/> elapses.
+        /// </summary>
+        public static Strategy<RecurringEventSample> RecurringEvents(
+            Func<DateTimeOffset, DateTimeOffset?> nextOccurrence,
+            TimeZoneInfo zone,
+            TimeSpan window)
+        {
+            Strategy<DateTimeOffset> windowStartStrategy = Generate.DateTimeOffsets(
+                new DateTimeOffset(2000, 1, 1, 0, 0, 0, TimeSpan.Zero),
+                new DateTimeOffset(2050, 1, 1, 0, 0, 0, TimeSpan.Zero));
+
+            return Generate.Compose<RecurringEventSample>(ctx =>
+            {
+                DateTimeOffset windowStart = ctx.Generate(windowStartStrategy);
+                DateTimeOffset windowEnd = windowStart + window;
+                List<DateTimeOffset> occurrences = [];
+                DateTimeOffset? current = nextOccurrence(windowStart);
+                int steps = 0;
+                while (current is not null && current.Value <= windowEnd)
+                {
+                    if (++steps > 10_000)
+                    {
+                        throw new InvalidOperationException(
+                            "nextOccurrence did not advance past the window after 10 000 steps. " +
+                            "Ensure the delegate always returns a value strictly after its input.");
+                    }
+
+                    if (current.Value >= windowStart)
+                    {
+                        occurrences.Add(current.Value);
+                    }
+
+                    current = nextOccurrence(current.Value);
+                }
+                return new RecurringEventSample(windowStart, windowEnd, occurrences.AsReadOnly(), zone, nextOccurrence);
+            });
+        }
     }
 
     private static string[] BuildIanaDstIds()
