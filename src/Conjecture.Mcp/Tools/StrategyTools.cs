@@ -82,16 +82,98 @@ internal static class StrategyTools
                 "Use `Generate.Doubles()` for the full range, or `Generate.Doubles(min, max)` for bounded. Includes NaN and ±Infinity.",
 
             "DateTimeOffset" =>
-                "Use `Generate.DateTimeOffsets()` for the full range, or `Generate.DateTimeOffsets(min, max)` for bounded.",
+                """
+            Use `Generate.DateTimeOffsets()` for the full range, or `Generate.DateTimeOffsets(min, max)` for bounded.
+
+            For precision-sensitive roundtrip tests, chain the edge-case extensions from `Conjecture.Time`:
+            ```csharp
+            Generate.DateTimeOffsets().WithPrecision(TimeSpan.FromMilliseconds(1))
+            // → Strategy<DateTimeOffset> truncated to millisecond precision
+
+            Generate.DateTimeOffsets().WithStrippedOffset()
+            // → Strategy<(DateTimeOffset Original, DateTimeOffset Stripped)>
+            ```
+
+            Add the NuGet package: `Conjecture.Time`
+            """,
 
             "TimeSpan" =>
                 "Use `Generate.TimeSpans()` for the full range, or `Generate.TimeSpans(min, max)` for bounded.",
 
             "DateOnly" =>
-                "Use `Generate.DateOnlyValues()` for the full range, or `Generate.DateOnlyValues(min, max)` for bounded.",
+                """
+            Use `Generate.DateOnlyValues()` for the full range, or `Generate.DateOnlyValues(min, max)` for bounded.
+
+            For boundary-sensitive tests, chain the edge-case extensions from `Conjecture.Time`:
+            ```csharp
+            Generate.DateOnlyValues().NearMonthBoundary()
+            // → Strategy<DateOnly> biased to first/last day of each month
+
+            Generate.DateOnlyValues().NearLeapDay()
+            // → Strategy<DateOnly> within ±1 day of Feb 29 in leap years
+            ```
+
+            Add the NuGet package: `Conjecture.Time`
+            """,
 
             "TimeOnly" =>
-                "Use `Generate.TimeOnlyValues()` for the full range, or `Generate.TimeOnlyValues(min, max)` for bounded.",
+                """
+            Use `Generate.TimeOnlyValues()` for the full range, or `Generate.TimeOnlyValues(min, max)` for bounded.
+
+            For boundary-sensitive tests, chain the edge-case extensions from `Conjecture.Time`:
+            ```csharp
+            Generate.TimeOnlyValues().NearMidnight()
+            // → Strategy<TimeOnly> within 30 s of midnight (wraps both ends)
+
+            Generate.TimeOnlyValues().NearNoon()
+            // → Strategy<TimeOnly> within 30 s of 12:00:00
+
+            Generate.TimeOnlyValues().NearEndOfDay()
+            // → Strategy<TimeOnly> within 30 s of 23:59:59
+            ```
+
+            Add the NuGet package: `Conjecture.Time`
+            """,
+
+            "DateTime" =>
+                """
+            Use `Generate.DateTimes()` for the full range, or `Generate.DateTimes(min, max)` for bounded.
+
+            For kind-sensitive tests, chain the extension from `Conjecture.Time`:
+            ```csharp
+            Generate.DateTimes().WithKinds()
+            // → Strategy<(DateTime Value, DateTimeKind Kind)> covering Utc / Local / Unspecified
+            ```
+
+            Add the NuGet package: `Conjecture.Time`
+            """,
+
+            "TimeZoneInfo" =>
+                """
+            Use `Generate.TimeZone(preferDst: true)` from `Conjecture.Time` to sample cross-platform time zones, biased toward zones with DST transitions:
+            ```csharp
+            Generate.TimeZone(preferDst: true)
+            // → Strategy<TimeZoneInfo> from the cross-platform DST-aware subset
+            ```
+
+            For raw IANA/Windows IDs, use `Generate.IanaZoneIds()` or `Generate.WindowsZoneIds()`.
+
+            Add the NuGet package: `Conjecture.Time`
+            """,
+
+            "FakeTimeProvider" or "TimeProvider" =>
+                """
+            Use `Generate.ClockWithAdvances(advanceCount, maxJump)` from `Conjecture.Time` to generate an adversarial clock paired with pre-drawn time advances:
+            ```csharp
+            Generate.ClockWithAdvances(advanceCount: 5, maxJump: TimeSpan.FromMinutes(10))
+            // → Strategy<(FakeTimeProvider Clock, IReadOnlyList<TimeSpan> Advances)>
+
+            // Allow backward jumps to test clock-skew handling:
+            Generate.ClockWithAdvances(advanceCount: 3, maxJump: TimeSpan.FromSeconds(30), allowBackward: true)
+            ```
+
+            Add the NuGet package: `Conjecture.Time`
+            """,
 
             "string" =>
                 """
