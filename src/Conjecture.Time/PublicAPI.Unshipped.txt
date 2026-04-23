@@ -9,6 +9,8 @@ Conjecture.Time.DateOnlyExtensions
 Conjecture.Time.DateOnlyExtensions.extension(Conjecture.Core.Strategy<System.DateOnly>!)
 Conjecture.Time.DateOnlyExtensions.extension(Conjecture.Core.Strategy<System.DateOnly>!).NearMonthBoundary() -> Conjecture.Core.Strategy<System.DateOnly>!
 Conjecture.Time.DateOnlyExtensions.extension(Conjecture.Core.Strategy<System.DateOnly>!).NearLeapDay() -> Conjecture.Core.Strategy<System.DateOnly>!
+Conjecture.Time.DateTimeOffsetExtensions.extension(Conjecture.Core.Strategy<System.DateTimeOffset>!).WithPrecision(System.TimeSpan precision) -> Conjecture.Core.Strategy<System.DateTimeOffset>!
+Conjecture.Time.DateTimeOffsetExtensions.extension(Conjecture.Core.Strategy<System.DateTimeOffset>!).WithStrippedOffset() -> Conjecture.Core.Strategy<(System.DateTimeOffset Original, System.DateTimeOffset Stripped)>!
 Conjecture.Time.TimeOnlyExtensions
 Conjecture.Time.TimeOnlyExtensions.extension(Conjecture.Core.Strategy<System.TimeOnly>!)
 Conjecture.Time.TimeOnlyExtensions.extension(Conjecture.Core.Strategy<System.TimeOnly>!).NearMidnight() -> Conjecture.Core.Strategy<System.TimeOnly>!

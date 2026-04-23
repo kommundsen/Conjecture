@@ -90,6 +90,37 @@ public static class DateTimeOffsetExtensions
                 return transition.AddTicks(jitterTicks);
             });
         }
+
+        /// <summary>
+        /// Returns a strategy that truncates each generated value to <paramref name="precision"/>,
+        /// simulating provider-imposed precision stripping (e.g. SQL Server datetime2(3) rounds to milliseconds).
+        /// </summary>
+        public Strategy<DateTimeOffset> WithPrecision(TimeSpan precision)
+        {
+            if (precision.Ticks <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(precision), precision, "precision must be positive.");
+            }
+
+            return s.Select(dto => new DateTimeOffset(dto.Ticks - dto.Ticks % precision.Ticks, dto.Offset));
+        }
+
+        /// <summary>
+        /// Returns a strategy that pairs each generated value with its offset-stripped counterpart (Offset → Zero),
+        /// simulating providers that lose the UTC offset on roundtrip.
+        /// </summary>
+        public Strategy<(DateTimeOffset Original, DateTimeOffset Stripped)> WithStrippedOffset()
+        {
+            return Generate.Compose<(DateTimeOffset Original, DateTimeOffset Stripped)>(ctx =>
+            {
+                DateTimeOffset dto = ctx.Generate(s);
+                int offsetMinutes = ctx.Generate(Generate.Integers<int>(-840, 840));
+                TimeSpan offset = TimeSpan.FromMinutes(offsetMinutes);
+                DateTimeOffset original = new(dto.Ticks, offset);
+                DateTimeOffset stripped = new(dto.Ticks, TimeSpan.Zero);
+                return (original, stripped);
+            });
+        }
     }
 
     private static TimeZoneInfo PickZoneWithRules(IGeneratorContext ctx)
