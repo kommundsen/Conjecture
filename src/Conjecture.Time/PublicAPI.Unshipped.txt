@@ -1,1 +1,4 @@
 #nullable enable
+static Conjecture.Time.TimeGenerateExtensions.extension(Conjecture.Core.Generate!).IanaZoneIds(bool preferDst = false) -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Time.TimeGenerateExtensions.extension(Conjecture.Core.Generate!).WindowsZoneIds() -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Time.TimeGenerateExtensions.extension(Conjecture.Core.Generate!).TimeZone(bool preferDst = false) -> Conjecture.Core.Strategy<System.TimeZoneInfo!>!
