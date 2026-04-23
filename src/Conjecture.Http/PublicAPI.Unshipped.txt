@@ -22,3 +22,16 @@ static Conjecture.Http.HttpInvariantExtensions.AssertNot5xx(this System.Threadin
 static Conjecture.Http.HttpInvariantExtensions.Assert4xx(this System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage!>! response) -> System.Threading.Tasks.Task!
 static Conjecture.Http.HttpInvariantExtensions.AssertProblemDetailsShape(this System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage!>! response) -> System.Threading.Tasks.Task!
 static Conjecture.Http.HttpInvariantExtensions.Response(this Conjecture.Http.HttpInteraction interaction, Conjecture.Http.IHttpTarget! target, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage!>!
+Conjecture.Http.HttpStrategyBuilder
+Conjecture.Http.HttpStrategyBuilder.Get(string! path) -> Conjecture.Http.HttpStrategyBuilder!
+Conjecture.Http.HttpStrategyBuilder.Post(string! path, object? body = null) -> Conjecture.Http.HttpStrategyBuilder!
+Conjecture.Http.HttpStrategyBuilder.Put(string! path, object? body = null) -> Conjecture.Http.HttpStrategyBuilder!
+Conjecture.Http.HttpStrategyBuilder.Delete(string! path) -> Conjecture.Http.HttpStrategyBuilder!
+Conjecture.Http.HttpStrategyBuilder.Patch(string! path, object? body = null) -> Conjecture.Http.HttpStrategyBuilder!
+Conjecture.Http.HttpStrategyBuilder.WithHeaders(System.Collections.Generic.IReadOnlyDictionary<string!, string!>! headers) -> Conjecture.Http.HttpStrategyBuilder!
+Conjecture.Http.HttpStrategyBuilder.WithResource(string! name) -> Conjecture.Http.HttpStrategyBuilder!
+Conjecture.Http.HttpStrategyBuilder.WithBodyStrategy(Conjecture.Core.Strategy<object?>! bodyStrategy) -> Conjecture.Http.HttpStrategyBuilder!
+Conjecture.Http.HttpStrategyBuilder.Build() -> Conjecture.Core.Strategy<Conjecture.Http.HttpInteraction>!
+Conjecture.Http.HttpGenerateExtensions
+Conjecture.Http.HttpGenerateExtensions.extension(Conjecture.Core.Generate!)
+static Conjecture.Http.HttpGenerateExtensions.extension(Conjecture.Core.Generate!).Http(string! resourceName) -> Conjecture.Http.HttpStrategyBuilder!
