@@ -1,0 +1,16 @@
+#nullable enable
+Conjecture.Http.HttpInteraction
+Conjecture.Http.HttpInteraction.HttpInteraction() -> void
+Conjecture.Http.HttpInteraction.HttpInteraction(string! ResourceName, string! Method, string! Path, object? Body, System.Collections.Generic.IReadOnlyDictionary<string!, string!>? Headers) -> void
+Conjecture.Http.HttpInteraction.ResourceName.get -> string!
+Conjecture.Http.HttpInteraction.ResourceName.init -> void
+Conjecture.Http.HttpInteraction.Method.get -> string!
+Conjecture.Http.HttpInteraction.Method.init -> void
+Conjecture.Http.HttpInteraction.Path.get -> string!
+Conjecture.Http.HttpInteraction.Path.init -> void
+Conjecture.Http.HttpInteraction.Body.get -> object?
+Conjecture.Http.HttpInteraction.Body.init -> void
+Conjecture.Http.HttpInteraction.Headers.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>?
+Conjecture.Http.HttpInteraction.Headers.init -> void
+Conjecture.Http.IHttpTarget
+Conjecture.Http.IHttpTarget.ResolveClient(string! resourceName) -> System.Net.Http.HttpClient!
