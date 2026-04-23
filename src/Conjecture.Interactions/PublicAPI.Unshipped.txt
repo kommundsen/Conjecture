@@ -1,4 +1,9 @@
 #nullable enable
+Conjecture.Interactions.CompositeInteractionTarget
+Conjecture.Interactions.CompositeInteractionTarget.CompositeInteractionTarget(params (string! name, Conjecture.Interactions.IInteractionTarget! target)[]! targets) -> void
+Conjecture.Interactions.CompositeInteractionTarget.ExecuteAsync(Conjecture.Interactions.IInteraction! interaction, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<object?>!
+Conjecture.Interactions.IAddressedInteraction
+Conjecture.Interactions.IAddressedInteraction.ResourceName.get -> string!
 Conjecture.Interactions.IInteraction
 Conjecture.Interactions.IInteractionTarget
 Conjecture.Interactions.IInteractionTarget.ExecuteAsync(Conjecture.Interactions.IInteraction! interaction, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<object?>!
