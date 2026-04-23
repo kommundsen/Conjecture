@@ -97,12 +97,9 @@ public static class DateTimeOffsetExtensions
         /// </summary>
         public Strategy<DateTimeOffset> WithPrecision(TimeSpan precision)
         {
-            if (precision.Ticks <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(precision), precision, "precision must be positive.");
-            }
-
-            return s.Select(dto => new DateTimeOffset(dto.Ticks - dto.Ticks % precision.Ticks, dto.Offset));
+            return precision.Ticks <= 0
+                ? throw new ArgumentOutOfRangeException(nameof(precision), precision, "precision must be positive.")
+                : s.Select(dto => new DateTimeOffset(dto.Ticks - dto.Ticks % precision.Ticks, dto.Offset));
         }
 
         /// <summary>
@@ -135,75 +132,7 @@ public static class DateTimeOffsetExtensions
     }
 
     private static List<DateTimeOffset> GetTransitions(TimeZoneInfo zone)
-    {
-        List<DateTimeOffset> transitions = [];
-
-        foreach (TimeZoneInfo.AdjustmentRule rule in zone.GetAdjustmentRules())
-        {
-            for (int year = CurrentYear - 1; year <= CurrentYear + 1; year++)
-            {
-                if (rule.DateStart.Year > year || rule.DateEnd.Year < year)
-                {
-                    continue;
-                }
-
-                // DaylightTransitionStart is expressed in standard time; subtract standard offset to get UTC.
-                // DaylightTransitionEnd is expressed in DST time; subtract DST offset to get UTC.
-                TimeSpan standardOffset = zone.BaseUtcOffset;
-                TimeSpan dstOffset = zone.BaseUtcOffset + rule.DaylightDelta;
-
-                DateTimeOffset? start = TransitionToUtc(rule.DaylightTransitionStart, year, standardOffset);
-                DateTimeOffset? end = TransitionToUtc(rule.DaylightTransitionEnd, year, dstOffset);
-
-                if (start is not null)
-                {
-                    transitions.Add(start.Value);
-                }
-
-                if (end is not null)
-                {
-                    transitions.Add(end.Value);
-                }
-            }
-        }
-
-        return transitions;
-    }
-
-    private static DateTimeOffset? TransitionToUtc(TimeZoneInfo.TransitionTime transition, int year, TimeSpan localOffset)
-    {
-        try
-        {
-            DateTime localDt = transition.IsFixedDateRule
-                ? new DateTime(year, transition.Month, transition.Day,
-                    transition.TimeOfDay.Hour, transition.TimeOfDay.Minute, transition.TimeOfDay.Second)
-                : GetFloatingTransitionDate(year, transition);
-
-            DateTime utcDt = localDt - localOffset;
-            return new DateTimeOffset(utcDt, TimeSpan.Zero);
-        }
-        catch (ArgumentOutOfRangeException)
-        {
-            return null;
-        }
-    }
-
-    private static DateTime GetFloatingTransitionDate(int year, TimeZoneInfo.TransitionTime transition)
-    {
-        int firstDayOfMonth = (int)new DateTime(year, transition.Month, 1).DayOfWeek;
-        int targetDay = (int)transition.DayOfWeek;
-        int offset = (targetDay - firstDayOfMonth + 7) % 7;
-        int day = 1 + offset + ((transition.Week - 1) * 7);
-
-        int daysInMonth = DateTime.DaysInMonth(year, transition.Month);
-        while (day > daysInMonth)
-        {
-            day -= 7;
-        }
-
-        return new DateTime(year, transition.Month, day,
-            transition.TimeOfDay.Hour, transition.TimeOfDay.Minute, transition.TimeOfDay.Second);
-    }
+        => DstTransitionHelper.GetTransitionsUtc(zone, yearMinus: 1, yearPlus: 1);
 
     private static List<TimeZoneInfo> BuildZonesWithDst()
     {
