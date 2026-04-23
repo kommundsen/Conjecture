@@ -491,5 +491,3 @@ $RECYCLE.BIN/
 docs/site/api/
 docs/site/_site/
 
-# Claude Code worktrees
-.claude/worktrees/
