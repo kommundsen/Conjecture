@@ -5,3 +5,12 @@ Conjecture.Time.DateTimeExtensions.extension(Conjecture.Core.Strategy<System.Dat
 static Conjecture.Time.TimeGenerateExtensions.extension(Conjecture.Core.Generate!).IanaZoneIds(bool preferDst = false) -> Conjecture.Core.Strategy<string!>!
 static Conjecture.Time.TimeGenerateExtensions.extension(Conjecture.Core.Generate!).WindowsZoneIds() -> Conjecture.Core.Strategy<string!>!
 static Conjecture.Time.TimeGenerateExtensions.extension(Conjecture.Core.Generate!).TimeZone(bool preferDst = false) -> Conjecture.Core.Strategy<System.TimeZoneInfo!>!
+Conjecture.Time.DateOnlyExtensions
+Conjecture.Time.DateOnlyExtensions.extension(Conjecture.Core.Strategy<System.DateOnly>!)
+Conjecture.Time.DateOnlyExtensions.extension(Conjecture.Core.Strategy<System.DateOnly>!).NearMonthBoundary() -> Conjecture.Core.Strategy<System.DateOnly>!
+Conjecture.Time.DateOnlyExtensions.extension(Conjecture.Core.Strategy<System.DateOnly>!).NearLeapDay() -> Conjecture.Core.Strategy<System.DateOnly>!
+Conjecture.Time.TimeOnlyExtensions
+Conjecture.Time.TimeOnlyExtensions.extension(Conjecture.Core.Strategy<System.TimeOnly>!)
+Conjecture.Time.TimeOnlyExtensions.extension(Conjecture.Core.Strategy<System.TimeOnly>!).NearMidnight() -> Conjecture.Core.Strategy<System.TimeOnly>!
+Conjecture.Time.TimeOnlyExtensions.extension(Conjecture.Core.Strategy<System.TimeOnly>!).NearNoon() -> Conjecture.Core.Strategy<System.TimeOnly>!
+Conjecture.Time.TimeOnlyExtensions.extension(Conjecture.Core.Strategy<System.TimeOnly>!).NearEndOfDay() -> Conjecture.Core.Strategy<System.TimeOnly>!
