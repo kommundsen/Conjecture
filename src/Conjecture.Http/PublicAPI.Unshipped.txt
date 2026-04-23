@@ -12,5 +12,13 @@ Conjecture.Http.HttpInteraction.Body.get -> object?
 Conjecture.Http.HttpInteraction.Body.init -> void
 Conjecture.Http.HttpInteraction.Headers.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>?
 Conjecture.Http.HttpInteraction.Headers.init -> void
+Conjecture.Http.HttpInvariantExtensions
 Conjecture.Http.IHttpTarget
 Conjecture.Http.IHttpTarget.ResolveClient(string! resourceName) -> System.Net.Http.HttpClient!
+Conjecture.Http.HttpInvariantException
+Conjecture.Http.HttpInvariantException.HttpInvariantException(string! message) -> void
+Conjecture.Http.HttpInvariantException.HttpInvariantException(string! message, System.Exception! innerException) -> void
+static Conjecture.Http.HttpInvariantExtensions.AssertNot5xx(this System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage!>! response) -> System.Threading.Tasks.Task!
+static Conjecture.Http.HttpInvariantExtensions.Assert4xx(this System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage!>! response) -> System.Threading.Tasks.Task!
+static Conjecture.Http.HttpInvariantExtensions.AssertProblemDetailsShape(this System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage!>! response) -> System.Threading.Tasks.Task!
+static Conjecture.Http.HttpInvariantExtensions.Response(this Conjecture.Http.HttpInteraction interaction, Conjecture.Http.IHttpTarget! target, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage!>!
