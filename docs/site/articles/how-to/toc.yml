@@ -31,6 +31,16 @@ items:
     href: use-cli-tool.md
   - name: Use time strategies
     href: use-time-strategies.md
+  - name: Test DST-sensitive code
+    href: test-dst-sensitive-code.md
+  - name: Test DateTime.Kind safety
+    href: test-datetime-kind-safety.md
+  - name: Test DateOnly/TimeOnly boundary conditions
+    href: test-dateonly-timeonly-boundaries.md
+  - name: Test DB provider DateTimeOffset precision
+    href: test-datetimeoffset-precision.md
+  - name: Test recurring event schedules across DST
+    href: test-recurring-events-across-dst.md
   - name: Use money strategies
     href: use-money-strategies.md
   - name: Use Gen.auto for F# records and unions

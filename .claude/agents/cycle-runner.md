@@ -46,14 +46,18 @@ dotnet format src/ --include <file1> --include <file2> … --exclude-diagnostics
 
 Run `dotnet build src/`. It must fail or show test failures (red). If unexpectedly green, stop and return `UNEXPECTED_GREEN`.
 
+> Do not pass `-q` to `dotnet build` — the quiet flag suppresses errors that are needed to diagnose failures.
+
 ### 2. Green — implement
 
 Spawn `developer` with `test_class_name` + any prior reviewer findings (on retries).
 
 Format changed files as in step 1. Run:
 ```bash
-dotnet test src/ --filter "FullyQualifiedName~<test_class_name>" --no-build
+dotnet test src/ --filter "FullyQualifiedName~<test_class_name>"
 ```
+
+> Do not pass `--no-build` — it skips compilation and may run stale binaries.
 
 If tests still fail, re-spawn `developer` with the failing output as additional context. Cap: **2 total developer attempts per Green phase**. If still failing, stop and return `GREEN_FAILED`.
 

@@ -23,3 +23,5 @@ items:
     href: money-decimal-arithmetic.md
   - name: Why nested quantifiers cause catastrophic backtracking
     href: regex-catastrophic-backtracking.md
+  - name: Why time bugs are disproportionately dangerous
+    href: time-bugs.md
