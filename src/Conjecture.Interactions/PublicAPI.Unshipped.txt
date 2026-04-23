@@ -2,3 +2,9 @@
 Conjecture.Interactions.IInteraction
 Conjecture.Interactions.IInteractionTarget
 Conjecture.Interactions.IInteractionTarget.ExecuteAsync(Conjecture.Interactions.IInteraction! interaction, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<object?>!
+abstract Conjecture.Interactions.InteractionStateMachine<TState>.Commands(TState state) -> System.Collections.Generic.IEnumerable<Conjecture.Core.Strategy<Conjecture.Interactions.IInteraction!>!>!
+abstract Conjecture.Interactions.InteractionStateMachine<TState>.InitialState() -> TState
+abstract Conjecture.Interactions.InteractionStateMachine<TState>.Invariant(TState state) -> void
+abstract Conjecture.Interactions.InteractionStateMachine<TState>.RunCommand(TState state, Conjecture.Interactions.IInteraction! interaction, Conjecture.Interactions.IInteractionTarget! target, System.Threading.CancellationToken ct) -> TState
+Conjecture.Interactions.InteractionStateMachine<TState>
+Conjecture.Interactions.InteractionStateMachine<TState>.InteractionStateMachine() -> void
