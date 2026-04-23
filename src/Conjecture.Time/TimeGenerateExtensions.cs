@@ -13,12 +13,39 @@ public static class TimeGenerateExtensions
     // UTC at index 0 so SampledFrom shrinks toward it; deduplicated in case GetSystemTimeZones already includes UTC.
     private static readonly TimeZoneInfo[] SystemTimeZones = BuildSystemTimeZones();
 
+    private static readonly TimeZoneInfo[] CrossPlatformZones = BuildCrossPlatformZones();
+    private static readonly string[] IanaDstIds = BuildIanaDstIds();
+    private static readonly string[] WindowsIds = BuildWindowsIds();
+    private static readonly TimeZoneInfo[] CrossPlatformDstZones = BuildCrossPlatformDstZones();
+
     extension(Generate)
     {
         /// <summary>Returns a strategy that picks uniformly from the system time zones, shrinking toward UTC.</summary>
         public static Strategy<TimeZoneInfo> TimeZones()
         {
             return Generate.SampledFrom(TimeGenerateExtensions.SystemTimeZones);
+        }
+
+        /// <summary>Returns a strategy that samples IANA timezone IDs from a cross-platform-safe subset.</summary>
+        public static Strategy<string> IanaZoneIds(bool preferDst = false)
+        {
+            return preferDst
+                ? Generate.SampledFrom(TimeGenerateExtensions.IanaDstIds)
+                : Generate.SampledFrom(CrossPlatformTimeZones.IanaIds);
+        }
+
+        /// <summary>Returns a strategy that samples Windows timezone IDs from a cross-platform-safe subset.</summary>
+        public static Strategy<string> WindowsZoneIds()
+        {
+            return Generate.SampledFrom(TimeGenerateExtensions.WindowsIds);
+        }
+
+        /// <summary>Returns a strategy that samples TimeZoneInfo from the cross-platform-safe subset, optionally filtering to DST zones.</summary>
+        public static Strategy<TimeZoneInfo> TimeZone(bool preferDst = false)
+        {
+            return preferDst
+                ? Generate.SampledFrom(TimeGenerateExtensions.CrossPlatformDstZones)
+                : Generate.SampledFrom(TimeGenerateExtensions.CrossPlatformZones);
         }
 
         /// <summary>
@@ -50,6 +77,58 @@ public static class TimeGenerateExtensions
                 return clocks;
             });
         }
+    }
+
+    private static string[] BuildIanaDstIds()
+    {
+        List<string> result = [];
+        foreach (TimeZoneInfo tz in CrossPlatformZones)
+        {
+            if (tz.SupportsDaylightSavingTime)
+            {
+                result.Add(tz.Id);
+            }
+        }
+        return [.. result];
+    }
+
+    private static string[] BuildWindowsIds()
+    {
+        HashSet<string> seen = [];
+        List<string> result = [];
+        foreach (string ianaId in CrossPlatformTimeZones.IanaIds)
+        {
+            if (TimeZoneInfo.TryConvertIanaIdToWindowsId(ianaId, out string? winId)
+                && winId != ianaId
+                && seen.Add(winId))
+            {
+                result.Add(winId);
+            }
+        }
+        return [.. result];
+    }
+
+    private static TimeZoneInfo[] BuildCrossPlatformZones()
+    {
+        List<TimeZoneInfo> result = [];
+        foreach (string id in CrossPlatformTimeZones.IanaIds)
+        {
+            result.Add(TimeZoneInfo.FindSystemTimeZoneById(id));
+        }
+        return [.. result];
+    }
+
+    private static TimeZoneInfo[] BuildCrossPlatformDstZones()
+    {
+        List<TimeZoneInfo> result = [];
+        foreach (TimeZoneInfo tz in CrossPlatformZones)
+        {
+            if (tz.SupportsDaylightSavingTime)
+            {
+                result.Add(tz);
+            }
+        }
+        return [.. result];
     }
 
     private static TimeZoneInfo[] BuildSystemTimeZones()
