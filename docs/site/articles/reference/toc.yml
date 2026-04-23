@@ -17,6 +17,8 @@ items:
     href: time-strategies.md
   - name: Regex strategies
     href: regex-strategies.md
+  - name: Money strategies
+    href: money-strategies.md
   - name: Formatters
     href: formatters.md
   - name: Telemetry

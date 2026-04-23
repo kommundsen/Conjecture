@@ -19,5 +19,7 @@ items:
     href: mtp-model.md
   - name: How Conjecture.Regex works
     href: regex-engine.md
+  - name: Why decimal for money testing
+    href: money-decimal-arithmetic.md
   - name: Why nested quantifiers cause catastrophic backtracking
     href: regex-catastrophic-backtracking.md

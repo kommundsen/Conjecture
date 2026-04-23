@@ -31,6 +31,8 @@ items:
     href: use-cli-tool.md
   - name: Use time strategies
     href: use-time-strategies.md
+  - name: Use money strategies
+    href: use-money-strategies.md
   - name: Use Gen.auto for F# records and unions
     href: use-fsharp-gen-auto.md
   - name: Explore strategies interactively
