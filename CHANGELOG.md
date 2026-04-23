@@ -10,6 +10,18 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Version
 
 ---
 
+## [0.17.0] — 2026-04-23
+
+### Added
+
+**Money** (`Conjecture.Money`) — new package
+- `Generate.Decimal(decimal min, decimal max, int? scale = null)` — scaled decimal generation within a range; defaults to 6 decimal places when scale is omitted
+- `Generate.Iso4217Codes()` — samples uniformly from all 141 active ISO 4217 alphabetic currency codes (embedded snapshot; excludes withdrawn codes)
+- `Generate.Amounts(string currencyCode, decimal min = 0m, decimal max = 10_000m)` — generates decimal amounts scaled to the currency's ISO 4217 minor-unit decimal places (0 for JPY, 2 for USD, 3 for BHD); throws `ArgumentException` for unknown codes
+- `Generate.RoundingModes()` — samples uniformly from all `System.MidpointRounding` enum values
+
+---
+
 ## [0.16.0] — 2026-04-22
 
 ### Added
