@@ -25,7 +25,7 @@ The main thread holds **only**: parent issue #, branch name, contributor list, t
 ```bash
 gh issue view <parent> --repo kommundsen/Conjecture --json number,title,body,state,labels
 gh issue list --repo kommundsen/Conjecture --state open --json number,title --limit 200 \
-  | jq -r '.[] | select(.title | test("^\\[" + "<parent>" + "\\."))'
+  | jq -r --arg p "<parent>" '.[] | select(.title | startswith("[" + $p + "."))'
 ```
 
 Extract:
