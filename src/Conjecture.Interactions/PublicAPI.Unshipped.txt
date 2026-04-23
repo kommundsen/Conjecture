@@ -1,0 +1,4 @@
+#nullable enable
+Conjecture.Interactions.IInteraction
+Conjecture.Interactions.IInteractionTarget
+Conjecture.Interactions.IInteractionTarget.ExecuteAsync(Conjecture.Interactions.IInteraction! interaction, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<object?>!
