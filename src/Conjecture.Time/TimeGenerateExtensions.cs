@@ -18,6 +18,10 @@ public static class TimeGenerateExtensions
     private static readonly string[] WindowsIds = BuildWindowsIds();
     private static readonly TimeZoneInfo[] CrossPlatformDstZones = BuildCrossPlatformDstZones();
 
+    private static readonly Strategy<DateTimeOffset> ClockStartStrategy = Generate.DateTimeOffsets(
+        new DateTimeOffset(2000, 1, 1, 0, 0, 0, TimeSpan.Zero),
+        new DateTimeOffset(2050, 1, 1, 0, 0, 0, TimeSpan.Zero));
+
     extension(Generate)
     {
         /// <summary>Returns a strategy that picks uniformly from the system time zones, shrinking toward UTC.</summary>
@@ -79,6 +83,60 @@ public static class TimeGenerateExtensions
         }
 
         /// <summary>
+        /// Returns a strategy that generates a <see cref="FakeTimeProvider"/> pre-positioned at a
+        /// random time within <paramref name="maxJump"/> of the 2000-01-01 UTC anchor.
+        /// </summary>
+        /// <param name="maxJump">Width of the time window. Must be positive.</param>
+        public static Strategy<FakeTimeProvider> AdvancingClocks(TimeSpan maxJump)
+        {
+            if (maxJump <= TimeSpan.Zero)
+            {
+                throw new ArgumentOutOfRangeException(nameof(maxJump), maxJump, "maxJump must be positive.");
+            }
+
+            DateTimeOffset anchor = new(2000, 1, 1, 0, 0, 0, TimeSpan.Zero);
+            Strategy<DateTimeOffset> startStrategy = Generate.DateTimeOffsets(anchor, anchor + maxJump);
+
+            return Generate.Compose<FakeTimeProvider>(ctx =>
+            {
+                DateTimeOffset start = ctx.Generate(startStrategy);
+                return new FakeTimeProvider(start);
+            });
+        }
+
+        /// <summary>
+        /// Returns a strategy that generates a <see cref="FakeTimeProvider"/> paired with
+        /// <paramref name="advanceCount"/> time advances, each in
+        /// [<paramref name="allowBackward"/> ? <c>-maxJump</c> : <c>Zero</c>, <c>maxJump</c>].
+        /// </summary>
+        /// <param name="advanceCount">Number of advances to generate.</param>
+        /// <param name="maxJump">Maximum magnitude of each advance.</param>
+        /// <param name="allowBackward">When <see langword="true"/>, advances may be negative.</param>
+        public static Strategy<(FakeTimeProvider Clock, IReadOnlyList<TimeSpan> Advances)> ClockWithAdvances(
+            int advanceCount, TimeSpan maxJump, bool allowBackward = false)
+        {
+            if (advanceCount < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(advanceCount), advanceCount, "advanceCount must be at least 1.");
+            }
+
+            long minTicks = allowBackward ? -maxJump.Ticks : 0L;
+            Strategy<long> jumpStrategy = Generate.Integers<long>(minTicks, maxJump.Ticks);
+
+            return Generate.Compose<(FakeTimeProvider Clock, IReadOnlyList<TimeSpan> Advances)>(ctx =>
+            {
+                DateTimeOffset start = ctx.Generate(TimeGenerateExtensions.ClockStartStrategy);
+                FakeTimeProvider clock = new(start);
+                TimeSpan[] advances = new TimeSpan[advanceCount];
+                for (int i = 0; i < advanceCount; i++)
+                {
+                    advances[i] = TimeSpan.FromTicks(ctx.Generate(jumpStrategy));
+                }
+                return (clock, advances);
+            });
+        }
+
+        /// <summary>
         /// Returns a strategy that generates a <see cref="RecurringEventSample"/> by walking
         /// <paramref name="nextOccurrence"/> from a random window start until <paramref name="window"/> elapses.
         /// </summary>
@@ -87,13 +145,9 @@ public static class TimeGenerateExtensions
             TimeZoneInfo zone,
             TimeSpan window)
         {
-            Strategy<DateTimeOffset> windowStartStrategy = Generate.DateTimeOffsets(
-                new DateTimeOffset(2000, 1, 1, 0, 0, 0, TimeSpan.Zero),
-                new DateTimeOffset(2050, 1, 1, 0, 0, 0, TimeSpan.Zero));
-
             return Generate.Compose<RecurringEventSample>(ctx =>
             {
-                DateTimeOffset windowStart = ctx.Generate(windowStartStrategy);
+                DateTimeOffset windowStart = ctx.Generate(TimeGenerateExtensions.ClockStartStrategy);
                 DateTimeOffset windowEnd = windowStart + window;
                 List<DateTimeOffset> occurrences = [];
                 DateTimeOffset? current = nextOccurrence(windowStart);

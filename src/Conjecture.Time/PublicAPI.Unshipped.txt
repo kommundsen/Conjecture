@@ -32,3 +32,5 @@ Conjecture.Time.TimeOnlyExtensions.extension(Conjecture.Core.Strategy<System.Tim
 Conjecture.Time.TimeOnlyExtensions.extension(Conjecture.Core.Strategy<System.TimeOnly>!).NearMidnight() -> Conjecture.Core.Strategy<System.TimeOnly>!
 Conjecture.Time.TimeOnlyExtensions.extension(Conjecture.Core.Strategy<System.TimeOnly>!).NearNoon() -> Conjecture.Core.Strategy<System.TimeOnly>!
 Conjecture.Time.TimeOnlyExtensions.extension(Conjecture.Core.Strategy<System.TimeOnly>!).NearEndOfDay() -> Conjecture.Core.Strategy<System.TimeOnly>!
+static Conjecture.Time.TimeGenerateExtensions.extension(Conjecture.Core.Generate!).AdvancingClocks(System.TimeSpan maxJump) -> Conjecture.Core.Strategy<Microsoft.Extensions.Time.Testing.FakeTimeProvider!>!
+static Conjecture.Time.TimeGenerateExtensions.extension(Conjecture.Core.Generate!).ClockWithAdvances(int advanceCount, System.TimeSpan maxJump, bool allowBackward = false) -> Conjecture.Core.Strategy<(Microsoft.Extensions.Time.Testing.FakeTimeProvider! Clock, System.Collections.Generic.IReadOnlyList<System.TimeSpan>! Advances)>!
