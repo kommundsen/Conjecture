@@ -13,3 +13,6 @@ abstract Conjecture.Interactions.InteractionStateMachine<TState>.Invariant(TStat
 abstract Conjecture.Interactions.InteractionStateMachine<TState>.RunCommand(TState state, Conjecture.Interactions.IInteraction! interaction, Conjecture.Interactions.IInteractionTarget! target, System.Threading.CancellationToken ct) -> TState
 Conjecture.Interactions.InteractionStateMachine<TState>
 Conjecture.Interactions.InteractionStateMachine<TState>.InteractionStateMachine() -> void
+Conjecture.Core.Property
+static Conjecture.Core.Property.ForAll<T>(Conjecture.Interactions.IInteractionTarget! target, Conjecture.Core.Strategy<T>! strategy, System.Func<Conjecture.Interactions.IInteractionTarget!, T, System.Threading.Tasks.Task!>! assertion, Conjecture.Core.ConjectureSettings? settings = null, System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+static Conjecture.Core.Property.ForAll<TState>(Conjecture.Interactions.IInteractionTarget! target, Conjecture.Interactions.InteractionStateMachine<TState>! machine, Conjecture.Core.ConjectureSettings? settings = null, System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
