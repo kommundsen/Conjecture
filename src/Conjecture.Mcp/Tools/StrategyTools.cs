@@ -164,6 +164,70 @@ internal static class StrategyTools
             Add the NuGet package: `Conjecture.Regex`
             """,
 
+            "decimal" =>
+                """
+            Use `Generate.Decimal(min, max, scale)` for scaled decimal values:
+            ```csharp
+            Generate.Decimal(min: 0m, max: 1000m, scale: 2)
+            // → Strategy<decimal> with at most 2 decimal places
+            ```
+
+            For currency amounts, use the `Conjecture.Money` package:
+            ```csharp
+            using Conjecture.Money;
+
+            Generate.Amounts("USD")
+            // → Strategy<decimal> of valid currency amounts in USD
+            ```
+
+            Add the NuGet package: `Conjecture.Money`
+            """,
+
+            "currency" or "currencies" or "currencyCode" or "ISO4217" or "iso4217" or "ISO 4217" =>
+                """
+            Use `Generate.Iso4217Codes()` to sample currency codes, and `Generate.Amounts(currencyCode)` for amounts:
+            ```csharp
+            using Conjecture.Money;
+
+            Generate.Iso4217Codes()
+            // → Strategy<string> of ISO 4217 currency codes, e.g. "USD", "EUR", "GBP"
+
+            Generate.Amounts("USD")
+            // → Strategy<decimal> of valid currency amounts for the given currency code
+            ```
+
+            Add the NuGet package: `Conjecture.Money`
+            """,
+
+            "MidpointRounding" or "rounding" =>
+                """
+            Use `Generate.RoundingModes()` to sample `MidpointRounding` values:
+            ```csharp
+            using Conjecture.Money;
+
+            Generate.RoundingModes()
+            // → Strategy<MidpointRounding>
+            ```
+
+            Add the NuGet package: `Conjecture.Money`
+            """,
+
+            "money" or "amount" or "price" =>
+                """
+            Use `Generate.Amounts(currencyCode)` from the `Conjecture.Money` package:
+            ```csharp
+            using Conjecture.Money;
+
+            Generate.Amounts("USD")
+            // → Strategy<decimal> of valid currency amounts in USD
+
+            Generate.Iso4217Codes()
+            // → Strategy<string> of ISO 4217 currency codes if you need to vary the currency
+            ```
+
+            Add the NuGet package: `Conjecture.Money`
+            """,
+
             _ when typeName.StartsWith("List<", StringComparison.Ordinal) =>
                 SuggestList(InnerType(typeName)),
 

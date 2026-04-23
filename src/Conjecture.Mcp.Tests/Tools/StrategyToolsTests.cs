@@ -165,4 +165,61 @@ public class StrategyToolsTests
         string result = StrategyTools.SuggestForType(typeName);
         Assert.Contains("ReDoSHunter", result);
     }
+
+    [Fact]
+    public void SuggestForType_Decimal_ContainsGenerateDecimal()
+    {
+        string result = StrategyTools.SuggestForType("decimal");
+        Assert.Contains("Generate.Decimal(", result);
+    }
+
+    [Fact]
+    public void SuggestForType_Decimal_MentionsConjectureMoney()
+    {
+        string result = StrategyTools.SuggestForType("decimal");
+        Assert.Contains("Conjecture.Money", result);
+    }
+
+    [Theory]
+    [InlineData("currency")]
+    [InlineData("currencies")]
+    [InlineData("currencyCode")]
+    [InlineData("ISO4217")]
+    [InlineData("ISO 4217")]
+    public void SuggestForType_CurrencyKeyword_ContainsIso4217Codes(string typeName)
+    {
+        string result = StrategyTools.SuggestForType(typeName);
+        Assert.Contains("Generate.Iso4217Codes()", result);
+    }
+
+    [Fact]
+    public void SuggestForType_CurrencyKeyword_ContainsAmounts()
+    {
+        string result = StrategyTools.SuggestForType("currency");
+        Assert.Contains("Generate.Amounts(", result);
+    }
+
+    [Fact]
+    public void SuggestForType_MidpointRounding_ContainsRoundingModes()
+    {
+        string result = StrategyTools.SuggestForType("MidpointRounding");
+        Assert.Contains("Generate.RoundingModes()", result);
+    }
+
+    [Theory]
+    [InlineData("money")]
+    [InlineData("amount")]
+    [InlineData("price")]
+    public void SuggestForType_MoneyKeyword_ContainsAmounts(string typeName)
+    {
+        string result = StrategyTools.SuggestForType(typeName);
+        Assert.Contains("Generate.Amounts(", result);
+    }
+
+    [Fact]
+    public void SuggestForType_RoundingKeyword_ContainsRoundingModes()
+    {
+        string result = StrategyTools.SuggestForType("rounding");
+        Assert.Contains("Generate.RoundingModes()", result);
+    }
 }
