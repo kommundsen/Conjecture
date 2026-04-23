@@ -49,8 +49,7 @@ Open `CHANGELOG.md` and:
 ### 4. Run tests
 
 ```bash
-dotnet build src/ -q
-dotnet test src/ --no-build
+dotnet test src/
 ```
 
 - If the build fails, stop immediately and report the errors.
@@ -87,7 +86,7 @@ cp src/Conjecture.MSTest/bin/Release/net10.0/Conjecture.MSTest.dll     src/api-b
 
 If a Release build hasn't been produced yet (step 3 ran Debug only), trigger one first:
 ```bash
-dotnet build src/ -c Release -q
+dotnet build src/ -c Release
 ```
 
 ### 7. Output the release commit message
