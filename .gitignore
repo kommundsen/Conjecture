@@ -490,3 +490,6 @@ $RECYCLE.BIN/
 # DocFX generated API metadata and build output
 docs/site/api/
 docs/site/_site/
+
+# Claude Code worktrees
+.claude/worktrees/
