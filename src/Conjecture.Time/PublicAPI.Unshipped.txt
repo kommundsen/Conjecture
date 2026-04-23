@@ -1,4 +1,7 @@
 #nullable enable
+Conjecture.Time.DateTimeExtensions
+Conjecture.Time.DateTimeExtensions.extension(Conjecture.Core.Strategy<System.DateTime>!)
+Conjecture.Time.DateTimeExtensions.extension(Conjecture.Core.Strategy<System.DateTime>!).WithKinds() -> Conjecture.Core.Strategy<(System.DateTime Value, System.DateTimeKind Kind)>!
 static Conjecture.Time.TimeGenerateExtensions.extension(Conjecture.Core.Generate!).IanaZoneIds(bool preferDst = false) -> Conjecture.Core.Strategy<string!>!
 static Conjecture.Time.TimeGenerateExtensions.extension(Conjecture.Core.Generate!).WindowsZoneIds() -> Conjecture.Core.Strategy<string!>!
 static Conjecture.Time.TimeGenerateExtensions.extension(Conjecture.Core.Generate!).TimeZone(bool preferDst = false) -> Conjecture.Core.Strategy<System.TimeZoneInfo!>!
