@@ -10,6 +10,28 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Version
 
 ---
 
+## [0.18.0] — 2026-04-23
+
+### Added
+
+**Time** (`Conjecture.Time`)
+- `Generate.IanaZoneIds(bool preferDst = false)` — generates IANA time zone ID strings, with optional DST-aware bias
+- `Generate.WindowsZoneIds()` — generates Windows registry time zone ID strings
+- `Generate.TimeZone(bool preferDst = false)` — generates `TimeZoneInfo` instances (unified replacement for the separate IANA/Windows overloads)
+- `Generate.AdvancingClocks(TimeSpan maxJump)` — generates `FakeTimeProvider` instances whose clock advances monotonically on each read
+- `Generate.ClockWithAdvances(int advanceCount, TimeSpan maxJump, bool allowBackward = false)` — generates a `FakeTimeProvider` paired with its list of time advances
+- `Generate.RecurringEvents(Func<DateTimeOffset, DateTimeOffset?> nextOccurrence, TimeZoneInfo zone, TimeSpan window)` — generates `RecurringEventSample` values: a DST-aware window of event occurrences for testing scheduling logic
+- `RecurringEventSample` — record holding `WindowStart`, `WindowEnd`, `Occurrences`, `Zone`, and `NextOccurrence` for a recurring event sample
+- `.NearDstTransition()` on `Strategy<RecurringEventSample>` — biases the recurring event window toward DST transition boundaries
+- `Strategy<DateTimeOffset>.WithPrecision(TimeSpan precision)` — truncates generated offsets to the given precision
+- `Strategy<DateTimeOffset>.WithStrippedOffset()` — returns both the original and a zero-UTC-offset copy as a named tuple
+- `Strategy<DateTime>.WithKinds()` — annotates each generated `DateTime` with its `DateTimeKind` as a named tuple
+- `Strategy<DateOnly>.NearMonthBoundary()` — biases generated dates toward the first and last days of months
+- `Strategy<DateOnly>.NearLeapDay()` — biases generated dates toward February 29 on leap years
+- `Strategy<TimeOnly>.NearMidnight()` / `.NearNoon()` / `.NearEndOfDay()` — bias time-of-day generation toward common boundary values
+
+---
+
 ## [0.17.0] — 2026-04-23
 
 ### Added
