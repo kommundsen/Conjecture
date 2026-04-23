@@ -41,4 +41,6 @@
   <Project Path="Conjecture.Money.Tests/Conjecture.Money.Tests.csproj" />
   <Project Path="Conjecture.Interactions/Conjecture.Interactions.csproj" />
   <Project Path="Conjecture.Interactions.Tests/Conjecture.Interactions.Tests.csproj" />
+  <Project Path="Conjecture.Http/Conjecture.Http.csproj" />
+  <Project Path="Conjecture.Http.Tests/Conjecture.Http.Tests.csproj" />
 </Solution>
