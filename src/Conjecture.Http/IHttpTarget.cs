@@ -48,7 +48,7 @@ public interface IHttpTarget : IInteractionTarget
             }
         }
 
-        HttpResponseMessage response = await client.SendAsync(request, ct);
+        HttpResponseMessage response = await client.SendAsync(request, ct).ConfigureAwait(false);
         return response;
     }
 }
