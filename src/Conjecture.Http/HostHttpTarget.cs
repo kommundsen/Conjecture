@@ -13,19 +13,13 @@ namespace Conjecture.Http;
 /// An <see cref="IHttpTarget"/> that wraps a single <see cref="IHost"/> and its
 /// associated <see cref="HttpClient"/> (typical <c>WebApplicationFactory</c> usage).
 /// </summary>
-public sealed class HostHttpTarget : IHttpTarget, IAsyncDisposable
+/// <remarks>Creates a new <see cref="HostHttpTarget"/>.</remarks>
+/// <param name="host">The in-process host backing the HTTP endpoint.</param>
+/// <param name="client">An <see cref="HttpClient"/> wired to <paramref name="host"/>.</param>
+public sealed class HostHttpTarget(IHost host, HttpClient client) : IHttpTarget, IAsyncDisposable
 {
-    private readonly IHost host;
-    private readonly HttpClient client;
-
-    /// <summary>Creates a new <see cref="HostHttpTarget"/>.</summary>
-    /// <param name="host">The in-process host backing the HTTP endpoint.</param>
-    /// <param name="client">An <see cref="HttpClient"/> wired to <paramref name="host"/>.</param>
-    public HostHttpTarget(IHost host, HttpClient client)
-    {
-        this.host = host ?? throw new ArgumentNullException(nameof(host));
-        this.client = client ?? throw new ArgumentNullException(nameof(client));
-    }
+    private readonly IHost host = host ?? throw new ArgumentNullException(nameof(host));
+    private readonly HttpClient client = client ?? throw new ArgumentNullException(nameof(client));
 
     /// <inheritdoc/>
     public HttpClient ResolveClient(string resourceName)

@@ -27,7 +27,13 @@ public sealed class CompositeInteractionTarget : IInteractionTarget
     /// <inheritdoc/>
     public Task<object?> ExecuteAsync(IInteraction interaction, CancellationToken ct)
     {
-        IAddressedInteraction addressed = (IAddressedInteraction)interaction;
+        if (interaction is not IAddressedInteraction addressed)
+        {
+            throw new InvalidOperationException(
+                $"CompositeInteractionTarget requires interactions that implement {nameof(IAddressedInteraction)}, " +
+                $"but received {interaction.GetType().Name}.");
+        }
+
         if (!targets.TryGetValue(addressed.ResourceName, out IInteractionTarget? target))
         {
             string registered = string.Join(", ", targets.Keys.Select(static k => $"'{k}'"));
