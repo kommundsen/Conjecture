@@ -98,6 +98,13 @@ public class StrategyToolsTimeTypesTests
 
     // DateTimeOffset — updated to mention WithPrecision and WithStrippedOffset
     [Fact]
+    public void SuggestForType_DateTimeOffset_ContainsGenerateDateTimeOffsets()
+    {
+        string result = StrategyTools.SuggestForType("DateTimeOffset");
+        Assert.Contains("Generate.DateTimeOffsets()", result);
+    }
+
+    [Fact]
     public void SuggestForType_DateTimeOffset_MentionsWithPrecision()
     {
         string result = StrategyTools.SuggestForType("DateTimeOffset");
