@@ -72,7 +72,7 @@
     <PackageVersion Include="xunit.v3.assert" Version="3.2.2" />
 
     <!-- F# -->
-    <PackageVersion Include="FSharp.Core" Version="10.1.201" />
+    <PackageVersion Include="FSharp.Core" Version="10.1.203" />
     <PackageVersion Include="Expecto" Version="10.2.3" />
   </ItemGroup>
 </Project>
