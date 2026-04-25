@@ -25,3 +25,5 @@ items:
     href: telemetry.md
   - name: Conjecture.FSharp
     href: fsharp-gen.md
+  - name: Schema strategies
+    href: schema-strategies.md
