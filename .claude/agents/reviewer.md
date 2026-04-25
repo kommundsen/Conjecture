@@ -22,7 +22,11 @@ You will receive one or more of:
 ## Steps
 
 1. Run `dotnet format src/ --include <changed_cs_files> --exclude-diagnostics IDE0130 --verify-no-changes` — all formatting must be correct. If this fails, report as FIX_IMPLEMENTATION.
-2. Run `dotnet test` scoped to the affected test project(s) — e.g. `dotnet test src/Conjecture.Core.Tests/`. Only run the full `dotnet test src/` if the change touches shared infrastructure (types in `Conjecture.Core` used across multiple projects). All tests must pass. If any fail, report as FIX_IMPLEMENTATION.
+2. Run `dotnet test` using the deterministic scope rule below. All tests must pass. If any fail, report as FIX_IMPLEMENTATION.
+
+   - For each touched production project (per the CLAUDE.md project map), run its paired test project — e.g. `dotnet test src/Conjecture.Core.Tests/`.
+   - If any file under `src/Conjecture.Core/` is touched, also run `dotnet test src/Conjecture.Core.Tests/` even if other projects are the primary target.
+   - Run the full `dotnet test src/` only when the diff touches `src/Conjecture.Core/Strategy/` or other root-level Core types used as base classes (these are widely consumed across the solution).
 3. Review the changed production files for reuse, quality, and efficiency issues (see below).
 
 ## Output format
@@ -60,6 +64,7 @@ If both issues exist, prioritize: ADD_TEST > FIX_IMPLEMENTATION.
 - Unnecessary warning suppression
 - One file per type unless they are nested
 - One test class per SUT or feature
+- New `public` symbols must appear in the relevant `PublicAPI.Unshipped.txt`. If the diff introduces public surface that is not declared (RS0016), flag as FIX_IMPLEMENTATION.
 
 ### Efficiency
 - Unnecessary repeated work or redundant computations
