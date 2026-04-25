@@ -14,9 +14,18 @@ For single-cycle / one-PR-per-sub-issue work, use `implement-cycle` instead.
 
 - `#<parent>` or `<parent>` — parent enhancement issue number (required, e.g. `#449`).
 
-## Context hygiene principle
+## Architecture
 
-The main thread holds **only**: parent issue #, branch name, contributor list, the cycle summaries returned by `cycle-runner` (one per cycle). Everything else — full issue bodies, comments, per-agent transcripts, diffs, review findings — lives inside subagents and git/GitHub state, not in the main transcript. Call `mcp__ccd_session__mark_chapter` before every cycle so compaction has natural boundaries.
+The skill (running in the **main thread**) directly orchestrates each cycle's Red→Green→Review→Commit phases by spawning the leaf agents `test-developer`, `developer`, and `reviewer` one at a time. **There is no `cycle-runner` intermediary** — Claude Code subagents cannot reliably spawn further subagents, so the orchestration must live in the main thread.
+
+The main thread's per-cycle footprint must stay tiny so 10+ cycles fit comfortably:
+
+- **Each leaf agent does its own heavy I/O inside its own context** (`gh issue view`, `dotnet format`, `dotnet build`, `dotnet test`, `git diff`). The main thread never sees that output.
+- **Each leaf agent returns ONLY a short structured summary block** (≤12 lines). The summary is what bubbles up to the main thread.
+- The main thread holds: parent #, branch, contributors list, current cycle #, last cycle's summary line. Persistent state lives in `$(git rev-parse --git-dir)/conjecture-*` files, not in conversation memory.
+- Call `mcp__ccd_session__mark_chapter` before every cycle so compaction has natural boundaries.
+
+Worst-case spawn budget per cycle: 1 `test-developer` × 3 outer iterations + 2 `developer` × 3 outer iterations + 1 `reviewer` × 3 outer iterations = 18 spawns per cycle. Typical APPROVED-on-first-try is 3.
 
 ## Steps
 
@@ -33,151 +42,190 @@ Extract:
 - **Parent slug**: from parent title, slugify (kebab-case, strip special chars). Cap at 40 chars; trim on word boundary where possible (drop trailing hyphen).
 - **Sub-issue list**: every open issue whose title starts with `[<parent>.`, sorted by number ascending
 
-Print a summary line:
+Print one summary line:
 ```
 Enhancement #<parent>: <title>  (<k> open sub-issues)
 ```
 
-### 2. Fetch contributors (cache for the run)
+### 2. Cache contributors for the run
 
-Bash tool calls do not share shell state, so persist the list to a tmp file inside `.git/`:
+Bash tool calls do not share shell state — persist into `.git/`:
 
 ```bash
 gh api repos/kommundsen/Conjecture/contributors --jq '.[].login' \
   > "$(git rev-parse --git-dir)/conjecture-contributors.txt"
 ```
 
-Subsequent steps read it back:
+### 3. Whole-enhancement brief (one-time, optional)
 
-```bash
-CONTRIBUTORS=$(tr '\n' ' ' < "$(git rev-parse --git-dir)/conjecture-contributors.txt")
-```
+Spawn the `issue-context` agent ONCE with `issues = [<parent>]`, `contributors = $CONTRIBUTORS` to surface non-contributor comments on the parent. **Do not** include sub-issue numbers here — each cycle's `test-developer` and `developer` will fetch their own sub-issue body, so re-fetching them in the main thread wastes tokens.
 
-### 3. Whole-enhancement brief
-
-Spawn the `issue-context` agent with: `issues = [<parent>, <sub1>, <sub2>, …]`, `contributors = $CONTRIBUTORS`.
-
-If the returned brief's `Non-contributor comments to review` section is non-empty, use `AskUserQuestion` to ask the user whether any of those comments require attention before proceeding. Options: "Proceed" / "Pause to address them".
+If the brief flags non-contributor parent-issue comments, `AskUserQuestion`: "Proceed" / "Pause to address them".
 
 ### 4. Branch (create or resume) + detect existing PR
 
 ```bash
 BRANCH="feat/#<parent>-<slug>"
 if git show-ref --verify --quiet "refs/heads/$BRANCH"; then
-  git checkout "$BRANCH"                # resume mode
+  git checkout "$BRANCH"
 else
   git checkout main && git pull && git checkout -b "$BRANCH"
 fi
-```
 
-Then detect whether a PR already exists for this branch (resume case):
-
-```bash
 EXISTING_PR=$(gh pr list --head "$BRANCH" --repo kommundsen/Conjecture --json number --jq '.[0].number // empty')
+echo "$EXISTING_PR" > "$(git rev-parse --git-dir)/conjecture-pr-number.txt"
 ```
 
-Capture `$EXISTING_PR` into a tmp file (`"$(git rev-parse --git-dir)/conjecture-pr-number.txt"`) so step 7 can read it. Print whether this is a fresh start, a resume without PR, or a resume with PR `#<EXISTING_PR>`.
+Print whether this is a fresh start, a resume without PR, or a resume with PR `#<EXISTING_PR>`.
 
 ### 5. Mark parent In Progress on the Roadmap project
-
-Reuse the `set_in_progress` helper from `implement-cycle/SKILL.md`:
 
 ```bash
 set_in_progress() {
   local number=$1
   local url="https://github.com/kommundsen/Conjecture/issues/$number"
   gh project item-add 2 --owner kommundsen --url "$url" > /dev/null 2>&1 || true
-  local item_id=$(gh project item-list 2 --owner kommundsen --format json --limit 200 \
+  local item_id
+  item_id=$(gh project item-list 2 --owner kommundsen --format json --limit 500 \
     --jq ".items[] | select(.content.number == $number) | .id")
+  [ -z "$item_id" ] && return 1
   gh project item-edit --project-id PVT_kwHOAAZ3vM4BTArq --id "$item_id" \
     --field-id PVTSSF_lAHOAAZ3vM4BTArqzhAYMcQ \
-    --single-select-option-id 47fc9ee4
+    --single-select-option-id 47fc9ee4 > /dev/null
 }
 
-PARENT_STATUS=$(gh project item-list 2 --owner kommundsen --format json --limit 200 \
-  --jq ".items[] | select(.content.number == <parent>) | .status")
-if [ "$PARENT_STATUS" != "In Progress" ]; then
-  set_in_progress <parent>
-fi
+PARENT_STATUS=$(gh project item-list 2 --owner kommundsen --format json --limit 500 \
+  --jq '.items[] | select(.content.number == <parent>) | .status')
+if [ "$PARENT_STATUS" != "In Progress" ]; then set_in_progress <parent>; fi
 ```
+
+(Note: `--limit 500` is required — the project has hundreds of items.)
 
 ### 6. Per-cycle loop
 
-Re-query open sub-issues at the start of every iteration (idempotent; tolerates external closes and resume mode). Loop while at least one sub-issue remains.
+Re-query open sub-issues at the start of every iteration. Loop while at least one sub-issue remains.
 
-Track an in-memory `AUTOPILOT` flag (initially `false`); see step 6d.
+Track an in-memory `AUTOPILOT` flag (initially `false`); see step 6h.
 
 For each iteration:
 
-#### 6a. Divergence warning + chapter marker + In Progress
-
-Surface (warn-only) if `main` has advanced since the branch was created:
+#### 6a. Pre-cycle bookkeeping (main thread, ≤10 lines context)
 
 ```bash
 git fetch origin main --quiet
 BEHIND=$(git rev-list --count HEAD..origin/main)
-if [ "$BEHIND" -gt 0 ]; then
-  echo "⚠️  $BEHIND new commit(s) on main since this branch diverged. Consider rebasing before continuing."
-fi
+[ "$BEHIND" -gt 0 ] && echo "⚠️  $BEHIND new commit(s) on main — consider rebasing later"
 ```
 
-Do not auto-rebase. Then:
+Then:
+- `mcp__ccd_session__mark_chapter title="Cycle <cycle>: <sub-title>"` — natural compaction boundary.
+- `set_in_progress <sub-issue>`.
 
-```text
-mcp__ccd_session__mark_chapter title="Cycle <cycle>: <sub-title>"
+#### 6b. Decision check
+
+If the sub-issue body mentions `/decision`, invoke the `decision` skill now. **This skill is the single owner for `/decision` invocation** — leaf agents never invoke it.
+
+Quick check (single bash call, no body printed to main thread):
+
+```bash
+gh issue view <sub-issue> --repo kommundsen/Conjecture --json body --jq '.body' \
+  | grep -c '/decision' || true
 ```
-Then `set_in_progress <sub-issue>`.
 
-#### 6b. Per-cycle context brief
+If the count is non-zero, run the `decision` skill and commit the resulting ADR (its own commit, separate from the cycle commit). The skill prompts the user with the relevant context.
 
-Read back `$CONTRIBUTORS` from the tmp file written in step 2. If a draft PR already exists (from `$EXISTING_PR` in step 4 or `$PR_NUMBER` set in step 7), include `pr_number = <n>` so reviewer comments are folded in.
+#### 6c. RED — spawn `test-developer`
 
-Spawn `issue-context` with `issues = [<sub-issue>]`, `contributors = $CONTRIBUTORS`, and `pr_number` (when known). Capture the full sub-issue body returned in the brief — it is passed to `cycle-runner` so the agent does not re-fetch.
+Spawn the `test-developer` agent with:
+- `subagent_type`: `test-developer`
+- `prompt`: include only `sub_issue_number = <n>`, the parent #, and (on retry) the prior reviewer's `ADD_TEST` findings. The agent fetches the issue body itself.
 
-If the brief flags non-contributor comments or unaddressed PR review comments, `AskUserQuestion` before continuing.
+The agent does its own `dotnet build` (red verification) inside its context and returns a `PHASE: RED` block (≤10 lines) with `RED_STATE`, `TESTS_ADDED`, `TEST_FILE`.
 
-#### 6c. /decision check, then run the cycle
+If `RED_STATE = UNEXPECTED_GREEN`, pause and `AskUserQuestion` — the test failed to specify new behavior.
 
-If the sub-issue's `## Test` or `## Implement` body mentions `/decision`, invoke the `decision` skill now. This is the single owner for `/decision` invocation — `cycle-runner` does not invoke it.
+#### 6d. GREEN — spawn `developer` (max 2 attempts per outer iteration)
 
-Spawn `cycle-runner` with:
-- `sub_issue_number`
-- `cycle_number` (from the sub-issue title, e.g. `76.1`)
-- `parent_issue_number`
-- `sub_issue_body` — the cached body from 6b (so cycle-runner skips its own `gh issue view`)
-- `brief` — the structured output from 6b
-- `test_file_path` — from the sub-issue body
-- `test_class_name` — from the sub-issue body
+Spawn the `developer` agent with:
+- `subagent_type`: `developer`
+- `prompt`: include only `sub_issue_number = <n>`, `test_class_name = <name>` (from the test-developer's RED block), and on retry the previous developer's failure notes or the reviewer's `FIX_IMPLEMENTATION` findings.
 
-`cycle-runner` returns a compact result block (`VERDICT`, `COMMIT_SHA`, `SUMMARY`, `FILES_TOUCHED`, `FINDINGS`). Possible verdicts: `APPROVED`, `RETRIES_EXHAUSTED`, `GREEN_FAILED`, `UNEXPECTED_GREEN`, `INFRA_FAILURE`.
+The agent does its own `dotnet format`, `dotnet build`, `dotnet test --filter` and returns a `PHASE: GREEN` block (≤10 lines) with `RESULT`, `TESTS_PASSED`, `PROD_FILES`.
 
-#### 6d. User checkpoint
+If `RESULT = FAIL`, re-spawn once more with the failure summary appended. If still `FAIL`, pause and `AskUserQuestion` (`GREEN_FAILED`).
 
-If `AUTOPILOT == true` AND `VERDICT == APPROVED`, skip the prompt and proceed to 6e. Otherwise present the result via `AskUserQuestion`:
+#### 6e. REVIEW — spawn `reviewer`
+
+Spawn the `reviewer` agent with:
+- `subagent_type`: `reviewer`
+- `prompt`: include only `sub_issue_number = <n>`. The agent fetches the diff, runs format-verify and the deterministic test scope itself.
+
+Returns a `PHASE: REVIEW` block (≤12 lines) ending with `VERDICT: <APPROVED | FIX_IMPLEMENTATION | ADD_TEST>` and ≤3 finding bullets.
+
+#### 6f. Outer-iteration handling
+
+Track `OUTER_ITERATION` (starts at 1, incremented on every loopback). Cap at 3.
+
+- `APPROVED` → continue to 6g.
+- `FIX_IMPLEMENTATION` → loop back to **6d** with the reviewer's findings; increment `OUTER_ITERATION`.
+- `ADD_TEST` → loop back to **6c** with the reviewer's findings; increment `OUTER_ITERATION`.
+
+If `OUTER_ITERATION > 3` without an APPROVED verdict, pause and `AskUserQuestion` (`RETRIES_EXHAUSTED`).
+
+#### 6g. Commit
+
+The reviewer has already verified format and tests. Stage explicit paths only and commit:
+
+```bash
+git add <explicit paths from the developer's PROD_FILES + test-developer's TEST_FILE>
+git commit -m "$(cat <<'EOF'
+<sub-issue title in imperative present, parent prefix dropped>
+
+Closes #<sub-issue>
+Part of #<parent>
+EOF
+)"
+```
+
+No `Co-Authored-By` trailer (project convention). Capture `COMMIT_SHA=$(git rev-parse HEAD)` for the cycle summary.
+
+#### 6h. User checkpoint
+
+If `AUTOPILOT == true`, skip the prompt and proceed to 6i.
+
+Otherwise present the result via `AskUserQuestion`:
 
 ```
-Cycle <cycle> — verdict: <VERDICT>
-Summary: <SUMMARY>
-Findings:
-<FINDINGS>
+Cycle <cycle> — APPROVED
+Files: <count from `git diff --name-only HEAD~1 HEAD | wc -l`>
+Findings: <reviewer's findings list, ≤3 bullets>
 
 What would you like to do?
 ```
 
 Options:
-- **Approve** (default-highlighted when `VERDICT: APPROVED`) — continue to 6e.
-- **Approve all going forward** — set `AUTOPILOT=true`, then continue to 6e. Subsequent cycles with `VERDICT == APPROVED` will skip this prompt; non-APPROVED verdicts always pause regardless of autopilot.
-- **Redo** — re-spawn `cycle-runner` with user-supplied guidance added to the brief (loops back to 6c within the same iteration).
-- **Abort** — stop the loop. Leave the working tree as-is (do not roll back committed cycles).
+- **Approve** (default) — continue to 6i.
+- **Approve all going forward** — set `AUTOPILOT=true`, then continue to 6i.
+- **Redo** — loop back to 6c with user-supplied guidance prepended to the test-developer prompt.
+- **Abort** — stop. Leave the working tree as-is (do not roll back committed cycles).
 
-#### 6e. Post-approval
+Non-APPROVED phase verdicts (`UNEXPECTED_GREEN`, `GREEN_FAILED`, `RETRIES_EXHAUSTED`) always pause regardless of `AUTOPILOT`.
 
-- Close the sub-issue: `gh issue close <sub-issue> --repo kommundsen/Conjecture`.
-- If no PR exists yet on this branch (`$PR_NUMBER` and `$EXISTING_PR` both empty): go to step 7 (draft PR) before the next iteration. Otherwise push the new commit: `git push origin "$BRANCH"`.
+#### 6i. Post-approval
+
+```bash
+gh issue close <sub-issue> --repo kommundsen/Conjecture
+```
+
+If no PR exists yet on this branch (`$PR_NUMBER` empty AND `$EXISTING_PR` empty): go to **step 7** (draft PR) before the next iteration. Otherwise:
+
+```bash
+git push origin "$BRANCH"
+```
 
 ### 7. Draft PR (only when no PR exists yet)
 
-If `$EXISTING_PR` from step 4 is set, skip this step entirely — the resume case already has a PR. Set `PR_NUMBER=$EXISTING_PR` and continue.
+If `$EXISTING_PR` from step 4 is set, skip — set `PR_NUMBER=$EXISTING_PR` and continue.
 
 Otherwise, after the first approved cycle on a fresh branch:
 
@@ -185,7 +233,7 @@ Otherwise, after the first approved cycle on a fresh branch:
 git push -u origin "$BRANCH"
 ```
 
-Read `.github/pull_request_template.md`, fill it in based on the whole-enhancement brief from step 3, and open a draft:
+Read `.github/pull_request_template.md`, fill it in based on the parent issue's title and body, and open a draft:
 
 ```bash
 PR_URL=$(gh pr create --draft \
@@ -199,44 +247,42 @@ Part of #<parent>
 EOF
 )")
 PR_NUMBER=$(echo "$PR_URL" | grep -oE '[0-9]+$')
+echo "$PR_NUMBER" > "$(git rev-parse --git-dir)/conjecture-pr-number.txt"
 ```
 
-Persist `$PR_NUMBER` to `"$(git rev-parse --git-dir)/conjecture-pr-number.txt"` for later iterations / step 9. Print the URL.
+Print the URL.
 
 ### 8. Final DoD check
 
 After the last sub-issue closes (no open sub-issues remain), spawn `reviewer` with:
-- The parent issue body (acceptance criteria / DoD)
-- `git diff main...HEAD` (whole-branch diff)
+- `subagent_type`: `reviewer`
+- `prompt`: `parent_issue_number = <parent>`, `mode = dod`, plus the parent's body inline so the agent has the acceptance criteria. The agent runs `git diff main...HEAD` itself and returns a `PHASE: DOD` block.
 
-Present verdict via `AskUserQuestion`. Options:
-- **Ship it** — proceed to step 9.
-- **Address gaps now** — for each gap, file a real follow-up sub-issue and let the main loop pick it up:
+Present verdict via `AskUserQuestion`:
+- **Ship it** → step 9.
+- **Address gaps now**: for each gap, file a real follow-up sub-issue and let the main loop pick it up:
   1. Determine the next sub-issue index `<n>` (highest existing `[<parent>.X]` number + 1).
-  2. Use `AskUserQuestion` to confirm an auto-drafted body (with `## Test` and `## Implement` sections derived from the gap description) — let the user edit before posting.
-  3. `gh issue create --repo kommundsen/Conjecture --title "[<parent>.<n>] <gap title>" --body "<drafted body>"`. Add the parent's labels.
-  4. Loop back to **step 6**. The standard re-query at the top of the loop picks up the new sub-issue automatically; `cycle-runner` is invoked normally with the real sub-issue number — there is no "synthetic" / issueless mode.
-  5. Repeat from step 8 once all newly-filed gap sub-issues close.
-- **Ship as-is, file follow-ups** — skip to step 9; the user files follow-up issues manually.
+  2. `AskUserQuestion` to confirm the auto-drafted body (`## Test` and `## Implement` sections derived from the gap).
+  3. `gh issue create --repo kommundsen/Conjecture --title "[<parent>.<n>] <gap title>" --body "<drafted body>"`. Inherit parent's labels.
+  4. Loop back to **step 6**.
+- **Ship as-is, file follow-ups** → step 9; user files manually.
 
 ### 9. CI gate, mark PR ready + final body
-
-Before promoting, surface CI status (best-effort — if no CI is configured, the call returns 0 with no rows and the gate is a no-op):
 
 ```bash
 gh pr checks "$PR_NUMBER" --repo kommundsen/Conjecture --watch || true
 ```
 
-If any checks failed, present `AskUserQuestion`:
+If checks failed, `AskUserQuestion`:
 - **Promote anyway** (default for offline / no-CI scenarios)
-- **Pause to investigate** — stop here; user fixes CI manually before re-running the skill from step 9.
+- **Pause to investigate**
 
 Then build the per-cycle changelog:
 ```bash
 git log main..HEAD --oneline
 ```
 
-Update the PR body: re-fill `.github/pull_request_template.md` with the now-complete context and append:
+Update the PR body with the now-complete content from `.github/pull_request_template.md` and append:
 
 ```
 Closes #<parent>
@@ -247,7 +293,6 @@ Closes #<parent>
 …
 ```
 
-Then:
 ```bash
 gh pr ready "$PR_NUMBER" --repo kommundsen/Conjecture
 gh pr edit "$PR_NUMBER" --repo kommundsen/Conjecture --body "$(cat <<'EOF'
@@ -260,10 +305,11 @@ Print the final PR URL.
 
 ## Guidelines
 
-- One enhancement per invocation — do not cascade into another parent.
+- One enhancement per invocation.
 - Branch off `main` (or resume an existing `feat/#<parent>-<slug>`) — never off another feature branch.
 - Never roll back previously-committed cycles on the branch.
-- Never `git add -A` / `git add .` — stage explicit paths (cycle-runner enforces this internally too).
-- Never close the parent issue from this skill; GitHub closes it automatically when the PR merges via `Closes #<parent>`.
-- If the parent or any sub-issue references a `/decision` step, this skill (step 6c) is the single owner — `cycle-runner` does not invoke `/decision`.
-- If `cycle-runner` returns a non-APPROVED verdict (`RETRIES_EXHAUSTED`, `GREEN_FAILED`, `UNEXPECTED_GREEN`, `INFRA_FAILURE`), surface the findings and pause via 6d — do not auto-retry from the main thread. `AUTOPILOT` is ignored for non-APPROVED verdicts.
+- Never `git add -A` / `git add .` — stage explicit paths only.
+- Never close the parent issue from this skill; GitHub does it on PR merge via `Closes #<parent>`.
+- `decision` skill: this skill (step 6b) is the single owner; leaf agents never invoke it.
+- **Do not** print the full sub-issue body, the full diff, or any build/test output to the main thread. Those live inside the leaf agents — only their structured summary blocks reach you.
+- If a leaf agent returns text that is not a structured block (e.g. it explained itself instead of summarising), prepend a stern "Return only the structured block, no prose" reminder and re-spawn once. If it still fails, pause via `AskUserQuestion`.
