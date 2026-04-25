@@ -15,3 +15,9 @@ Conjecture.Messaging.IMessageBusTarget
 Conjecture.Messaging.IMessageBusTarget.ReceiveAsync(string! destination, System.TimeSpan timeout, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<Conjecture.Messaging.MessageInteraction?>!
 Conjecture.Messaging.IMessageBusTarget.AcknowledgeAsync(Conjecture.Messaging.MessageInteraction! message, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task!
 Conjecture.Messaging.IMessageBusTarget.RejectAsync(Conjecture.Messaging.MessageInteraction! message, bool requeue, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task!
+Conjecture.Messaging.InMemoryMessageBusTarget
+Conjecture.Messaging.InMemoryMessageBusTarget.InMemoryMessageBusTarget() -> void
+Conjecture.Messaging.InMemoryMessageBusTarget.ExecuteAsync(Conjecture.Interactions.IInteraction! interaction, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<object?>!
+Conjecture.Messaging.InMemoryMessageBusTarget.ReceiveAsync(string! destination, System.TimeSpan timeout, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<Conjecture.Messaging.MessageInteraction?>!
+Conjecture.Messaging.InMemoryMessageBusTarget.AcknowledgeAsync(Conjecture.Messaging.MessageInteraction! message, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task!
+Conjecture.Messaging.InMemoryMessageBusTarget.RejectAsync(Conjecture.Messaging.MessageInteraction! message, bool requeue, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task!
