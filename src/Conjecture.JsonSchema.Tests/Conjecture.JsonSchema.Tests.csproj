@@ -15,6 +15,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Conjecture.JsonSchema\Conjecture.JsonSchema.csproj" />
+    <ProjectReference Include="..\Conjecture.Core\Conjecture.Core.csproj" />
+    <ProjectReference Include="..\Conjecture.Regex\Conjecture.Regex.csproj" />
   </ItemGroup>
 
   <ItemGroup>
