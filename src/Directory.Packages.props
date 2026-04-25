@@ -75,6 +75,9 @@
     <PackageVersion Include="Microsoft.OpenApi" Version="1.6.22" />
     <PackageVersion Include="Microsoft.OpenApi.Readers" Version="1.6.22" />
 
+    <!-- Protobuf -->
+    <PackageVersion Include="Google.Protobuf" Version="3.34.1" />
+
     <!-- F# -->
     <PackageVersion Include="FSharp.Core" Version="10.1.203" />
     <PackageVersion Include="Expecto" Version="10.2.3" />

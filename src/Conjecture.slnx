@@ -47,4 +47,6 @@
   <Project Path="Conjecture.JsonSchema.Tests/Conjecture.JsonSchema.Tests.csproj" />
   <Project Path="Conjecture.OpenApi/Conjecture.OpenApi.csproj" />
   <Project Path="Conjecture.OpenApi.Tests/Conjecture.OpenApi.Tests.csproj" />
+  <Project Path="Conjecture.Protobuf/Conjecture.Protobuf.csproj" />
+  <Project Path="Conjecture.Protobuf.Tests/Conjecture.Protobuf.Tests.csproj" />
 </Solution>
