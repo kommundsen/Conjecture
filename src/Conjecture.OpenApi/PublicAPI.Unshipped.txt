@@ -1,1 +1,11 @@
 #nullable enable
+Conjecture.OpenApi.OpenApiDocument
+Conjecture.OpenApi.OpenApiDocument.PathParameter(string! method, string! path, string! name, int maxDepth = 5) -> Conjecture.Core.Strategy<System.Text.Json.JsonElement>!
+Conjecture.OpenApi.OpenApiDocument.QueryParameter(string! method, string! path, string! name, int maxDepth = 5) -> Conjecture.Core.Strategy<System.Text.Json.JsonElement>!
+Conjecture.OpenApi.OpenApiDocument.RequestBody(string! method, string! path, int maxDepth = 5) -> Conjecture.Core.Strategy<System.Text.Json.JsonElement>!
+Conjecture.OpenApi.OpenApiDocument.ResponseBody(string! method, string! path, int statusCode, int maxDepth = 5) -> Conjecture.Core.Strategy<System.Text.Json.JsonElement>!
+Conjecture.OpenApi.OpenApiGenerate
+Conjecture.OpenApi.OpenApiGenerate.extension(Conjecture.Core.Generate!)
+static Conjecture.OpenApi.OpenApiGenerate.extension(Conjecture.Core.Generate!).FromOpenApi(System.IO.FileInfo! file) -> System.Threading.Tasks.Task<Conjecture.OpenApi.OpenApiDocument!>!
+static Conjecture.OpenApi.OpenApiGenerate.extension(Conjecture.Core.Generate!).FromOpenApi(System.Uri! url) -> System.Threading.Tasks.Task<Conjecture.OpenApi.OpenApiDocument!>!
+static Conjecture.OpenApi.OpenApiGenerate.extension(Conjecture.Core.Generate!).FromOpenApi(string! filePath) -> System.Threading.Tasks.Task<Conjecture.OpenApi.OpenApiDocument!>!

@@ -11,10 +11,17 @@ using Conjecture.JsonSchema;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 
+using MsOpenApiDocument = Microsoft.OpenApi.Models.OpenApiDocument;
+
 namespace Conjecture.OpenApi;
 
-internal sealed class OpenApiSchemaAdapter(OpenApiDocument document)
+internal sealed class OpenApiSchemaAdapter(MsOpenApiDocument document)
 {
+    internal OpenApiSchemaAdapter(OpenApiDocument doc)
+        : this(doc.Raw)
+    {
+    }
+
     internal Strategy<JsonElement> RequestBody(string method, string path, int maxDepth = 5)
     {
         OpenApiOperation operation = GetOperation(method, path);
@@ -31,8 +38,7 @@ internal sealed class OpenApiSchemaAdapter(OpenApiDocument document)
         string statusCodeStr = statusCode.ToString(System.Globalization.CultureInfo.InvariantCulture);
 
         // Try exact match first, then fall back to any response with application/json content
-        OpenApiResponse? response = null;
-        if (!operation.Responses.TryGetValue(statusCodeStr, out response))
+        if (!operation.Responses.TryGetValue(statusCodeStr, out OpenApiResponse? response))
         {
             foreach (KeyValuePair<string, OpenApiResponse> kv in operation.Responses)
             {
@@ -100,12 +106,9 @@ internal sealed class OpenApiSchemaAdapter(OpenApiDocument document)
         }
 
         OperationType operationType = ParseOperationType(method);
-        if (!pathItem.Operations.TryGetValue(operationType, out OpenApiOperation? operation))
-        {
-            throw new KeyNotFoundException($"Method '{method}' not found for path '{path}'");
-        }
-
-        return operation;
+        return !pathItem.Operations.TryGetValue(operationType, out OpenApiOperation? operation)
+            ? throw new KeyNotFoundException($"Method '{method}' not found for path '{path}'")
+            : operation;
     }
 
     private static OperationType ParseOperationType(string method)
@@ -126,12 +129,9 @@ internal sealed class OpenApiSchemaAdapter(OpenApiDocument document)
 
     private static OpenApiSchema GetJsonSchema(IDictionary<string, OpenApiMediaType>? content)
     {
-        if (content is null || !content.TryGetValue("application/json", out OpenApiMediaType? media))
-        {
-            throw new KeyNotFoundException("No application/json content");
-        }
-
-        return media.Schema ?? throw new KeyNotFoundException("No schema in application/json content");
+        return content is null || !content.TryGetValue("application/json", out OpenApiMediaType? media)
+            ? throw new KeyNotFoundException("No application/json content")
+            : media.Schema ?? throw new KeyNotFoundException("No schema in application/json content");
     }
 
     private static JsonSchemaNode ConvertSchema(
