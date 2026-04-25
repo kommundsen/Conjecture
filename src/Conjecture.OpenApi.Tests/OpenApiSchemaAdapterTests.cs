@@ -139,7 +139,8 @@ public sealed class OpenApiSchemaAdapterTests
     private static OpenApiDocument ParseDocument(string json)
     {
         OpenApiStringReader reader = new();
-        return reader.Read(json, out _);
+        Microsoft.OpenApi.Models.OpenApiDocument raw = reader.Read(json, out _);
+        return new OpenApiDocument(raw);
     }
 
     private static IReadOnlyList<T> Sample<T>(Strategy<T> strategy, int count = 20, ulong seed = 42UL)

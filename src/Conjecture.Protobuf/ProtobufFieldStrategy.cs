@@ -16,15 +16,10 @@ using Gen = Conjecture.Core.Generate;
 namespace Conjecture.Protobuf;
 
 /// <summary>Strategy that generates <see cref="JsonElement"/> objects shaped by a Protobuf <see cref="MessageDescriptor"/>.</summary>
-public sealed class ProtobufFieldStrategy : Strategy<JsonElement>
+/// <remarks>Initializes a new instance of <see cref="ProtobufFieldStrategy"/>.</remarks>
+public sealed class ProtobufFieldStrategy(MessageDescriptor descriptor, int maxDepth = 5) : Strategy<JsonElement>
 {
-    private readonly Strategy<JsonElement> inner;
-
-    /// <summary>Initializes a new instance of <see cref="ProtobufFieldStrategy"/>.</summary>
-    public ProtobufFieldStrategy(MessageDescriptor descriptor, int maxDepth = 5)
-    {
-        inner = BuildMessageStrategy(descriptor, maxDepth);
-    }
+    private readonly Strategy<JsonElement> inner = BuildMessageStrategy(descriptor, maxDepth);
 
     internal override JsonElement Generate(ConjectureData data)
     {
@@ -115,7 +110,7 @@ public sealed class ProtobufFieldStrategy : Strategy<JsonElement>
         Strategy<JsonElement> scalarStrategy = BuildScalarStrategy(field, depth);
 
         return field.IsRepeated
-            ? Gen.Lists(scalarStrategy).Select(static items => SerializeArray(items))
+            ? Gen.Lists(scalarStrategy, maxSize: 3).Select(static items => SerializeArray(items))
             : scalarStrategy;
     }
 
@@ -132,9 +127,9 @@ public sealed class ProtobufFieldStrategy : Strategy<JsonElement>
             FieldType.UInt64 or FieldType.Fixed64 =>
                 Gen.Integers<ulong>().Select(static v => JsonSerializer.SerializeToElement(v)),
             FieldType.Float =>
-                Gen.Floats().Select(static v => JsonSerializer.SerializeToElement(v)),
+                Gen.Floats(-1e10f, 1e10f).Select(static v => JsonSerializer.SerializeToElement(v)),
             FieldType.Double =>
-                Gen.Doubles().Select(static v => JsonSerializer.SerializeToElement(v)),
+                Gen.Doubles(-1e10, 1e10).Select(static v => JsonSerializer.SerializeToElement(v)),
             FieldType.Bool =>
                 Gen.Booleans().Select(static v => JsonSerializer.SerializeToElement(v)),
             FieldType.String =>
