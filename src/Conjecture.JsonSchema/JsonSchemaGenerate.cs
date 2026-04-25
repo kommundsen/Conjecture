@@ -17,16 +17,9 @@ public static class JsonSchemaGenerate
         /// <exception cref="JsonException">Thrown at construction time if <paramref name="jsonSchemaText"/> is not valid JSON.</exception>
         public static Strategy<JsonElement> FromJsonSchema(string jsonSchemaText)
         {
-            try
-            {
-                using JsonDocument doc = JsonDocument.Parse(jsonSchemaText);
-                JsonSchemaNode node = JsonSchemaParser.Parse(doc.RootElement);
-                return new JsonSchemaStrategy(node);
-            }
-            catch (JsonException ex) when (ex.GetType() != typeof(JsonException))
-            {
-                throw new JsonException(ex.Message, ex);
-            }
+            using JsonDocument doc = JsonDocument.Parse(jsonSchemaText);
+            JsonSchemaNode node = JsonSchemaParser.Parse(doc.RootElement);
+            return new JsonSchemaStrategy(node);
         }
 
         /// <summary>Returns a <see cref="Strategy{T}"/> that generates <see cref="JsonElement"/> values conforming to <paramref name="root"/>.</summary>

@@ -107,7 +107,7 @@ internal sealed class JsonSchemaStrategy : Strategy<JsonElement>
         HashSet<string> visiting)
     {
         Dictionary<string, JsonSchemaNode> mergedProperties = [];
-        List<string> mergedRequired = [];
+        HashSet<string> mergedRequiredSet = [];
 
         foreach (JsonSchemaNode sub in allOf)
         {
@@ -123,13 +123,12 @@ internal sealed class JsonSchemaStrategy : Strategy<JsonElement>
             {
                 foreach (string r in sub.Required)
                 {
-                    if (!mergedRequired.Contains(r))
-                    {
-                        mergedRequired.Add(r);
-                    }
+                    mergedRequiredSet.Add(r);
                 }
             }
         }
+
+        List<string> mergedRequired = [.. mergedRequiredSet];
 
         JsonSchemaNode merged = node with
         {
@@ -304,13 +303,13 @@ internal sealed class JsonSchemaStrategy : Strategy<JsonElement>
             string refValue = node.Ref;
             if (visiting.Contains(refValue) || depth <= 0)
             {
-                return Gen.Just(JsonDocument.Parse("null").RootElement.Clone());
+                return Gen.Just(JsonSchemaRefResolver.NullElement);
             }
 
             HashSet<string> newVisiting = [.. visiting, refValue];
             JsonSchemaNode? resolved = JsonSchemaRefResolver.ResolveRef(refValue, defs);
             return resolved is null
-                ? Gen.Just(JsonDocument.Parse("null").RootElement.Clone())
+                ? Gen.Just(JsonSchemaRefResolver.NullElement)
                 : BuildStrategy(resolved, defs ?? resolved.Defs, depth - 1, newVisiting);
         }
 
@@ -338,29 +337,17 @@ internal sealed class JsonSchemaStrategy : Strategy<JsonElement>
         return false;
     }
 
-    private static JsonElement ParseLong(long value)
-    {
-        using JsonDocument doc = JsonDocument.Parse(value.ToString(System.Globalization.CultureInfo.InvariantCulture));
-        return doc.RootElement.Clone();
-    }
+    private static JsonElement ParseLong(long value) =>
+        JsonSerializer.SerializeToElement(value);
 
-    private static JsonElement ParseDouble(double value)
-    {
-        using JsonDocument doc = JsonDocument.Parse(value.ToString(System.Globalization.CultureInfo.InvariantCulture));
-        return doc.RootElement.Clone();
-    }
+    private static JsonElement ParseDouble(double value) =>
+        JsonSerializer.SerializeToElement(value);
 
-    private static JsonElement ParseString(string value)
-    {
-        using JsonDocument doc = JsonDocument.Parse(System.Text.Json.JsonSerializer.Serialize(value));
-        return doc.RootElement.Clone();
-    }
+    private static JsonElement ParseString(string value) =>
+        JsonSerializer.SerializeToElement(value);
 
-    private static JsonElement SerializeObject(Dictionary<string, JsonElement> obj)
-    {
-        using JsonDocument doc = JsonDocument.Parse(System.Text.Json.JsonSerializer.Serialize(obj));
-        return doc.RootElement.Clone();
-    }
+    private static JsonElement SerializeObject(Dictionary<string, JsonElement> obj) =>
+        JsonSerializer.SerializeToElement(obj);
 
     private static readonly IReadOnlyDictionary<string, JsonSchemaNode> EmptyProps =
         new Dictionary<string, JsonSchemaNode>();

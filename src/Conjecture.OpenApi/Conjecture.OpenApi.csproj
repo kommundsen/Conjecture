@@ -2,23 +2,27 @@
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
+    <Description>OpenAPI integration for Conjecture.NET</Description>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" Condition="Exists('README.md')" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.OpenApi" />
+    <PackageReference Include="Microsoft.OpenApi.Readers" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Conjecture.Core\Conjecture.Core.csproj" />
-    <ProjectReference Include="..\Conjecture.Regex\Conjecture.Regex.csproj" />
+    <ProjectReference Include="..\Conjecture.JsonSchema\Conjecture.JsonSchema.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Conjecture.JsonSchema.Tests</_Parameter1>
-    </AssemblyAttribute>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Conjecture.OpenApi</_Parameter1>
+      <_Parameter1>Conjecture.OpenApi.Tests</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
 
