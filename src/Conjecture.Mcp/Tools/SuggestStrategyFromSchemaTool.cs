@@ -73,12 +73,9 @@ internal static class SuggestStrategyFromSchemaTool
 
     private static string SuggestProtobuf(string? messageType)
     {
-        if (string.IsNullOrWhiteSpace(messageType))
-        {
-            return "error: 'messageType' is required for schemaType 'protobuf'. Example: \"MyMessage\"";
-        }
-
-        return $$"""
+        return string.IsNullOrWhiteSpace(messageType)
+            ? "error: 'messageType' is required for schemaType 'protobuf'. Example: \"MyMessage\""
+            : $$"""
             [Property]
             public bool {{messageType}}_RoundTripsCorrectly({{messageType}} message)
             {

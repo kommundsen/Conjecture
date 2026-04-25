@@ -189,6 +189,10 @@ internal sealed class JsonSchemaStrategy : Strategy<JsonElement>
                 "uri" => Gen.Url().Select(static s => ParseString(s)),
                 "uuid" => Gen.Uuid().Select(static s => ParseString(s)),
                 "date-time" => Gen.IsoDate().Select(static s => ParseString(s)),
+                "ipv4" => Gen.Ipv4().Select(static s => ParseString(s)),
+                "ipv6" => Gen.Ipv6().Select(static s => ParseString(s)),
+                "date" => Gen.Date().Select(static s => ParseString(s)),
+                "time" => Gen.Time().Select(static s => ParseString(s)),
                 _ => BuildPlainStringStrategy(node),
             }
             : BuildPlainStringStrategy(node);

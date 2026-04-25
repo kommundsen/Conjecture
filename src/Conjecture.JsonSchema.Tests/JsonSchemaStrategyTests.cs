@@ -266,4 +266,52 @@ public sealed class JsonSchemaStrategyTests
             Assert.True(element.GetInt64() >= 5L, $"Value {element.GetInt64()} is below minimum 5");
         }
     }
+
+    [Fact]
+    public void Generate_StringSchemaWithFormatIpv4_ProducesIpv4Addresses()
+    {
+        JsonSchemaStrategy strategy = ParseStrategy("""{"type": "string", "format": "ipv4"}""");
+        IReadOnlyList<JsonElement> samples = Sample(strategy);
+        foreach (JsonElement element in samples)
+        {
+            Assert.Equal(JsonValueKind.String, element.ValueKind);
+            Assert.Matches(KnownRegex.Ipv4, element.GetString()!);
+        }
+    }
+
+    [Fact]
+    public void Generate_StringSchemaWithFormatIpv6_ProducesIpv6Addresses()
+    {
+        JsonSchemaStrategy strategy = ParseStrategy("""{"type": "string", "format": "ipv6"}""");
+        IReadOnlyList<JsonElement> samples = Sample(strategy);
+        foreach (JsonElement element in samples)
+        {
+            Assert.Equal(JsonValueKind.String, element.ValueKind);
+            Assert.Matches(KnownRegex.Ipv6, element.GetString()!);
+        }
+    }
+
+    [Fact]
+    public void Generate_StringSchemaWithFormatDate_ProducesRfc3339DateStrings()
+    {
+        JsonSchemaStrategy strategy = ParseStrategy("""{"type": "string", "format": "date"}""");
+        IReadOnlyList<JsonElement> samples = Sample(strategy);
+        foreach (JsonElement element in samples)
+        {
+            Assert.Equal(JsonValueKind.String, element.ValueKind);
+            Assert.Matches(KnownRegex.Date, element.GetString()!);
+        }
+    }
+
+    [Fact]
+    public void Generate_StringSchemaWithFormatTime_ProducesRfc3339TimeStrings()
+    {
+        JsonSchemaStrategy strategy = ParseStrategy("""{"type": "string", "format": "time"}""");
+        IReadOnlyList<JsonElement> samples = Sample(strategy);
+        foreach (JsonElement element in samples)
+        {
+            Assert.Equal(JsonValueKind.String, element.ValueKind);
+            Assert.Matches(KnownRegex.Time, element.GetString()!);
+        }
+    }
 }
