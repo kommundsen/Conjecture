@@ -43,4 +43,6 @@
   <Project Path="Conjecture.Interactions.Tests/Conjecture.Interactions.Tests.csproj" />
   <Project Path="Conjecture.Http/Conjecture.Http.csproj" />
   <Project Path="Conjecture.Http.Tests/Conjecture.Http.Tests.csproj" />
+  <Project Path="Conjecture.JsonSchema/Conjecture.JsonSchema.csproj" />
+  <Project Path="Conjecture.JsonSchema.Tests/Conjecture.JsonSchema.Tests.csproj" />
 </Solution>
