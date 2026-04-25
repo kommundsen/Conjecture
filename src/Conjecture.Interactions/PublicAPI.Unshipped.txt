@@ -1,0 +1,18 @@
+#nullable enable
+Conjecture.Interactions.CompositeInteractionTarget
+Conjecture.Interactions.CompositeInteractionTarget.CompositeInteractionTarget(params (string! name, Conjecture.Interactions.IInteractionTarget! target)[]! targets) -> void
+Conjecture.Interactions.CompositeInteractionTarget.ExecuteAsync(Conjecture.Interactions.IInteraction! interaction, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<object?>!
+Conjecture.Interactions.IAddressedInteraction
+Conjecture.Interactions.IAddressedInteraction.ResourceName.get -> string!
+Conjecture.Interactions.IInteraction
+Conjecture.Interactions.IInteractionTarget
+Conjecture.Interactions.IInteractionTarget.ExecuteAsync(Conjecture.Interactions.IInteraction! interaction, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<object?>!
+abstract Conjecture.Interactions.InteractionStateMachine<TState>.Commands(TState state) -> System.Collections.Generic.IEnumerable<Conjecture.Core.Strategy<Conjecture.Interactions.IInteraction!>!>!
+abstract Conjecture.Interactions.InteractionStateMachine<TState>.InitialState() -> TState
+abstract Conjecture.Interactions.InteractionStateMachine<TState>.Invariant(TState state) -> void
+abstract Conjecture.Interactions.InteractionStateMachine<TState>.RunCommand(TState state, Conjecture.Interactions.IInteraction! interaction, Conjecture.Interactions.IInteractionTarget! target, System.Threading.CancellationToken ct) -> TState
+Conjecture.Interactions.InteractionStateMachine<TState>
+Conjecture.Interactions.InteractionStateMachine<TState>.InteractionStateMachine() -> void
+Conjecture.Core.Property
+static Conjecture.Core.Property.ForAll<T>(Conjecture.Interactions.IInteractionTarget! target, Conjecture.Core.Strategy<T>! strategy, System.Func<Conjecture.Interactions.IInteractionTarget!, T, System.Threading.Tasks.Task!>! assertion, Conjecture.Core.ConjectureSettings? settings = null, System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+static Conjecture.Core.Property.ForAll<TState>(Conjecture.Interactions.IInteractionTarget! target, Conjecture.Interactions.InteractionStateMachine<TState>! machine, Conjecture.Core.ConjectureSettings? settings = null, System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
