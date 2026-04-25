@@ -34,10 +34,12 @@ internal static class JsonSchemaRefResolver
 
     internal static readonly JsonElement TrueElement;
     internal static readonly JsonElement FalseElement;
+    internal static readonly JsonElement NullElement;
 
     static JsonSchemaRefResolver()
     {
         TrueElement = JsonDocument.Parse("true").RootElement.Clone();
         FalseElement = JsonDocument.Parse("false").RootElement.Clone();
+        NullElement = JsonDocument.Parse("null").RootElement.Clone();
     }
 }
