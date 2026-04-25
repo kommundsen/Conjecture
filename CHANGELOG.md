@@ -10,6 +10,30 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Version
 
 ---
 
+## [0.19.0] — 2026-04-25
+
+### Added
+
+**Http** (`Conjecture.Http`) — new package
+- `HttpInteraction` record — represents a single HTTP request interaction (resource name, method, path, optional body, optional headers)
+- `IHttpTarget` interface — resolves an `HttpClient` by resource name for executing interactions
+- `HostHttpTarget` — `IHttpTarget` implementation backed by `Microsoft.Extensions.Hosting.IHost` and a pre-configured `HttpClient`; implements `IAsyncDisposable`
+- `HttpStrategyBuilder` — fluent builder for `Strategy<HttpInteraction>`; verbs `Get`, `Post`, `Put`, `Delete`, `Patch`; modifiers `WithHeaders`, `WithResource`, `WithBodyStrategy`
+- `HttpGenerateExtensions` — surfaces `Generate.Http(resourceName)` via a C# 14 `extension(Generate)` block; a single `using Conjecture.Http;` is enough
+- `HttpInvariantExtensions` — assertion helpers on `Task<HttpResponseMessage>`: `AssertNot5xx`, `Assert4xx`, `AssertProblemDetailsShape`; `Response(target)` extension on `HttpInteraction` to dispatch a request and return the response
+- `HttpInvariantException` — exception type thrown when an HTTP invariant is violated
+
+**Interactions** (`Conjecture.Interactions`) — new package
+- `IInteraction` — base marker interface for interaction commands
+- `IAddressedInteraction` — interaction with a `ResourceName` for routing to a named target
+- `IInteractionTarget` — target that executes interactions and returns `object?` results
+- `CompositeInteractionTarget` — fan-out target that routes `IAddressedInteraction` commands to named sub-targets by resource name
+- `InteractionStateMachine<TState>` — abstract base for model-based interaction testing; implement `InitialState`, `Commands`, `RunCommand`, and `Invariant`
+- `Property.ForAll<T>(IInteractionTarget, Strategy<T>, assertion)` — runs a property test against an interaction target with a generated value
+- `Property.ForAll<TState>(IInteractionTarget, InteractionStateMachine<TState>)` — runs a full state-machine property test against an interaction target
+
+---
+
 ## [0.18.0] — 2026-04-23
 
 ### Added
