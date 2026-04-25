@@ -49,4 +49,6 @@
   <Project Path="Conjecture.OpenApi.Tests/Conjecture.OpenApi.Tests.csproj" />
   <Project Path="Conjecture.Protobuf/Conjecture.Protobuf.csproj" />
   <Project Path="Conjecture.Protobuf.Tests/Conjecture.Protobuf.Tests.csproj" />
+  <Project Path="Conjecture.Messaging/Conjecture.Messaging.csproj" />
+  <Project Path="Conjecture.Messaging.Tests/Conjecture.Messaging.Tests.csproj" />
 </Solution>
