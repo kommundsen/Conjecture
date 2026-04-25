@@ -25,3 +25,7 @@ items:
     href: regex-catastrophic-backtracking.md
   - name: Why time bugs are disproportionately dangerous
     href: time-bugs.md
+  - name: Why schema-constrained strategies shrink correctly
+    href: schema-constrained-shrinking.md
+  - name: Why three schema packages instead of one
+    href: schema-package-layout.md

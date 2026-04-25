@@ -49,6 +49,12 @@ items:
     href: explore-strategies.md
   - name: Use the MCP server
     href: use-mcp-server.md
+  - name: Property-test an HTTP API with OpenAPI
+    href: test-http-api-with-openapi.md
+  - name: Generate data from a JSON Schema
+    href: generate-from-json-schema.md
+  - name: Generate Protobuf message payloads
+    href: generate-protobuf-payloads.md
   - name: Test a regex validator
     href: test-regex-validator.md
   - name: Audit a regex for catastrophic backtracking
