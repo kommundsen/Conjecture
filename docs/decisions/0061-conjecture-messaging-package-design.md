@@ -104,6 +104,15 @@ Class-scoped by default, mirroring the v0.20 fixture seam (ADR 0059, "Deferred p
 - `IMessageBusTarget`'s consume contract is wider than `IInteractionTarget`. If a third transport (gRPC streaming, SignalR) wants similar pull semantics, we may want to lift `ReceiveAsync` / `AcknowledgeAsync` to a shared `IPullTarget` interface. Defer until that third transport actually exists; matches ADR 0059's "minimal until needed" policy.
 - Real-broker shrinking depends on each broker's emulator / deterministic test mode. Azure Service Bus emulator and RabbitMQ test containers are both reliable in 2026, but a future broker without a deterministic mode would degrade shrinking quality.
 
+### Per-adapter test strategy
+
+Concrete adapter test suites split into two tiers to keep the dev inner loop fast while still catching real-broker drift:
+
+- **Unit tier** (`Conjecture.Messaging.<Broker>.Tests`) — hand-rolled fakes for the broker SDK's client/sender/receiver types. No Docker, no network, runs in milliseconds. Covers the adapter's translation between `MessageInteraction` and the broker's native message type, error mapping, and lifecycle ordering. This is the tier that runs on every `dotnet test` and in every PR check.
+- **Integration tier** (`Conjecture.SelfTests/Messaging/<Broker>/`) — runs against the real broker (Azure Service Bus emulator via Docker for ASB; the official RabbitMQ Docker image for RabbitMQ). Class-scoped fixture per broker — startup cost is amortized across all tests in the class. Gated on `DOCKER_HOST` availability (or equivalent broker-connection-string env var) and skipped silently when unavailable, so the local inner loop on a no-Docker dev machine stays fast. Runs on CI nightly and on PRs labelled `integration`.
+
+This is deliberately leaner than mandating Testcontainers everywhere — Testcontainers' 5–10 s container startup is unbearable at the unit-test tier. The fake-client tier covers ~95% of adapter logic; the integration tier guards against SDK upgrades silently changing semantics.
+
 ## Alternatives Considered
 
 **Push-based handler registration** — `target.OnReceive(destination, handler)`. Rejected: forces a callback model incompatible with `InteractionStateMachine`'s step-by-step shrinking. The shrinker needs to interleave publishes and receives in one deterministic sequence; callbacks fire on broker threads at non-deterministic times.
