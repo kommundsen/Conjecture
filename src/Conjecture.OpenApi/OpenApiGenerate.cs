@@ -2,6 +2,7 @@
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
 using System.IO;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 using Conjecture.Core;
@@ -14,6 +15,8 @@ namespace Conjecture.OpenApi;
 /// <summary>Extension methods on <see cref="Generate"/> for OpenAPI-driven generation.</summary>
 public static class OpenApiGenerate
 {
+    private static readonly HttpClient SharedHttpClient = new();
+
     extension(Generate)
     {
         /// <summary>Loads an OpenAPI document from <paramref name="filePath"/> and returns a <see cref="OpenApiDocument"/> for building strategies.</summary>
@@ -39,7 +42,7 @@ public static class OpenApiGenerate
         {
             using Stream stream = url.IsFile
                 ? File.OpenRead(url.LocalPath)
-                : await new System.Net.Http.HttpClient().GetStreamAsync(url);
+                : await SharedHttpClient.GetStreamAsync(url);
             OpenApiStreamReader reader = new();
             Microsoft.OpenApi.Models.OpenApiDocument raw = (await reader.ReadAsync(stream)).OpenApiDocument;
             return new(raw);

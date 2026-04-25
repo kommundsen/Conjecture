@@ -214,10 +214,7 @@ internal sealed class JsonSchemaStrategy : Strategy<JsonElement>
             : BuildBooleanStrategy();
 
         return Gen.Lists(itemStrategy, minItems, maxItems).Select(static items =>
-        {
-            using JsonDocument doc = JsonDocument.Parse(System.Text.Json.JsonSerializer.Serialize(items));
-            return doc.RootElement.Clone();
-        });
+            JsonSerializer.SerializeToElement(items));
     }
 
     private static Strategy<JsonElement> BuildObjectStrategy(
