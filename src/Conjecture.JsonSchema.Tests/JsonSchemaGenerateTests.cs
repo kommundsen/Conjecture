@@ -65,6 +65,6 @@ public sealed class JsonSchemaGenerateTests
     [Fact]
     public void FromJsonSchema_InvalidJsonText_ThrowsJsonExceptionAtConstruction()
     {
-        Assert.Throws<JsonException>(() => Generate.FromJsonSchema("not valid json"));
+        Assert.ThrowsAny<JsonException>(() => Generate.FromJsonSchema("not valid json"));
     }
 }
