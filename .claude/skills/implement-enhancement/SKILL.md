@@ -30,7 +30,7 @@ gh issue list --repo kommundsen/Conjecture --state open --json number,title --li
 
 Extract:
 - **Parent title** (for the PR title and branch slug)
-- **Parent slug**: from parent title, slugify (kebab-case, strip special chars)
+- **Parent slug**: from parent title, slugify (kebab-case, strip special chars). Cap at 40 chars; trim on word boundary where possible (drop trailing hyphen).
 - **Sub-issue list**: every open issue whose title starts with `[<parent>.`, sorted by number ascending
 
 Print a summary line:
@@ -40,8 +40,17 @@ Enhancement #<parent>: <title>  (<k> open sub-issues)
 
 ### 2. Fetch contributors (cache for the run)
 
+Bash tool calls do not share shell state, so persist the list to a tmp file inside `.git/`:
+
 ```bash
-CONTRIBUTORS=$(gh api repos/kommundsen/Conjecture/contributors --jq '.[].login' | tr '\n' ' ')
+gh api repos/kommundsen/Conjecture/contributors --jq '.[].login' \
+  > "$(git rev-parse --git-dir)/conjecture-contributors.txt"
+```
+
+Subsequent steps read it back:
+
+```bash
+CONTRIBUTORS=$(tr '\n' ' ' < "$(git rev-parse --git-dir)/conjecture-contributors.txt")
 ```
 
 ### 3. Whole-enhancement brief
@@ -50,7 +59,7 @@ Spawn the `issue-context` agent with: `issues = [<parent>, <sub1>, <sub2>, …]`
 
 If the returned brief's `Non-contributor comments to review` section is non-empty, use `AskUserQuestion` to ask the user whether any of those comments require attention before proceeding. Options: "Proceed" / "Pause to address them".
 
-### 4. Branch (create or resume)
+### 4. Branch (create or resume) + detect existing PR
 
 ```bash
 BRANCH="feat/#<parent>-<slug>"
@@ -61,7 +70,13 @@ else
 fi
 ```
 
-Print whether this is a fresh start or a resume.
+Then detect whether a PR already exists for this branch (resume case):
+
+```bash
+EXISTING_PR=$(gh pr list --head "$BRANCH" --repo kommundsen/Conjecture --json number --jq '.[0].number // empty')
+```
+
+Capture `$EXISTING_PR` into a tmp file (`"$(git rev-parse --git-dir)/conjecture-pr-number.txt"`) so step 7 can read it. Print whether this is a fresh start, a resume without PR, or a resume with PR `#<EXISTING_PR>`.
 
 ### 5. Mark parent In Progress on the Roadmap project
 
@@ -90,9 +105,23 @@ fi
 
 Re-query open sub-issues at the start of every iteration (idempotent; tolerates external closes and resume mode). Loop while at least one sub-issue remains.
 
+Track an in-memory `AUTOPILOT` flag (initially `false`); see step 6d.
+
 For each iteration:
 
-#### 6a. Chapter marker + In Progress
+#### 6a. Divergence warning + chapter marker + In Progress
+
+Surface (warn-only) if `main` has advanced since the branch was created:
+
+```bash
+git fetch origin main --quiet
+BEHIND=$(git rev-list --count HEAD..origin/main)
+if [ "$BEHIND" -gt 0 ]; then
+  echo "⚠️  $BEHIND new commit(s) on main since this branch diverged. Consider rebasing before continuing."
+fi
+```
+
+Do not auto-rebase. Then:
 
 ```text
 mcp__ccd_session__mark_chapter title="Cycle <cycle>: <sub-title>"
@@ -101,23 +130,30 @@ Then `set_in_progress <sub-issue>`.
 
 #### 6b. Per-cycle context brief
 
-Spawn `issue-context` with `issues = [<sub-issue>]`, `contributors = $CONTRIBUTORS`. If it flags non-contributor comments, `AskUserQuestion` before continuing.
+Read back `$CONTRIBUTORS` from the tmp file written in step 2. If a draft PR already exists (from `$EXISTING_PR` in step 4 or `$PR_NUMBER` set in step 7), include `pr_number = <n>` so reviewer comments are folded in.
 
-#### 6c. Run the cycle
+Spawn `issue-context` with `issues = [<sub-issue>]`, `contributors = $CONTRIBUTORS`, and `pr_number` (when known). Capture the full sub-issue body returned in the brief — it is passed to `cycle-runner` so the agent does not re-fetch.
+
+If the brief flags non-contributor comments or unaddressed PR review comments, `AskUserQuestion` before continuing.
+
+#### 6c. /decision check, then run the cycle
+
+If the sub-issue's `## Test` or `## Implement` body mentions `/decision`, invoke the `decision` skill now. This is the single owner for `/decision` invocation — `cycle-runner` does not invoke it.
 
 Spawn `cycle-runner` with:
 - `sub_issue_number`
 - `cycle_number` (from the sub-issue title, e.g. `76.1`)
 - `parent_issue_number`
+- `sub_issue_body` — the cached body from 6b (so cycle-runner skips its own `gh issue view`)
 - `brief` — the structured output from 6b
 - `test_file_path` — from the sub-issue body
 - `test_class_name` — from the sub-issue body
 
-`cycle-runner` returns a compact result block (`VERDICT`, `COMMIT_SHA`, `SUMMARY`, `FINDINGS`).
+`cycle-runner` returns a compact result block (`VERDICT`, `COMMIT_SHA`, `SUMMARY`, `FILES_TOUCHED`, `FINDINGS`). Possible verdicts: `APPROVED`, `RETRIES_EXHAUSTED`, `GREEN_FAILED`, `UNEXPECTED_GREEN`, `INFRA_FAILURE`.
 
 #### 6d. User checkpoint
 
-Present the result via `AskUserQuestion`:
+If `AUTOPILOT == true` AND `VERDICT == APPROVED`, skip the prompt and proceed to 6e. Otherwise present the result via `AskUserQuestion`:
 
 ```
 Cycle <cycle> — verdict: <VERDICT>
@@ -130,17 +166,20 @@ What would you like to do?
 
 Options:
 - **Approve** (default-highlighted when `VERDICT: APPROVED`) — continue to 6e.
+- **Approve all going forward** — set `AUTOPILOT=true`, then continue to 6e. Subsequent cycles with `VERDICT == APPROVED` will skip this prompt; non-APPROVED verdicts always pause regardless of autopilot.
 - **Redo** — re-spawn `cycle-runner` with user-supplied guidance added to the brief (loops back to 6c within the same iteration).
 - **Abort** — stop the loop. Leave the working tree as-is (do not roll back committed cycles).
 
 #### 6e. Post-approval
 
 - Close the sub-issue: `gh issue close <sub-issue> --repo kommundsen/Conjecture`.
-- If this was the **first** cycle on the branch: go to step 7 (draft PR) before the next iteration. Otherwise push the new commit: `git push origin "$BRANCH"`.
+- If no PR exists yet on this branch (`$PR_NUMBER` and `$EXISTING_PR` both empty): go to step 7 (draft PR) before the next iteration. Otherwise push the new commit: `git push origin "$BRANCH"`.
 
-### 7. Draft PR (first cycle only)
+### 7. Draft PR (only when no PR exists yet)
 
-After the first approved cycle:
+If `$EXISTING_PR` from step 4 is set, skip this step entirely — the resume case already has a PR. Set `PR_NUMBER=$EXISTING_PR` and continue.
+
+Otherwise, after the first approved cycle on a fresh branch:
 
 ```bash
 git push -u origin "$BRANCH"
@@ -149,7 +188,7 @@ git push -u origin "$BRANCH"
 Read `.github/pull_request_template.md`, fill it in based on the whole-enhancement brief from step 3, and open a draft:
 
 ```bash
-gh pr create --draft \
+PR_URL=$(gh pr create --draft \
   --repo kommundsen/Conjecture \
   --title "[<parent>] <enhancement title>" \
   --base main \
@@ -158,10 +197,11 @@ gh pr create --draft \
 
 Part of #<parent>
 EOF
-)"
+)")
+PR_NUMBER=$(echo "$PR_URL" | grep -oE '[0-9]+$')
 ```
 
-Capture the PR number for later. Print the URL.
+Persist `$PR_NUMBER` to `"$(git rev-parse --git-dir)/conjecture-pr-number.txt"` for later iterations / step 9. Print the URL.
 
 ### 8. Final DoD check
 
@@ -171,12 +211,27 @@ After the last sub-issue closes (no open sub-issues remain), spawn `reviewer` wi
 
 Present verdict via `AskUserQuestion`. Options:
 - **Ship it** — proceed to step 9.
-- **Address gaps now** — the user identifies one or more gaps; the main thread creates a *synthetic* cycle (treat the gap description as a one-off brief) and loops back to 6c. Repeat until shipworthy.
+- **Address gaps now** — for each gap, file a real follow-up sub-issue and let the main loop pick it up:
+  1. Determine the next sub-issue index `<n>` (highest existing `[<parent>.X]` number + 1).
+  2. Use `AskUserQuestion` to confirm an auto-drafted body (with `## Test` and `## Implement` sections derived from the gap description) — let the user edit before posting.
+  3. `gh issue create --repo kommundsen/Conjecture --title "[<parent>.<n>] <gap title>" --body "<drafted body>"`. Add the parent's labels.
+  4. Loop back to **step 6**. The standard re-query at the top of the loop picks up the new sub-issue automatically; `cycle-runner` is invoked normally with the real sub-issue number — there is no "synthetic" / issueless mode.
+  5. Repeat from step 8 once all newly-filed gap sub-issues close.
 - **Ship as-is, file follow-ups** — skip to step 9; the user files follow-up issues manually.
 
-### 9. Mark PR ready + final body
+### 9. CI gate, mark PR ready + final body
 
-Build the per-cycle changelog:
+Before promoting, surface CI status (best-effort — if no CI is configured, the call returns 0 with no rows and the gate is a no-op):
+
+```bash
+gh pr checks "$PR_NUMBER" --repo kommundsen/Conjecture --watch || true
+```
+
+If any checks failed, present `AskUserQuestion`:
+- **Promote anyway** (default for offline / no-CI scenarios)
+- **Pause to investigate** — stop here; user fixes CI manually before re-running the skill from step 9.
+
+Then build the per-cycle changelog:
 ```bash
 git log main..HEAD --oneline
 ```
@@ -194,8 +249,8 @@ Closes #<parent>
 
 Then:
 ```bash
-gh pr ready <pr-number> --repo kommundsen/Conjecture
-gh pr edit <pr-number> --repo kommundsen/Conjecture --body "$(cat <<'EOF'
+gh pr ready "$PR_NUMBER" --repo kommundsen/Conjecture
+gh pr edit "$PR_NUMBER" --repo kommundsen/Conjecture --body "$(cat <<'EOF'
 <new body>
 EOF
 )"
@@ -210,5 +265,5 @@ Print the final PR URL.
 - Never roll back previously-committed cycles on the branch.
 - Never `git add -A` / `git add .` — stage explicit paths (cycle-runner enforces this internally too).
 - Never close the parent issue from this skill; GitHub closes it automatically when the PR merges via `Closes #<parent>`.
-- If the parent or any sub-issue references a `/decision` step, invoke the `decision` skill at the appropriate point before that cycle's Red phase.
-- If `cycle-runner` returns a non-APPROVED verdict (`RETRIES_EXHAUSTED`, `GREEN_FAILED`, `UNEXPECTED_GREEN`), surface the findings and stop the loop — do not auto-retry from the main thread.
+- If the parent or any sub-issue references a `/decision` step, this skill (step 6c) is the single owner — `cycle-runner` does not invoke `/decision`.
+- If `cycle-runner` returns a non-APPROVED verdict (`RETRIES_EXHAUSTED`, `GREEN_FAILED`, `UNEXPECTED_GREEN`, `INFRA_FAILURE`), surface the findings and pause via 6d — do not auto-retry from the main thread. `AUTOPILOT` is ignored for non-APPROVED verdicts.

@@ -29,7 +29,21 @@ You will receive:
    - Do NOT create stub implementations; reference types that don't exist yet (build will fail — that's correct)
    - Follow Code Style in CLAUDE.md
 4. If given a reviewer ADD_TEST verdict, add the missing tests the reviewer identified.
-5. Run `dotnet build src/ 2>&1 | grep -E 'warning (IDE|CS)'` — fix any style warnings in the test file. Build must fail (missing production types) or tests must fail. If green, tests cover nothing new; revise them.
+5. Verify red state. Run a full build first (do **not** pipe through `grep` — that hides compiler errors):
+
+   ```bash
+   dotnet build src/ 2>&1 | tee /tmp/test-developer-build.log
+   BUILD_EXIT=${PIPESTATUS[0]}
+   ```
+
+   Then inspect:
+
+   ```bash
+   grep -E ': error (CS|IDE)' /tmp/test-developer-build.log    # errors (expected — missing production types)
+   grep -E ': warning (IDE|CS)' /tmp/test-developer-build.log  # warnings — fix any in your test file
+   ```
+
+   The expected red state is `BUILD_EXIT != 0` with `CS` errors referencing the missing production types. If the build succeeds, the tests cover nothing new — revise them. Fix any style warnings in the test file before returning.
 
 ## Output
 
