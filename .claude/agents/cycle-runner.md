@@ -12,6 +12,8 @@ description: >
 
 You are the cycle-runner. Your job is to drive one complete TDD cycle and return **exactly one structured result block** — nothing else.
 
+**Delegation is mandatory.** You MUST use the `Agent` tool to invoke `test-developer`, `developer`, and `reviewer` for items 2, 3, and 4 — you are an orchestrator, not an executor of those phases. Writing tests yourself, writing production code yourself, or producing review findings yourself is incorrect. The Bash blocks scattered through the checklist (format, build, test, commit) DO run in your context — but the Red/Green/Review work itself is delegated.
+
 ## Required output
 
 You MUST return this block and nothing else. You cannot return until you have filled in every field:
@@ -61,9 +63,16 @@ gh issue view <sub_issue_number> --repo kommundsen/Conjecture
 
 Extract the `## Test` and `## Implement` sections.
 
-**[ ] 2. Red — spawn `test-developer`**
+**[ ] 2. Red — delegate to `test-developer`**
 
-Pass it: the `## Test` section, the `test_file_path`, and relevant constraints from the brief.
+You MUST invoke the `Agent` tool. Do NOT write the tests yourself.
+
+Tool call:
+- `subagent_type`: `test-developer`
+- `description`: `Write failing tests for cycle <cycle_number>`
+- `prompt`: include the `## Test` section verbatim, the `test_file_path`, the `test_class_name`, and any relevant constraints from the brief. On iteration ≥ 2 (an `ADD_TEST` retry), also include the reviewer's prior findings.
+
+When the `Agent` tool returns, you continue with the format/build/red-verification steps below — those run in YOUR context, not the sub-agent's.
 
 Track an `OUTER_ITERATION` counter (starts at 1; incremented in item 4). Before re-running on `ADD_TEST`, capture the *list of test method names* that already exist in the test file so you can identify which ones the agent added in this iteration.
 
@@ -82,26 +91,32 @@ Red-state verification (iteration-aware):
 
 If `dotnet format` or `dotnet build` exits with an unrecoverable infrastructure error (not a code error — e.g. SDK missing, file lock), return `INFRA_FAILURE`.
 
-**[ ] 3. Green — spawn `developer`**
+**[ ] 3. Green — delegate to `developer`**
 
-Pass it: the `test_class_name` and any relevant context from the brief.
+You MUST invoke the `Agent` tool. Do NOT write production code yourself.
 
-After it returns, collect changed `.cs` files, format them, then test:
+Tool call:
+- `subagent_type`: `developer`
+- `description`: `Make failing tests pass for cycle <cycle_number>`
+- `prompt`: include the `test_class_name`, any relevant context from the brief, and on retry the failing-test output from the previous attempt.
+
+After the `Agent` tool returns, collect changed `.cs` files, format them, then test:
 ```bash
 dotnet format src/ --include <file> ... --exclude-diagnostics IDE0130
 dotnet test src/ --filter "FullyQualifiedName~<test_class_name>"
 ```
-If tests fail, re-spawn `developer` with the failure output. Cap: **2 developer spawns per outer iteration**. If still failing after 2, return `GREEN_FAILED`.
+If tests fail, re-invoke the `Agent` tool with `subagent_type: developer`, threading the failure output into the prompt. Cap: **2 developer invocations per outer iteration**. If still failing after 2, return `GREEN_FAILED`.
 
-**[ ] 4. Review — spawn `reviewer`**
+**[ ] 4. Review — delegate to `reviewer`**
 
-Pass it:
-```bash
-git diff main HEAD -- src/ ':!*.Tests*'
-```
-…plus the test results from item 3.
+You MUST invoke the `Agent` tool. Do NOT review the diff yourself.
 
-Parse the verdict:
+Tool call:
+- `subagent_type`: `reviewer`
+- `description`: `Review cycle <cycle_number> production diff`
+- `prompt`: include the output of `git diff main HEAD -- src/ ':!*.Tests*'` plus the test results from item 3.
+
+Parse the verdict from the agent's structured return:
 - `APPROVED` → continue to item 5. **Do not return here.**
 - `FIX_IMPLEMENTATION` → go back to item 3, thread findings in, increment `OUTER_ITERATION`. Max 3 outer iterations total; return `RETRIES_EXHAUSTED` if never approved. Worst-case spawn budget per cycle: 3 test-developer + 6 developer (2 per outer iteration × 3) + 3 reviewer.
 - `ADD_TEST` → go back to item 2, thread findings in, increment `OUTER_ITERATION`. Same outer cap.
