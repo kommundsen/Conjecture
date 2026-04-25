@@ -1,16 +1,1 @@
 #nullable enable
-Conjecture.JsonSchema.JsonSchemaGenerate
-Conjecture.JsonSchema.JsonSchemaGenerate.extension(Conjecture.Core.Generate!)
-static Conjecture.JsonSchema.JsonSchemaGenerate.extension(Conjecture.Core.Generate!).FromJsonSchema(System.IO.FileInfo! schemaFile) -> Conjecture.Core.Strategy<System.Text.Json.JsonElement>!
-static Conjecture.JsonSchema.JsonSchemaGenerate.extension(Conjecture.Core.Generate!).FromJsonSchema(System.Text.Json.JsonElement root) -> Conjecture.Core.Strategy<System.Text.Json.JsonElement>!
-static Conjecture.JsonSchema.JsonSchemaGenerate.extension(Conjecture.Core.Generate!).FromJsonSchema(string! jsonSchemaText) -> Conjecture.Core.Strategy<System.Text.Json.JsonElement>!
-Conjecture.JsonSchema.JsonSchemaType
-Conjecture.JsonSchema.JsonSchemaType.None = 0 -> Conjecture.JsonSchema.JsonSchemaType
-Conjecture.JsonSchema.JsonSchemaType.Null = 1 -> Conjecture.JsonSchema.JsonSchemaType
-Conjecture.JsonSchema.JsonSchemaType.Boolean = 2 -> Conjecture.JsonSchema.JsonSchemaType
-Conjecture.JsonSchema.JsonSchemaType.Integer = 3 -> Conjecture.JsonSchema.JsonSchemaType
-Conjecture.JsonSchema.JsonSchemaType.Number = 4 -> Conjecture.JsonSchema.JsonSchemaType
-Conjecture.JsonSchema.JsonSchemaType.String = 5 -> Conjecture.JsonSchema.JsonSchemaType
-Conjecture.JsonSchema.JsonSchemaType.Array = 6 -> Conjecture.JsonSchema.JsonSchemaType
-Conjecture.JsonSchema.JsonSchemaType.Object = 7 -> Conjecture.JsonSchema.JsonSchemaType
-Conjecture.JsonSchema.JsonSchemaType.Any = 8 -> Conjecture.JsonSchema.JsonSchemaType
