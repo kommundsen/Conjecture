@@ -1,0 +1,3 @@
+#nullable enable
+Conjecture.Protobuf.ProtobufFieldStrategy
+Conjecture.Protobuf.ProtobufFieldStrategy.ProtobufFieldStrategy(Google.Protobuf.Reflection.MessageDescriptor! descriptor, int maxDepth = 5) -> void
