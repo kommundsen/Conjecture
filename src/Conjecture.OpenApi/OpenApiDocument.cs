@@ -20,14 +20,6 @@ public sealed class OpenApiDocument
         adapter = new OpenApiSchemaAdapter(raw);
     }
 
-#pragma warning disable RS0016 // Symbol is not part of the declared public API
-    /// <summary>Implicitly wraps a Microsoft OpenAPI document in a <see cref="OpenApiDocument"/>.</summary>
-    public static implicit operator OpenApiDocument(global::Microsoft.OpenApi.Models.OpenApiDocument raw)
-    {
-        return new(raw);
-    }
-#pragma warning restore RS0016
-
     /// <summary>Returns a strategy that generates <see cref="JsonElement"/> values conforming to the request body schema for <paramref name="method"/> <paramref name="path"/>.</summary>
     public Strategy<JsonElement> RequestBody(string method, string path, int maxDepth = 5)
     {
