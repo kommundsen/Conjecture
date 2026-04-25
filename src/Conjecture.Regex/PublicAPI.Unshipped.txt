@@ -1,9 +1,19 @@
 #nullable enable
+*REMOVED*static readonly Conjecture.Regex.KnownRegex.CreditCard -> System.Text.RegularExpressions.Regex!
+*REMOVED*static readonly Conjecture.Regex.KnownRegex.Email -> System.Text.RegularExpressions.Regex!
+*REMOVED*static readonly Conjecture.Regex.KnownRegex.IsoDate -> System.Text.RegularExpressions.Regex!
+*REMOVED*static readonly Conjecture.Regex.KnownRegex.Url -> System.Text.RegularExpressions.Regex!
+*REMOVED*static readonly Conjecture.Regex.KnownRegex.Uuid -> System.Text.RegularExpressions.Regex!
+static Conjecture.Regex.KnownRegex.CreditCard.get -> System.Text.RegularExpressions.Regex!
+static Conjecture.Regex.KnownRegex.Date.get -> System.Text.RegularExpressions.Regex!
+static Conjecture.Regex.KnownRegex.Email.get -> System.Text.RegularExpressions.Regex!
+static Conjecture.Regex.KnownRegex.Ipv4.get -> System.Text.RegularExpressions.Regex!
+static Conjecture.Regex.KnownRegex.Ipv6.get -> System.Text.RegularExpressions.Regex!
+static Conjecture.Regex.KnownRegex.IsoDate.get -> System.Text.RegularExpressions.Regex!
+static Conjecture.Regex.KnownRegex.Time.get -> System.Text.RegularExpressions.Regex!
+static Conjecture.Regex.KnownRegex.Url.get -> System.Text.RegularExpressions.Regex!
+static Conjecture.Regex.KnownRegex.Uuid.get -> System.Text.RegularExpressions.Regex!
 static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Generate!).Date() -> Conjecture.Core.Strategy<string!>!
 static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Generate!).Ipv4() -> Conjecture.Core.Strategy<string!>!
 static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Generate!).Ipv6() -> Conjecture.Core.Strategy<string!>!
 static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Generate!).Time() -> Conjecture.Core.Strategy<string!>!
-static readonly Conjecture.Regex.KnownRegex.Date -> System.Text.RegularExpressions.Regex!
-static readonly Conjecture.Regex.KnownRegex.Ipv4 -> System.Text.RegularExpressions.Regex!
-static readonly Conjecture.Regex.KnownRegex.Ipv6 -> System.Text.RegularExpressions.Regex!
-static readonly Conjecture.Regex.KnownRegex.Time -> System.Text.RegularExpressions.Regex!

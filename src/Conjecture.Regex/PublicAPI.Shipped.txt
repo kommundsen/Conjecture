@@ -23,10 +23,5 @@ static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Generat
 static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Generate!).NotUuid() -> Conjecture.Core.Strategy<string!>!
 static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Generate!).Url() -> Conjecture.Core.Strategy<string!>!
 static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Generate!).Uuid() -> Conjecture.Core.Strategy<string!>!
-static readonly Conjecture.Regex.KnownRegex.CreditCard -> System.Text.RegularExpressions.Regex!
-static readonly Conjecture.Regex.KnownRegex.Email -> System.Text.RegularExpressions.Regex!
-static readonly Conjecture.Regex.KnownRegex.IsoDate -> System.Text.RegularExpressions.Regex!
-static readonly Conjecture.Regex.KnownRegex.Url -> System.Text.RegularExpressions.Regex!
-static readonly Conjecture.Regex.KnownRegex.Uuid -> System.Text.RegularExpressions.Regex!
 static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Generate!).ReDoSHunter(string! pattern, int maxMatchMs = 5) -> Conjecture.Core.Strategy<string!>!
 static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Generate!).ReDoSHunter(System.Text.RegularExpressions.Regex! regex, int maxMatchMs = 5) -> Conjecture.Core.Strategy<string!>!
