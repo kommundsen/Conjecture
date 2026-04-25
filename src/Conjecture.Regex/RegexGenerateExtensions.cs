@@ -98,6 +98,18 @@ public static class RegexGenerateExtensions
 
         /// <summary>Returns a strategy that generates strings that do not match <see cref="KnownRegex.CreditCard"/>.</summary>
         public static Strategy<string> NotCreditCard() => Generate.NotMatching(KnownRegex.CreditCard);
+
+        /// <summary>Returns a strategy that generates strings matching <see cref="KnownRegex.Ipv4"/>.</summary>
+        public static Strategy<string> Ipv4() => Generate.Matching(KnownRegex.Ipv4);
+
+        /// <summary>Returns a strategy that generates strings matching <see cref="KnownRegex.Ipv6"/>.</summary>
+        public static Strategy<string> Ipv6() => Generate.Matching(KnownRegex.Ipv6);
+
+        /// <summary>Returns a strategy that generates strings matching <see cref="KnownRegex.Date"/>.</summary>
+        public static Strategy<string> Date() => Generate.Matching(KnownRegex.Date);
+
+        /// <summary>Returns a strategy that generates strings matching <see cref="KnownRegex.Time"/>.</summary>
+        public static Strategy<string> Time() => Generate.Matching(KnownRegex.Time);
     }
 
     private static DotNetRegex GetOrAddCached(string pattern)

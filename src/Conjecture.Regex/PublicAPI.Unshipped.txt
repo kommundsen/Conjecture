@@ -1,1 +1,9 @@
 #nullable enable
+static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Generate!).Date() -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Generate!).Ipv4() -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Generate!).Ipv6() -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Generate!).Time() -> Conjecture.Core.Strategy<string!>!
+static readonly Conjecture.Regex.KnownRegex.Date -> System.Text.RegularExpressions.Regex!
+static readonly Conjecture.Regex.KnownRegex.Ipv4 -> System.Text.RegularExpressions.Regex!
+static readonly Conjecture.Regex.KnownRegex.Ipv6 -> System.Text.RegularExpressions.Regex!
+static readonly Conjecture.Regex.KnownRegex.Time -> System.Text.RegularExpressions.Regex!
