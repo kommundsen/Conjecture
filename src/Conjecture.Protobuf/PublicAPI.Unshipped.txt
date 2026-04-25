@@ -1,7 +1,1 @@
 #nullable enable
-Conjecture.Protobuf.ProtobufFieldStrategy
-Conjecture.Protobuf.ProtobufFieldStrategy.ProtobufFieldStrategy(Google.Protobuf.Reflection.MessageDescriptor! descriptor, int maxDepth = 5) -> void
-Conjecture.Protobuf.ProtobufGenerate
-Conjecture.Protobuf.ProtobufGenerate.extension(Conjecture.Core.Generate!)
-static Conjecture.Protobuf.ProtobufGenerate.extension(Conjecture.Core.Generate!).FromProtobuf(Google.Protobuf.Reflection.MessageDescriptor! descriptor, int maxDepth = 5) -> Conjecture.Core.Strategy<System.Text.Json.JsonElement>!
-static Conjecture.Protobuf.ProtobufGenerate.extension(Conjecture.Core.Generate!).FromProtobuf<T>(int maxDepth = 5) -> Conjecture.Core.Strategy<System.Text.Json.JsonElement>!

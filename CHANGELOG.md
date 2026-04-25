@@ -10,6 +10,39 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Version
 
 ---
 
+## [0.20.0] — 2026-04-25
+
+### Added
+
+**JsonSchema** (`Conjecture.JsonSchema`) — new package
+- `Generate.FromJsonSchema(string jsonSchemaText)` — generate `JsonElement` values matching a JSON Schema document (text)
+- `Generate.FromJsonSchema(JsonElement root)` — generate `JsonElement` values matching a parsed JSON Schema root
+- `Generate.FromJsonSchema(FileInfo schemaFile)` — generate `JsonElement` values from a JSON Schema file
+- `JsonSchemaType` enum — `None`, `Null`, `Boolean`, `Integer`, `Number`, `String`, `Array`, `Object`, `Any`
+
+**OpenApi** (`Conjecture.OpenApi`) — new package
+- `Generate.FromOpenApi(string filePath)` / `(FileInfo file)` / `(Uri url)` — load an OpenAPI document and obtain an `OpenApiDocument` for strategy construction
+- `OpenApiDocument.PathParameter(method, path, name, maxDepth)` — strategy for a path parameter on a given operation
+- `OpenApiDocument.QueryParameter(method, path, name, maxDepth)` — strategy for a query parameter on a given operation
+- `OpenApiDocument.RequestBody(method, path, maxDepth)` — strategy for the request body on a given operation
+- `OpenApiDocument.ResponseBody(method, path, statusCode, maxDepth)` — strategy for the response body on a given operation+status
+
+**Protobuf** (`Conjecture.Protobuf`) — new package
+- `Generate.FromProtobuf<T>(int maxDepth = 5)` — generate `JsonElement` values matching a Protobuf message type
+- `Generate.FromProtobuf(MessageDescriptor descriptor, int maxDepth = 5)` — generate `JsonElement` values from a runtime Protobuf descriptor
+- `ProtobufFieldStrategy` — public strategy backing Protobuf-driven generation
+
+**Regex** (`Conjecture.Regex`)
+- `Generate.Date()`, `Generate.Time()`, `Generate.Ipv4()`, `Generate.Ipv6()` — new built-in pattern strategies for ISO date, ISO time, IPv4, and IPv6 strings
+- `KnownRegex.Date`, `KnownRegex.Time`, `KnownRegex.Ipv4`, `KnownRegex.Ipv6` — corresponding `Regex` accessors (source-generated via `[GeneratedRegex]`)
+
+### Changed
+
+**Regex** (`Conjecture.Regex`) — **binary breaking change**
+- `KnownRegex.CreditCard`, `Email`, `IsoDate`, `Url`, `Uuid` migrated from `static readonly Regex` fields to `static partial Regex` properties decorated with `[GeneratedRegex]`. Source-level call sites are unchanged; existing compiled consumers must be recompiled.
+
+---
+
 ## [0.19.0] — 2026-04-25
 
 ### Added
