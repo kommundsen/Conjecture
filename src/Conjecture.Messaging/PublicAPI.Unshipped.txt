@@ -1,0 +1,17 @@
+#nullable enable
+Conjecture.Messaging.MessageInteraction
+Conjecture.Messaging.MessageInteraction.MessageInteraction(string! Destination, System.ReadOnlyMemory<byte> Body, System.Collections.Generic.IReadOnlyDictionary<string!, string!>! Headers, string! MessageId, string? CorrelationId = null) -> void
+Conjecture.Messaging.MessageInteraction.Destination.get -> string!
+Conjecture.Messaging.MessageInteraction.Destination.init -> void
+Conjecture.Messaging.MessageInteraction.Body.get -> System.ReadOnlyMemory<byte>
+Conjecture.Messaging.MessageInteraction.Body.init -> void
+Conjecture.Messaging.MessageInteraction.Headers.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+Conjecture.Messaging.MessageInteraction.Headers.init -> void
+Conjecture.Messaging.MessageInteraction.MessageId.get -> string!
+Conjecture.Messaging.MessageInteraction.MessageId.init -> void
+Conjecture.Messaging.MessageInteraction.CorrelationId.get -> string?
+Conjecture.Messaging.MessageInteraction.CorrelationId.init -> void
+Conjecture.Messaging.IMessageBusTarget
+Conjecture.Messaging.IMessageBusTarget.ReceiveAsync(string! destination, System.TimeSpan timeout, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<Conjecture.Messaging.MessageInteraction?>!
+Conjecture.Messaging.IMessageBusTarget.AcknowledgeAsync(Conjecture.Messaging.MessageInteraction! message, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task!
+Conjecture.Messaging.IMessageBusTarget.RejectAsync(Conjecture.Messaging.MessageInteraction! message, bool requeue, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task!
