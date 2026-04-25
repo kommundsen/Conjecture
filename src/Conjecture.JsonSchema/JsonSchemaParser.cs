@@ -43,7 +43,7 @@ internal static class JsonSchemaParser
             }
 
             visiting.Add(refValue);
-            JsonSchemaNode? resolved = ResolveRef(refValue, defs);
+            JsonSchemaNode? resolved = JsonSchemaRefResolver.ResolveRef(refValue, defs);
             if (resolved is not null)
             {
                 JsonSchemaNode result = ResolveNode(resolved, defs ?? resolved.Defs, visiting);
@@ -100,30 +100,6 @@ internal static class JsonSchemaParser
         }
 
         return result;
-    }
-
-    private static JsonSchemaNode? ResolveRef(string refValue, IReadOnlyDictionary<string, JsonSchemaNode>? defs)
-    {
-        if (defs is null)
-        {
-            return null;
-        }
-
-        // Handle #/$defs/Name and #/definitions/Name
-        const string defsPrefix = "#/$defs/";
-        const string definitionsPrefix = "#/definitions/";
-
-        string? name = null;
-        if (refValue.StartsWith(defsPrefix, System.StringComparison.Ordinal))
-        {
-            name = refValue[defsPrefix.Length..];
-        }
-        else if (refValue.StartsWith(definitionsPrefix, System.StringComparison.Ordinal))
-        {
-            name = refValue[definitionsPrefix.Length..];
-        }
-
-        return name is null ? null : defs.TryGetValue(name, out JsonSchemaNode? found) ? found : null;
     }
 
     private static JsonSchemaNode ParseElement(JsonElement element, IReadOnlyDictionary<string, JsonSchemaNode>? defs)

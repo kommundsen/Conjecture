@@ -1,4 +1,9 @@
 #nullable enable
+Conjecture.JsonSchema.JsonSchemaGenerate
+Conjecture.JsonSchema.JsonSchemaGenerate.extension(Conjecture.Core.Generate!)
+static Conjecture.JsonSchema.JsonSchemaGenerate.extension(Conjecture.Core.Generate!).FromJsonSchema(System.IO.FileInfo! schemaFile) -> Conjecture.Core.Strategy<System.Text.Json.JsonElement>!
+static Conjecture.JsonSchema.JsonSchemaGenerate.extension(Conjecture.Core.Generate!).FromJsonSchema(System.Text.Json.JsonElement root) -> Conjecture.Core.Strategy<System.Text.Json.JsonElement>!
+static Conjecture.JsonSchema.JsonSchemaGenerate.extension(Conjecture.Core.Generate!).FromJsonSchema(string! jsonSchemaText) -> Conjecture.Core.Strategy<System.Text.Json.JsonElement>!
 Conjecture.JsonSchema.JsonSchemaType
 Conjecture.JsonSchema.JsonSchemaType.None = 0 -> Conjecture.JsonSchema.JsonSchemaType
 Conjecture.JsonSchema.JsonSchemaType.Null = 1 -> Conjecture.JsonSchema.JsonSchemaType

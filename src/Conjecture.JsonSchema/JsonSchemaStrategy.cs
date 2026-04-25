@@ -69,7 +69,7 @@ internal sealed class JsonSchemaStrategy : Strategy<JsonElement>
         int depth,
         HashSet<string> visiting)
     {
-        JsonSchemaNode? resolved = ResolveRef(refValue, defs);
+        JsonSchemaNode? resolved = JsonSchemaRefResolver.ResolveRef(refValue, defs);
         if (resolved is null)
         {
             return BuildBooleanStrategy();
@@ -147,8 +147,8 @@ internal sealed class JsonSchemaStrategy : Strategy<JsonElement>
     private static Strategy<JsonElement> BuildBooleanStrategy()
     {
         return Gen.Booleans().Select(static b => b
-            ? JsonDocument.Parse("true").RootElement.Clone()
-            : JsonDocument.Parse("false").RootElement.Clone());
+            ? JsonSchemaRefResolver.TrueElement
+            : JsonSchemaRefResolver.FalseElement);
     }
 
     private static Strategy<JsonElement> BuildIntegerStrategy(JsonSchemaNode node)
@@ -308,7 +308,7 @@ internal sealed class JsonSchemaStrategy : Strategy<JsonElement>
             }
 
             HashSet<string> newVisiting = [.. visiting, refValue];
-            JsonSchemaNode? resolved = ResolveRef(refValue, defs);
+            JsonSchemaNode? resolved = JsonSchemaRefResolver.ResolveRef(refValue, defs);
             return resolved is null
                 ? Gen.Just(JsonDocument.Parse("null").RootElement.Clone())
                 : BuildStrategy(resolved, defs ?? resolved.Defs, depth - 1, newVisiting);
@@ -336,29 +336,6 @@ internal sealed class JsonSchemaStrategy : Strategy<JsonElement>
         }
 
         return false;
-    }
-
-    private static JsonSchemaNode? ResolveRef(string refValue, IReadOnlyDictionary<string, JsonSchemaNode>? defs)
-    {
-        if (defs is null)
-        {
-            return null;
-        }
-
-        const string defsPrefix = "#/$defs/";
-        const string definitionsPrefix = "#/definitions/";
-
-        string? name = null;
-        if (refValue.StartsWith(defsPrefix, System.StringComparison.Ordinal))
-        {
-            name = refValue[defsPrefix.Length..];
-        }
-        else if (refValue.StartsWith(definitionsPrefix, System.StringComparison.Ordinal))
-        {
-            name = refValue[definitionsPrefix.Length..];
-        }
-
-        return name is null ? null : defs.TryGetValue(name, out JsonSchemaNode? found) ? found : null;
     }
 
     private static JsonElement ParseLong(long value)
