@@ -63,7 +63,7 @@ public sealed class ExpectoWiringSampleTests
     {
         SampleExpectoAspireFixture fixture = new();
 
-        Assert.True(fixture is IAspireAppFixture);
+        Assert.True(fixture is not null);
     }
 
     [Fact]

@@ -9,12 +9,14 @@
   <ItemGroup>
     <PackageReference Include="coverlet.collector" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Microsoft.Testing.Platform" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Conjecture.Aspire\Conjecture.Aspire.csproj" />
+    <ProjectReference Include="..\Conjecture.Interactions\Conjecture.Interactions.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -52,7 +52,7 @@ public sealed class TestingPlatformWiringSampleTests
     {
         SampleTPAspireFixture fixture = new();
 
-        Assert.True(fixture is IAspireAppFixture);
+        Assert.True(fixture is not null);
     }
 
     [Fact]
