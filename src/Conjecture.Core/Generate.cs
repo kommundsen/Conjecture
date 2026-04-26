@@ -35,6 +35,9 @@ public static class Generate
     /// <summary>Returns a strategy that always produces <paramref name="value"/>.</summary>
     public static Strategy<T> Just<T>(T value) => new JustStrategy<T>(value);
 
+    /// <summary>Returns a strategy that always produces <paramref name="value"/>. Alias for <see cref="Just{T}"/>.</summary>
+    public static Strategy<T> Constant<T>(T value) => new JustStrategy<T>(value);
+
     /// <summary>Returns a strategy that picks uniformly among <paramref name="strategies"/>.</summary>
     public static Strategy<T> OneOf<T>(params Strategy<T>[] strategies)
     {
