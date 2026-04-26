@@ -16,17 +16,11 @@ public static class MoneyGenerateExtensions
             decimal max,
             int? scale = null)
         {
-            if (min > max)
-            {
-                throw new ArgumentException("min must be less than or equal to max.", nameof(min));
-            }
-
-            if (scale is < 0 or > 28)
-            {
-                throw new ArgumentOutOfRangeException(nameof(scale), scale, "scale must be between 0 and 28.");
-            }
-
-            return DecimalStrategy.Create(min, max, scale);
+            return min > max
+                ? throw new ArgumentException("min must be less than or equal to max.", nameof(min))
+                : scale is < 0 or > 28
+                ? throw new ArgumentOutOfRangeException(nameof(scale), scale, "scale must be between 0 and 28.")
+                : DecimalStrategy.Create(min, max, scale);
         }
 
         /// <summary>Returns a strategy that samples uniformly from all active ISO 4217 currency codes.</summary>
@@ -38,12 +32,9 @@ public static class MoneyGenerateExtensions
         /// <summary>Returns a strategy that generates a decimal amount for <paramref name="currencyCode"/> within [<paramref name="min"/>, <paramref name="max"/>].</summary>
         public static Strategy<decimal> Amounts(string currencyCode, decimal min = 0m, decimal max = 10_000m)
         {
-            if (!Iso4217Data.DecimalPlacesByCurrency.TryGetValue(currencyCode, out int scale))
-            {
-                throw new ArgumentException($"Unknown ISO 4217 currency code: '{currencyCode}'.", nameof(currencyCode));
-            }
-
-            return DecimalStrategy.Create(min, max, scale);
+            return !Iso4217Data.DecimalPlacesByCurrency.TryGetValue(currencyCode, out int scale)
+                ? throw new ArgumentException($"Unknown ISO 4217 currency code: '{currencyCode}'.", nameof(currencyCode))
+                : DecimalStrategy.Create(min, max, scale);
         }
 
         /// <summary>Returns a strategy that samples uniformly from all <see cref="MidpointRounding"/> values.</summary>

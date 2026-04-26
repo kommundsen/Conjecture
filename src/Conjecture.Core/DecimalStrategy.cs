@@ -29,4 +29,3 @@ internal sealed class DecimalStrategy : Strategy<decimal>
         return min.HasValue && max.HasValue ? Math.Clamp(value, min.Value, max.Value) : value;
     }
 }
-

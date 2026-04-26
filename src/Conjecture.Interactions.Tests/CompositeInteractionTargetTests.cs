@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Conjecture.Interactions;
 
 namespace Conjecture.Interactions.Tests;
@@ -45,10 +46,7 @@ public class CompositeInteractionTargetTests
         AddressedInteraction interaction = new("unknown");
 
         InvalidOperationException ex = await Assert.ThrowsAsync<InvalidOperationException>(
-            async () =>
-            {
-                await composite.ExecuteAsync(interaction, CancellationToken.None);
-            });
+            async () => await composite.ExecuteAsync(interaction, CancellationToken.None));
 
         Assert.Contains("unknown", ex.Message);
         Assert.Contains("a", ex.Message);

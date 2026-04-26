@@ -68,7 +68,7 @@ public static class StrategyExtensionProperties
     extension<T>(Strategy<T> _)
     {
         /// <summary>Combines two strategies into a single strategy that draws from either, chosen uniformly at random.</summary>
-        public static Strategy<T> operator | (Strategy<T> left, Strategy<T> right)
+        public static Strategy<T> operator |(Strategy<T> left, Strategy<T> right)
             => Generate.OneOf(left, right);
     }
 }

@@ -45,8 +45,7 @@ public sealed class ExternalStrategyProviderTests
         INamedTypeSymbol symbol = CompileAndGetSymbol(
             "namespace MyApp; public partial record Request(System.TimeProvider Clock);",
             "MyApp.Request");
-
-        (TypeModel? model, ImmutableArray<Diagnostic> diagnostics) = TypeModelExtractor.Extract(symbol);
+        (TypeModel? model, _) = TypeModelExtractor.Extract(symbol);
 
         Assert.NotNull(model);
         Assert.Equal(MemberGenerationKind.Unsupported, model.Members[0].Kind);

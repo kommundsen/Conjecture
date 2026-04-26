@@ -3,6 +3,7 @@
 
 using System.Threading;
 using System.Threading.Tasks;
+
 using Conjecture.Interactions;
 
 namespace Conjecture.Interactions.Tests;
@@ -69,9 +70,6 @@ public class InteractionTargetTests
         using CancellationTokenSource cts = new();
         cts.Cancel();
         await Assert.ThrowsAsync<OperationCanceledException>(
-            async () =>
-            {
-                await target.ExecuteAsync(interaction, cts.Token);
-            });
+            async () => await target.ExecuteAsync(interaction, cts.Token));
     }
 }
