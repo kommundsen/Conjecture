@@ -310,6 +310,59 @@ internal static class StrategyTools
             Add the NuGet package: `Conjecture.Money`
             """,
 
+            "DistributedApplication" =>
+                """
+            This type is part of .NET Aspire. Use `AspireStateMachine<TState>` from `Conjecture.Aspire` to drive stateful end-to-end tests against a running `DistributedApplication`:
+
+            ```csharp
+            using Conjecture.Aspire;
+
+            // Implement IStateMachine<TState, TCommand> and pass it to AspireStateMachine<TState>
+            AspireStateMachine<MyState> machine = new(new MyStateMachine(), fixture.App);
+            ```
+
+            Add the NuGet package: `Conjecture.Aspire`
+            """,
+
+            "Interaction" =>
+                """
+            This type represents an Aspire interaction (HTTP or messaging). Use strategies from `Conjecture.Aspire`:
+
+            ```csharp
+            using Conjecture.Aspire;
+
+            Generate.HttpPost("/endpoint", Generate.Strings())
+            // → Strategy<Interaction> for HTTP POST interactions
+
+            Generate.PublishMessage("queue-name", Generate.Strings())
+            // → Strategy<Interaction> for message-publishing interactions
+            ```
+
+            Add the NuGet package: `Conjecture.Aspire`
+            """,
+
+            "IAspireAppFixture" =>
+                """
+            `IAspireAppFixture` is the contract for an Aspire test fixture in `Conjecture.Aspire`. It provides the running `DistributedApplication` and exposes `ResetAsync()` to restore state between property iterations.
+
+            ```csharp
+            using Conjecture.Aspire;
+
+            public class MyAppFixture : IAspireAppFixture
+            {
+                public DistributedApplication App { get; }
+                public Task ResetAsync() => /* reset state */;
+            }
+            ```
+
+            Use `AspireStateMachine<TState>` to drive property tests:
+            ```csharp
+            AspireStateMachine<MyState> machine = new(new MyStateMachine(), fixture.App);
+            ```
+
+            Add the NuGet package: `Conjecture.Aspire`
+            """,
+
             _ when typeName.StartsWith("List<", StringComparison.Ordinal) =>
                 SuggestList(InnerType(typeName)),
 
@@ -464,7 +517,7 @@ internal static class StrategyTools
 
     private static string InnerType(string typeName)
     {
-        var start = typeName.IndexOf('<') + 1;
+        int start = typeName.IndexOf('<') + 1;
         return typeName[start..^1];
     }
 }
