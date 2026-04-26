@@ -10,6 +10,22 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Version
 
 ---
 
+## [0.24.0] — 2026-04-27
+
+### Added
+
+**Aspire** (`Conjecture.Aspire`) — new package
+- `IAspireAppFixture` — fixture seam for managing the lifecycle of a `DistributedApplication`, including `StartAsync`, `ResetAsync`, `WaitForHealthyAsync`, `HealthCheckedResources`, `MaxRetryAttempts`, and `RetryDelay`
+- `AspireSessionLifetimeHandler` — Microsoft Testing Platform session lifetime handler that starts the Aspire app once per test session and disposes it on completion
+- `Interaction` record — HTTP interaction payload (`ResourceName`, `Method`, `Path`, `Body`) for driving generated calls against Aspire-hosted resources
+- `AspireStateMachine<TState>` — abstract state machine base for stateful Aspire properties; expose `Commands`, `InitialState`, `Invariant`, `RunCommand`, plus `GetClient(resourceName)` to resolve resource HTTP clients
+- `AspireProperty.RunAsync` — runner that drives an `AspireStateMachine<TState>` against an `IAspireAppFixture` under `ConjectureSettings`
+
+**Core** (`Conjecture.Core`)
+- `Generate.Constant<T>(value)` — strategy that always produces the same value
+
+---
+
 ## [0.23.0] — 2026-04-26
 
 ### Added
