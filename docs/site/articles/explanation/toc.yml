@@ -31,3 +31,5 @@ items:
     href: schema-package-layout.md
   - name: Messaging property testing
     href: messaging-property-testing.md
+  - name: gRPC property testing
+    href: grpc-property-testing.md
