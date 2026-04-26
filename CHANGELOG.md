@@ -10,6 +10,23 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Version
 
 ---
 
+## [0.22.0] — 2026-04-26
+
+### Added
+
+**Grpc** (`Conjecture.Grpc`) — new package
+- `GrpcRpcMode` enum — `Unary`, `ServerStream`, `ClientStream`, `Bidi` RPC modes
+- `GrpcInteraction` record — gRPC interaction payload implementing `IInteraction`, carrying `ResourceName`, `FullMethodName`, `Mode`, `RequestMessages`, `Metadata`, and optional `Deadline`
+- `GrpcResponse` record — result envelope with `Status` (`Grpc.Core.StatusCode`), `StatusDetail`, `ResponseMessages`, `ResponseHeaders`, and `Trailers`
+- `IGrpcTarget` — call-invoker seam (`GetCallInvoker`) for supplying gRPC channels to the runner
+- `GrpcChannelTarget` — `IGrpcTarget` + `IInteractionTarget` backed by a `GrpcChannel`; accepts either a `GrpcChannel` or an address string
+- `HostGrpcTarget` — `IGrpcTarget` + `IInteractionTarget` backed by a `Microsoft.Extensions.Hosting.IHost`, for in-process server tests
+- `GenerateGrpc.Unary`, `GenerateGrpc.ServerStream`, `GenerateGrpc.ClientStream`, `GenerateGrpc.BidiStream` — strategy factories for all four gRPC streaming modes
+- `GrpcInvariantExtensions` — fluent response-assertion helpers: `AssertStatusOk()`, `AssertStatus(expected)`, `AssertNoUnknownStatus()`
+- `GrpcInvariantException` — thrown by invariant extensions on status-code violations
+
+---
+
 ## [0.21.0] — 2026-04-26
 
 ### Added
