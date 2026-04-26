@@ -32,3 +32,16 @@ Conjecture.Grpc.GrpcResponse.Trailers.get -> System.Collections.Generic.IReadOnl
 Conjecture.Grpc.GrpcResponse.Trailers.init -> void
 Conjecture.Grpc.IGrpcTarget
 Conjecture.Grpc.IGrpcTarget.GetCallInvoker(string! resourceName) -> Grpc.Core.CallInvoker!
+Conjecture.Grpc.GrpcChannelTarget
+Conjecture.Grpc.GrpcChannelTarget.GrpcChannelTarget(string! resourceName, Grpc.Net.Client.GrpcChannel! channel) -> void
+Conjecture.Grpc.GrpcChannelTarget.GrpcChannelTarget(string! resourceName, string! address) -> void
+Conjecture.Grpc.GrpcChannelTarget.ResourceName.get -> string!
+Conjecture.Grpc.GrpcChannelTarget.GetCallInvoker(string! resourceName) -> Grpc.Core.CallInvoker!
+Conjecture.Grpc.GrpcChannelTarget.ExecuteAsync(Conjecture.Interactions.IInteraction! interaction, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<object?>!
+Conjecture.Grpc.GrpcChannelTarget.DisposeAsync() -> System.Threading.Tasks.ValueTask
+Conjecture.Grpc.HostGrpcTarget
+Conjecture.Grpc.HostGrpcTarget.HostGrpcTarget(string! resourceName, Microsoft.Extensions.Hosting.IHost! host) -> void
+Conjecture.Grpc.HostGrpcTarget.ResourceName.get -> string!
+Conjecture.Grpc.HostGrpcTarget.GetCallInvoker(string! resourceName) -> Grpc.Core.CallInvoker!
+Conjecture.Grpc.HostGrpcTarget.ExecuteAsync(Conjecture.Interactions.IInteraction! interaction, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<object?>!
+Conjecture.Grpc.HostGrpcTarget.DisposeAsync() -> System.Threading.Tasks.ValueTask
