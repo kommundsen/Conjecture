@@ -1,5 +1,15 @@
 #nullable enable
 Conjecture.Aspire.AspireProperty
+Conjecture.Aspire.AspireSessionLifetimeHandler
+Conjecture.Aspire.AspireSessionLifetimeHandler.AspireSessionLifetimeHandler(Conjecture.Aspire.IAspireAppFixture! fixture) -> void
+Conjecture.Aspire.AspireSessionLifetimeHandler.Description.get -> string!
+Conjecture.Aspire.AspireSessionLifetimeHandler.DisplayName.get -> string!
+Conjecture.Aspire.AspireSessionLifetimeHandler.Fixture.get -> Conjecture.Aspire.IAspireAppFixture!
+Conjecture.Aspire.AspireSessionLifetimeHandler.IsEnabledAsync() -> System.Threading.Tasks.Task<bool>!
+Conjecture.Aspire.AspireSessionLifetimeHandler.OnTestSessionFinishingAsync(Microsoft.Testing.Platform.TestHost.SessionUid sessionUid, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task!
+Conjecture.Aspire.AspireSessionLifetimeHandler.OnTestSessionStartingAsync(Microsoft.Testing.Platform.TestHost.SessionUid sessionUid, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task!
+Conjecture.Aspire.AspireSessionLifetimeHandler.Uid.get -> string!
+Conjecture.Aspire.AspireSessionLifetimeHandler.Version.get -> string!
 static Conjecture.Aspire.AspireProperty.RunAsync<TState>(Conjecture.Aspire.IAspireAppFixture! fixture, Conjecture.Aspire.AspireStateMachine<TState>! machine, Conjecture.Core.ConjectureSettings! settings, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task!
 abstract Conjecture.Aspire.AspireStateMachine<TState>.Commands(TState state) -> System.Collections.Generic.IEnumerable<Conjecture.Core.Strategy<Conjecture.Aspire.Interaction>!>!
 abstract Conjecture.Aspire.AspireStateMachine<TState>.InitialState() -> TState
