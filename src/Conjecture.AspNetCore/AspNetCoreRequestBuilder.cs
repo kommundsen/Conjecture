@@ -26,6 +26,7 @@ public sealed class AspNetCoreRequestBuilder
     private readonly ImmutableList<Func<DiscoveredEndpoint, bool>> exclusions;
     private readonly Func<Task>? setup;
     private readonly RequestFlavour flavour;
+    private readonly Conjecture.OpenApi.OpenApiDocument? openApiDoc;
 
     private enum RequestFlavour
     {
@@ -41,7 +42,7 @@ public sealed class AspNetCoreRequestBuilder
     /// <param name="host">The running application host used to discover endpoints.</param>
     /// <param name="client">The HTTP client used to send generated requests.</param>
     public AspNetCoreRequestBuilder(IHost host, HttpClient client)
-        : this(host, client, ImmutableList<Func<DiscoveredEndpoint, bool>>.Empty, null, RequestFlavour.Both)
+        : this(host, client, ImmutableList<Func<DiscoveredEndpoint, bool>>.Empty, null, RequestFlavour.Both, null)
     {
     }
 
@@ -50,13 +51,15 @@ public sealed class AspNetCoreRequestBuilder
         HttpClient client,
         ImmutableList<Func<DiscoveredEndpoint, bool>> exclusions,
         Func<Task>? setup,
-        RequestFlavour flavour)
+        RequestFlavour flavour,
+        Conjecture.OpenApi.OpenApiDocument? openApiDoc)
     {
         this.host = host;
         this.client = client;
         this.exclusions = exclusions;
         this.setup = setup;
         this.flavour = flavour;
+        this.openApiDoc = openApiDoc;
     }
 
     /// <summary>
@@ -66,7 +69,7 @@ public sealed class AspNetCoreRequestBuilder
     public AspNetCoreRequestBuilder ExcludeEndpoints(Func<DiscoveredEndpoint, bool> predicate)
     {
         ArgumentNullException.ThrowIfNull(predicate);
-        return new(this.host, this.client, this.exclusions.Add(predicate), this.setup, this.flavour);
+        return new(this.host, this.client, this.exclusions.Add(predicate), this.setup, this.flavour, this.openApiDoc);
     }
 
     /// <summary>
@@ -75,16 +78,28 @@ public sealed class AspNetCoreRequestBuilder
     public AspNetCoreRequestBuilder WithSetup(Func<Task> setupDelegate)
     {
         ArgumentNullException.ThrowIfNull(setupDelegate);
-        return new(this.host, this.client, this.exclusions, setupDelegate, this.flavour);
+        return new(this.host, this.client, this.exclusions, setupDelegate, this.flavour, this.openApiDoc);
     }
 
     /// <summary>Returns a new builder that only generates well-formed interactions.</summary>
     public AspNetCoreRequestBuilder ValidRequestsOnly()
-        => new(this.host, this.client, this.exclusions, this.setup, RequestFlavour.ValidOnly);
+        => new(this.host, this.client, this.exclusions, this.setup, RequestFlavour.ValidOnly, this.openApiDoc);
 
     /// <summary>Returns a new builder that only generates malformed interactions.</summary>
     public AspNetCoreRequestBuilder MalformedRequestsOnly()
-        => new(this.host, this.client, this.exclusions, this.setup, RequestFlavour.MalformedOnly);
+        => new(this.host, this.client, this.exclusions, this.setup, RequestFlavour.MalformedOnly, this.openApiDoc);
+
+    /// <summary>
+    /// Returns a new builder that uses <paramref name="doc"/> as the source of body strategies.
+    /// When an endpoint's (method, path) matches an OpenAPI operation with a request body schema,
+    /// the synthesised body is generated from the schema; otherwise the registered <c>Gen.For&lt;T&gt;()</c>
+    /// strategy is used as a fallback.
+    /// </summary>
+    public AspNetCoreRequestBuilder FromOpenApi(Conjecture.OpenApi.OpenApiDocument doc)
+    {
+        ArgumentNullException.ThrowIfNull(doc);
+        return new(this.host, this.client, this.exclusions, this.setup, this.flavour, doc);
+    }
 
     /// <summary>Builds the <see cref="Strategy{T}"/> of <see cref="HttpInteraction"/>.</summary>
     public Strategy<HttpInteraction> Build()
@@ -121,20 +136,22 @@ public sealed class AspNetCoreRequestBuilder
     {
         return this.flavour switch
         {
-            RequestFlavour.ValidOnly => TryBuildValidStrategy(endpoints) ?? throw new InvalidOperationException(
+            RequestFlavour.ValidOnly => TryBuildValidStrategy(endpoints, this.openApiDoc) ?? throw new InvalidOperationException(
                 "No endpoints can produce valid requests. Register body parameter types with [Arbitrary] or GenForRegistry."),
             RequestFlavour.MalformedOnly => BuildMalformedStrategy(endpoints),
-            _ => BuildMixedStrategy(endpoints),
+            _ => BuildMixedStrategy(endpoints, this.openApiDoc),
         };
     }
 
-    private static Strategy<HttpInteraction>? TryBuildValidStrategy(IReadOnlyList<DiscoveredEndpoint> endpoints)
+    private static Strategy<HttpInteraction>? TryBuildValidStrategy(
+        IReadOnlyList<DiscoveredEndpoint> endpoints,
+        Conjecture.OpenApi.OpenApiDocument? openApiDoc)
     {
         List<Strategy<HttpInteraction>> strategies = [];
 
         foreach (DiscoveredEndpoint ep in endpoints)
         {
-            strategies.Add(new RequestSynthesizer(ep).ValidStrategy());
+            strategies.Add(new RequestSynthesizer(ep, openApiDoc).ValidStrategy());
         }
 
         return strategies.Count switch
@@ -154,9 +171,11 @@ public sealed class AspNetCoreRequestBuilder
         return strategies.Length == 1 ? strategies[0] : Generate.OneOf(strategies);
     }
 
-    private static Strategy<HttpInteraction> BuildMixedStrategy(IReadOnlyList<DiscoveredEndpoint> endpoints)
+    private static Strategy<HttpInteraction> BuildMixedStrategy(
+        IReadOnlyList<DiscoveredEndpoint> endpoints,
+        Conjecture.OpenApi.OpenApiDocument? openApiDoc)
     {
-        Strategy<HttpInteraction>? validStrategy = TryBuildValidStrategy(endpoints);
+        Strategy<HttpInteraction>? validStrategy = TryBuildValidStrategy(endpoints, openApiDoc);
         Strategy<HttpInteraction> malformedStrategy = BuildMalformedStrategy(endpoints);
 
         if (validStrategy is null)

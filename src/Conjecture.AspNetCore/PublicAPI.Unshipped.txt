@@ -6,6 +6,7 @@ Conjecture.AspNetCore.AspNetCoreRequestBuilder
 Conjecture.AspNetCore.AspNetCoreRequestBuilder.AspNetCoreRequestBuilder(Microsoft.Extensions.Hosting.IHost! host, System.Net.Http.HttpClient! client) -> void
 Conjecture.AspNetCore.AspNetCoreRequestBuilder.Build() -> Conjecture.Core.Strategy<Conjecture.Http.HttpInteraction>!
 Conjecture.AspNetCore.AspNetCoreRequestBuilder.ExcludeEndpoints(System.Func<Conjecture.AspNetCore.DiscoveredEndpoint!, bool>! predicate) -> Conjecture.AspNetCore.AspNetCoreRequestBuilder!
+Conjecture.AspNetCore.AspNetCoreRequestBuilder.FromOpenApi(Conjecture.OpenApi.OpenApiDocument! doc) -> Conjecture.AspNetCore.AspNetCoreRequestBuilder!
 Conjecture.AspNetCore.AspNetCoreRequestBuilder.MalformedRequestsOnly() -> Conjecture.AspNetCore.AspNetCoreRequestBuilder!
 Conjecture.AspNetCore.AspNetCoreRequestBuilder.ValidRequestsOnly() -> Conjecture.AspNetCore.AspNetCoreRequestBuilder!
 Conjecture.AspNetCore.AspNetCoreRequestBuilder.WithSetup(System.Func<System.Threading.Tasks.Task!>! setupDelegate) -> Conjecture.AspNetCore.AspNetCoreRequestBuilder!

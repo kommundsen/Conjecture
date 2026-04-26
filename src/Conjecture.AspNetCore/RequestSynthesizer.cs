@@ -16,8 +16,10 @@ namespace Conjecture.AspNetCore;
 /// <summary>
 /// Produces <see cref="Strategy{T}"/> of <see cref="HttpInteraction"/> for a single <see cref="DiscoveredEndpoint"/>.
 /// </summary>
-internal sealed class RequestSynthesizer(DiscoveredEndpoint endpoint)
+internal sealed class RequestSynthesizer(DiscoveredEndpoint endpoint, Conjecture.OpenApi.OpenApiDocument? openApiDoc = null)
 {
+    private readonly Conjecture.OpenApi.OpenApiDocument? openApiDoc = openApiDoc;
+
     private static readonly Dictionary<Type, Func<IGeneratorContext, object>> PrimitiveFactories = new()
     {
         [typeof(int)] = static ctx => ctx.Generate(Generate.Integers<int>()),
@@ -58,10 +60,12 @@ internal sealed class RequestSynthesizer(DiscoveredEndpoint endpoint)
             ? endpoint.ProducesContentTypes[0]
             : "application/json";
 
+        Conjecture.OpenApi.OpenApiDocument? doc = this.openApiDoc;
+
         return Generate.Compose<HttpInteraction>(ctx =>
         {
             string path = BuildPath(rawPattern, captured, ctx);
-            object? body = GenerateBody(captured, ctx);
+            object? body = GenerateBody(captured, ctx, doc, method, rawPattern);
             IReadOnlyDictionary<string, string>? headers = BuildHeaders(contentType, accept, body);
             return new HttpInteraction(endpoint.DisplayName, method, path, body, headers);
         });
@@ -162,7 +166,12 @@ internal sealed class RequestSynthesizer(DiscoveredEndpoint endpoint)
         return path;
     }
 
-    private static object? GenerateBody(IReadOnlyList<EndpointParameter> parameters, IGeneratorContext ctx)
+    private static object? GenerateBody(
+        IReadOnlyList<EndpointParameter> parameters,
+        IGeneratorContext ctx,
+        Conjecture.OpenApi.OpenApiDocument? openApiDoc,
+        string method,
+        string path)
     {
         EndpointParameter? bodyParam = parameters.FirstOrDefault(
             static p => p.Source == BindingSource.Body);
@@ -170,6 +179,19 @@ internal sealed class RequestSynthesizer(DiscoveredEndpoint endpoint)
         if (bodyParam is null)
         {
             return null;
+        }
+
+        if (openApiDoc is not null)
+        {
+            try
+            {
+                Strategy<JsonElement> docBody = openApiDoc.RequestBody(method, path);
+                JsonElement element = ctx.Generate(docBody);
+                return element.GetRawText();
+            }
+            catch (KeyNotFoundException)
+            {
+            }
         }
 
         if (PrimitiveFactories.ContainsKey(bodyParam.ClrType))
