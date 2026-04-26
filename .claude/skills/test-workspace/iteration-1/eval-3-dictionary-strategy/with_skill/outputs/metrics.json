@@ -1,9 +1,0 @@
-{
-  "tool_calls": {"Read": 2, "Write": 1, "Edit": 1, "Bash": 3, "Glob": 1, "Grep": 1},
-  "total_tool_calls": 9,
-  "total_steps": 5,
-  "files_created": ["DictionaryStrategyTests.cs"],
-  "errors_encountered": 1,
-  "output_chars": 1400,
-  "transcript_chars": 1500
-}
