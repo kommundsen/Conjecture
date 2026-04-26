@@ -50,3 +50,10 @@ static Conjecture.Grpc.GenerateGrpc.Unary<TReq, TResp>(string! resourceName, Grp
 static Conjecture.Grpc.GenerateGrpc.ServerStream<TReq, TResp>(string! resourceName, Grpc.Core.Method<TReq!, TResp!>! method, Conjecture.Core.Strategy<TReq!>! requestStrategy, System.Collections.Generic.IReadOnlyDictionary<string!, string!>? metadata = null) -> Conjecture.Core.Strategy<Conjecture.Grpc.GrpcInteraction!>!
 static Conjecture.Grpc.GenerateGrpc.ClientStream<TReq, TResp>(string! resourceName, Grpc.Core.Method<TReq!, TResp!>! method, Conjecture.Core.Strategy<System.Collections.Generic.IReadOnlyList<TReq!>!>! requestsStrategy, System.Collections.Generic.IReadOnlyDictionary<string!, string!>? metadata = null) -> Conjecture.Core.Strategy<Conjecture.Grpc.GrpcInteraction!>!
 static Conjecture.Grpc.GenerateGrpc.BidiStream<TReq, TResp>(string! resourceName, Grpc.Core.Method<TReq!, TResp!>! method, Conjecture.Core.Strategy<System.Collections.Generic.IReadOnlyList<TReq!>!>! requestsStrategy, System.Collections.Generic.IReadOnlyDictionary<string!, string!>? metadata = null) -> Conjecture.Core.Strategy<Conjecture.Grpc.GrpcInteraction!>!
+Conjecture.Grpc.GrpcInvariantException
+Conjecture.Grpc.GrpcInvariantException.GrpcInvariantException(string! message) -> void
+Conjecture.Grpc.GrpcInvariantException.GrpcInvariantException(string! message, System.Exception! innerException) -> void
+Conjecture.Grpc.GrpcInvariantExtensions
+static Conjecture.Grpc.GrpcInvariantExtensions.AssertStatusOk(this Conjecture.Grpc.GrpcResponse! response) -> Conjecture.Grpc.GrpcResponse!
+static Conjecture.Grpc.GrpcInvariantExtensions.AssertStatus(this Conjecture.Grpc.GrpcResponse! response, Grpc.Core.StatusCode expected) -> Conjecture.Grpc.GrpcResponse!
+static Conjecture.Grpc.GrpcInvariantExtensions.AssertNoUnknownStatus(this Conjecture.Grpc.GrpcResponse! response) -> Conjecture.Grpc.GrpcResponse!
