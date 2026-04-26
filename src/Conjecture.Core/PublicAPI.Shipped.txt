@@ -197,12 +197,8 @@ Conjecture.Core.ForConfiguration<T>
 Conjecture.Core.ForConfiguration<T>.ForConfiguration() -> void
 Conjecture.Core.ForConfiguration<T>.Override<TProp>(System.Linq.Expressions.Expression<System.Func<T, TProp>!>! selector, Conjecture.Core.Strategy<TProp>! strategy) -> Conjecture.Core.ForConfiguration<T>!
 Conjecture.Core.ForConfiguration<T>.TryGet<TProp>(string! propertyName) -> Conjecture.Core.Strategy<TProp>?
-Conjecture.Core.GenForRegistry
 static Conjecture.Core.Generate.For<T>(System.Action<Conjecture.Core.ForConfiguration<T>!>! configure) -> Conjecture.Core.Strategy<T>!
-static Conjecture.Core.GenForRegistry.Register(System.Type! type, System.Func<Conjecture.Core.IStrategyProvider!>! factory) -> void
 static Conjecture.Core.Generate.For<T>() -> Conjecture.Core.Strategy<T>!
-static Conjecture.Core.GenForRegistry.RegisterOverride(System.Type! type, System.Func<object!, object!>! factory) -> void
-static Conjecture.Core.GenForRegistry.ResolveWithOverrides<T>(Conjecture.Core.ForConfiguration<T>! cfg) -> Conjecture.Core.Strategy<T>!
 static Conjecture.Core.Generate.Guids() -> Conjecture.Core.Strategy<System.Guid>!
 static Conjecture.Core.Generate.Decimals() -> Conjecture.Core.Strategy<decimal>!
 static Conjecture.Core.Generate.Decimals(decimal min, decimal max) -> Conjecture.Core.Strategy<decimal>!
@@ -224,3 +220,10 @@ Conjecture.Core.GenMaxDepthAttribute
 Conjecture.Core.GenMaxDepthAttribute.GenMaxDepthAttribute(int maxDepth) -> void
 Conjecture.Core.GenMaxDepthAttribute.MaxDepth.get -> int
 static Conjecture.Core.Generate.OneOf<T>(params System.ReadOnlySpan<Conjecture.Core.Strategy<T>!> strategies) -> Conjecture.Core.Strategy<T>!
+Conjecture.Core.GenerateForRegistry
+static Conjecture.Core.GenerateForRegistry.IsRegistered(System.Type! type) -> bool
+static Conjecture.Core.GenerateForRegistry.Register(System.Type! type, System.Func<Conjecture.Core.IStrategyProvider!>! factory) -> void
+static Conjecture.Core.GenerateForRegistry.Register(System.Type! type, System.Func<Conjecture.Core.IStrategyProvider!>! factory, Conjecture.Core.Strategy<object?>! boxedStrategy) -> void
+static Conjecture.Core.GenerateForRegistry.RegisterOverride(System.Type! type, System.Func<object!, object!>! factory) -> void
+static Conjecture.Core.GenerateForRegistry.ResolveBoxed(System.Type! type) -> Conjecture.Core.Strategy<object?>!
+static Conjecture.Core.GenerateForRegistry.ResolveWithOverrides<T>(Conjecture.Core.ForConfiguration<T>! cfg) -> Conjecture.Core.Strategy<T>!
