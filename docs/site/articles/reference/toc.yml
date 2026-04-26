@@ -27,3 +27,5 @@ items:
     href: fsharp-gen.md
   - name: Schema strategies
     href: schema-strategies.md
+  - name: AspNetCoreRequestBuilder
+    href: aspnetcore-request-builder.md

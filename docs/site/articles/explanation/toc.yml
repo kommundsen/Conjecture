@@ -33,3 +33,5 @@ items:
     href: messaging-property-testing.md
   - name: gRPC property testing
     href: grpc-property-testing.md
+  - name: Why IHost + HttpClient for ASP.NET Core
+    href: aspnetcore-host-abstraction.md

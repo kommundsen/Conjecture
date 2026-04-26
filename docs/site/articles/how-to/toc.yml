@@ -59,6 +59,8 @@ items:
     href: test-messaging-with-rabbitmq.md
   - name: Property-test a gRPC service
     href: test-grpc-services.md
+  - name: Property-test ASP.NET Core endpoints
+    href: test-aspnetcore-endpoints.md
   - name: Generate data from a JSON Schema
     href: generate-from-json-schema.md
   - name: Generate Protobuf message payloads
