@@ -87,5 +87,8 @@
 
     <!-- RabbitMQ -->
     <PackageVersion Include="RabbitMQ.Client" Version="7.0.0" />
+
+    <!-- gRPC -->
+    <PackageVersion Include="Grpc.Net.Client" Version="2.67.0" />
   </ItemGroup>
 </Project>

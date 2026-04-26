@@ -55,4 +55,6 @@
   <Project Path="Conjecture.Messaging.AzureServiceBus.Tests/Conjecture.Messaging.AzureServiceBus.Tests.csproj" />
   <Project Path="Conjecture.Messaging.RabbitMq/Conjecture.Messaging.RabbitMq.csproj" />
   <Project Path="Conjecture.Messaging.RabbitMq.Tests/Conjecture.Messaging.RabbitMq.Tests.csproj" />
+  <Project Path="Conjecture.Grpc/Conjecture.Grpc.csproj" />
+  <Project Path="Conjecture.Grpc.Tests/Conjecture.Grpc.Tests.csproj" />
 </Solution>

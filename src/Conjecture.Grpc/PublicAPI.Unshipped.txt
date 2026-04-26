@@ -1,0 +1,34 @@
+#nullable enable
+Conjecture.Grpc.GrpcRpcMode
+Conjecture.Grpc.GrpcRpcMode.Unary = 0 -> Conjecture.Grpc.GrpcRpcMode
+Conjecture.Grpc.GrpcRpcMode.ServerStream = 1 -> Conjecture.Grpc.GrpcRpcMode
+Conjecture.Grpc.GrpcRpcMode.ClientStream = 2 -> Conjecture.Grpc.GrpcRpcMode
+Conjecture.Grpc.GrpcRpcMode.Bidi = 3 -> Conjecture.Grpc.GrpcRpcMode
+Conjecture.Grpc.GrpcInteraction
+Conjecture.Grpc.GrpcInteraction.GrpcInteraction(string! ResourceName, string! FullMethodName, Conjecture.Grpc.GrpcRpcMode Mode, System.Collections.Generic.IReadOnlyList<System.ReadOnlyMemory<byte>>! RequestMessages, System.Collections.Generic.IReadOnlyDictionary<string!, string!>! Metadata, System.TimeSpan? Deadline = null) -> void
+Conjecture.Grpc.GrpcInteraction.ResourceName.get -> string!
+Conjecture.Grpc.GrpcInteraction.ResourceName.init -> void
+Conjecture.Grpc.GrpcInteraction.FullMethodName.get -> string!
+Conjecture.Grpc.GrpcInteraction.FullMethodName.init -> void
+Conjecture.Grpc.GrpcInteraction.Mode.get -> Conjecture.Grpc.GrpcRpcMode
+Conjecture.Grpc.GrpcInteraction.Mode.init -> void
+Conjecture.Grpc.GrpcInteraction.RequestMessages.get -> System.Collections.Generic.IReadOnlyList<System.ReadOnlyMemory<byte>>!
+Conjecture.Grpc.GrpcInteraction.RequestMessages.init -> void
+Conjecture.Grpc.GrpcInteraction.Metadata.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+Conjecture.Grpc.GrpcInteraction.Metadata.init -> void
+Conjecture.Grpc.GrpcInteraction.Deadline.get -> System.TimeSpan?
+Conjecture.Grpc.GrpcInteraction.Deadline.init -> void
+Conjecture.Grpc.GrpcResponse
+Conjecture.Grpc.GrpcResponse.GrpcResponse(Grpc.Core.StatusCode Status, string? StatusDetail, System.Collections.Generic.IReadOnlyList<System.ReadOnlyMemory<byte>>! ResponseMessages, System.Collections.Generic.IReadOnlyDictionary<string!, string!>! ResponseHeaders, System.Collections.Generic.IReadOnlyDictionary<string!, string!>! Trailers) -> void
+Conjecture.Grpc.GrpcResponse.Status.get -> Grpc.Core.StatusCode
+Conjecture.Grpc.GrpcResponse.Status.init -> void
+Conjecture.Grpc.GrpcResponse.StatusDetail.get -> string?
+Conjecture.Grpc.GrpcResponse.StatusDetail.init -> void
+Conjecture.Grpc.GrpcResponse.ResponseMessages.get -> System.Collections.Generic.IReadOnlyList<System.ReadOnlyMemory<byte>>!
+Conjecture.Grpc.GrpcResponse.ResponseMessages.init -> void
+Conjecture.Grpc.GrpcResponse.ResponseHeaders.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+Conjecture.Grpc.GrpcResponse.ResponseHeaders.init -> void
+Conjecture.Grpc.GrpcResponse.Trailers.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+Conjecture.Grpc.GrpcResponse.Trailers.init -> void
+Conjecture.Grpc.IGrpcTarget
+Conjecture.Grpc.IGrpcTarget.GetCallInvoker(string! resourceName) -> Grpc.Core.CallInvoker!
