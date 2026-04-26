@@ -1,4 +1,7 @@
 #nullable enable
+Conjecture.AspNetCore.AspNetCoreExtensions
+Conjecture.AspNetCore.AspNetCoreExtensions.extension(Conjecture.Core.Generate!)
+static Conjecture.AspNetCore.AspNetCoreExtensions.extension(Conjecture.Core.Generate!).AspNetCoreRequests(Microsoft.Extensions.Hosting.IHost! host, System.Net.Http.HttpClient! client) -> Conjecture.AspNetCore.AspNetCoreRequestBuilder!
 Conjecture.AspNetCore.AspNetCoreRequestBuilder
 Conjecture.AspNetCore.AspNetCoreRequestBuilder.AspNetCoreRequestBuilder(Microsoft.Extensions.Hosting.IHost! host, System.Net.Http.HttpClient! client) -> void
 Conjecture.AspNetCore.AspNetCoreRequestBuilder.Build() -> Conjecture.Core.Strategy<Conjecture.Http.HttpInteraction>!
