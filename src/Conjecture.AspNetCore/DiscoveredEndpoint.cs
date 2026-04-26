@@ -9,7 +9,16 @@ using Microsoft.AspNetCore.Routing.Patterns;
 
 namespace Conjecture.AspNetCore;
 
-internal sealed record DiscoveredEndpoint(
+/// <summary>Metadata for a single HTTP endpoint discovered from the ASP.NET Core routing infrastructure.</summary>
+/// <param name="DisplayName">Human-readable name for the endpoint.</param>
+/// <param name="HttpMethod">The HTTP method (e.g. GET, POST).</param>
+/// <param name="RoutePattern">The parsed route pattern, including raw text and parameter descriptors.</param>
+/// <param name="Parameters">Describes each path, query, and body parameter inferred from the route and binding metadata.</param>
+/// <param name="ProducesContentTypes">The content types the endpoint can produce.</param>
+/// <param name="ConsumesContentTypes">The content types the endpoint can consume.</param>
+/// <param name="RequiresAuthorization">Whether the endpoint requires authorization.</param>
+/// <param name="Metadata">The full endpoint metadata collection.</param>
+public sealed record DiscoveredEndpoint(
     string DisplayName,
     string HttpMethod,
     RoutePattern RoutePattern,
