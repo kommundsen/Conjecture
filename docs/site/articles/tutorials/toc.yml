@@ -15,3 +15,5 @@ items:
     href: 07-data-generation.md
   - name: F# Property Tests
     href: 08-fsharp-property-tests.md
+  - name: Property tests for Aspire apps
+    href: 09-aspire-integration.md

@@ -35,3 +35,5 @@ items:
     href: grpc-property-testing.md
   - name: Why IHost + HttpClient for ASP.NET Core
     href: aspnetcore-host-abstraction.md
+  - name: Why Aspire uses a shared lifecycle
+    href: aspire-lifecycle.md

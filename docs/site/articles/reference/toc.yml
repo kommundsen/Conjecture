@@ -29,3 +29,5 @@ items:
     href: schema-strategies.md
   - name: AspNetCoreRequestBuilder
     href: aspnetcore-request-builder.md
+  - name: Conjecture.Aspire
+    href: aspire.md
