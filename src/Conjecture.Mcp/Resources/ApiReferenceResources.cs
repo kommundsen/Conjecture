@@ -22,12 +22,13 @@ internal static class ApiReferenceResources
         ("targeted-testing",     "Targeted Testing",           "Target.Maximize, Target.Minimize, IGeneratorContext.Target, and targeting settings"),
         ("recursive-strategies", "Recursive Strategies",       "Generate.Recursive<T> for tree-shaped and self-referential types"),
         ("testing-platform",     "Microsoft Testing Platform Adapter", "Conjecture.TestingPlatform setup, [Property] attribute, CLI options, TRX reports, and CrashDump"),
+        ("aspire-setup",         "Aspire Integration Setup",           "Step-by-step guide for wiring up Conjecture.Aspire: IAspireAppFixture, AspireStateMachine<TState>, ResetAsync lifecycle, and [Property] attribute"),
     ];
 
     internal static ValueTask<ListResourcesResult> HandleListResources(
         RequestContext<ListResourcesRequestParams> _, CancellationToken __)
     {
-        var resources = Topics.Select(t => new Resource
+        List<Resource> resources = Topics.Select(t => new Resource
         {
             Uri = $"conjecture://api/{t.Topic}",
             Name = t.Name,
@@ -41,7 +42,7 @@ internal static class ApiReferenceResources
     internal static ValueTask<ReadResourceResult> HandleReadResource(
         RequestContext<ReadResourceRequestParams> context, CancellationToken _)
     {
-        var uri = context.Params?.Uri ?? string.Empty;
+        string uri = context.Params?.Uri ?? string.Empty;
         const string prefix = "conjecture://api/";
 
         if (!uri.StartsWith(prefix, StringComparison.Ordinal))
@@ -52,8 +53,8 @@ internal static class ApiReferenceResources
             });
         }
 
-        var topic = uri[prefix.Length..];
-        var text = LoadDoc(topic);
+        string topic = uri[prefix.Length..];
+        string text = LoadDoc(topic);
 
         return ValueTask.FromResult(new ReadResourceResult
         {
@@ -63,16 +64,16 @@ internal static class ApiReferenceResources
 
     private static string LoadDoc(string topic)
     {
-        var resourceName = $"Conjecture.Mcp.Docs.{topic}.md";
-        var assembly = typeof(ApiReferenceResources).Assembly;
-        using var stream = assembly.GetManifestResourceStream(resourceName);
+        string resourceName = $"Conjecture.Mcp.Docs.{topic}.md";
+        Assembly assembly = typeof(ApiReferenceResources).Assembly;
+        using Stream? stream = assembly.GetManifestResourceStream(resourceName);
         if (stream is null)
         {
-            var available = string.Join(", ", Topics.Select(t => t.Topic));
+            string available = string.Join(", ", Topics.Select(t => t.Topic));
             return $"Topic '{topic}' not found. Available topics: {available}";
         }
 
-        using var reader = new StreamReader(stream);
+        using StreamReader reader = new(stream);
         return reader.ReadToEnd();
     }
 }
