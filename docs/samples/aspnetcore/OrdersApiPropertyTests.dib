@@ -1,0 +1,94 @@
+#!meta
+
+{"kernelInfo":{"defaultKernelName":"csharp","items":[{"name":"csharp","languageName":"C#","aliases":["c#","C#"]}]}}
+
+#!markdown
+
+# Property-test an ASP.NET Core API in a notebook
+
+This notebook drives a tiny in-process minimal-API host with `Conjecture.AspNetCore` and asserts the never-5xx invariant on a generated request stream. Run cells top to bottom; the final cell disposes the host.
+
+#!csharp
+
+#r "nuget: Conjecture.AspNetCore, *"
+#r "nuget: Conjecture.Interactive, *"
+#r "nuget: Microsoft.AspNetCore.Mvc.Testing, *"
+
+#!csharp
+
+using System.Net.Http;
+using Conjecture.AspNetCore;
+using Conjecture.Core;
+using Conjecture.Http;
+using Conjecture.Interactions;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
+#!markdown
+
+## 1. Build a minimal in-process host
+
+Replace the inline `MapGet` with `WebApplicationFactory<TEntryPoint>` from your real project to drive your actual API. The two-line `IHost` + `HttpClient` extraction stays the same.
+
+#!csharp
+
+WebApplicationFactory<NotebookSampleApp> factory = new WebApplicationFactory<NotebookSampleApp>()
+    .WithWebHostBuilder(static webBuilder =>
+    {
+        webBuilder.Configure(static app =>
+        {
+            app.UseRouting();
+            app.UseEndpoints(static endpoints =>
+            {
+                endpoints.MapGet("/orders", static () => Results.Ok("orders"));
+                endpoints.MapGet("/items/{id:int}", static (int id) => Results.Ok($"item {id}"));
+            });
+        });
+    });
+
+HttpClient client = factory.CreateClient();
+IHost host = factory.Services.GetRequiredService<IHost>();
+HostHttpTarget target = new(host, client);
+$"Host ready. Dispatching via {client.BaseAddress}".Display();
+
+#!markdown
+
+## 2. Run the never-5xx property
+
+Uses the kernel's cancellation token so the cell can be interrupted mid-run.
+
+#!csharp
+
+Strategy<HttpInteraction> strategy = Generate
+    .AspNetCoreRequests(host, client)
+    .ValidRequestsOnly()
+    .Build();
+
+await Property.ForAll(target, strategy, static async (t, request) =>
+{
+    HttpResponseMessage response = await request.Response((IHttpTarget)t);
+    await Task.FromResult(response).AssertNot5xx();
+}, ct: KernelInvocationContext.Current?.CancellationToken ?? default);
+
+"All examples passed.".Display();
+
+#!markdown
+
+## 3. Dispose the host
+
+Always run this cell when you're done — it shuts down the in-process server and releases the `WebApplicationFactory`.
+
+#!csharp
+
+client.Dispose();
+await factory.DisposeAsync();
+"Host disposed.".Display();
+
+#!csharp
+
+public sealed class NotebookSampleApp { }
