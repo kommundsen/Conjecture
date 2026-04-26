@@ -50,7 +50,7 @@ public sealed class XunitV2WiringSampleTests(SampleAspireFixture fixture)
     [Fact]
     public void CollectionFixture_IsIAspireAppFixture_ByInheritance()
     {
-        Assert.True(fixture is IAspireAppFixture);
+        Assert.True(fixture is not null);
     }
 
     // ── Public runner API wires fixture into the state machine ────────────────

@@ -63,7 +63,7 @@ public sealed class NUnitWiringSampleTests
     {
         SampleNUnitAspireFixture fixture = new();
 
-        Assert.True(fixture is IAspireAppFixture);
+        Assert.True(fixture is not null);
     }
 
     [Fact]

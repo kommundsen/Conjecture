@@ -4,7 +4,9 @@
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+
 using Aspire.Hosting;
+
 using Conjecture.Aspire;
 
 namespace Conjecture.Aspire.Tests;
