@@ -21,6 +21,29 @@ public class MessagingScaffoldingToolTests
     }
 
     [Fact]
+    public void ScaffoldMessagingPropertyTest_InMemory_ReceiveAsyncReturnsMessageInteraction()
+    {
+        string result = MessagingScaffoldingTool.ScaffoldMessagingPropertyTest(
+            destination: "orders",
+            framework: "xunit",
+            broker: "inmemory");
+
+        Assert.Contains("MessageInteraction? received = await target.ReceiveAsync(\"orders\", TimeSpan.FromSeconds(1), ct);", result);
+        Assert.DoesNotContain("byte[] received", result);
+    }
+
+    [Fact]
+    public void ScaffoldMessagingPropertyTest_AzureServiceBus_FixturePathReferencesFixtureTarget()
+    {
+        string result = MessagingScaffoldingTool.ScaffoldMessagingPropertyTest(
+            destination: "orders",
+            framework: "xunit-v3",
+            broker: "azureservicebus");
+
+        Assert.Contains("fixture.Target,", result);
+    }
+
+    [Fact]
     public void ScaffoldMessagingPropertyTest_XunitV3AzureServiceBus_ContainsXunitV3Using()
     {
         string result = MessagingScaffoldingTool.ScaffoldMessagingPropertyTest(

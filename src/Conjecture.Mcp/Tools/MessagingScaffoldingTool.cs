@@ -41,7 +41,9 @@ internal static class MessagingScaffoldingTool
 
     private static void AppendUsings(StringBuilder sb, string framework, string broker)
     {
+        sb.AppendLine("using System;");
         sb.AppendLine("using System.Threading;");
+        sb.AppendLine("using System.Threading.Tasks;");
         sb.AppendLine("using Conjecture.Core;");
         sb.AppendLine("using Conjecture.Messaging;");
 
@@ -224,37 +226,29 @@ internal static class MessagingScaffoldingTool
         };
 
         sb.AppendLine(attrLine);
-        sb.AppendLine("    public async Task RoundTrip_Message_SatisfiesProperty()");
+        sb.AppendLine("    public async Task RoundTrip_Message_SatisfiesProperty(CancellationToken ct)");
         sb.AppendLine("    {");
 
         if (!needsFixture)
         {
-            sb.AppendLine("        InMemoryMessageBusTarget target = new();");
-        }
-        else
-        {
-            sb.AppendLine("        // target provided via fixture");
+            sb.AppendLine("        InMemoryMessageBusTarget bus = new();");
         }
 
         sb.AppendLine();
         AppendBodyTypeComment(sb, bodyType);
-        sb.AppendLine($"        await Property.ForAll(");
-
-        if (!needsFixture)
-        {
-            sb.AppendLine($"            target,");
-        }
-        else
-        {
-            sb.AppendLine($"            fixture.Target,");
-        }
-
-        sb.AppendLine($"            Generate.Messaging.Publish(\"{destination}\", Generate.Bytes()),");
-        sb.AppendLine($"            async (published) =>");
-        sb.AppendLine($"            {{");
-        sb.AppendLine($"                byte[] received = await target.ReceiveAsync(\"{destination}\");");
-        sb.AppendLine($"                Assert.Equal(published.Body, received);");
-        sb.AppendLine($"            }});");
+        sb.AppendLine("        await Property.ForAll(");
+        sb.AppendLine(needsFixture ? "            fixture.Target," : "            bus,");
+        sb.AppendLine($"            Generate.Messaging.Publish(\"{destination}\", Generate.Bytes(0, 1024)),");
+        sb.AppendLine("            async (target, sent) =>");
+        sb.AppendLine("            {");
+        sb.AppendLine("                await target.ExecuteAsync(sent, ct);");
+        sb.AppendLine($"                MessageInteraction? received = await target.ReceiveAsync(\"{destination}\", TimeSpan.FromSeconds(1), ct);");
+        sb.AppendLine("                Assert.NotNull(received);");
+        sb.AppendLine("                Assert.Equal(sent.MessageId, received.MessageId);");
+        sb.AppendLine("                Assert.Equal(sent.Body.ToArray(), received.Body.ToArray());");
+        sb.AppendLine("                await target.AcknowledgeAsync(received, ct);");
+        sb.AppendLine("            },");
+        sb.AppendLine("            ct);");
         sb.AppendLine("    }");
     }
 
