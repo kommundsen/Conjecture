@@ -19,7 +19,7 @@ namespace Conjecture.AspNetCore;
 
 internal sealed class DualEndpointWalker(IHost host)
 {
-    private static readonly Regex ConstraintPattern = new(@"\{(\w+):[^}]+\}", RegexOptions.Compiled);
+    private static readonly System.Text.RegularExpressions.Regex ConstraintPattern = new(@"\{(\w+):[^}]+\}", System.Text.RegularExpressions.RegexOptions.Compiled);
 
     public IReadOnlyList<DiscoveredEndpoint> Discover()
     {
