@@ -5,7 +5,12 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Conjecture.AspNetCore;
 
-internal sealed record EndpointParameter(
+/// <summary>Describes a single parameter on a discovered endpoint.</summary>
+/// <param name="Name">The route or query segment key used to populate the parameter.</param>
+/// <param name="ClrType">The runtime type used to select a generation strategy.</param>
+/// <param name="Source">Where the parameter is bound from (path, query, body, etc.).</param>
+/// <param name="IsRequired">Whether the parameter must be present in the request.</param>
+public sealed record EndpointParameter(
     string Name,
     Type ClrType,
     BindingSource Source,
