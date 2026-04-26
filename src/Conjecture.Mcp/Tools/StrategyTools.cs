@@ -54,7 +54,7 @@ internal static class StrategyTools
 
             **With property overrides:**
             ```csharp
-            Strategy<{{typeName}}> strategy = Gen.For<{{typeName}}>(cfg => cfg.Override(x => x.SomeProperty, Generate.Integers<int>(min: 0, max: 100)));
+            Strategy<{{typeName}}> strategy = Generate.For<{{typeName}}>(cfg => cfg.Override(x => x.SomeProperty, Generate.Integers<int>(min: 0, max: 100)));
             ```
             """;
     }

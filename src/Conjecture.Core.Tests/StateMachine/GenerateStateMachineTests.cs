@@ -8,7 +8,7 @@ using Conjecture.Core.Internal;
 
 namespace Conjecture.Core.Tests.StateMachine;
 
-public class GenStateMachineTests
+public class GenerateStateMachineTests
 {
     private sealed class CounterMachine : IStateMachine<int, string>
     {

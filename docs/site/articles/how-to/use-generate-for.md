@@ -1,4 +1,4 @@
-# How to use Gen.For&lt;T&gt;()
+# How to use Generate.For&lt;T&gt;()
 
 Use `Generate.For<T>()` to get a `Strategy<T>` for any type decorated with `[Arbitrary]`. The source generator emits the strategy at compile time — no runtime reflection, no manual composition.
 
@@ -147,7 +147,7 @@ Without `[GenMaxDepth]` on a self-referential type, the generator emits a **CON3
 
 ## See also
 
-- [Reference: Gen.For&lt;T&gt;()](../reference/gen-for.md) — attribute table, primitive mapping, diagnostics
-- [Understanding Gen.For&lt;T&gt;() source generation](../explanation/gen-for-source-generator.md) — why source generation and how the registry works
+- [Reference: Generate.For&lt;T&gt;()](../reference/generate-for.md) — attribute table, primitive mapping, diagnostics
+- [Understanding Generate.For&lt;T&gt;() source generation](../explanation/generate-for-source-generator.md) — why source generation and how the registry works
 - [How to use source generators](use-source-generators.md) — `[Arbitrary]` basics and supported types
 - [How to generate sealed class hierarchies](use-sealed-hierarchy-strategies.md) — abstract base + subtypes pattern

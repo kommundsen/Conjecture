@@ -8,15 +8,15 @@ using Conjecture.Core;
 namespace Conjecture.AspNetCore.Tests.TestSupport;
 
 /// <summary>
-/// Registers <see cref="BuilderTestDto"/> with <see cref="GenForRegistry"/> so
-/// <c>RequestSynthesizer</c> can synthesize bodies for it via <see cref="GenForRegistry.ResolveBoxed"/>.
+/// Registers <see cref="BuilderTestDto"/> with <see cref="GenerateForRegistry"/> so
+/// <c>RequestSynthesizer</c> can synthesize bodies for it via <see cref="GenerateForRegistry.ResolveBoxed"/>.
 /// </summary>
 internal static class BuilderTestDtoStrategySupport
 {
     [ModuleInitializer]
     internal static void Register()
     {
-        GenForRegistry.Register(
+        GenerateForRegistry.Register(
             typeof(BuilderTestDto),
             static () => new BuilderTestDtoProvider(),
             Generate.Compose<object?>(static ctx =>

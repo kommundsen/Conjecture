@@ -227,7 +227,7 @@ The `[Arbitrary]` source generator reports its own set of diagnostics:
 
 ### `Generate.For<T>()` call-site diagnostics (CON310–CON313)
 
-These fire at `Generate.For<T>()` or `[From<T>]` call sites. See [Reference: Gen.For&lt;T&gt;()](gen-for.md#generatefort-call-site-diagnostics) for resolution steps.
+These fire at `Generate.For<T>()` or `[From<T>]` call sites. See [Reference: Generate.For&lt;T&gt;()](generate-for.md#generatefort-call-site-diagnostics) for resolution steps.
 
 | ID | Severity | Description |
 |---|---|---|

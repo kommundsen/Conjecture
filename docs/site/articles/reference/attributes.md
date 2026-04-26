@@ -168,9 +168,9 @@ Requirements:
 
 See [How to use source generators](../how-to/use-source-generators.md) for full usage and supported types.
 
-## Gen.For&lt;T&gt;() constraint attributes
+## Generate.For&lt;T&gt;() constraint attributes
 
-Applied to constructor parameters or `init` properties of `[Arbitrary]` types to constrain what the source generator produces. See [Reference: Gen.For&lt;T&gt;()](gen-for.md) for the full attribute reference.
+Applied to constructor parameters or `init` properties of `[Arbitrary]` types to constrain what the source generator produces. See [Reference: Generate.For&lt;T&gt;()](generate-for.md) for the full attribute reference.
 
 | Attribute | Target | Effect |
 |---|---|---|

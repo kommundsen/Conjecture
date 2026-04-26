@@ -64,11 +64,23 @@ Solution file: `src/Conjecture.slnx`
 | `src/Conjecture.Tool/` | `src/Conjecture.Tool.Tests/` |
 | `src/Conjecture.Formatters/` | `src/Conjecture.Formatters.Tests/` |
 | `src/Conjecture.Time/` | `src/Conjecture.Time.Tests/` |
+| `src/Conjecture.Regex/` | `src/Conjecture.Regex.Tests/` |
+| `src/Conjecture.Money/` | `src/Conjecture.Money.Tests/` |
 | `src/Conjecture.FSharp/` | `src/Conjecture.FSharp.Tests/` |
 | `src/Conjecture.FSharp.Expecto/` | `src/Conjecture.FSharp.Expecto.Tests/` |
 | `src/Conjecture.Interactive/` | `src/Conjecture.Interactive.Tests/` |
 | `src/Conjecture.LinqPad/` | `src/Conjecture.LinqPad.Tests/` |
 | `src/Conjecture.TestingPlatform/` | `src/Conjecture.TestingPlatform.Tests/` |
+| `src/Conjecture.Interactions/` | `src/Conjecture.Interactions.Tests/` |
+| `src/Conjecture.Http/` | `src/Conjecture.Http.Tests/` |
+| `src/Conjecture.JsonSchema/` | `src/Conjecture.JsonSchema.Tests/` |
+| `src/Conjecture.OpenApi/` | `src/Conjecture.OpenApi.Tests/` |
+| `src/Conjecture.Protobuf/` | `src/Conjecture.Protobuf.Tests/` |
+| `src/Conjecture.Messaging/` | `src/Conjecture.Messaging.Tests/` |
+| `src/Conjecture.Messaging.AzureServiceBus/` | `src/Conjecture.Messaging.AzureServiceBus.Tests/` |
+| `src/Conjecture.Messaging.RabbitMq/` | `src/Conjecture.Messaging.RabbitMq.Tests/` |
+| `src/Conjecture.Grpc/` | `src/Conjecture.Grpc.Tests/` |
+| `src/Conjecture.AspNetCore/` | `src/Conjecture.AspNetCore.Tests/` |
 | `src/Conjecture.Benchmarks/` | _(benchmark project, not a test project)_ |
 | `src/Conjecture.SelfTests/` | _(integration self-tests, no paired prod project)_ |
 

@@ -10,16 +10,16 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace Conjecture.Generators.Tests;
 
-public sealed class GenForGeneratorTests
+public sealed class GenerateForGeneratorTests
 {
     [Fact]
-    public void Record_WithPrimitiveFields_EmitsGenForRegistryFile()
+    public void Record_WithPrimitiveFields_EmitsGenerateForRegistryFile()
     {
         (ImmutableArray<SyntaxTree> trees, _, _) = RunGenerator(
             "using Conjecture.Core; namespace MyApp; [Arbitrary] public partial record Order(int Id, string Name);");
 
         SyntaxTree? tree = trees.FirstOrDefault(
-            t => t.FilePath.EndsWith("GenForRegistry.g.cs", StringComparison.OrdinalIgnoreCase));
+            t => t.FilePath.EndsWith("GenerateForRegistry.g.cs", StringComparison.OrdinalIgnoreCase));
         Assert.NotNull(tree);
     }
 
@@ -28,7 +28,7 @@ public sealed class GenForGeneratorTests
     {
         string text = GetGeneratedText(
             "using Conjecture.Core; namespace MyApp; [Arbitrary] public partial record Order(int Id, string Name);",
-            "GenForRegistry.g.cs");
+            "GenerateForRegistry.g.cs");
 
         Assert.Contains("[ModuleInitializer]", text);
     }
@@ -38,7 +38,7 @@ public sealed class GenForGeneratorTests
     {
         string text = GetGeneratedText(
             "using Conjecture.Core; namespace MyApp; [Arbitrary] public partial record Order(int Id, string Name);",
-            "GenForRegistry.g.cs");
+            "GenerateForRegistry.g.cs");
 
         Assert.Contains("typeof(global::MyApp.Order)", text);
     }
@@ -48,7 +48,7 @@ public sealed class GenForGeneratorTests
     {
         string text = GetGeneratedText(
             "using Conjecture.Core; namespace MyApp; [Arbitrary] public partial record Order(int Id, string Name);",
-            "GenForRegistry.g.cs");
+            "GenerateForRegistry.g.cs");
 
         Assert.Contains("OrderArbitrary", text);
     }
@@ -58,7 +58,7 @@ public sealed class GenForGeneratorTests
     {
         string text = GetGeneratedText(
             "using Conjecture.Core; namespace MyApp; [Arbitrary] public partial struct Point { public int X { get; init; } public int Y { get; init; } }",
-            "GenForRegistry.g.cs");
+            "GenerateForRegistry.g.cs");
 
         Assert.Contains("typeof(global::MyApp.Point)", text);
         Assert.Contains("PointArbitrary", text);
@@ -69,7 +69,7 @@ public sealed class GenForGeneratorTests
     {
         string text = GetGeneratedText(
             "using Conjecture.Core; namespace MyApp; [Arbitrary] public partial class Box { public Box(int Width, int Height) {} }",
-            "GenForRegistry.g.cs");
+            "GenerateForRegistry.g.cs");
 
         Assert.Contains("typeof(global::MyApp.Box)", text);
         Assert.Contains("BoxArbitrary", text);
@@ -80,7 +80,7 @@ public sealed class GenForGeneratorTests
     {
         string text = GetGeneratedText(
             "using Conjecture.Core; namespace MyApp; [Arbitrary] public partial record Order(int Id); [Arbitrary] public partial record Product(string Name);",
-            "GenForRegistry.g.cs");
+            "GenerateForRegistry.g.cs");
 
         Assert.Contains("typeof(global::MyApp.Order)", text);
         Assert.Contains("typeof(global::MyApp.Product)", text);
@@ -93,14 +93,14 @@ public sealed class GenForGeneratorTests
             "namespace MyApp; public class Plain { public int X { get; set; } }");
 
         SyntaxTree? tree = trees.FirstOrDefault(
-            t => t.FilePath.EndsWith("GenForRegistry.g.cs", StringComparison.OrdinalIgnoreCase));
+            t => t.FilePath.EndsWith("GenerateForRegistry.g.cs", StringComparison.OrdinalIgnoreCase));
         Assert.Null(tree);
     }
 
     [Fact]
     public void Record_WithPrimitiveFields_GeneratedCodeCompilesWithoutErrors()
     {
-        // Include a hand-written OrderArbitrary so the GenForRegistry.g.cs reference compiles independently of ArbitraryGenerator.
+        // Include a hand-written OrderArbitrary so the GenerateForRegistry.g.cs reference compiles independently of ArbitraryGenerator.
         string source = """
             using Conjecture.Core;
             namespace MyApp;
@@ -144,7 +144,7 @@ public sealed class GenForGeneratorTests
                 OutputKind.DynamicallyLinkedLibrary,
                 nullableContextOptions: NullableContextOptions.Enable));
 
-        GeneratorDriver driver = CSharpGeneratorDriver.Create(new GenForGenerator());
+        GeneratorDriver driver = CSharpGeneratorDriver.Create(new GenerateForGenerator());
         GeneratorDriverRunResult result = driver.RunGenerators(inputCompilation).GetRunResult();
 
         Compilation outputCompilation = inputCompilation.AddSyntaxTrees(result.GeneratedTrees);

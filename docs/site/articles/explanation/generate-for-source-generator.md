@@ -1,4 +1,4 @@
-# Understanding Gen.For&lt;T&gt;() source generation
+# Understanding Generate.For&lt;T&gt;() source generation
 
 `Generate.For<T>()` is the call-site entry point for a strategy the compiler derived from your type at build time. This page explains why source generation was chosen over alternatives, how the emitted code is wired together, and how `Generate.For<T>()` fits into a broader property test.
 
@@ -44,14 +44,14 @@ internal sealed class OrderArbitrary : IStrategyProvider<Order>
 }
 ```
 
-**3. Registry wiring.** The generator also emits a `[ModuleInitializer]` that registers both the provider and the override factory with `GenForRegistry`:
+**3. Registry wiring.** The generator also emits a `[ModuleInitializer]` that registers both the provider and the override factory with `GenerateForRegistry`:
 
 ```csharp
 [ModuleInitializer]
 internal static void RegisterOrderArbitrary()
 {
-    GenForRegistry.Register(typeof(Order), static () => new OrderArbitrary());
-    GenForRegistry.RegisterOverride(typeof(Order),
+    GenerateForRegistry.Register(typeof(Order), static () => new OrderArbitrary());
+    GenerateForRegistry.RegisterOverride(typeof(Order),
         static cfg => OrderArbitrary.CreateWithOverrides((ForConfiguration<Order>)cfg));
 }
 ```
@@ -60,9 +60,9 @@ internal static void RegisterOrderArbitrary()
 
 ## How `Generate.For<T>()` resolves a strategy
 
-`Generate.For<T>()` delegates to `GenForRegistry.Resolve<T>()`, which looks up the registered factory by `typeof(T)` in a `ConcurrentDictionary`. The lookup is O(1) and allocation-free after the first call.
+`Generate.For<T>()` delegates to `GenerateForRegistry.Resolve<T>()`, which looks up the registered factory by `typeof(T)` in a `ConcurrentDictionary`. The lookup is O(1) and allocation-free after the first call.
 
-`Generate.For<T>(cfg => ...)` takes the override path: it constructs a `ForConfiguration<T>`, runs your callback, then calls `GenForRegistry.ResolveWithOverrides<T>(cfg)`, which invokes the override-aware factory. The override factory calls `cfg.TryGet<TProp>(propertyName)` for each parameter — if an override exists it uses it, otherwise it falls back to the default strategy.
+`Generate.For<T>(cfg => ...)` takes the override path: it constructs a `ForConfiguration<T>`, runs your callback, then calls `GenerateForRegistry.ResolveWithOverrides<T>(cfg)`, which invokes the override-aware factory. The override factory calls `cfg.TryGet<TProp>(propertyName)` for each parameter — if an override exists it uses it, otherwise it falls back to the default strategy.
 
 The result is a `Strategy<T>` like any other. It composes, shrinks, and replays exactly as if you had written the `Generate.Compose` call by hand.
 
@@ -91,13 +91,13 @@ For `[Property]` parameters, `[From<OrderArbitrary>]` is the idiomatic shorthand
 
 ## The registry and AOT
 
-`GenForRegistry` is a `public static` class backed by two `ConcurrentDictionary<Type, Func<...>>` fields. Keeping it public allows generated code in user assemblies to call `Register` and `RegisterOverride`. The dictionaries use `Type` as the key rather than a generic type parameter, which is AOT-safe: no `MakeGenericType`, no `MethodInfo.Invoke`, no `Activator.CreateInstance`.
+`GenerateForRegistry` is a `public static` class backed by two `ConcurrentDictionary<Type, Func<...>>` fields. Keeping it public allows generated code in user assemblies to call `Register` and `RegisterOverride`. The dictionaries use `Type` as the key rather than a generic type parameter, which is AOT-safe: no `MakeGenericType`, no `MethodInfo.Invoke`, no `Activator.CreateInstance`.
 
 The generated factories are `static` lambdas (`static () => new OrderArbitrary()`). `static` lambdas are compiler-lowered to static methods, so they produce no closures and hold no references that would confuse the trimmer.
 
 ## Further reading
 
-- [How to use Gen.For&lt;T&gt;()](../how-to/use-gen-for.md) — step-by-step recipes
-- [Reference: Gen.For&lt;T&gt;()](../reference/gen-for.md) — attribute table, primitive mapping, diagnostics
+- [How to use Generate.For&lt;T&gt;()](../how-to/use-generate-for.md) — step-by-step recipes
+- [Reference: Generate.For&lt;T&gt;()](../reference/generate-for.md) — attribute table, primitive mapping, diagnostics
 - [How to use source generators](../how-to/use-source-generators.md) — `[Arbitrary]` basics
 - [Understanding sealed hierarchy strategies](sealed-hierarchy-strategies.md) — hierarchy mode for abstract types

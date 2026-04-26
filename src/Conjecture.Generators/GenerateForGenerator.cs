@@ -11,9 +11,9 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Conjecture.Generators;
 
-/// <summary>Incremental source generator that emits <c>GenForRegistry.g.cs</c> — a <c>[ModuleInitializer]</c> that registers <c>IStrategyProvider</c> factories for all <c>[Arbitrary]</c> types, enabling <c>Generate.For&lt;T&gt;()</c>.</summary>
+/// <summary>Incremental source generator that emits <c>GenerateForRegistry.g.cs</c> — a <c>[ModuleInitializer]</c> that registers <c>IStrategyProvider</c> factories for all <c>[Arbitrary]</c> types, enabling <c>Generate.For&lt;T&gt;()</c>.</summary>
 [Generator(LanguageNames.CSharp)]
-public sealed class GenForGenerator : IIncrementalGenerator
+public sealed class GenerateForGenerator : IIncrementalGenerator
 {
     /// <inheritdoc/>
     public void Initialize(IncrementalGeneratorInitializationContext context)
@@ -74,7 +74,7 @@ public sealed class GenForGenerator : IIncrementalGenerator
             }
 
             string registrySource = EmitRegistry(entries);
-            ctx.AddSource("GenForRegistry.g.cs", registrySource);
+            ctx.AddSource("GenerateForRegistry.g.cs", registrySource);
 
             foreach ((TypeModel model, string _) in generatedModels)
             {
@@ -398,17 +398,17 @@ public sealed class GenForGenerator : IIncrementalGenerator
         sb.AppendLine();
         sb.AppendLine("namespace Conjecture.Generated;");
         sb.AppendLine();
-        sb.AppendLine("internal static class GenForRegistryInitializer");
+        sb.AppendLine("internal static class GenerateForRegistryInitializer");
         sb.AppendLine("{");
         sb.AppendLine("    [ModuleInitializer]");
         sb.AppendLine("    internal static void Register()");
         sb.AppendLine("    {");
         foreach ((string typeFqn, string providerFqn) in entries)
         {
-            sb.AppendLine($"        global::Conjecture.Core.GenForRegistry.Register(");
+            sb.AppendLine($"        global::Conjecture.Core.GenerateForRegistry.Register(");
             sb.AppendLine($"            typeof(global::{typeFqn}),");
             sb.AppendLine($"            static () => new global::{providerFqn}());");
-            sb.AppendLine($"        global::Conjecture.Core.GenForRegistry.RegisterOverride(");
+            sb.AppendLine($"        global::Conjecture.Core.GenerateForRegistry.RegisterOverride(");
             sb.AppendLine($"            typeof(global::{typeFqn}),");
             sb.AppendLine($"            static cfg => (object)new global::{providerFqn}().CreateWithOverrides((global::Conjecture.Core.ForConfiguration<global::{typeFqn}>)cfg));");
         }

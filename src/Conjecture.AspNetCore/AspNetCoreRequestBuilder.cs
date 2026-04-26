@@ -92,7 +92,7 @@ public sealed class AspNetCoreRequestBuilder
     /// <summary>
     /// Returns a new builder that uses <paramref name="doc"/> as the source of body strategies.
     /// When an endpoint's (method, path) matches an OpenAPI operation with a request body schema,
-    /// the synthesised body is generated from the schema; otherwise the registered <c>Gen.For&lt;T&gt;()</c>
+    /// the synthesised body is generated from the schema; otherwise the registered <c>Generate.For&lt;T&gt;()</c>
     /// strategy is used as a fallback.
     /// </summary>
     public AspNetCoreRequestBuilder FromOpenApi(Conjecture.OpenApi.OpenApiDocument doc)
@@ -137,7 +137,7 @@ public sealed class AspNetCoreRequestBuilder
         return this.flavour switch
         {
             RequestFlavour.ValidOnly => TryBuildValidStrategy(endpoints, this.openApiDoc) ?? throw new InvalidOperationException(
-                "No endpoints can produce valid requests. Register body parameter types with [Arbitrary] or GenForRegistry."),
+                "No endpoints can produce valid requests. Register body parameter types with [Arbitrary] or GenerateForRegistry."),
             RequestFlavour.MalformedOnly => BuildMalformedStrategy(endpoints),
             _ => BuildMixedStrategy(endpoints, this.openApiDoc),
         };
