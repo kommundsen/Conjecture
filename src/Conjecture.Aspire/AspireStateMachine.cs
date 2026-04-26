@@ -18,7 +18,7 @@ namespace Conjecture.Aspire;
 /// <typeparam name="TState">The type representing the system's state.</typeparam>
 public abstract class AspireStateMachine<TState> : IStateMachine<TState, Interaction>
 {
-    internal DistributedApplication? App { get; private set; }
+    internal DistributedApplication? App { get; set; }
 
     /// <summary>Returns an <see cref="HttpClient"/> connected to the named resource.</summary>
     protected HttpClient GetClient(string resourceName) =>
