@@ -51,6 +51,12 @@ items:
     href: use-mcp-server.md
   - name: Property-test an HTTP API with OpenAPI
     href: test-http-api-with-openapi.md
+  - name: Test messaging with the in-memory adapter
+    href: test-messaging-with-inmemory.md
+  - name: Test messaging with Azure Service Bus
+    href: test-messaging-with-azure-service-bus.md
+  - name: Test messaging with RabbitMQ
+    href: test-messaging-with-rabbitmq.md
   - name: Generate data from a JSON Schema
     href: generate-from-json-schema.md
   - name: Generate Protobuf message payloads
