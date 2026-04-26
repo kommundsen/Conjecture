@@ -4,7 +4,6 @@
 using System.Collections.Generic;
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Routing.Patterns;
 
@@ -19,9 +18,3 @@ internal sealed record DiscoveredEndpoint(
     IReadOnlyList<string> ConsumesContentTypes,
     bool RequiresAuthorization,
     EndpointMetadataCollection Metadata);
-
-internal sealed record EndpointParameter(
-    string Name,
-    Type ClrType,
-    BindingSource Source,
-    bool IsRequired);
