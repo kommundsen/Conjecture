@@ -227,3 +227,4 @@ static Conjecture.Core.GenerateForRegistry.Register(System.Type! type, System.Fu
 static Conjecture.Core.GenerateForRegistry.RegisterOverride(System.Type! type, System.Func<object!, object!>! factory) -> void
 static Conjecture.Core.GenerateForRegistry.ResolveBoxed(System.Type! type) -> Conjecture.Core.Strategy<object?>!
 static Conjecture.Core.GenerateForRegistry.ResolveWithOverrides<T>(Conjecture.Core.ForConfiguration<T>! cfg) -> Conjecture.Core.Strategy<T>!
+static Conjecture.Core.Generate.Constant<T>(T value) -> Conjecture.Core.Strategy<T>!
