@@ -29,3 +29,5 @@ items:
     href: schema-constrained-shrinking.md
   - name: Why three schema packages instead of one
     href: schema-package-layout.md
+  - name: Messaging property testing
+    href: messaging-property-testing.md
