@@ -158,6 +158,11 @@ The package ships zero auth code. Use the standard `WebApplicationFactory.WithWe
 | .NET Interactive | `Conjecture.Interactive` + `Conjecture.Core` | imperative `await Property.ForAll(...)` in a code cell |
 | LinqPad | `Conjecture.LinqPad` + `Conjecture.Core` | imperative `await Property.ForAll(target, strategy, assertion, QueryCancelToken)` |
 
+## Interactive samples
+
+- [`OrdersApiPropertyTests.dib`](https://github.com/kommundsen/Conjecture/blob/main/docs/samples/aspnetcore/OrdersApiPropertyTests.dib) — .NET Interactive notebook (open in VS Code with the Polyglot Notebooks extension).
+- [`OrdersApiPropertyTests.linq`](https://github.com/kommundsen/Conjecture/blob/main/docs/samples/aspnetcore/OrdersApiPropertyTests.linq) — LinqPad query.
+
 ## See also
 
 - [`AspNetCoreRequestBuilder` — reference](../reference/aspnetcore-request-builder.md)
