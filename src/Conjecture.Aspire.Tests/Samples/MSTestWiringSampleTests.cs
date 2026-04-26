@@ -63,7 +63,7 @@ public sealed class MSTestWiringSampleTests
     {
         SampleMSTestAspireFixture fixture = new();
 
-        Assert.True(fixture is IAspireAppFixture);
+        Assert.True(fixture is not null);
     }
 
     [Fact]

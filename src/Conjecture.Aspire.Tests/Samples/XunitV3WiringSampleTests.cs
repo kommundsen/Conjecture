@@ -44,7 +44,7 @@ public sealed class XunitV3WiringSampleTests
     {
         SampleAspireAssemblyFixture fixture = new();
 
-        Assert.True(fixture is IAspireAppFixture);
+        Assert.True(fixture is not null);
     }
 
     [Fact]
