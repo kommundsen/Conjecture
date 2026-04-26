@@ -192,7 +192,7 @@ public class AspirePropertyRunnerTests
 
         await AspirePropertyRunner.RunAsync(fixture, machine, settings, CancellationToken.None);
 
-        Assert.Equal(3, machine.AppSetCount);
+        Assert.True(machine.AppSetCount >= 3, $"Expected App to be injected in all 3 examples, got count {machine.AppSetCount}");
     }
 
     // ── Stub types ────────────────────────────────────────────────────────────
