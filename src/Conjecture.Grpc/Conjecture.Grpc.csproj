@@ -11,7 +11,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore" />
     <PackageReference Include="Grpc.Net.Client" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" />
     <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" PrivateAssets="all" />
   </ItemGroup>
 
