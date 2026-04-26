@@ -88,7 +88,7 @@ public class RecurringEventStrategyTests
             foreach (TimeZoneInfo.AdjustmentRule rule in rules)
             {
                 // Check spring-forward transition
-                DateTimeOffset springForward = GetTransitionOffset(rule, rule.DaylightTransitionStart, sample.WindowStart.Year, sample.Zone);
+                DateTimeOffset springForward = GetTransitionOffset(rule.DaylightTransitionStart, sample.WindowStart.Year, sample.Zone);
                 if (springForward >= sample.WindowStart && springForward <= sample.WindowEnd)
                 {
                     hasTransition = true;
@@ -96,7 +96,7 @@ public class RecurringEventStrategyTests
                 }
 
                 // Check fall-back transition
-                DateTimeOffset fallBack = GetTransitionOffset(rule, rule.DaylightTransitionEnd, sample.WindowStart.Year, sample.Zone);
+                DateTimeOffset fallBack = GetTransitionOffset(rule.DaylightTransitionEnd, sample.WindowStart.Year, sample.Zone);
                 if (fallBack >= sample.WindowStart && fallBack <= sample.WindowEnd)
                 {
                     hasTransition = true;
@@ -123,7 +123,6 @@ public class RecurringEventStrategyTests
     }
 
     private static DateTimeOffset GetTransitionOffset(
-        TimeZoneInfo.AdjustmentRule rule,
         TimeZoneInfo.TransitionTime transition,
         int year,
         TimeZoneInfo zone)

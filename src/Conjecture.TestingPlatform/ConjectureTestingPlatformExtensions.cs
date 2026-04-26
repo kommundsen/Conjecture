@@ -1,6 +1,8 @@
 // Copyright (c) 2026 Kim Ommundsen. Licensed under the MPL-2.0.
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
+using System.Diagnostics.CodeAnalysis;
+
 using Conjecture.TestingPlatform.Internal;
 
 using Microsoft.Testing.Platform.Builder;
@@ -30,6 +32,8 @@ public static class ConjectureTestingPlatformExtensions
     /// <c>TestingPlatformBuilderHook</c> item is ignored. The <paramref name="args"/> parameter is
     /// part of the mandated signature but is not used here.
     /// </summary>
+    [SuppressMessage("Style", "IDE0060:RemoveUnusedParameter",
+        Justification = "Required by Microsoft.Testing.Platform MSBuild-generated code.")]
     public static void AddExtensions(ITestApplicationBuilder builder, string[] args)
     {
         builder.RegisterConjectureFramework();
