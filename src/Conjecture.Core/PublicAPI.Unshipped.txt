@@ -1,1 +1,4 @@
 #nullable enable
+static Conjecture.Core.GenForRegistry.IsRegistered(System.Type! type) -> bool
+static Conjecture.Core.GenForRegistry.Register(System.Type! type, System.Func<Conjecture.Core.IStrategyProvider!>! factory, Conjecture.Core.Strategy<object?>! boxedStrategy) -> void
+static Conjecture.Core.GenForRegistry.ResolveBoxed(System.Type! type) -> Conjecture.Core.Strategy<object?>!
