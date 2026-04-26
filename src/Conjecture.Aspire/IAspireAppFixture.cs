@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Aspire.Hosting;
@@ -20,6 +21,21 @@ public abstract class IAspireAppFixture : IAsyncDisposable
 
     /// <summary>Resource names to health-check before each example. Empty means no health-check polling.</summary>
     public virtual IEnumerable<string> HealthCheckedResources => [];
+
+    /// <summary>Starts the distributed application and returns the running instance.</summary>
+    public virtual Task<DistributedApplication> StartAsync(CancellationToken cancellationToken = default)
+        => throw new NotImplementedException($"Override {nameof(StartAsync)}.");
+
+    /// <summary>Resets application state between examples.</summary>
+    public virtual Task ResetAsync(DistributedApplication app, CancellationToken cancellationToken = default)
+        => throw new NotImplementedException($"Override {nameof(ResetAsync)}.");
+
+    /// <summary>Waits until the named resource reports healthy.</summary>
+    public virtual Task WaitForHealthyAsync(
+        DistributedApplication app,
+        string resourceName,
+        CancellationToken cancellationToken = default)
+        => Task.CompletedTask;
 
     /// <inheritdoc />
     public virtual ValueTask DisposeAsync() => ValueTask.CompletedTask;

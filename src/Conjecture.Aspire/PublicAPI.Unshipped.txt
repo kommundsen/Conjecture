@@ -22,4 +22,7 @@ Conjecture.Aspire.Interaction.ResourceName.init -> void
 virtual Conjecture.Aspire.IAspireAppFixture.DisposeAsync() -> System.Threading.Tasks.ValueTask
 virtual Conjecture.Aspire.IAspireAppFixture.HealthCheckedResources.get -> System.Collections.Generic.IEnumerable<string!>!
 virtual Conjecture.Aspire.IAspireAppFixture.MaxRetryAttempts.get -> int
+virtual Conjecture.Aspire.IAspireAppFixture.ResetAsync(Aspire.Hosting.DistributedApplication! app, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
 virtual Conjecture.Aspire.IAspireAppFixture.RetryDelay.get -> System.TimeSpan
+virtual Conjecture.Aspire.IAspireAppFixture.StartAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Aspire.Hosting.DistributedApplication!>!
+virtual Conjecture.Aspire.IAspireAppFixture.WaitForHealthyAsync(Aspire.Hosting.DistributedApplication! app, string! resourceName, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
