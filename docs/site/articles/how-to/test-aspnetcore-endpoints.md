@@ -56,7 +56,7 @@ public class OrdersApiProperties : IClassFixture<WebApplicationFactory<Program>>
 }
 ```
 
-The walker discovers every endpoint `Program` exposes. The synthesiser populates `[FromRoute]`, `[FromQuery]`, `[FromHeader]`, and `[FromBody]` parameters from `Gen.For<T>()` (so register an arbitrary for each DTO type via `[Arbitrary]` or `GenForRegistry.Register<T>(...)` — unregistered types throw at strategy-build time with a pointer to the missing registration). `HostHttpTarget` from `Conjecture.Http` dispatches the synthesized `HttpInteraction` through the test server.
+The walker discovers every endpoint `Program` exposes. The synthesiser populates `[FromRoute]`, `[FromQuery]`, `[FromHeader]`, and `[FromBody]` parameters from `Generate.For<T>()` (so register an arbitrary for each DTO type via `[Arbitrary]` or `GenerateForRegistry.Register<T>(...)` — unregistered types throw at strategy-build time with a pointer to the missing registration). `HostHttpTarget` from `Conjecture.Http` dispatches the synthesized `HttpInteraction` through the test server.
 
 ## Test that malformed requests return 4xx, never 5xx
 

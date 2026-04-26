@@ -1,4 +1,4 @@
-# Gen.For&lt;T&gt;() reference
+# Generate.For&lt;T&gt;() reference
 
 API surface, attribute reference, primitive mapping, and diagnostic codes for `Generate.For<T>()` and the constraint attributes.
 
@@ -231,7 +231,7 @@ public partial record Parent(Child? Child);
 
 ## See also
 
-- [How to use Gen.For&lt;T&gt;()](../how-to/use-gen-for.md) — step-by-step recipes
-- [Understanding Gen.For&lt;T&gt;() source generation](../explanation/gen-for-source-generator.md) — design rationale and registry mechanics
+- [How to use Generate.For&lt;T&gt;()](../how-to/use-generate-for.md) — step-by-step recipes
+- [Understanding Generate.For&lt;T&gt;() source generation](../explanation/generate-for-source-generator.md) — design rationale and registry mechanics
 - [Reference: Analyzers](analyzers.md) — CON200–CON202, CON205, CON300–CON302 (type-declaration diagnostics)
 - [Reference: Attributes](attributes.md) — `[Arbitrary]`, `[From<T>]`, `[FromFactory]`

@@ -10,7 +10,7 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace Conjecture.Generators.Tests;
 
-public sealed class GenForDiagnosticTests
+public sealed class GenerateForDiagnosticTests
 {
     // --- CON310: Generate.For<T>() where T is an interface ---
 
@@ -68,7 +68,7 @@ public sealed class GenForDiagnosticTests
         (ImmutableArray<SyntaxTree> trees, _, _) = RunGenerator(source);
 
         bool hasRegistry = trees.Any(
-            t => t.FilePath.EndsWith("GenForRegistry.g.cs", StringComparison.OrdinalIgnoreCase));
+            t => t.FilePath.EndsWith("GenerateForRegistry.g.cs", StringComparison.OrdinalIgnoreCase));
         Assert.False(hasRegistry);
     }
 
@@ -253,7 +253,7 @@ public sealed class GenForDiagnosticTests
         (ImmutableArray<SyntaxTree> trees, _, _) = RunGenerator(source);
 
         bool hasRegistry = trees.Any(
-            t => t.FilePath.EndsWith("GenForRegistry.g.cs", StringComparison.OrdinalIgnoreCase));
+            t => t.FilePath.EndsWith("GenerateForRegistry.g.cs", StringComparison.OrdinalIgnoreCase));
         Assert.True(hasRegistry);
     }
 
@@ -316,7 +316,7 @@ public sealed class GenForDiagnosticTests
                 OutputKind.DynamicallyLinkedLibrary,
                 nullableContextOptions: NullableContextOptions.Enable));
 
-        GeneratorDriver driver = CSharpGeneratorDriver.Create(new GenForGenerator());
+        GeneratorDriver driver = CSharpGeneratorDriver.Create(new GenerateForGenerator());
         GeneratorDriverRunResult result = driver.RunGenerators(inputCompilation).GetRunResult();
 
         Compilation outputCompilation = inputCompilation.AddSyntaxTrees(result.GeneratedTrees);

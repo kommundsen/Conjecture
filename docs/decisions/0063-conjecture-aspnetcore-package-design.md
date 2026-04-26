@@ -15,7 +15,7 @@ The decision must answer:
 
 - What is the package's public dependency surface — does it bind to `Microsoft.AspNetCore.Mvc.Testing.WebApplicationFactory`, or stay at `IHost` + `HttpClient`?
 - How are minimal APIs and MVC controllers discovered uniformly?
-- How does request synthesis compose with `Gen.For<T>()` (#73) for typed DTOs and with the existing `HttpInteraction` shape (ADR 0059)?
+- How does request synthesis compose with `Generate.For<T>()` (#73) for typed DTOs and with the existing `HttpInteraction` shape (ADR 0059)?
 - How is auth handled for endpoints behind `[Authorize]`?
 - How are middleware-short-circuited endpoints (authz, rate limiting) treated?
 - How are user-managed test fixtures (DB seeding, authenticated identity) plugged in?
@@ -65,12 +65,12 @@ public sealed record EndpointParameter(
 
 Per discovered endpoint, `RequestSynthesizer` produces two `Strategy<HttpInteraction>` flavours:
 
-- **Valid** — every required parameter populated from `Gen.For<TParameter>()`; `[FromBody]` payload populated from `Gen.For<TBody>()`; `Content-Type` set to the first `Consumes` entry (default `application/json`); `Accept` set to the first `Produces` entry.
+- **Valid** — every required parameter populated from `Generate.For<TParameter>()`; `[FromBody]` payload populated from `Generate.For<TBody>()`; `Content-Type` set to the first `Consumes` entry (default `application/json`); `Accept` set to the first `Produces` entry.
 - **Malformed** — randomly one of: missing required field, out-of-range numeric, wrong `Content-Type`, malformed JSON in body, missing required header. Used for the `never-5xx` invariant.
 
 Both strategies emit `HttpInteraction` records (the existing Layer 1 shape from ADR 0059) so `HostHttpTarget` dispatches them unchanged. No new interaction shape, no new target — the entire dispatch path is reused.
 
-DTO synthesis delegates to `Gen.For<T>()` (#73) and registered `[Arbitrary]` providers. For primitive parameter types (`int`, `string`, `Guid`, `DateOnly`) the synthesiser falls back to built-in `Strategy<T>` primitives. Unknown parameter types throw at strategy-build time with a clear message pointing at the parameter, the endpoint, and the `Gen.For<T>()` registration the user is missing.
+DTO synthesis delegates to `Generate.For<T>()` (#73) and registered `[Arbitrary]` providers. For primitive parameter types (`int`, `string`, `Guid`, `DateOnly`) the synthesiser falls back to built-in `Strategy<T>` primitives. Unknown parameter types throw at strategy-build time with a clear message pointing at the parameter, the endpoint, and the `Generate.For<T>()` registration the user is missing.
 
 ### Fluent `AspNetCoreRequestBuilder`
 
@@ -133,7 +133,7 @@ Two tiers, mirroring ADR 0061 and 0062:
 - Same `Property.ForAll(target, strategy, assertion, ct)` shape as HTTP, messaging, and gRPC — no new primitives.
 - `HttpInteraction` and `HostHttpTarget` from ADR 0059 are reused unchanged; the package adds *strategy synthesis* over an existing dispatch path.
 - `ExcludeEndpoints` + `WithSetup` cover the realistic test-fixture surface without coupling to any persistence model.
-- DTO synthesis falls out of `Gen.For<T>()` automatically; users get typed-body coverage by registering arbitraries they likely already have.
+- DTO synthesis falls out of `Generate.For<T>()` automatically; users get typed-body coverage by registering arbitraries they likely already have.
 - Aspire compatibility costs nothing because the public surface is `IHost` + `HttpClient`.
 
 **Harder:**
@@ -145,7 +145,7 @@ Two tiers, mirroring ADR 0061 and 0062:
 **Risks:**
 
 - ASP.NET Core 10 (currently in preview) is reorganising parts of the endpoint metadata pipeline; the walker is pinned to the .NET 9 + .NET 10 RTM API surface. Tracked in the integration tier — if the metadata APIs shift, the SelfTests catch it before users do.
-- `Gen.For<T>()` is the v0.22 release — `Conjecture.AspNetCore` ships in v0.23 and hard-depends on it. If a user has not registered an arbitrary for a body DTO type, strategy-build throws at startup. The error message carries the parameter, endpoint, and registration the user is missing; documentation walks through the typical fix.
+- `Generate.For<T>()` is the v0.22 release — `Conjecture.AspNetCore` ships in v0.23 and hard-depends on it. If a user has not registered an arbitrary for a body DTO type, strategy-build throws at startup. The error message carries the parameter, endpoint, and registration the user is missing; documentation walks through the typical fix.
 - Synthesised valid requests will exercise endpoints that mutate state (POST /orders, DELETE /users/{id}) by default. Documentation makes this loud: tests must either run against a fresh `WebApplicationFactory` per scenario, use `.WithSetup` to roll back, or `.ExcludeEndpoints` mutating routes. No automatic mutation detection — the package does not parse endpoint side-effects.
 
 ## Alternatives Considered

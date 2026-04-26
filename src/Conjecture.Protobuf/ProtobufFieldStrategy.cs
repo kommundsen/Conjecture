@@ -11,6 +11,8 @@ using Google.Protobuf.Reflection;
 
 using FieldType = Google.Protobuf.Reflection.FieldType;
 
+// Local alias: this class extends Strategy<T> and inherits a Generate(ConjectureData) method,
+// so unqualified `Gen.X` would bind to the inherited method rather than the static class.
 using Gen = Conjecture.Core.Generate;
 
 namespace Conjecture.Protobuf;

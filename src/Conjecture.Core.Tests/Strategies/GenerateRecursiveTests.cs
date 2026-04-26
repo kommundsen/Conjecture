@@ -6,7 +6,7 @@ using Conjecture.Core.Internal;
 
 namespace Conjecture.Core.Tests.Strategies;
 
-public class GenRecursiveTests
+public class GenerateRecursiveTests
 {
     private static ConjectureData MakeData(ulong seed = 42UL) =>
         ConjectureData.ForGeneration(new SplittableRandom(seed));

@@ -278,7 +278,7 @@ public static class Generate
     public static Strategy<char> Chars() => new CharStrategy();
 
     /// <summary>Returns a strategy for <typeparamref name="T"/> using its registered <see cref="IStrategyProvider{T}"/>. The type must be decorated with <c>[Arbitrary]</c>.</summary>
-    public static Strategy<T> For<T>() => GenForRegistry.Resolve<T>();
+    public static Strategy<T> For<T>() => GenerateForRegistry.Resolve<T>();
 
     /// <summary>Returns a strategy for <typeparamref name="T"/> with property overrides applied via <paramref name="configure"/>. The type must be decorated with <c>[Arbitrary]</c>.</summary>
     public static Strategy<T> For<T>(Action<ForConfiguration<T>> configure)
@@ -286,6 +286,6 @@ public static class Generate
         ArgumentNullException.ThrowIfNull(configure);
         ForConfiguration<T> cfg = new();
         configure(cfg);
-        return Compose<T>(ctx => ctx.Generate(GenForRegistry.ResolveWithOverrides(cfg)));
+        return Compose<T>(ctx => ctx.Generate(GenerateForRegistry.ResolveWithOverrides(cfg)));
     }
 }

@@ -11,10 +11,10 @@ namespace Conjecture.Core;
 
 /// <summary>
 /// AOT-safe registry for <see cref="IStrategyProvider"/> factories populated by the
-/// <c>GenForGenerator</c> source generator via <c>[ModuleInitializer]</c>.
+/// <c>GenerateForGenerator</c> source generator via <c>[ModuleInitializer]</c>.
 /// Must be <see langword="public"/> so generated code in user assemblies can register types.
 /// </summary>
-public static class GenForRegistry
+public static class GenerateForRegistry
 {
     private static readonly ConcurrentDictionary<Type, Func<IStrategyProvider>> Providers = new();
 
@@ -63,7 +63,7 @@ public static class GenForRegistry
             : throw new InvalidOperationException(
                 $"No boxed strategy is registered for '{type.FullName}'. " +
                 $"Decorate the type with [Arbitrary] and use the Conjecture.Generators source generator, " +
-                $"or register it manually via GenForRegistry.Register(type, factory, boxedStrategy).");
+                $"or register it manually via GenerateForRegistry.Register(type, factory, boxedStrategy).");
     }
 
     internal static Strategy<T> Resolve<T>()

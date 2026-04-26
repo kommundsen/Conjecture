@@ -21,7 +21,7 @@ public void Stack_invariants_hold(
 
 `StateMachineStrategy<TMachine, TState, TCommand>` is `internal`. It extends `Strategy<StateMachineRun<TState>>` and implements `IStrategyProvider<StateMachineRun<TState>>`, making it usable as the type argument to `[From<T>]` via the existing `SharedParameterStrategyResolver`. The `TMachine` type parameter is constrained to `new()` so the engine instantiates it with `new TMachine()` — no reflection, NativeAOT-safe (ADR-0014).
 
-`Gen.StateMachine<TMachine, TState, TCommand>(int maxSteps = 50)` is the public convenience factory on `Gen.cs` for use in composite strategies.
+`Generate.StateMachine<TMachine, TState, TCommand>(int maxSteps = 50)` is the public convenience factory on `Generate.cs` for use in composite strategies.
 
 `StateMachineRun<TState>` is a public result type carrying:
 - `Steps` — `IReadOnlyList<ExecutedStep<TState>>` in execution order

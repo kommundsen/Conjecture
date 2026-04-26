@@ -128,15 +128,15 @@ internal sealed class RequestSynthesizer(DiscoveredEndpoint endpoint, Conjecture
             {
                 throw new ArgumentException(
                     $"Cannot synthesize request for endpoint '{endpoint.DisplayName}': " +
-                    $"parameter '{param.Name}' has type '{param.ClrType.FullName}' which is not registered with Gen.For<T>(). " +
-                    $"Decorate the type with [Arbitrary] or register it manually via GenForRegistry.Register().",
+                    $"parameter '{param.Name}' has type '{param.ClrType.FullName}' which is not registered with Generate.For<T>(). " +
+                    $"Decorate the type with [Arbitrary] or register it manually via GenerateForRegistry.Register().",
                     param.Name);
             }
         }
     }
 
     private static bool IsSupportedType(Type type) =>
-        PrimitiveFactories.ContainsKey(type) || GenForRegistry.IsRegistered(type);
+        PrimitiveFactories.ContainsKey(type) || GenerateForRegistry.IsRegistered(type);
 
     private static string BuildPath(string rawPattern, IReadOnlyList<EndpointParameter> parameters, IGeneratorContext ctx)
     {
@@ -200,7 +200,7 @@ internal sealed class RequestSynthesizer(DiscoveredEndpoint endpoint, Conjecture
         }
 
         // Use the registered boxed strategy.
-        Strategy<object?> boxedStrategy = GenForRegistry.ResolveBoxed(bodyParam.ClrType);
+        Strategy<object?> boxedStrategy = GenerateForRegistry.ResolveBoxed(bodyParam.ClrType);
         object? value = ctx.Generate(boxedStrategy);
         return JsonSerializer.Serialize(value);
     }

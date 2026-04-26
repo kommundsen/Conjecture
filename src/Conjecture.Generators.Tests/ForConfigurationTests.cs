@@ -140,7 +140,7 @@ public sealed class ForConfigurationTests
         Assert.NotNull(strategy);
     }
 
-    // ── GenForRegistry.ResolveWithOverrides ─────────────────────────────────
+    // ── GenerateForRegistry.ResolveWithOverrides ─────────────────────────────────
 
     [Fact]
     public void ResolveWithOverrides_UnregisteredType_ThrowsInvalidOperationException()
@@ -148,7 +148,7 @@ public sealed class ForConfigurationTests
         ForConfiguration<UnregisteredType> cfg = new();
 
         Assert.Throws<InvalidOperationException>(
-            () => GenForRegistry.ResolveWithOverrides(cfg));
+            () => GenerateForRegistry.ResolveWithOverrides(cfg));
     }
 
     // ── Generator emission: CreateWithOverrides ──────────────────────────────
@@ -229,7 +229,7 @@ public sealed class ForConfigurationTests
                 OutputKind.DynamicallyLinkedLibrary,
                 nullableContextOptions: NullableContextOptions.Enable));
 
-        GeneratorDriver driver = CSharpGeneratorDriver.Create(new GenForGenerator());
+        GeneratorDriver driver = CSharpGeneratorDriver.Create(new GenerateForGenerator());
         GeneratorDriverRunResult result = driver.RunGenerators(inputCompilation).GetRunResult();
 
         Compilation outputCompilation = inputCompilation.AddSyntaxTrees(result.GeneratedTrees);
