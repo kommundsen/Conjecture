@@ -57,4 +57,6 @@
   <Project Path="Conjecture.Messaging.RabbitMq.Tests/Conjecture.Messaging.RabbitMq.Tests.csproj" />
   <Project Path="Conjecture.Grpc/Conjecture.Grpc.csproj" />
   <Project Path="Conjecture.Grpc.Tests/Conjecture.Grpc.Tests.csproj" />
+  <Project Path="Conjecture.AspNetCore/Conjecture.AspNetCore.csproj" />
+  <Project Path="Conjecture.AspNetCore.Tests/Conjecture.AspNetCore.Tests.csproj" />
 </Solution>
