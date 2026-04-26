@@ -84,5 +84,8 @@
 
     <!-- Azure Service Bus -->
     <PackageVersion Include="Azure.Messaging.ServiceBus" Version="7.20.1" />
+
+    <!-- RabbitMQ -->
+    <PackageVersion Include="RabbitMQ.Client" Version="7.0.0" />
   </ItemGroup>
 </Project>
