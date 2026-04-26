@@ -13,4 +13,3 @@ public sealed class GenRangeAttribute(double min, double max) : Attribute
     /// <summary>Gets the inclusive upper bound.</summary>
     public double Max { get; } = max;
 }
-

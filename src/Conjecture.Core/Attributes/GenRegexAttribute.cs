@@ -10,4 +10,3 @@ public sealed class GenRegexAttribute(string pattern) : Attribute
     /// <summary>Gets the regex pattern generated strings must match.</summary>
     public string Pattern { get; } = pattern;
 }
-

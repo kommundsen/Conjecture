@@ -31,15 +31,7 @@ public sealed class PropertyForAllTests
         await Property.ForAll(
             NoOpTarget.Instance,
             strategy,
-            static (IInteractionTarget _, int value) =>
-            {
-                if (value < 0)
-                {
-                    throw new InvalidOperationException("impossible");
-                }
-
-                return Task.CompletedTask;
-            },
+            static (IInteractionTarget _, int value) => value < 0 ? throw new InvalidOperationException("impossible") : Task.CompletedTask,
             settings);
     }
 
@@ -53,15 +45,7 @@ public sealed class PropertyForAllTests
             await Property.ForAll(
                 NoOpTarget.Instance,
                 strategy,
-                static (IInteractionTarget _, int value) =>
-                {
-                    if (value > 5)
-                    {
-                        throw new InvalidOperationException("too large");
-                    }
-
-                    return Task.CompletedTask;
-                },
+                static (IInteractionTarget _, int value) => value > 5 ? throw new InvalidOperationException("too large") : Task.CompletedTask,
                 settings));
     }
 
@@ -75,15 +59,7 @@ public sealed class PropertyForAllTests
             await Property.ForAll(
                 NoOpTarget.Instance,
                 strategy,
-                static (IInteractionTarget _, int value) =>
-                {
-                    if (value > 5)
-                    {
-                        throw new InvalidOperationException("too large");
-                    }
-
-                    return Task.CompletedTask;
-                },
+                static (IInteractionTarget _, int value) => value > 5 ? throw new InvalidOperationException("too large") : Task.CompletedTask,
                 settings));
 
         // The shrunk counterexample should appear in the message

@@ -13,4 +13,3 @@ public sealed class GenStringLengthAttribute(int minLength, int maxLength) : Att
     /// <summary>Gets the maximum generated string length.</summary>
     public int MaxLength { get; } = maxLength;
 }
-

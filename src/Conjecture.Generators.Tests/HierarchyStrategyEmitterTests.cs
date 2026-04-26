@@ -273,7 +273,7 @@ public sealed class HierarchyStrategyEmitterTests
     {
         ImmutableArray<SubtypeModel> subtypes = ImmutableArray<SubtypeModel>.Empty;
 
-        HierarchyTypeModel model = new HierarchyTypeModel(
+        HierarchyTypeModel model = new(
             FullyQualifiedName: "Animal",
             Namespace: "Zoo",
             TypeName: "Animal",
@@ -290,7 +290,7 @@ public sealed class HierarchyStrategyEmitterTests
             new SubtypeModel(FullyQualifiedName: "DogArbitrary", ProviderTypeName: "DogArbitrary"),
             new SubtypeModel(FullyQualifiedName: "CatArbitrary", ProviderTypeName: "CatArbitrary"));
 
-        HierarchyTypeModel model = new HierarchyTypeModel(
+        HierarchyTypeModel model = new(
             FullyQualifiedName: "Animal",
             Namespace: "",
             TypeName: "Animal",

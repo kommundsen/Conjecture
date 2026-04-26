@@ -71,8 +71,7 @@ public class TimeGenerateExtensionsTests
         Strategy<FakeTimeProvider[]> strategy = Generate.ClockSet(3, TimeSpan.FromSeconds(5));
 
         FakeTimeProvider[] clocks = DataGen.SampleOne(strategy, seed: 1UL);
-
-        DateTimeOffset before0 = clocks[0].GetUtcNow();
+        _ = clocks[0].GetUtcNow();
         DateTimeOffset before1 = clocks[1].GetUtcNow();
         DateTimeOffset before2 = clocks[2].GetUtcNow();
 

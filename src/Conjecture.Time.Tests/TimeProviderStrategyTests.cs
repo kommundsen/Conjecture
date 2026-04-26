@@ -18,8 +18,7 @@ public class TimeProviderStrategyTests
     {
         Strategy<(FakeTimeProvider Clock, IReadOnlyList<TimeSpan> Advances)> strategy =
             Generate.ClockWithAdvances(advanceCount, TimeSpan.FromSeconds(10));
-
-        (FakeTimeProvider clock, IReadOnlyList<TimeSpan> advances) = DataGen.SampleOne(strategy, seed: 1UL);
+        (_, IReadOnlyList<TimeSpan> advances) = DataGen.SampleOne(strategy, seed: 1UL);
 
         Assert.Equal(advanceCount, advances.Count);
     }

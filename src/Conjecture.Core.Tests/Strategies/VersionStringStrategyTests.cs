@@ -18,7 +18,7 @@ public class VersionStringStrategyTests
     public void VersionStrings_MatchesDotSeparatedThreeComponentPattern()
     {
         Strategy<string> strategy = Generate.VersionStrings();
-        ConjectureData data = MakeData();
+        _ = MakeData();
 
         for (int i = 0; i < 50; i++)
         {
