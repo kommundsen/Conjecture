@@ -1,0 +1,29 @@
+#nullable enable
+Conjecture.Messaging.AzureServiceBus.AzureServiceBusTarget
+Conjecture.Messaging.AzureServiceBus.AzureServiceBusTarget.AcknowledgeAsync(Conjecture.Messaging.MessageInteraction! message, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task!
+Conjecture.Messaging.AzureServiceBus.AzureServiceBusTarget.AzureServiceBusTarget(Conjecture.Messaging.AzureServiceBus.IServiceBusClientAdapter! client) -> void
+static Conjecture.Messaging.AzureServiceBus.AzureServiceBusTarget.Connect(string! connectionString) -> Conjecture.Messaging.AzureServiceBus.AzureServiceBusTarget!
+Conjecture.Messaging.AzureServiceBus.AzureServiceBusTarget.DisposeAsync() -> System.Threading.Tasks.ValueTask
+Conjecture.Messaging.AzureServiceBus.AzureServiceBusTarget.ExecuteAsync(Conjecture.Messaging.MessageInteraction! message, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<object?>!
+Conjecture.Messaging.AzureServiceBus.AzureServiceBusTarget.ReceiveAsync(string! destination, System.TimeSpan timeout, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<Conjecture.Messaging.MessageInteraction?>!
+Conjecture.Messaging.AzureServiceBus.AzureServiceBusTarget.RejectAsync(Conjecture.Messaging.MessageInteraction! message, bool requeue, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task!
+Conjecture.Messaging.AzureServiceBus.IServiceBusClientAdapter
+Conjecture.Messaging.AzureServiceBus.IServiceBusClientAdapter.CreateReceiver(string! destination) -> Conjecture.Messaging.AzureServiceBus.IServiceBusReceiver!
+Conjecture.Messaging.AzureServiceBus.IServiceBusClientAdapter.CreateSender(string! destination) -> Conjecture.Messaging.AzureServiceBus.IServiceBusSender!
+Conjecture.Messaging.AzureServiceBus.IServiceBusMessageAdapter
+Conjecture.Messaging.AzureServiceBus.IServiceBusMessageAdapter.ApplicationProperties.get -> System.Collections.Generic.IDictionary<string!, object!>!
+Conjecture.Messaging.AzureServiceBus.IServiceBusMessageAdapter.Body.get -> System.BinaryData!
+Conjecture.Messaging.AzureServiceBus.IServiceBusMessageAdapter.CorrelationId.get -> string?
+Conjecture.Messaging.AzureServiceBus.IServiceBusMessageAdapter.MessageId.get -> string!
+Conjecture.Messaging.AzureServiceBus.IServiceBusReceivedMessageAdapter
+Conjecture.Messaging.AzureServiceBus.IServiceBusReceivedMessageAdapter.ApplicationProperties.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+Conjecture.Messaging.AzureServiceBus.IServiceBusReceivedMessageAdapter.Body.get -> System.BinaryData!
+Conjecture.Messaging.AzureServiceBus.IServiceBusReceivedMessageAdapter.CorrelationId.get -> string?
+Conjecture.Messaging.AzureServiceBus.IServiceBusReceivedMessageAdapter.MessageId.get -> string!
+Conjecture.Messaging.AzureServiceBus.IServiceBusReceiver
+Conjecture.Messaging.AzureServiceBus.IServiceBusReceiver.AbandonMessageAsync(Conjecture.Messaging.AzureServiceBus.IServiceBusReceivedMessageAdapter! message, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task!
+Conjecture.Messaging.AzureServiceBus.IServiceBusReceiver.CompleteMessageAsync(Conjecture.Messaging.AzureServiceBus.IServiceBusReceivedMessageAdapter! message, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task!
+Conjecture.Messaging.AzureServiceBus.IServiceBusReceiver.DeadLetterMessageAsync(Conjecture.Messaging.AzureServiceBus.IServiceBusReceivedMessageAdapter! message, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task!
+Conjecture.Messaging.AzureServiceBus.IServiceBusReceiver.ReceiveMessageAsync(System.TimeSpan maxWaitTime, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<Conjecture.Messaging.AzureServiceBus.IServiceBusReceivedMessageAdapter?>!
+Conjecture.Messaging.AzureServiceBus.IServiceBusSender
+Conjecture.Messaging.AzureServiceBus.IServiceBusSender.SendMessageAsync(Conjecture.Messaging.AzureServiceBus.IServiceBusMessageAdapter! message, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task!
