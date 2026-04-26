@@ -10,6 +10,24 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Version
 
 ---
 
+## [0.23.0] — 2026-04-26
+
+### Added
+
+**AspNetCore** (`Conjecture.AspNetCore`) — new package
+- `Generate.AspNetCoreRequests(host, client)` — entry point for generating HTTP requests against a live ASP.NET Core host
+- `AspNetCoreRequestBuilder` — fluent builder: `ValidRequestsOnly()`, `MalformedRequestsOnly()`, `ExcludeEndpoints(predicate)`, `WithSetup(delegate)`, `FromOpenApi(doc)`, `Build()`
+- `DiscoveredEndpoint` record — endpoint metadata (display name, HTTP method, route pattern, parameters, content types, auth requirement)
+- `EndpointParameter` record — per-parameter descriptor (name, CLR type, binding source, required flag)
+
+### Changed
+
+**Core** (`Conjecture.Core`)
+- `GenForRegistry` renamed to `GenerateForRegistry` for consistency with the `Generate` API surface
+- `GenerateForRegistry` gains `IsRegistered(Type)`, `Register(Type, factory, boxedStrategy)`, and `ResolveBoxed(Type)`
+
+---
+
 ## [0.22.0] — 2026-04-26
 
 ### Added
