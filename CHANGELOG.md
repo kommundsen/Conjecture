@@ -10,6 +10,39 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Version
 
 ---
 
+## [0.21.0] — 2026-04-26
+
+### Added
+
+**Messaging** (`Conjecture.Messaging`) — new package
+- `MessageInteraction` record (`Destination`, `Body`, `Headers`, `MessageId`, `CorrelationId`) implementing `IInteraction` — service-bus / message-queue payload type for property tests built on the v0.20 `Conjecture.Interactions` foundation
+- `IMessageBusTarget : IInteractionTarget` — pull-based receive (`ReceiveAsync`) plus explicit `AcknowledgeAsync` / `RejectAsync(requeue:bool)` for redelivery and dead-letter property tests
+- `InMemoryMessageBusTarget` — deterministic reference adapter backed by `Channel<MessageInteraction>` per destination, suitable for the bulk of user tests and self-tests
+- `Generate.Messaging.Publish(destination, bodyStrategy)` and `Generate.Messaging.Consume(destination)` strategy verbs (plus a full-control `Publish` overload accepting headers and correlation-id strategies). `MessageId` is generated deterministically so failed runs reproduce byte-for-byte under a fixed seed
+- Body strategies compose with `Generate.FromProtobuf<T>()` and `Generate.FromJsonSchema(...)` from v0.21
+
+**Messaging.AzureServiceBus** (`Conjecture.Messaging.AzureServiceBus`) — new package
+- `AzureServiceBusTarget : IMessageBusTarget, IAsyncDisposable` over `Azure.Messaging.ServiceBus`
+- `AzureServiceBusTarget.Connect(string connectionString)` static factory plus a `(IServiceBusClientAdapter client)` constructor for fakes
+- Public seam interfaces (`IServiceBusClientAdapter`, `IServiceBusSender`, `IServiceBusReceiver`, `IServiceBusMessageAdapter`, `IServiceBusReceivedMessageAdapter`) so users can substitute custom client wrappers (e.g. `DefaultAzureCredential`-backed clients) without taking a dependency on the SDK in their tests
+- `RejectAsync(requeue:true)` → `AbandonMessageAsync`; `requeue:false` → `DeadLetterMessageAsync`. Headers round-trip via `ServiceBusMessage.ApplicationProperties` (non-string values converted via `Convert.ToString(InvariantCulture)` rather than silently dropped)
+
+**Messaging.RabbitMq** (`Conjecture.Messaging.RabbitMq`) — new package
+- `RabbitMqTarget : IMessageBusTarget, IAsyncDisposable` over `RabbitMQ.Client` 7.x
+- `RabbitMqTarget.Connect(connectionString)` (sync) and `RabbitMqTarget.ConnectAsync(connectionString, ct)` (async — preferred) static factories plus a `(IRabbitMqConnectionAdapter)` constructor for fakes
+- Public seam interfaces (`IRabbitMqConnectionAdapter`, `IRabbitMqChannelAdapter`, `IRabbitMqMessageAdapter`, `IRabbitMqReceivedMessageAdapter`)
+- `RejectAsync(requeue:true)` → `BasicNackAsync(requeue:true)`; `requeue:false` → `BasicNackAsync(requeue:false)`. Header values UTF-8 encode/decode through the AMQP `byte[]` wire form
+
+**Mcp** (`Conjecture.Mcp`)
+- `scaffold-messaging-property-test` MCP tool — generates a ready-to-fill `Property.ForAll(target, Generate.Messaging.Publish(...), ...)` test class. Parameterized by `framework` (xunit | xunit-v3 | nunit | mstest), `broker` (inmemory | azureservicebus | rabbitmq), `destination`, and `bodyType` (bytes | protobuf | jsonschema)
+
+**Docs**
+- Explanation: `messaging-property-testing.md` — concepts, shrinking semantics, two-tier test plan
+- How-to: `test-messaging-with-inmemory.md`, `test-messaging-with-azure-service-bus.md`, `test-messaging-with-rabbitmq.md` (xUnit v3 examples)
+- ADR 0061 — `Conjecture.Messaging` package design (pull vs push, body shape, shrinking pairs, per-adapter test strategy)
+
+---
+
 ## [0.20.0] — 2026-04-25
 
 ### Added
