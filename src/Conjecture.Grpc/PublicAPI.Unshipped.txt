@@ -45,3 +45,5 @@ Conjecture.Grpc.HostGrpcTarget.ResourceName.get -> string!
 Conjecture.Grpc.HostGrpcTarget.GetCallInvoker(string! resourceName) -> Grpc.Core.CallInvoker!
 Conjecture.Grpc.HostGrpcTarget.ExecuteAsync(Conjecture.Interactions.IInteraction! interaction, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<object?>!
 Conjecture.Grpc.HostGrpcTarget.DisposeAsync() -> System.Threading.Tasks.ValueTask
+Conjecture.Grpc.GenerateGrpc
+static Conjecture.Grpc.GenerateGrpc.Unary<TReq, TResp>(string! resourceName, Grpc.Core.Method<TReq!, TResp!>! method, Conjecture.Core.Strategy<TReq!>! requestStrategy, System.Collections.Generic.IReadOnlyDictionary<string!, string!>? metadata = null) -> Conjecture.Core.Strategy<Conjecture.Grpc.GrpcInteraction!>!
