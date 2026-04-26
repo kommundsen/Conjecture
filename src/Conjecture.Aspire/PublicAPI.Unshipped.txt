@@ -1,4 +1,6 @@
 #nullable enable
+Conjecture.Aspire.AspireProperty
+static Conjecture.Aspire.AspireProperty.RunAsync<TState>(Conjecture.Aspire.IAspireAppFixture! fixture, Conjecture.Aspire.AspireStateMachine<TState>! machine, Conjecture.Core.ConjectureSettings! settings, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task!
 abstract Conjecture.Aspire.AspireStateMachine<TState>.Commands(TState state) -> System.Collections.Generic.IEnumerable<Conjecture.Core.Strategy<Conjecture.Aspire.Interaction>!>!
 abstract Conjecture.Aspire.AspireStateMachine<TState>.InitialState() -> TState
 abstract Conjecture.Aspire.AspireStateMachine<TState>.Invariant(TState state) -> void
