@@ -71,5 +71,9 @@ items:
     href: test-regex-validator.md
   - name: Audit a regex for catastrophic backtracking
     href: audit-regex-for-redos.md
+  - name: Reset Aspire app state between examples
+    href: reset-aspire-state.md
+  - name: Configure Aspire retry policy
+    href: configure-aspire-retry.md
   - name: Troubleshoot
     href: troubleshoot.md
