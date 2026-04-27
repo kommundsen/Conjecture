@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Conjecture.AspNetCore;
 using Conjecture.EFCore;
 using Conjecture.Http;
 
@@ -23,6 +24,55 @@ public sealed class AspNetCoreEFCoreInvariants(IHttpTarget http, IDbTarget db)
 {
     private readonly IHttpTarget http = http ?? throw new ArgumentNullException(nameof(http));
     private readonly IDbTarget db = db ?? throw new ArgumentNullException(nameof(db));
+    private Func<DiscoveredEndpoint, bool>? idempotentPredicate;
+
+    /// <summary>Registers a predicate that identifies endpoints as idempotent for <see cref="AssertIdempotentAsync"/>.</summary>
+    public AspNetCoreEFCoreInvariants MarkIdempotent(Func<DiscoveredEndpoint, bool> predicate)
+    {
+        ArgumentNullException.ThrowIfNull(predicate);
+        idempotentPredicate = predicate;
+        return this;
+    }
+
+    /// <summary>
+    /// Asserts that sending the same request twice to an idempotent endpoint produces the same DB state on replay.
+    /// </summary>
+    public async Task AssertIdempotentAsync(
+        Func<HttpClient, CancellationToken, Task<HttpResponseMessage>> request,
+        DiscoveredEndpoint endpoint,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        ArgumentNullException.ThrowIfNull(endpoint);
+
+        if (idempotentPredicate is null || !idempotentPredicate(endpoint))
+        {
+            return;
+        }
+
+        HttpClient client = http.ResolveClient(db.ResourceName);
+
+        HttpResponseMessage response1 = await request(client, cancellationToken).ConfigureAwait(false);
+        EntitySnapshot afterFirst = await EntitySnapshotter.CaptureAsync(db, cancellationToken).ConfigureAwait(false);
+
+        HttpResponseMessage response2 = await request(client, cancellationToken).ConfigureAwait(false);
+        EntitySnapshot afterSecond = await EntitySnapshotter.CaptureAsync(db, cancellationToken).ConfigureAwait(false);
+
+        if (response1.StatusCode != response2.StatusCode)
+        {
+            throw new AspNetCoreEFCoreInvariantException(
+                FormattableString.Invariant(
+                    $"AssertIdempotent: {endpoint.HttpMethod} {endpoint.RoutePattern.RawText} returned {(int)response1.StatusCode} then {(int)response2.StatusCode} on replay; response codes must match for an idempotent endpoint."));
+        }
+
+        EntitySnapshotDiff diff = EntitySnapshotter.Diff(afterFirst, afterSecond);
+        if (!diff.IsEmpty)
+        {
+            throw new AspNetCoreEFCoreInvariantException(
+                FormattableString.Invariant(
+                    $"AssertIdempotent: {endpoint.HttpMethod} {endpoint.RoutePattern.RawText} produced different DB state on replay: {diff.ToReport()}"));
+        }
+    }
 
     /// <summary>
     /// Asserts that a failing HTTP request (status &gt;= 400) did not persist any entity changes.
