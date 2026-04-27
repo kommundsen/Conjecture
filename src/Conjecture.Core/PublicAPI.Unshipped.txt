@@ -1,2 +1,1 @@
 #nullable enable
-*REMOVED*static Conjecture.Core.Generate.Constant<T>(T value) -> Conjecture.Core.Strategy<T>!

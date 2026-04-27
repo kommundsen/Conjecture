@@ -1,18 +1,1 @@
 #nullable enable
-Conjecture.AspNetCore.EFCore.AspNetCoreDbTarget<TContext>
-Conjecture.AspNetCore.EFCore.AspNetCoreDbTarget<TContext>.AspNetCoreDbTarget(Microsoft.Extensions.Hosting.IHost! host, string! resourceName) -> void
-Conjecture.AspNetCore.EFCore.AspNetCoreDbTarget<TContext>.DisposeAsync() -> System.Threading.Tasks.ValueTask
-Conjecture.AspNetCore.EFCore.AspNetCoreDbTarget<TContext>.ExecuteAsync(Conjecture.Interactions.IInteraction! interaction, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<object?>!
-Conjecture.AspNetCore.EFCore.AspNetCoreDbTarget<TContext>.Resolve() -> TContext!
-Conjecture.AspNetCore.EFCore.AspNetCoreDbTarget<TContext>.ResetAsync(string! resourceName, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
-Conjecture.AspNetCore.EFCore.AspNetCoreDbTarget<TContext>.ResolveContext(string! resourceName) -> Microsoft.EntityFrameworkCore.DbContext!
-Conjecture.AspNetCore.EFCore.AspNetCoreDbTarget<TContext>.ResourceName.get -> string!
-Conjecture.AspNetCore.EFCore.AspNetCoreEFCoreInvariantException
-Conjecture.AspNetCore.EFCore.AspNetCoreEFCoreInvariantException.AspNetCoreEFCoreInvariantException(string! message) -> void
-Conjecture.AspNetCore.EFCore.AspNetCoreEFCoreInvariantException.AspNetCoreEFCoreInvariantException(string! message, System.Exception! innerException) -> void
-Conjecture.AspNetCore.EFCore.AspNetCoreEFCoreInvariants
-Conjecture.AspNetCore.EFCore.AspNetCoreEFCoreInvariants.AspNetCoreEFCoreInvariants(Conjecture.Http.IHttpTarget! http, Conjecture.EFCore.IDbTarget! db) -> void
-Conjecture.AspNetCore.EFCore.AspNetCoreEFCoreInvariants.AssertNoPartialWritesOnErrorAsync(System.Func<System.Net.Http.HttpClient!, System.Threading.CancellationToken, System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage!>!>! request, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
-Conjecture.AspNetCore.EFCore.AspNetCoreEFCoreInvariants.AssertCascadeCorrectnessAsync(System.Func<System.Net.Http.HttpClient!, System.Threading.CancellationToken, System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage!>!>! deleteRequest, System.Type! rootEntityType, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
-Conjecture.AspNetCore.EFCore.AspNetCoreEFCoreInvariants.MarkIdempotent(System.Func<Conjecture.AspNetCore.DiscoveredEndpoint!, bool>! predicate) -> Conjecture.AspNetCore.EFCore.AspNetCoreEFCoreInvariants!
-Conjecture.AspNetCore.EFCore.AspNetCoreEFCoreInvariants.AssertIdempotentAsync(System.Func<System.Net.Http.HttpClient!, System.Threading.CancellationToken, System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage!>!>! request, Conjecture.AspNetCore.DiscoveredEndpoint! endpoint, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!

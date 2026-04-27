@@ -10,6 +10,31 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Version
 
 ---
 
+## [0.26.0] — 2026-04-27
+
+### Added
+
+**AspNetCore.EFCore** (`Conjecture.AspNetCore.EFCore`) — new package
+- `AspNetCoreDbTarget<TContext>` — composite `IDbTarget` resolving a `DbContext` from an `IHost`'s service provider, with `ResetAsync` and `DisposeAsync` for per-property test isolation
+- `AspNetCoreEFCoreInvariants` — composite asserter combining HTTP and EF Core targets:
+  - `AssertNoPartialWritesOnErrorAsync` — verifies failed HTTP requests do not leave partial DB state
+  - `AssertCascadeCorrectnessAsync` — asserts DELETE on a root entity cascades correctly across navigations
+  - `MarkIdempotent(predicate)` + `AssertIdempotentAsync` — fluent endpoint-marking + repeat-request invariant
+- `AspNetCoreEFCoreInvariantException` — thrown on composite invariant violations
+
+**EFCore** (`Conjecture.EFCore`)
+- `EntitySnapshot` + `EntitySnapshotter.CaptureAsync` / `Diff` — typed snapshot of entity counts and primary keys for before/after comparison
+- `EntitySnapshotDiff.ToReport()` — human-readable per-type delta with added/removed key listing
+- `IDbTargetExtensions.Resolve<TContext>()` — typed accessor over `IDbTarget`
+- `DbInvariantException` — base exception for EF Core invariant assertion failures
+
+### Removed
+
+**Core** (`Conjecture.Core`)
+- `Generate.Constant<T>(value)` — alias removed; use `Generate.Just<T>(value)` instead (#587)
+
+---
+
 ## [0.25.0] — 2026-04-27
 
 ### Added
