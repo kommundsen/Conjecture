@@ -1,0 +1,13 @@
+#nullable enable
+Conjecture.Aspire.EFCore.AspireDbTarget<TContext>
+Conjecture.Aspire.EFCore.AspireDbTarget<TContext>.DisposeAsync() -> System.Threading.Tasks.ValueTask
+Conjecture.Aspire.EFCore.AspireDbTarget<TContext>.ExecuteAsync(Conjecture.Interactions.IInteraction! interaction, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<object?>!
+Conjecture.Aspire.EFCore.AspireDbTarget<TContext>.Resolve() -> TContext!
+Conjecture.Aspire.EFCore.AspireDbTarget<TContext>.ResetAsync(string! resourceName, System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+Conjecture.Aspire.EFCore.AspireDbTarget<TContext>.ResolveContext(string! resourceName) -> Microsoft.EntityFrameworkCore.DbContext!
+Conjecture.Aspire.EFCore.AspireDbTarget<TContext>.ResourceName.get -> string!
+Conjecture.Aspire.EFCore.ConnectionStringResolver
+static Conjecture.Aspire.EFCore.AspireDbTarget<TContext>.CreateAsync(Aspire.Hosting.DistributedApplication! app, string! resourceName, System.Func<string!, TContext!>! contextFactory) -> System.Threading.Tasks.Task<Conjecture.Aspire.EFCore.AspireDbTarget<TContext!>!>!
+static Conjecture.Aspire.EFCore.AspireDbTarget<TContext>.CreateAsync(Aspire.Hosting.DistributedApplication! app, string! resourceName, System.Func<string!, TContext!>! contextFactory, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<Conjecture.Aspire.EFCore.AspireDbTarget<TContext!>!>!
+static Conjecture.Aspire.EFCore.AspireDbTarget<TContext>.CreateAsync(Conjecture.Aspire.EFCore.ConnectionStringResolver! connectionStringResolver, string! resourceName, System.Func<string!, TContext!>! contextFactory) -> System.Threading.Tasks.Task<Conjecture.Aspire.EFCore.AspireDbTarget<TContext!>!>!
+static Conjecture.Aspire.EFCore.AspireDbTarget<TContext>.CreateAsync(Conjecture.Aspire.EFCore.ConnectionStringResolver! connectionStringResolver, string! resourceName, System.Func<string!, TContext!>! contextFactory, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<Conjecture.Aspire.EFCore.AspireDbTarget<TContext!>!>!
