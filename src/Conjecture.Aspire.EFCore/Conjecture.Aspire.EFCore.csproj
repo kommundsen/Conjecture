@@ -15,7 +15,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Conjecture.Aspire\Conjecture.Aspire.csproj" />
+    <ProjectReference Include="..\Conjecture.Core\Conjecture.Core.csproj" />
     <ProjectReference Include="..\Conjecture.EFCore\Conjecture.EFCore.csproj" />
+    <ProjectReference Include="..\Conjecture.Http\Conjecture.Http.csproj" />
+    <ProjectReference Include="..\Conjecture.Interactions\Conjecture.Interactions.csproj" />
+    <ProjectReference Include="..\Conjecture.Messaging\Conjecture.Messaging.csproj" />
   </ItemGroup>
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">

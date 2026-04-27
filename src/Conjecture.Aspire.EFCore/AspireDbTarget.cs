@@ -137,6 +137,21 @@ public sealed class AspireDbTarget<TContext> : IDbTarget, IAsyncDisposable
     {
         ArgumentNullException.ThrowIfNull(interaction);
 
+        if (interaction is DbSnapshotInteraction snapshot)
+        {
+            if (!string.Equals(snapshot.ResourceName, ResourceName, StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException(
+                    FormattableString.Invariant($"AspireDbTarget<{typeof(TContext).Name}> registered as '{ResourceName}' cannot handle snapshot for '{snapshot.ResourceName}'."));
+            }
+
+            TContext snapshotCtx = contextFactory(connectionString);
+            await using (snapshotCtx)
+            {
+                return await snapshot.Capture(snapshotCtx).ConfigureAwait(false);
+            }
+        }
+
         if (interaction is not DbInteraction db)
         {
             throw new InvalidOperationException(
