@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Description>Property-based testing helpers bridging Conjecture.Aspire and Conjecture.EFCore via AspireDbTarget.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="PublicAPI.Shipped.txt" />
+    <None Include="PublicAPI.Unshipped.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting" />
+    <PackageReference Include="Aspire.Hosting.Testing" />
+    <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Conjecture.Aspire\Conjecture.Aspire.csproj" />
+    <ProjectReference Include="..\Conjecture.EFCore\Conjecture.EFCore.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Conjecture.Aspire.EFCore.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+</Project>
