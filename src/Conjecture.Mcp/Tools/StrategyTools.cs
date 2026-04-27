@@ -363,6 +363,80 @@ internal static class StrategyTools
             Add the NuGet package: `Conjecture.Aspire`
             """,
 
+            _ when typeName.StartsWith("AspireDbTarget<", StringComparison.Ordinal) =>
+                $$"""
+            This type is an Aspire + EF Core database target. Use `AspireDbTarget.CreateAsync<TContext>` with an explicit `contextFactory` to construct it, then assert invariants using `AspireEFCoreInvariants`:
+
+            ```csharp
+            using Conjecture.Aspire.EFCore;
+
+            AspireDbTarget<{{InnerType(typeName)}}> dbTarget = await AspireDbTarget.CreateAsync<{{InnerType(typeName)}}>(
+                contextFactory: sp => sp.GetRequiredService<{{InnerType(typeName)}}>());
+
+            AspireEFCoreInvariants invariants = new(writer, dbTarget);
+            await invariants.AssertNoPartialWritesOnErrorAsync(interaction);
+            await invariants.AssertIdempotentAsync(interaction);
+            ```
+
+            Register `AspireDbTargetRegistry` inside your `IAspireAppFixture.ResetAsync` override to reset all registered targets between property iterations.
+
+            Add the NuGet package: `Conjecture.Aspire.EFCore`
+            """,
+
+            "AspireDbTargetRegistry" =>
+                """
+            `AspireDbTargetRegistry` tracks one or more `IDbTarget` instances for bulk reset. Wire it inside your `IAspireAppFixture.ResetAsync` override:
+
+            ```csharp
+            using Conjecture.Aspire.EFCore;
+
+            public class MyAppFixture : IAspireAppFixture
+            {
+                private readonly AspireDbTargetRegistry _registry = new();
+
+                public async Task ResetAsync()
+                {
+                    await _registry.ResetAllAsync();
+                }
+            }
+            ```
+
+            Register each `AspireDbTarget<TContext>` with `_registry.Register(dbTarget)` during fixture setup.
+
+            Add the NuGet package: `Conjecture.Aspire.EFCore`
+            """,
+
+            "AspireEFCoreInvariants" =>
+                """
+            `AspireEFCoreInvariants` asserts EF Core-level invariants for Aspire-hosted services. Construct it with an `(IInteractionTarget writer, IDbTarget db)` pair:
+
+            ```csharp
+            using Conjecture.Aspire.EFCore;
+
+            AspireEFCoreInvariants invariants = new(writer, dbTarget);
+
+            // Available assertion methods:
+            await invariants.AssertNoPartialWritesOnErrorAsync(interaction);
+            await invariants.AssertIdempotentAsync(interaction);
+            ```
+
+            Add the NuGet package: `Conjecture.Aspire.EFCore`
+            """,
+
+            "DbSnapshotInteraction" =>
+                """
+            `DbSnapshotInteraction` is an interaction step that snapshots the database state. Use the `AspireInteractionSequenceBuilder.DbSnapshot` builder method to add it to an interaction sequence:
+
+            ```csharp
+            using Conjecture.Aspire.EFCore;
+
+            AspireInteractionSequenceBuilder.DbSnapshot(dbTarget)
+            // → adds a DbSnapshotInteraction step to the sequence
+            ```
+
+            Add the NuGet package: `Conjecture.Aspire.EFCore`
+            """,
+
             _ when typeName.StartsWith("WebApplicationFactory<", StringComparison.Ordinal)
                 || typeName.StartsWith("AspNetCoreDbTarget<", StringComparison.Ordinal) =>
                 """
