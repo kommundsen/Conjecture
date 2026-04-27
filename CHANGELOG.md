@@ -10,6 +10,22 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Version
 
 ---
 
+## [0.25.0] — 2026-04-27
+
+### Added
+
+**EFCore** (`Conjecture.EFCore`) — new package
+- `PropertyStrategyBuilder.Build(IProperty)` — maps an EF Core `IProperty` to a primitive `Strategy<object?>` honouring nullable, `MaxLength`, `Precision`/`Scale`, and `ValueGenerated` (returns CLR default so EF assigns on insert)
+- `EntityStrategyBuilder` — `IModel`-driven entity-graph builder with `WithMaxDepth(depth)` (default 2, aligned with `Generate.Recursive()`), `WithoutNavigation<T>(expr)`, and `Build<TEntity>()`; required navigations beyond depth bound reuse the first generated parent, optional reference navigations are nulled, collection navigations are emitted empty, owned types are inlined
+- `Generate.Entity<T>(DbContext, int maxDepth = 2)` and `Generate.Entity<T>(Func<DbContext>, int maxDepth = 2)` — extension-block strategy factories on `Generate`
+- `RoundtripAsserter.AssertRoundtripAsync` and `AssertNoTrackingMatchesTrackedAsync` — save → reload-from-fresh-context → deep-compare via `IProperty.PropertyInfo!.GetValue` (no cross-context attach); `RoundtripAssertionException` on mismatch
+- `MigrationHarness.AssertUpDownIdempotentAsync` — applies migrations to head, snapshots `sqlite_master`, runs `IMigrator.MigrateAsync(rollbackTarget)`, re-applies to head, and throws `MigrationAssertionException` if the schema diverges (SQLite-only in v1)
+- Layer-1 interaction surface: `DbInteraction` record + `DbOpKind` enum (`Add`, `Update`, `Remove`, `SaveChanges`, `Query`); `IDbTarget` interface + `InMemoryDbTarget` and `SqliteDbTarget` (the latter `IAsyncDisposable`)
+- `Generate.Db.{Add<T>, Update<T>, Remove<T>, SaveChanges, Sequence}` — `Strategy<DbInteraction>` builders, plus `Sequence` returning `Strategy<IReadOnlyList<DbInteraction>>` for `InteractionStateMachine<TState>`
+- `DbInvariantExtensions.{AssertRoundtripAsync, AssertConcurrencyTokenRespectedAsync, AssertNoOrphansAsync, AssertNoTrackingMatchesTrackedAsync}` — fluent assertions on `IDbTarget` mirroring `HttpInvariantExtensions` (orphan walk uses EF metadata + `FindAsync`; no raw SQL in production)
+
+---
+
 ## [0.24.0] — 2026-04-27
 
 ### Added
