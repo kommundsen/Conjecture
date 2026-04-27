@@ -363,6 +363,29 @@ internal static class StrategyTools
             Add the NuGet package: `Conjecture.Aspire`
             """,
 
+            _ when typeName.StartsWith("WebApplicationFactory<", StringComparison.Ordinal)
+                || typeName.StartsWith("AspNetCoreDbTarget<", StringComparison.Ordinal) =>
+                """
+            This type is an ASP.NET Core + EF Core composite test target. Use `AspNetCoreDbTarget<TContext>` and `HostHttpTarget` from `Conjecture.AspNetCore.EFCore`, constructed from the same `IHost`, and assert invariants using:
+
+            ```csharp
+            using Conjecture.AspNetCore;
+            using Conjecture.AspNetCore.EFCore;
+
+            IHost host = factory.Server.Host;
+            HostHttpTarget httpTarget = new(host);
+            AspNetCoreDbTarget<AppDbContext> dbTarget = new(host);
+
+            await AspNetCoreEFCoreInvariants.AssertNoPartialWritesOnErrorAsync(httpTarget, dbTarget, request);
+            await AspNetCoreEFCoreInvariants.AssertCascadeCorrectnessAsync(httpTarget, dbTarget, request);
+            await AspNetCoreEFCoreInvariants.AssertIdempotentAsync(httpTarget, dbTarget, request);
+            ```
+
+            Wire the factory via `IClassFixture<WebApplicationFactory<TApp>>` in your test class.
+
+            Add the NuGet package: `Conjecture.AspNetCore.EFCore`
+            """,
+
             "DbContext" =>
                 """
             This type is an EF Core `DbContext`. Use `Generate.Entity<T>(context)` from `Conjecture.EFCore` to generate entities registered in the model:

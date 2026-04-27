@@ -24,6 +24,7 @@ internal static class ApiReferenceResources
         ("testing-platform",     "Microsoft Testing Platform Adapter", "Conjecture.TestingPlatform setup, [Property] attribute, CLI options, TRX reports, and CrashDump"),
         ("aspire-setup",         "Aspire Integration Setup",           "Step-by-step guide for wiring up Conjecture.Aspire: IAspireAppFixture, AspireStateMachine<TState>, ResetAsync lifecycle, and [Property] attribute"),
         ("efcore-setup",         "EF Core Integration Setup",          "Step-by-step guide for wiring up Conjecture.EFCore: Generate.Entity, Generate.EntitySet, RoundtripAsserter, and MigrationHarness"),
+        ("aspnetcore-efcore-setup", "ASP.NET Core + EF Core Integration Setup", "Step-by-step guide for wiring up Conjecture.AspNetCore.EFCore: AspNetCoreDbTarget, AssertNoPartialWritesOnErrorAsync, AssertCascadeCorrectnessAsync, and AssertIdempotentAsync"),
     ];
 
     internal static ValueTask<ListResourcesResult> HandleListResources(
