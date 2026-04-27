@@ -6,7 +6,7 @@ using System;
 namespace Conjecture.EFCore;
 
 /// <summary>Thrown when a migration idempotency assertion fails.</summary>
-public sealed class MigrationAssertionException : Exception
+public sealed class MigrationAssertionException : DbInvariantException
 {
     /// <summary>Initializes a new instance with <paramref name="message"/>.</summary>
     public MigrationAssertionException(string message)

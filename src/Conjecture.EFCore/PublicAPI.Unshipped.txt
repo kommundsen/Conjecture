@@ -1,1 +1,4 @@
 #nullable enable
+Conjecture.EFCore.DbInvariantException
+Conjecture.EFCore.DbInvariantException.DbInvariantException(string! message) -> void
+Conjecture.EFCore.DbInvariantException.DbInvariantException(string! message, System.Exception! innerException) -> void
