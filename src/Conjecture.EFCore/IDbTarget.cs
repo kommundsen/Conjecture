@@ -1,6 +1,9 @@
 // Copyright (c) 2026 Kim Ommundsen. Licensed under the MPL-2.0.
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
+using System.Threading;
+using System.Threading.Tasks;
+
 using Conjecture.Interactions;
 
 using Microsoft.EntityFrameworkCore;
@@ -15,4 +18,7 @@ public interface IDbTarget : IInteractionTarget
 
     /// <summary>Returns a <see cref="DbContext"/> configured for the given resource name.</summary>
     DbContext ResolveContext(string resourceName);
+
+    /// <summary>Resets the database for the given resource name (e.g. drops and recreates).</summary>
+    Task ResetAsync(string resourceName, CancellationToken ct = default);
 }

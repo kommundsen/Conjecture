@@ -1,1 +1,2 @@
 #nullable enable
+Conjecture.EFCore.IDbTarget.ResetAsync(string! resourceName, System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
