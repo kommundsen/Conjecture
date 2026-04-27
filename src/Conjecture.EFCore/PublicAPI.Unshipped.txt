@@ -15,3 +15,8 @@ Conjecture.EFCore.RoundtripAssertionException.RoundtripAssertionException(string
 Conjecture.EFCore.RoundtripAsserter
 static Conjecture.EFCore.RoundtripAsserter.AssertRoundtripAsync<TEntity>(System.Func<Microsoft.EntityFrameworkCore.DbContext!>! factory, TEntity! entity, System.Collections.Generic.IEqualityComparer<TEntity!>? comparer = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
 static Conjecture.EFCore.RoundtripAsserter.AssertNoTrackingMatchesTrackedAsync<TEntity>(System.Func<Microsoft.EntityFrameworkCore.DbContext!>! factory, TEntity! entity, System.Collections.Generic.IEqualityComparer<TEntity!>? comparer = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+Conjecture.EFCore.MigrationAssertionException
+Conjecture.EFCore.MigrationAssertionException.MigrationAssertionException(string! message) -> void
+Conjecture.EFCore.MigrationAssertionException.MigrationAssertionException(string! message, System.Exception! innerException) -> void
+Conjecture.EFCore.MigrationHarness
+static Conjecture.EFCore.MigrationHarness.AssertUpDownIdempotentAsync(Microsoft.EntityFrameworkCore.DbContext! context, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
