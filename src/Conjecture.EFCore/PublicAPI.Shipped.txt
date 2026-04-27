@@ -63,4 +63,28 @@ Conjecture.EFCore.GenerateDbBlock.SaveChanges(string! resourceName) -> Conjectur
 Conjecture.EFCore.GenerateDbBlock.Sequence(string! resourceName, Microsoft.EntityFrameworkCore.Metadata.IModel! model, int min = 1, int max = 5) -> Conjecture.Core.Strategy<System.Collections.Generic.IReadOnlyList<Conjecture.EFCore.DbInteraction!>!>!
 Conjecture.EFCore.DbGenerateExtensions
 Conjecture.EFCore.DbGenerateExtensions.extension(Conjecture.Core.Generate!)
-static Conjecture.EFCore.DbGenerateExtensions.extension(Conjecture.Core.Generate!).Db.get -> Conjecture.EFCore.GenerateDbBlock!
+static Conjecture.EFCore.DbGenerateExtensions.extension(Conjecture.Core.Generate!).Db.get -> Conjecture.EFCore.GenerateDbBlock!
+Conjecture.EFCore.DbInvariantException
+Conjecture.EFCore.DbInvariantException.DbInvariantException(string! message) -> void
+Conjecture.EFCore.DbInvariantException.DbInvariantException(string! message, System.Exception! innerException) -> void
+Conjecture.EFCore.EntitySnapshot
+Conjecture.EFCore.EntitySnapshot.EntitySnapshot(System.Collections.Generic.IReadOnlyDictionary<System.Type!, int>! Counts, System.Collections.Generic.IReadOnlyDictionary<System.Type!, System.Collections.Generic.IReadOnlySet<object!>!>! Keys) -> void
+Conjecture.EFCore.EntitySnapshot.Counts.get -> System.Collections.Generic.IReadOnlyDictionary<System.Type!, int>!
+Conjecture.EFCore.EntitySnapshot.Counts.init -> void
+Conjecture.EFCore.EntitySnapshot.Keys.get -> System.Collections.Generic.IReadOnlyDictionary<System.Type!, System.Collections.Generic.IReadOnlySet<object!>!>!
+Conjecture.EFCore.EntitySnapshot.Keys.init -> void
+Conjecture.EFCore.EntitySnapshotDiff
+Conjecture.EFCore.EntitySnapshotDiff.EntitySnapshotDiff(System.Collections.Generic.IReadOnlyDictionary<System.Type!, int>! CountDeltas, System.Collections.Generic.IReadOnlyDictionary<System.Type!, System.Collections.Generic.IReadOnlyList<object!>!>! AddedKeys, System.Collections.Generic.IReadOnlyDictionary<System.Type!, System.Collections.Generic.IReadOnlyList<object!>!>! RemovedKeys) -> void
+Conjecture.EFCore.EntitySnapshotDiff.CountDeltas.get -> System.Collections.Generic.IReadOnlyDictionary<System.Type!, int>!
+Conjecture.EFCore.EntitySnapshotDiff.CountDeltas.init -> void
+Conjecture.EFCore.EntitySnapshotDiff.AddedKeys.get -> System.Collections.Generic.IReadOnlyDictionary<System.Type!, System.Collections.Generic.IReadOnlyList<object!>!>!
+Conjecture.EFCore.EntitySnapshotDiff.AddedKeys.init -> void
+Conjecture.EFCore.EntitySnapshotDiff.RemovedKeys.get -> System.Collections.Generic.IReadOnlyDictionary<System.Type!, System.Collections.Generic.IReadOnlyList<object!>!>!
+Conjecture.EFCore.EntitySnapshotDiff.RemovedKeys.init -> void
+Conjecture.EFCore.EntitySnapshotDiff.IsEmpty.get -> bool
+Conjecture.EFCore.EntitySnapshotDiff.ToReport() -> string!
+Conjecture.EFCore.EntitySnapshotter
+static Conjecture.EFCore.EntitySnapshotter.CaptureAsync(Conjecture.EFCore.IDbTarget! target, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Conjecture.EFCore.EntitySnapshot!>!
+static Conjecture.EFCore.EntitySnapshotter.Diff(Conjecture.EFCore.EntitySnapshot! before, Conjecture.EFCore.EntitySnapshot! after) -> Conjecture.EFCore.EntitySnapshotDiff!
+Conjecture.EFCore.IDbTargetExtensions
+static Conjecture.EFCore.IDbTargetExtensions.Resolve<TContext>(this Conjecture.EFCore.IDbTarget! target) -> TContext!
