@@ -374,8 +374,8 @@ internal static class StrategyTools
                 contextFactory: sp => sp.GetRequiredService<{{InnerType(typeName)}}>());
 
             AspireEFCoreInvariants invariants = new(writer, dbTarget);
-            await invariants.AssertNoPartialWritesOnErrorAsync(interaction);
-            await invariants.AssertIdempotentAsync(interaction);
+            await invariants.AssertNoPartialWritesOnErrorAsync(interaction, db => db.Set<Order>().CountAsync());
+            await invariants.AssertIdempotentAsync(interaction, db => db.Set<Order>().CountAsync(), TimeSpan.FromSeconds(2));
             ```
 
             Register `AspireDbTargetRegistry` inside your `IAspireAppFixture.ResetAsync` override to reset all registered targets between property iterations.
@@ -416,8 +416,8 @@ internal static class StrategyTools
             AspireEFCoreInvariants invariants = new(writer, dbTarget);
 
             // Available assertion methods:
-            await invariants.AssertNoPartialWritesOnErrorAsync(interaction);
-            await invariants.AssertIdempotentAsync(interaction);
+            await invariants.AssertNoPartialWritesOnErrorAsync(interaction, db => db.Set<Order>().CountAsync());
+            await invariants.AssertIdempotentAsync(interaction, db => db.Set<Order>().CountAsync(), TimeSpan.FromSeconds(2));
             ```
 
             Add the NuGet package: `Conjecture.Aspire.EFCore`

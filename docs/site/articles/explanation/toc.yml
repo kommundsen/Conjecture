@@ -41,3 +41,5 @@ items:
     href: efcore-property-testing.md
   - name: Why composite HTTP+DB invariants find bugs
     href: aspnetcore-efcore-composite-testing.md
+  - name: Why Aspire+EFCore composite testing works
+    href: aspire-efcore-composite-testing.md

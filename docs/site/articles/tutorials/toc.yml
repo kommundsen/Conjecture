@@ -21,3 +21,5 @@ items:
     href: 10-efcore-integration.md
   - name: Composite property tests for ASP.NET Core + EF Core
     href: 11-aspnetcore-efcore-integration.md
+  - name: Composite property tests for Aspire + EF Core
+    href: 12-aspire-efcore-integration.md
