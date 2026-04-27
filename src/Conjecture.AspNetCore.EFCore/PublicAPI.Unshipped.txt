@@ -7,3 +7,9 @@ Conjecture.AspNetCore.EFCore.AspNetCoreDbTarget<TContext>.Resolve() -> TContext!
 Conjecture.AspNetCore.EFCore.AspNetCoreDbTarget<TContext>.ResetAsync(string! resourceName, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
 Conjecture.AspNetCore.EFCore.AspNetCoreDbTarget<TContext>.ResolveContext(string! resourceName) -> Microsoft.EntityFrameworkCore.DbContext!
 Conjecture.AspNetCore.EFCore.AspNetCoreDbTarget<TContext>.ResourceName.get -> string!
+Conjecture.AspNetCore.EFCore.AspNetCoreEFCoreInvariantException
+Conjecture.AspNetCore.EFCore.AspNetCoreEFCoreInvariantException.AspNetCoreEFCoreInvariantException(string! message) -> void
+Conjecture.AspNetCore.EFCore.AspNetCoreEFCoreInvariantException.AspNetCoreEFCoreInvariantException(string! message, System.Exception! innerException) -> void
+Conjecture.AspNetCore.EFCore.AspNetCoreEFCoreInvariants
+Conjecture.AspNetCore.EFCore.AspNetCoreEFCoreInvariants.AspNetCoreEFCoreInvariants(Conjecture.Http.IHttpTarget! http, Conjecture.EFCore.IDbTarget! db) -> void
+Conjecture.AspNetCore.EFCore.AspNetCoreEFCoreInvariants.AssertNoPartialWritesOnErrorAsync(System.Func<System.Net.Http.HttpClient!, System.Threading.CancellationToken, System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage!>!>! request, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
