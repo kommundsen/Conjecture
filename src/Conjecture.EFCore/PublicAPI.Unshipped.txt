@@ -6,3 +6,7 @@ Conjecture.EFCore.EntityStrategyBuilder.WithoutNavigation<TEntity>(System.Linq.E
 Conjecture.EFCore.EntityStrategyBuilder.Build<TEntity>() -> Conjecture.Core.Strategy<TEntity!>!
 Conjecture.EFCore.PropertyStrategyBuilder
 static Conjecture.EFCore.PropertyStrategyBuilder.Build(Microsoft.EntityFrameworkCore.Metadata.IProperty! property) -> Conjecture.Core.Strategy<object?>!
+Conjecture.EFCore.EFCoreGenerateExtensions
+Conjecture.EFCore.EFCoreGenerateExtensions.extension(Conjecture.Core.Generate!)
+static Conjecture.EFCore.EFCoreGenerateExtensions.extension(Conjecture.Core.Generate!).Entity<T>(Microsoft.EntityFrameworkCore.DbContext! context, int maxDepth = 2) -> Conjecture.Core.Strategy<T!>!
+static Conjecture.EFCore.EFCoreGenerateExtensions.extension(Conjecture.Core.Generate!).Entity<T>(System.Func<Microsoft.EntityFrameworkCore.DbContext!>! contextFactory, int maxDepth = 2) -> Conjecture.Core.Strategy<T!>!
