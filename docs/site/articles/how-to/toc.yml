@@ -81,5 +81,11 @@ items:
     href: test-efcore-migrations.md
   - name: Customise EF Core entity generation
     href: customise-efcore-entity-generation.md
+  - name: Assert no partial writes on 4xx/5xx (AspNetCore + EF Core)
+    href: test-aspnetcore-efcore-no-partial-writes.md
+  - name: Assert cascade correctness (AspNetCore + EF Core)
+    href: test-aspnetcore-efcore-cascades.md
+  - name: Assert endpoint idempotency (AspNetCore + EF Core)
+    href: test-aspnetcore-efcore-idempotency.md
   - name: Troubleshoot
     href: troubleshoot.md
