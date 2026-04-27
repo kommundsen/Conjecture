@@ -34,3 +34,18 @@ Conjecture.EFCore.DbInteraction.Op.get -> Conjecture.EFCore.DbOpKind
 Conjecture.EFCore.DbInteraction.Op.init -> void
 Conjecture.EFCore.DbInteraction.Payload.get -> object?
 Conjecture.EFCore.DbInteraction.Payload.init -> void
+Conjecture.EFCore.IDbTarget
+Conjecture.EFCore.IDbTarget.ResolveContext(string! resourceName) -> Microsoft.EntityFrameworkCore.DbContext!
+Conjecture.EFCore.InMemoryDbTarget
+Conjecture.EFCore.InMemoryDbTarget.InMemoryDbTarget(string! resourceName, System.Func<Microsoft.EntityFrameworkCore.DbContext!>! contextFactory) -> void
+Conjecture.EFCore.InMemoryDbTarget.ResourceName.get -> string!
+Conjecture.EFCore.InMemoryDbTarget.ResolveContext(string! resourceName) -> Microsoft.EntityFrameworkCore.DbContext!
+Conjecture.EFCore.InMemoryDbTarget.ResetAsync(string! resourceName, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+Conjecture.EFCore.InMemoryDbTarget.ExecuteAsync(Conjecture.Interactions.IInteraction! interaction, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<object?>!
+Conjecture.EFCore.SqliteDbTarget
+Conjecture.EFCore.SqliteDbTarget.SqliteDbTarget(string! resourceName, System.Func<Microsoft.EntityFrameworkCore.DbContext!>! contextFactory) -> void
+Conjecture.EFCore.SqliteDbTarget.ResourceName.get -> string!
+Conjecture.EFCore.SqliteDbTarget.ResolveContext(string! resourceName) -> Microsoft.EntityFrameworkCore.DbContext!
+Conjecture.EFCore.SqliteDbTarget.ResetAsync(string! resourceName, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+Conjecture.EFCore.SqliteDbTarget.ExecuteAsync(Conjecture.Interactions.IInteraction! interaction, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<object?>!
+Conjecture.EFCore.SqliteDbTarget.DisposeAsync() -> System.Threading.Tasks.ValueTask

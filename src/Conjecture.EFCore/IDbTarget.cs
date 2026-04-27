@@ -1,0 +1,15 @@
+// Copyright (c) 2026 Kim Ommundsen. Licensed under the MPL-2.0.
+// See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
+
+using Conjecture.Interactions;
+
+using Microsoft.EntityFrameworkCore;
+
+namespace Conjecture.EFCore;
+
+/// <summary>EF Core-specific interaction target exposing a <see cref="DbContext"/> for the given resource.</summary>
+public interface IDbTarget : IInteractionTarget
+{
+    /// <summary>Returns a <see cref="DbContext"/> configured for the given resource name.</summary>
+    DbContext ResolveContext(string resourceName);
+}
