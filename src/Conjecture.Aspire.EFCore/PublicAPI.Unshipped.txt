@@ -1,4 +1,12 @@
 #nullable enable
+Conjecture.Aspire.EFCore.AspireDbFixtureExtensions
+static Conjecture.Aspire.EFCore.AspireDbFixtureExtensions.CreateDbRegistry(this Conjecture.Aspire.IAspireAppFixture! fixture) -> Conjecture.Aspire.EFCore.AspireDbTargetRegistry!
+Conjecture.Aspire.EFCore.AspireDbTargetRegistry
+Conjecture.Aspire.EFCore.AspireDbTargetRegistry.AspireDbTargetRegistry() -> void
+Conjecture.Aspire.EFCore.AspireDbTargetRegistry.DisposeAsync() -> System.Threading.Tasks.ValueTask
+Conjecture.Aspire.EFCore.AspireDbTargetRegistry.Register(Conjecture.EFCore.IDbTarget! target) -> Conjecture.Aspire.EFCore.AspireDbTargetRegistry!
+Conjecture.Aspire.EFCore.AspireDbTargetRegistry.ResetAllAsync(System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+Conjecture.Aspire.EFCore.AspireDbTargetRegistry.Targets.get -> System.Collections.Generic.IReadOnlyList<Conjecture.EFCore.IDbTarget!>!
 Conjecture.Aspire.EFCore.AspireDbTarget<TContext>
 Conjecture.Aspire.EFCore.AspireDbTarget<TContext>.DisposeAsync() -> System.Threading.Tasks.ValueTask
 Conjecture.Aspire.EFCore.AspireDbTarget<TContext>.ExecuteAsync(Conjecture.Interactions.IInteraction! interaction, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<object?>!

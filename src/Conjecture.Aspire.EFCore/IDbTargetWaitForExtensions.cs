@@ -90,6 +90,8 @@ public static class IDbTargetWaitForExtensions
         {
             ct.ThrowIfCancellationRequested();
 
+            // ResolveContext tracks the context internally (e.g. AspireDbTarget.trackedContexts) and disposes it
+            // in DisposeAsync — do not wrap with await using here to avoid double-dispose.
             DbContext ctx = target.ResolveContext(target.ResourceName);
             bool satisfied = await predicate(ctx).ConfigureAwait(false);
             if (satisfied)
@@ -108,7 +110,8 @@ public static class IDbTargetWaitForExtensions
 
             if (pollInterval is null)
             {
-                interval = interval * 2 > DefaultMaxInterval ? DefaultMaxInterval : interval * 2;
+                TimeSpan doubled = interval * 2;
+                interval = doubled > DefaultMaxInterval ? DefaultMaxInterval : doubled;
             }
         }
     }
