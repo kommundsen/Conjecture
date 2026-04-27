@@ -39,3 +39,5 @@ items:
     href: aspire-lifecycle.md
   - name: Why property testing finds EF Core bugs
     href: efcore-property-testing.md
+  - name: Why composite HTTP+DB invariants find bugs
+    href: aspnetcore-efcore-composite-testing.md

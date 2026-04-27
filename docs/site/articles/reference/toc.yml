@@ -33,3 +33,5 @@ items:
     href: aspire.md
   - name: Conjecture.EFCore
     href: efcore.md
+  - name: Conjecture.AspNetCore.EFCore
+    href: aspnetcore-efcore.md
