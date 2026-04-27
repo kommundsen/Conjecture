@@ -10,3 +10,8 @@ Conjecture.EFCore.EFCoreGenerateExtensions
 Conjecture.EFCore.EFCoreGenerateExtensions.extension(Conjecture.Core.Generate!)
 static Conjecture.EFCore.EFCoreGenerateExtensions.extension(Conjecture.Core.Generate!).Entity<T>(Microsoft.EntityFrameworkCore.DbContext! context, int maxDepth = 2) -> Conjecture.Core.Strategy<T!>!
 static Conjecture.EFCore.EFCoreGenerateExtensions.extension(Conjecture.Core.Generate!).Entity<T>(System.Func<Microsoft.EntityFrameworkCore.DbContext!>! contextFactory, int maxDepth = 2) -> Conjecture.Core.Strategy<T!>!
+Conjecture.EFCore.RoundtripAssertionException
+Conjecture.EFCore.RoundtripAssertionException.RoundtripAssertionException(string! message) -> void
+Conjecture.EFCore.RoundtripAsserter
+static Conjecture.EFCore.RoundtripAsserter.AssertRoundtripAsync<TEntity>(System.Func<Microsoft.EntityFrameworkCore.DbContext!>! factory, TEntity! entity, System.Collections.Generic.IEqualityComparer<TEntity!>? comparer = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+static Conjecture.EFCore.RoundtripAsserter.AssertNoTrackingMatchesTrackedAsync<TEntity>(System.Func<Microsoft.EntityFrameworkCore.DbContext!>! factory, TEntity! entity, System.Collections.Generic.IEqualityComparer<TEntity!>? comparer = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
