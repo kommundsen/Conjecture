@@ -87,5 +87,15 @@ items:
     href: test-aspnetcore-efcore-cascades.md
   - name: Assert endpoint idempotency (AspNetCore + EF Core)
     href: test-aspnetcore-efcore-idempotency.md
+  - name: Set up Aspire.EFCore property testing
+    href: setup-aspire-efcore-property-testing.md
+  - name: Test eventual consistency (Aspire + EF Core)
+    href: test-aspire-efcore-eventual-consistency.md
+  - name: Assert no partial writes (Aspire + EF Core)
+    href: test-aspire-efcore-no-partial-writes.md
+  - name: Assert idempotency (Aspire + EF Core)
+    href: test-aspire-efcore-idempotency.md
+  - name: Generate Aspire interaction sequences
+    href: generate-aspire-interaction-sequences.md
   - name: Troubleshoot
     href: troubleshoot.md
