@@ -10,6 +10,9 @@ namespace Conjecture.EFCore;
 /// <summary>EF Core-specific interaction target exposing a <see cref="DbContext"/> for the given resource.</summary>
 public interface IDbTarget : IInteractionTarget
 {
+    /// <summary>Gets the resource name this target is registered under.</summary>
+    string ResourceName { get; }
+
     /// <summary>Returns a <see cref="DbContext"/> configured for the given resource name.</summary>
     DbContext ResolveContext(string resourceName);
 }

@@ -35,7 +35,13 @@ Conjecture.EFCore.DbInteraction.Op.init -> void
 Conjecture.EFCore.DbInteraction.Payload.get -> object?
 Conjecture.EFCore.DbInteraction.Payload.init -> void
 Conjecture.EFCore.IDbTarget
+Conjecture.EFCore.IDbTarget.ResourceName.get -> string!
 Conjecture.EFCore.IDbTarget.ResolveContext(string! resourceName) -> Microsoft.EntityFrameworkCore.DbContext!
+Conjecture.EFCore.DbInvariantExtensions
+static Conjecture.EFCore.DbInvariantExtensions.AssertRoundtripAsync<TEntity>(this Conjecture.EFCore.IDbTarget! target, TEntity! entity, System.Collections.Generic.IEqualityComparer<TEntity!>? comparer = null, System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+static Conjecture.EFCore.DbInvariantExtensions.AssertConcurrencyTokenRespectedAsync<TEntity>(this Conjecture.EFCore.IDbTarget! target, TEntity! entity, System.Action<TEntity!>! mutateFirst, System.Action<TEntity!>! mutateSecond, System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+static Conjecture.EFCore.DbInvariantExtensions.AssertNoOrphansAsync(this Conjecture.EFCore.IDbTarget! target, System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+static Conjecture.EFCore.DbInvariantExtensions.AssertNoTrackingMatchesTrackedAsync<TEntity>(this Conjecture.EFCore.IDbTarget! target, TEntity! entity, System.Collections.Generic.IEqualityComparer<TEntity!>? comparer = null, System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
 Conjecture.EFCore.InMemoryDbTarget
 Conjecture.EFCore.InMemoryDbTarget.InMemoryDbTarget(string! resourceName, System.Func<Microsoft.EntityFrameworkCore.DbContext!>! contextFactory) -> void
 Conjecture.EFCore.InMemoryDbTarget.ResourceName.get -> string!
