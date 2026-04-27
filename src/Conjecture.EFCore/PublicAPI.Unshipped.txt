@@ -1,3 +1,8 @@
 #nullable enable
+Conjecture.EFCore.EntityStrategyBuilder
+Conjecture.EFCore.EntityStrategyBuilder.EntityStrategyBuilder(Microsoft.EntityFrameworkCore.Metadata.IModel! model) -> void
+Conjecture.EFCore.EntityStrategyBuilder.WithMaxDepth(int depth) -> Conjecture.EFCore.EntityStrategyBuilder!
+Conjecture.EFCore.EntityStrategyBuilder.WithoutNavigation<TEntity>(System.Linq.Expressions.Expression<System.Func<TEntity!, object?>!>! navigation) -> Conjecture.EFCore.EntityStrategyBuilder!
+Conjecture.EFCore.EntityStrategyBuilder.Build<TEntity>() -> Conjecture.Core.Strategy<TEntity!>!
 Conjecture.EFCore.PropertyStrategyBuilder
 static Conjecture.EFCore.PropertyStrategyBuilder.Build(Microsoft.EntityFrameworkCore.Metadata.IProperty! property) -> Conjecture.Core.Strategy<object?>!
