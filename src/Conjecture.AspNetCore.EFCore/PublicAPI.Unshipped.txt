@@ -1,1 +1,9 @@
 #nullable enable
+Conjecture.AspNetCore.EFCore.AspNetCoreDbTarget<TContext>
+Conjecture.AspNetCore.EFCore.AspNetCoreDbTarget<TContext>.AspNetCoreDbTarget(Microsoft.Extensions.Hosting.IHost! host, string! resourceName) -> void
+Conjecture.AspNetCore.EFCore.AspNetCoreDbTarget<TContext>.DisposeAsync() -> System.Threading.Tasks.ValueTask
+Conjecture.AspNetCore.EFCore.AspNetCoreDbTarget<TContext>.ExecuteAsync(Conjecture.Interactions.IInteraction! interaction, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<object?>!
+Conjecture.AspNetCore.EFCore.AspNetCoreDbTarget<TContext>.Resolve() -> TContext!
+Conjecture.AspNetCore.EFCore.AspNetCoreDbTarget<TContext>.ResetAsync(string! resourceName, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+Conjecture.AspNetCore.EFCore.AspNetCoreDbTarget<TContext>.ResolveContext(string! resourceName) -> Microsoft.EntityFrameworkCore.DbContext!
+Conjecture.AspNetCore.EFCore.AspNetCoreDbTarget<TContext>.ResourceName.get -> string!
