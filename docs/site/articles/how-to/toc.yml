@@ -75,5 +75,11 @@ items:
     href: reset-aspire-state.md
   - name: Configure Aspire retry policy
     href: configure-aspire-retry.md
+  - name: Set up EF Core property testing
+    href: setup-efcore-property-testing.md
+  - name: Test EF Core migration up/down invariants
+    href: test-efcore-migrations.md
+  - name: Customise EF Core entity generation
+    href: customise-efcore-entity-generation.md
   - name: Troubleshoot
     href: troubleshoot.md
