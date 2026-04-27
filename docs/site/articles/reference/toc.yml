@@ -31,3 +31,5 @@ items:
     href: aspnetcore-request-builder.md
   - name: Conjecture.Aspire
     href: aspire.md
+  - name: Conjecture.EFCore
+    href: efcore.md

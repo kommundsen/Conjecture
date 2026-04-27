@@ -37,3 +37,5 @@ items:
     href: aspnetcore-host-abstraction.md
   - name: Why Aspire uses a shared lifecycle
     href: aspire-lifecycle.md
+  - name: Why property testing finds EF Core bugs
+    href: efcore-property-testing.md
