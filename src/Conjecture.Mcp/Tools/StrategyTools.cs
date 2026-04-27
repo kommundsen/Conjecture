@@ -363,6 +363,58 @@ internal static class StrategyTools
             Add the NuGet package: `Conjecture.Aspire`
             """,
 
+            "DbContext" =>
+                """
+            This type is an EF Core `DbContext`. Use `Generate.Entity<T>(context)` from `Conjecture.EFCore` to generate entities registered in the model:
+
+            ```csharp
+            using Conjecture.EFCore;
+
+            Generate.Entity<Order>(db)
+            // → Strategy<Order> drawing entities tracked by the DbContext
+            ```
+
+            Add the NuGet package: `Conjecture.EFCore`
+            """,
+
+            "EntitySet" =>
+                """
+            This type appears to be an EF Core entity. Use `Generate.EntitySet<T>(context)` from `Conjecture.EFCore` to draw from the full set persisted in the database:
+
+            ```csharp
+            using Conjecture.EFCore;
+
+            Generate.EntitySet<Order>(db)
+            // → Strategy<Order> sampling from existing rows in the DbSet<Order>
+            ```
+
+            For roundtrip testing, use `RoundtripAsserter`:
+            ```csharp
+            await RoundtripAsserter.AssertRoundtripsAsync(db, entity);
+            ```
+
+            Add the NuGet package: `Conjecture.EFCore`
+            """,
+
+            _ when typeName.StartsWith("DbSet<", StringComparison.Ordinal) =>
+                """
+            This type appears to be an EF Core entity. Use `Generate.EntitySet<T>(context)` from `Conjecture.EFCore` to draw from the full set persisted in the database:
+
+            ```csharp
+            using Conjecture.EFCore;
+
+            Generate.EntitySet<Order>(db)
+            // → Strategy<Order> sampling from existing rows in the DbSet<Order>
+            ```
+
+            For roundtrip testing, use `RoundtripAsserter`:
+            ```csharp
+            await RoundtripAsserter.AssertRoundtripsAsync(db, entity);
+            ```
+
+            Add the NuGet package: `Conjecture.EFCore`
+            """,
+
             _ when typeName.StartsWith("List<", StringComparison.Ordinal) =>
                 SuggestList(InnerType(typeName)),
 
