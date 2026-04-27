@@ -15,7 +15,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Conjecture.Aspire.EFCore\Conjecture.Aspire.EFCore.csproj" />
     <ProjectReference Include="..\Conjecture.EFCore\Conjecture.EFCore.csproj" />
+    <ProjectReference Include="..\Conjecture.Http\Conjecture.Http.csproj" />
     <ProjectReference Include="..\Conjecture.Interactions\Conjecture.Interactions.csproj" />
+    <ProjectReference Include="..\Conjecture.Messaging\Conjecture.Messaging.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Using Include="Xunit" />

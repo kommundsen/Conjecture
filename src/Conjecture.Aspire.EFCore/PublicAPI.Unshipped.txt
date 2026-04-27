@@ -22,3 +22,10 @@ static Conjecture.Aspire.EFCore.AspireDbTarget<TContext>.CreateAsync(Conjecture.
 Conjecture.Aspire.EFCore.IDbTargetWaitForExtensions
 static Conjecture.Aspire.EFCore.IDbTargetWaitForExtensions.WaitForAsync(this Conjecture.EFCore.IDbTarget! target, System.Func<Microsoft.EntityFrameworkCore.DbContext!, System.Threading.Tasks.Task<bool>!>! predicate, System.TimeSpan timeout, System.TimeSpan? pollInterval = null, System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
 static Conjecture.Aspire.EFCore.IDbTargetWaitForExtensions.WaitForAsync<TContext>(this Conjecture.EFCore.IDbTarget! target, System.Func<TContext!, System.Threading.Tasks.Task<bool>!>! predicate, System.TimeSpan timeout, System.TimeSpan? pollInterval = null, System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+Conjecture.Aspire.EFCore.AspireEFCoreInvariantException
+Conjecture.Aspire.EFCore.AspireEFCoreInvariantException.AspireEFCoreInvariantException(string! message) -> void
+Conjecture.Aspire.EFCore.AspireEFCoreInvariantException.AspireEFCoreInvariantException(string! message, System.Exception! innerException) -> void
+Conjecture.Aspire.EFCore.AspireEFCoreInvariants
+Conjecture.Aspire.EFCore.AspireEFCoreInvariants.AspireEFCoreInvariants(Conjecture.Interactions.IInteractionTarget! writer, Conjecture.EFCore.IDbTarget! db) -> void
+Conjecture.Aspire.EFCore.AspireEFCoreInvariants.AssertIdempotentAsync(Conjecture.Interactions.IInteraction! operation, System.Func<Microsoft.EntityFrameworkCore.DbContext!, System.Threading.Tasks.Task<int>!>! rowCount, System.TimeSpan eventualTimeout, System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+Conjecture.Aspire.EFCore.AspireEFCoreInvariants.AssertNoPartialWritesOnErrorAsync(Conjecture.Interactions.IInteraction! operation, System.Func<Microsoft.EntityFrameworkCore.DbContext!, System.Threading.Tasks.Task<int>!>! rowCount, System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
