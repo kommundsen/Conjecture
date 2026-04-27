@@ -21,7 +21,7 @@ public static class PropertyStrategyBuilder
         if (property.ValueGenerated == ValueGenerated.OnAdd || property.ValueGenerated == ValueGenerated.OnAddOrUpdate)
         {
             object? clrDefault = property.ClrType.IsValueType ? Activator.CreateInstance(property.ClrType) : null;
-            return Generate.Constant<object?>(clrDefault);
+            return Generate.Just<object?>(clrDefault);
         }
 
         Type clrType = property.ClrType;
@@ -30,7 +30,7 @@ public static class PropertyStrategyBuilder
         Strategy<object?> inner = BuildInner(property, underlying);
 
         return property.IsNullable
-            ? Generate.OneOf(inner, Generate.Constant<object?>(null))
+            ? Generate.OneOf(inner, Generate.Just<object?>(null))
             : inner;
     }
 
@@ -130,7 +130,7 @@ public static class PropertyStrategyBuilder
             return Generate.SampledFrom(values).Select(v => (object?)v);
         }
 
-        return Generate.Constant<object?>(null);
+        return Generate.Just<object?>(null);
     }
 
     private static Strategy<object?> BuildDecimalStrategy(IProperty property)

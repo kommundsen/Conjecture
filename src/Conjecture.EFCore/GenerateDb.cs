@@ -54,7 +54,7 @@ public sealed class GenerateDbBlock
     {
         ArgumentException.ThrowIfNullOrEmpty(resourceName);
 
-        return Generate.Constant(new DbInteraction(resourceName, DbOpKind.SaveChanges, null));
+        return Generate.Just(new DbInteraction(resourceName, DbOpKind.SaveChanges, null));
     }
 
     /// <summary>
@@ -80,7 +80,7 @@ public sealed class GenerateDbBlock
             candidates.Add(entityStrategy.Select(entity => new DbInteraction(resourceName, DbOpKind.Update, entity)));
             candidates.Add(entityStrategy.Select(entity => new DbInteraction(resourceName, DbOpKind.Remove, entity)));
         }
-        candidates.Add(Generate.Constant(new DbInteraction(resourceName, DbOpKind.SaveChanges, null)));
+        candidates.Add(Generate.Just(new DbInteraction(resourceName, DbOpKind.SaveChanges, null)));
 
         Strategy<DbInteraction> elementStrategy = Generate.OneOf([.. candidates]);
         return Generate.Lists(elementStrategy, min, max)
