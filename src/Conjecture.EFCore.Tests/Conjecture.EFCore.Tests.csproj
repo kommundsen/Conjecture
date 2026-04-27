@@ -14,6 +14,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Conjecture.EFCore\Conjecture.EFCore.csproj" />
+    <ProjectReference Include="..\Conjecture.Interactions\Conjecture.Interactions.csproj" />
     <ProjectReference Include="..\Conjecture.Xunit\Conjecture.Xunit.csproj" />
   </ItemGroup>
   <ItemGroup>

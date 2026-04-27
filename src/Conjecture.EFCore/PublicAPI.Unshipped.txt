@@ -20,3 +20,17 @@ Conjecture.EFCore.MigrationAssertionException.MigrationAssertionException(string
 Conjecture.EFCore.MigrationAssertionException.MigrationAssertionException(string! message, System.Exception! innerException) -> void
 Conjecture.EFCore.MigrationHarness
 static Conjecture.EFCore.MigrationHarness.AssertUpDownIdempotentAsync(Microsoft.EntityFrameworkCore.DbContext! context, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+Conjecture.EFCore.DbOpKind
+Conjecture.EFCore.DbOpKind.Add = 0 -> Conjecture.EFCore.DbOpKind
+Conjecture.EFCore.DbOpKind.Update = 1 -> Conjecture.EFCore.DbOpKind
+Conjecture.EFCore.DbOpKind.Remove = 2 -> Conjecture.EFCore.DbOpKind
+Conjecture.EFCore.DbOpKind.SaveChanges = 3 -> Conjecture.EFCore.DbOpKind
+Conjecture.EFCore.DbOpKind.Query = 4 -> Conjecture.EFCore.DbOpKind
+Conjecture.EFCore.DbInteraction
+Conjecture.EFCore.DbInteraction.DbInteraction(string! ResourceName, Conjecture.EFCore.DbOpKind Op, object? Payload) -> void
+Conjecture.EFCore.DbInteraction.ResourceName.get -> string!
+Conjecture.EFCore.DbInteraction.ResourceName.init -> void
+Conjecture.EFCore.DbInteraction.Op.get -> Conjecture.EFCore.DbOpKind
+Conjecture.EFCore.DbInteraction.Op.init -> void
+Conjecture.EFCore.DbInteraction.Payload.get -> object?
+Conjecture.EFCore.DbInteraction.Payload.init -> void
