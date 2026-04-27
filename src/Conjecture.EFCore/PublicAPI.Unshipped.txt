@@ -21,3 +21,5 @@ Conjecture.EFCore.EntitySnapshotDiff.ToReport() -> string!
 Conjecture.EFCore.EntitySnapshotter
 static Conjecture.EFCore.EntitySnapshotter.CaptureAsync(Conjecture.EFCore.IDbTarget! target, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Conjecture.EFCore.EntitySnapshot!>!
 static Conjecture.EFCore.EntitySnapshotter.Diff(Conjecture.EFCore.EntitySnapshot! before, Conjecture.EFCore.EntitySnapshot! after) -> Conjecture.EFCore.EntitySnapshotDiff!
+Conjecture.EFCore.IDbTargetExtensions
+static Conjecture.EFCore.IDbTargetExtensions.Resolve<TContext>(this Conjecture.EFCore.IDbTarget! target) -> TContext!
