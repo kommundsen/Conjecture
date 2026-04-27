@@ -29,3 +29,18 @@ Conjecture.Aspire.EFCore.AspireEFCoreInvariants
 Conjecture.Aspire.EFCore.AspireEFCoreInvariants.AspireEFCoreInvariants(Conjecture.Interactions.IInteractionTarget! writer, Conjecture.EFCore.IDbTarget! db) -> void
 Conjecture.Aspire.EFCore.AspireEFCoreInvariants.AssertIdempotentAsync(Conjecture.Interactions.IInteraction! operation, System.Func<Microsoft.EntityFrameworkCore.DbContext!, System.Threading.Tasks.Task<int>!>! rowCount, System.TimeSpan eventualTimeout, System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
 Conjecture.Aspire.EFCore.AspireEFCoreInvariants.AssertNoPartialWritesOnErrorAsync(Conjecture.Interactions.IInteraction! operation, System.Func<Microsoft.EntityFrameworkCore.DbContext!, System.Threading.Tasks.Task<int>!>! rowCount, System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+Conjecture.Aspire.EFCore.DbSnapshotInteraction
+Conjecture.Aspire.EFCore.DbSnapshotInteraction.DbSnapshotInteraction() -> void
+Conjecture.Aspire.EFCore.DbSnapshotInteraction.DbSnapshotInteraction(string! ResourceName, string! Label, System.Func<Microsoft.EntityFrameworkCore.DbContext!, System.Threading.Tasks.Task<object?>!>! Capture) -> void
+Conjecture.Aspire.EFCore.DbSnapshotInteraction.ResourceName.get -> string!
+Conjecture.Aspire.EFCore.DbSnapshotInteraction.ResourceName.init -> void
+Conjecture.Aspire.EFCore.DbSnapshotInteraction.Label.get -> string!
+Conjecture.Aspire.EFCore.DbSnapshotInteraction.Label.init -> void
+Conjecture.Aspire.EFCore.DbSnapshotInteraction.Capture.get -> System.Func<Microsoft.EntityFrameworkCore.DbContext!, System.Threading.Tasks.Task<object?>!>!
+Conjecture.Aspire.EFCore.DbSnapshotInteraction.Capture.init -> void
+Conjecture.Aspire.EFCore.AspireInteractionSequenceBuilder
+Conjecture.Aspire.EFCore.AspireInteractionSequenceBuilder.AspireInteractionSequenceBuilder() -> void
+Conjecture.Aspire.EFCore.AspireInteractionSequenceBuilder.Http(string! resourceName, Conjecture.Core.Strategy<Conjecture.Http.HttpInteraction>! step) -> Conjecture.Aspire.EFCore.AspireInteractionSequenceBuilder!
+Conjecture.Aspire.EFCore.AspireInteractionSequenceBuilder.Message(string! resourceName, Conjecture.Core.Strategy<Conjecture.Messaging.MessageInteraction!>! step) -> Conjecture.Aspire.EFCore.AspireInteractionSequenceBuilder!
+Conjecture.Aspire.EFCore.AspireInteractionSequenceBuilder.DbSnapshot(string! resourceName, string! label, System.Func<Microsoft.EntityFrameworkCore.DbContext!, System.Threading.Tasks.Task<object?>!>! capture) -> Conjecture.Aspire.EFCore.AspireInteractionSequenceBuilder!
+Conjecture.Aspire.EFCore.AspireInteractionSequenceBuilder.Build(int minSize = 1, int maxSize = 20) -> Conjecture.Core.Strategy<System.Collections.Generic.IReadOnlyList<Conjecture.Interactions.IAddressedInteraction!>!>!

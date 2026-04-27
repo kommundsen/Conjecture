@@ -11,9 +11,11 @@ using Aspire.Hosting;
 
 namespace Conjecture.Aspire;
 
+/// <summary>Records interaction steps and snapshot observations for failure trace reports.</summary>
 internal sealed class InteractionTraceReporter
 {
     private readonly List<RecordedStep> steps = [];
+    private readonly List<RecordedSnapshot> snapshots = [];
 
     internal async Task Record(Interaction interaction, HttpResponseMessage response, TimeSpan elapsed)
     {
@@ -21,6 +23,14 @@ internal sealed class InteractionTraceReporter
         steps.Add(new(interaction, (int)response.StatusCode, response.ReasonPhrase ?? string.Empty, responseBody, elapsed));
     }
 
+    /// <summary>Records a snapshot observation into the trace.</summary>
+    internal void RecordSnapshot(object snapshot, object? capturedValue)
+    {
+        string label = snapshot is ISnapshotLabel labeled ? labeled.Label : snapshot.GetType().Name;
+        snapshots.Add(new(label, capturedValue));
+    }
+
+    /// <summary>Formats the accumulated trace as a human-readable report string.</summary>
     internal string FormatReport(DistributedApplication? app)
     {
         StringBuilder sb = new();
@@ -50,6 +60,16 @@ internal sealed class InteractionTraceReporter
             }
         }
 
+        if (snapshots.Count > 0)
+        {
+            sb.AppendLine();
+            sb.AppendLine("=== DB snapshots ===");
+            foreach (RecordedSnapshot snap in snapshots)
+            {
+                sb.AppendLine($"  [{snap.Label}] = {snap.Value}");
+            }
+        }
+
         sb.AppendLine();
         sb.AppendLine("=== Service logs ===");
 
@@ -67,4 +87,6 @@ internal sealed class InteractionTraceReporter
         string ReasonPhrase,
         string ResponseBody,
         TimeSpan Elapsed);
+
+    private readonly record struct RecordedSnapshot(string Label, object? Value);
 }
