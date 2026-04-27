@@ -59,6 +59,8 @@
   <Project Path="Conjecture.Grpc.Tests/Conjecture.Grpc.Tests.csproj" />
   <Project Path="Conjecture.AspNetCore/Conjecture.AspNetCore.csproj" />
   <Project Path="Conjecture.AspNetCore.Tests/Conjecture.AspNetCore.Tests.csproj" />
+  <Project Path="Conjecture.AspNetCore.EFCore/Conjecture.AspNetCore.EFCore.csproj" />
+  <Project Path="Conjecture.AspNetCore.EFCore.Tests/Conjecture.AspNetCore.EFCore.Tests.csproj" />
   <Project Path="Conjecture.Aspire/Conjecture.Aspire.csproj" />
   <Project Path="Conjecture.Aspire.Tests/Conjecture.Aspire.Tests.csproj" />
   <Project Path="Conjecture.EFCore/Conjecture.EFCore.csproj" />
