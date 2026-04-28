@@ -6,6 +6,9 @@
 # Claude Code local settings (user-specific tool permissions)
 .claude/settings.local.json
 
+# Claude Code agent worktrees (transient local copies)
+.claude/worktrees/
+
 # Conjecture example database (local shrink cache)
 .conjecture/
 
