@@ -1,6 +1,6 @@
 # Conjecture.Interactive
 
-Strategy visualization and exploration utilities for [Conjecture.NET](https://github.com/kommundsen/Conjecture). Explore strategy output with sample tables, histograms, and shrink traces — all rendered as plain text for terminals and file-based apps.
+Strategy visualization and exploration utilities for [Conjecture](https://github.com/kommundsen/Conjecture). Explore strategy output with sample tables, histograms, and shrink traces — all rendered as plain text for terminals and file-based apps.
 
 ## Install
 

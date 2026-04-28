@@ -1,6 +1,6 @@
 # Conjecture.Formatters
 
-Built-in output formatters for [Conjecture.NET](https://github.com/kommundsen/Conjecture) standalone data generation.
+Built-in output formatters for [Conjecture](https://github.com/kommundsen/Conjecture) standalone data generation.
 
 Use these formatters with `DataGen` to serialize generated values to JSON or NDJSON — useful for seeding databases, building test fixtures, or exporting datasets.
 

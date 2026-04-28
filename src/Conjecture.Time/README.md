@@ -1,6 +1,6 @@
 # Conjecture.Time
 
-Time-focused strategies for [Conjecture.NET](https://github.com/kommundsen/Conjecture) property-based testing. Provides boundary-aware `DateTimeOffset` extensions and `FakeTimeProvider` generation for deterministic time-dependent tests.
+Time-focused strategies for [Conjecture](https://github.com/kommundsen/Conjecture) property-based testing. Provides boundary-aware `DateTimeOffset` extensions and `FakeTimeProvider` generation for deterministic time-dependent tests.
 
 ## Install
 
