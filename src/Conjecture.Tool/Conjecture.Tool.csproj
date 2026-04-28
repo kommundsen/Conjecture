@@ -4,7 +4,7 @@
     <OutputType>Exe</OutputType>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>conjecture</ToolCommandName>
-    <Description>CLI for Conjecture.NET standalone data generation</Description>
+    <Description>CLI for Conjecture standalone data generation.</Description>
     <IsPackable>false</IsPackable>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>

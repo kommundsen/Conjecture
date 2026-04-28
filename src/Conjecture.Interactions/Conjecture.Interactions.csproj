@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <Description>Transport-agnostic interaction abstractions for Conjecture.NET</Description>
+    <Description>Transport-agnostic interaction abstractions for Conjecture: IInteraction, IInteractionTarget, InteractionStateMachine.</Description>
+    <PackageTags>property-based-testing;testing;hypothesis;dotnet;state-machine;interactions</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

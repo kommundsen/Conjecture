@@ -6,7 +6,8 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>conjecture-mcp</ToolCommandName>
     <IsPackable>true</IsPackable>
-    <Description>MCP server exposing Conjecture.NET property-based testing tools to AI assistants</Description>
+    <Description>MCP server exposing Conjecture property-based testing tools to AI assistants.</Description>
+    <PackageTags>property-based-testing;testing;hypothesis;dotnet;mcp;model-context-protocol;ai;dotnet-tool</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>

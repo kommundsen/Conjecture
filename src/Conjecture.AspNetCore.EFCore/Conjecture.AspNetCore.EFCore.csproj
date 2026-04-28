@@ -2,6 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <Description>Property-based testing helpers bridging Conjecture.AspNetCore and Conjecture.EFCore via AspNetCoreDbTarget.</Description>
+    <PackageTags>property-based-testing;testing;hypothesis;dotnet;aspnetcore;efcore;integration-testing</PackageTags>
   </PropertyGroup>
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\" />

@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <Description>xUnit v2 adapter for Conjecture.NET property-based testing</Description>
+    <Description>xUnit v2 adapter for Conjecture property-based testing.</Description>
+    <PackageTags>property-based-testing;testing;hypothesis;dotnet;xunit</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

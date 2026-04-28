@@ -2,12 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <Description>gRPC interaction primitives for Conjecture.NET</Description>
+    <Description>gRPC interaction primitives for Conjecture: GrpcInteraction, IGrpcTarget, GenerateGrpc.</Description>
+    <PackageTags>property-based-testing;testing;hypothesis;dotnet;grpc;integration-testing</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
     <None Include="PublicAPI.Shipped.txt" />
     <None Include="PublicAPI.Unshipped.txt" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
