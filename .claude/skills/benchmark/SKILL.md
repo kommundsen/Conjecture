@@ -1,12 +1,12 @@
 ---
 name: benchmark
 description: >
-  Create or run a BenchmarkDotNet benchmark for Conjecture.NET components.
+  Create or run a BenchmarkDotNet benchmark for Conjecture components.
   Use this skill whenever the user wants to measure performance, check throughput, compare two implementations, scaffold a benchmark class, or investigate memory allocations — even if they don't say "BenchmarkDotNet" explicitly.
   Triggers on phrases like "benchmark X", "how fast is", "measure performance of", "run benchmarks", "compare baseline vs candidate", or "check allocations".
 ---
 
-Create or run a BenchmarkDotNet benchmark for Conjecture.NET components.
+Create or run a BenchmarkDotNet benchmark for Conjecture components.
 
 ## Input
 

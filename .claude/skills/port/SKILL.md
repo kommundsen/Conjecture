@@ -1,9 +1,9 @@
 ---
 name: port
 description: >
-  Port a Python Hypothesis module to idiomatic C# for the Conjecture.NET project.
+  Port a Python Hypothesis module to idiomatic C# for the Conjecture project.
   Use this skill whenever the user wants to translate, adapt, or port code from the Python Hypothesis library into C# — even if they don't say "port" explicitly.
-  Triggers on phrases like "port X from hypothesis", "translate this Python module", "implement X based on hypothesis", "bring over the hypothesis shrinking logic", or when referencing a specific Python Hypothesis file or module to add to Conjecture.NET.
+  Triggers on phrases like "port X from hypothesis", "translate this Python module", "implement X based on hypothesis", "bring over the hypothesis shrinking logic", or when referencing a specific Python Hypothesis file or module to add to Conjecture.
 ---
 
 Port a Python Hypothesis module to idiomatic C#.

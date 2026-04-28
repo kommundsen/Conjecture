@@ -1,6 +1,6 @@
 # gRPC property testing
 
-Conjecture.NET's `Conjecture.Grpc` package lets you write property tests against gRPC services the same way you write them against HTTP endpoints or message queues. This page explains the model: how `GrpcInteraction` covers all four call modes, where in-stream sequence shrinking comes from, and what trade-offs the design accepts.
+Conjecture's `Conjecture.Grpc` package lets you write property tests against gRPC services the same way you write them against HTTP endpoints or message queues. This page explains the model: how `GrpcInteraction` covers all four call modes, where in-stream sequence shrinking comes from, and what trade-offs the design accepts.
 
 ## The two-layer model
 
