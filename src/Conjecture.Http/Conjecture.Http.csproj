@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <Description>HTTP interaction layer for Conjecture.NET</Description>
+    <Description>HTTP interaction primitives for Conjecture: HttpInteraction, IHttpTarget, HostHttpTarget, HttpStrategyBuilder.</Description>
+    <PackageTags>property-based-testing;testing;hypothesis;dotnet;http;httpclient;integration-testing</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

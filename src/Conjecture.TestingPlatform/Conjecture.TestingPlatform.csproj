@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <Description>Microsoft Testing Platform adapter for Conjecture.NET property-based testing</Description>
+    <Description>Microsoft Testing Platform adapter for Conjecture property-based testing.</Description>
+    <PackageTags>property-based-testing;testing;hypothesis;dotnet;mtp;microsoft-testing-platform</PackageTags>
     <IsPackable>true</IsPackable>
     <IsTestingPlatformApplication>false</IsTestingPlatformApplication>
   </PropertyGroup>

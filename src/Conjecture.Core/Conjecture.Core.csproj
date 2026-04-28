@@ -5,6 +5,7 @@
     <IsTrimmable>true</IsTrimmable>
     <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
     <Description>Property-based testing for .NET, inspired by Hypothesis. Includes analyzers and source generator.</Description>
+    <PackageTags>property-based-testing;testing;hypothesis;dotnet;roslyn;analyzer;source-generator</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

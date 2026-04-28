@@ -2,8 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <Description>F# support for Conjecture.NET property-based testing</Description>
+    <Description>Idiomatic F# wrappers around Conjecture property-based testing.</Description>
+    <PackageTags>property-based-testing;testing;hypothesis;dotnet;fsharp</PackageTags>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
   <ItemGroup>
     <Compile Include="Gen.fs" />

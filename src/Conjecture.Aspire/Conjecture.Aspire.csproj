@@ -3,11 +3,13 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <Description>Property-based stateful testing for .NET Aspire distributed applications.</Description>
+    <PackageTags>property-based-testing;testing;hypothesis;dotnet;aspire;dotnet-aspire;distributed-applications</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
     <None Include="PublicAPI.Shipped.txt" />
     <None Include="PublicAPI.Unshipped.txt" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>

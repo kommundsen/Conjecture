@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <Description>MSTest adapter for Conjecture.NET property-based testing</Description>
+    <Description>MSTest adapter for Conjecture property-based testing.</Description>
+    <PackageTags>property-based-testing;testing;hypothesis;dotnet;mstest</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

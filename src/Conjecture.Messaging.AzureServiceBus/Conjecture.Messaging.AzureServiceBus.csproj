@@ -2,12 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <Description>Azure Service Bus adapter for Conjecture.NET messaging</Description>
+    <Description>Azure Service Bus adapter for Conjecture messaging property tests.</Description>
+    <PackageTags>property-based-testing;testing;hypothesis;dotnet;messaging;azure;azure-service-bus</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
     <None Include="PublicAPI.Shipped.txt" />
     <None Include="PublicAPI.Unshipped.txt" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <Description>Property-based testing for ASP.NET Core minimal APIs and MVC controllers via metadata-driven request synthesis.</Description>
+    <PackageTags>property-based-testing;testing;hypothesis;dotnet;aspnetcore;webapi;minimal-apis;mvc</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

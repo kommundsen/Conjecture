@@ -2,10 +2,12 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <Description>Property-based testing helpers bridging Conjecture.Aspire and Conjecture.EFCore via AspireDbTarget.</Description>
+    <PackageTags>property-based-testing;testing;hypothesis;dotnet;aspire;efcore;distributed-applications</PackageTags>
   </PropertyGroup>
   <ItemGroup>
     <None Include="PublicAPI.Shipped.txt" />
     <None Include="PublicAPI.Unshipped.txt" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting" />
