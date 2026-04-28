@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-Conjecture.NET is pre-1.0. No version currently receives long-term security support.
+Conjecture is pre-1.0. No version currently receives long-term security support.
 
 | Version | Supported |
 |---------|-----------|

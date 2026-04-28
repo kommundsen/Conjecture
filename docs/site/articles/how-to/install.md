@@ -1,6 +1,6 @@
 # How to install Conjecture
 
-Conjecture.NET requires **.NET 10** or later.
+Conjecture requires **.NET 10** or later.
 
 ## Install the adapter package
 

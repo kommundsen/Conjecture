@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to Conjecture.NET are documented here.
+All notable changes to Conjecture are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning follows [SemVer](https://semver.org/) — API stability guarantees begin at v1.0.0.
 

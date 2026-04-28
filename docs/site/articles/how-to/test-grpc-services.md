@@ -125,7 +125,7 @@ public async Task UploadBatch_AcceptsAnySequence(CancellationToken ct)
 }
 ```
 
-When this fails on a sequence of 17 chunks, the shrinker first reduces the list to one chunk, then shrinks that chunk's protobuf fields — same deterministic replay as any other Conjecture.NET test.
+When this fails on a sequence of 17 chunks, the shrinker first reduces the list to one chunk, then shrinks that chunk's protobuf fields — same deterministic replay as any other Conjecture test.
 
 ## Test a bidi-streaming call
 

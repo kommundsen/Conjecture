@@ -1,4 +1,4 @@
-# Contributing to Conjecture.NET
+# Contributing to Conjecture
 
 Thank you for your interest in contributing!
 

@@ -1,6 +1,6 @@
 # Contributing
 
-Conjecture.NET is a port of Python's [Hypothesis](https://github.com/HypothesisWorks/hypothesis). Contributions are welcome.
+Conjecture is a port of Python's [Hypothesis](https://github.com/HypothesisWorks/hypothesis). Contributions are welcome.
 
 ## Development Setup
 

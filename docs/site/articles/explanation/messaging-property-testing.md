@@ -1,6 +1,6 @@
 # Messaging property testing
 
-Conjecture.NET's messaging support — `Conjecture.Messaging` and the satellite adapter packages — lets you write property tests against message-queue and service-bus systems the same way you write them against HTTP endpoints. This page explains the model: why the abstractions look the way they do, what the shrinker does for you, and what trade-offs you're signing up for.
+Conjecture's messaging support — `Conjecture.Messaging` and the satellite adapter packages — lets you write property tests against message-queue and service-bus systems the same way you write them against HTTP endpoints. This page explains the model: why the abstractions look the way they do, what the shrinker does for you, and what trade-offs you're signing up for.
 
 ## The two-layer model
 

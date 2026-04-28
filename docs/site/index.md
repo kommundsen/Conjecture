@@ -2,7 +2,7 @@
 _layout: landing
 ---
 
-# Conjecture.NET
+# Conjecture
 
 **Property-based testing for .NET** — a ground-up port of Python's [Hypothesis](https://hypothesis.readthedocs.io/) to C#.
 

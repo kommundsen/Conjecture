@@ -1,6 +1,6 @@
 # Why F# has its own Conjecture package
 
-Conjecture.NET's core is written in C#. F# can call it directly — `Strategy<T>` is just a class — but doing so produces code that doesn't look or feel like F#. `Conjecture.FSharp` is a thin wrapper that bridges the gap.
+Conjecture's core is written in C#. F# can call it directly — `Strategy<T>` is just a class — but doing so produces code that doesn't look or feel like F#. `Conjecture.FSharp` is a thin wrapper that bridges the gap.
 
 ## The problem with calling C# from F# directly
 

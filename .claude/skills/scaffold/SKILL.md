@@ -1,7 +1,7 @@
 ---
 name: scaffold
 description: >
-  Scaffold a new .NET project or module with correct structure for the Conjecture.NET solution.
+  Scaffold a new .NET project or module with correct structure for the Conjecture solution.
   Use this skill whenever the user wants to add a new project, test project, module, or set up the solution from scratch — even if they don't say "scaffold" explicitly.
   Triggers on phrases like "add a new project", "create a module for", "set up a test project for", "add X to the solution", or any request to create new .NET structural components in the repo.
 ---

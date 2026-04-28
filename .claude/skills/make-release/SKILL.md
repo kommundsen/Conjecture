@@ -1,7 +1,7 @@
 ---
 name: make-release
 description: >
-  Run the full release preparation checklist for Conjecture.NET: promote PublicAPI files,
+  Run the full release preparation checklist for Conjecture: promote PublicAPI files,
   update CHANGELOG, run tests, run benchmarks, update api-baseline DLLs, then output the
   commit message and tag commands. Use whenever the user wants to cut a new release.
   Triggers on "make-release", "prepare release", "cut a release", or "/make-release <version>".
@@ -9,7 +9,7 @@ description: >
 
 # make-release
 
-Prepare a Conjecture.NET release. Run every step in order — stop and report if anything fails.
+Prepare a Conjecture release. Run every step in order — stop and report if anything fails.
 
 ## Input
 

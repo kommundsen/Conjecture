@@ -1,6 +1,6 @@
 # Porting Guide: Hypothesis to Conjecture
 
-This guide maps Python Hypothesis concepts to their Conjecture.NET equivalents. If you've used Hypothesis before, this is the fastest way to get productive.
+This guide maps Python Hypothesis concepts to their Conjecture equivalents. If you've used Hypothesis before, this is the fastest way to get productive.
 
 ## Core Concepts
 
@@ -60,13 +60,13 @@ Conjecture's LINQ support enables query syntax for composing strategies:
 //     age = draw(st.integers(min_value=0, max_value=150))
 //     return Person(name, age)
 
-// Conjecture.NET — LINQ query:
+// Conjecture — LINQ query:
 var personStrategy =
     from name in Generate.Strings(minLength: 1, maxLength: 50)
     from age in Generate.Integers<int>(0, 150)
     select new Person(name, age);
 
-// Conjecture.NET — imperative (like @st.composite):
+// Conjecture — imperative (like @st.composite):
 var personStrategy = Generate.Compose<Person>(ctx =>
 {
     var name = ctx.Generate(Generate.Strings(minLength: 1, maxLength: 50));
@@ -96,7 +96,7 @@ Python Hypothesis uses `settings.register_profile()`. In Conjecture, use the ass
 // settings.register_profile("ci", max_examples=1000)
 // settings.load_profile("ci")
 
-// Conjecture.NET:
+// Conjecture:
 [assembly: ConjectureSettings(MaxExamples = 1000)]
 ```
 

@@ -1,6 +1,6 @@
 # Tutorial 1: Your First Property Test
 
-This tutorial walks you through writing and running your first property-based test with Conjecture.NET.
+This tutorial walks you through writing and running your first property-based test with Conjecture.
 
 ## Prerequisites
 
