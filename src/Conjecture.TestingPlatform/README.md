@@ -1,22 +1,15 @@
 # Conjecture.TestingPlatform
 
-Microsoft Testing Platform adapter for [Conjecture.NET](https://github.com/kommundsen/Conjecture) property-based testing.
+[Microsoft Testing Platform](https://learn.microsoft.com/en-us/dotnet/core/testing/microsoft-testing-platform-intro) adapter for [Conjecture](https://github.com/kommundsen/Conjecture) property-based testing. Discovers `[Property]` methods and runs them under MTP without xUnit/NUnit/MSTest.
 
 ## Install
-
-```
-dotnet add package Conjecture.Core
-dotnet add package Conjecture.TestingPlatform
-```
-
-## Usage
-
-Add the package reference to your test project:
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Conjecture.Core" Version="*" />
@@ -25,24 +18,27 @@ Add the package reference to your test project:
 </Project>
 ```
 
-Then write property-based tests:
+## Usage
 
 ```csharp
-using Conjecture;
+using Conjecture.TestingPlatform;
 
-public class MyTests
+public class SortTests
 {
     [Property]
-    public bool ReversingTwiceIsIdentity(List<int> xs)
+    public bool Sorting_is_idempotent(List<int> items)
     {
-        var reversed = xs.AsEnumerable().Reverse().Reverse().ToList();
-        return xs.SequenceEqual(reversed);
+        List<int> sorted = items.OrderBy(x => x).ToList();
+        List<int> sortedTwice = sorted.OrderBy(x => x).ToList();
+        return sorted.SequenceEqual(sortedTwice);
     }
 }
 ```
 
+Run the test executable directly (`dotnet run` or the produced exe). Conjecture executes the property 100 times against random `List<int>` inputs; on failure, it shrinks to the minimal failing list and reports a reproducible seed.
+
 ## Links
 
 - [GitHub](https://github.com/kommundsen/Conjecture)
-- [Docs](https://github.com/kommundsen/Conjecture/blob/main/docs/site)
+- [Documentation](https://ommundsen.dev/Conjecture/)
 - [License](https://github.com/kommundsen/Conjecture/blob/main/LICENSE-MIT.txt)

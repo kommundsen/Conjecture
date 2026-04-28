@@ -1,6 +1,6 @@
 # Conjecture.Money
 
-Monetary strategies for [Conjecture.NET](https://github.com/kommundsen/Conjecture) property-based testing. Provides ISO 4217 currency codes, decimal amount generation, and rounding mode strategies for deterministic financial tests.
+Monetary strategies for [Conjecture](https://github.com/kommundsen/Conjecture) property-based testing. Provides ISO 4217 currency codes, decimal amount generation, and rounding mode strategies for deterministic financial tests.
 
 ## Install
 

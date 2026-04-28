@@ -1,16 +1,51 @@
 # Conjecture.AspNetCore
 
-Property-based testing for ASP.NET Core minimal APIs and MVC controllers, built on [Conjecture.NET](https://github.com/kommundsen/Conjecture).
+Property-based testing for ASP.NET Core minimal APIs and MVC controllers, built on [Conjecture](https://github.com/kommundsen/Conjecture). Walks `EndpointDataSource` and `IApiDescriptionGroupCollectionProvider` to discover routes, then synthesises typed valid and malformed `HttpInteraction` strategies dispatched in-process via `WebApplicationFactory`.
 
-Walks `EndpointDataSource` and `IApiDescriptionGroupCollectionProvider` to discover routes, synthesises typed valid and malformed `HttpInteraction` strategies, and dispatches them through `Conjecture.Http`'s `HostHttpTarget`.
+## Install
+
+```
+dotnet add package Conjecture.Core
+dotnet add package Conjecture.AspNetCore
+```
+
+## Usage
 
 ```csharp
-[Property]
-public async Task NeverReturns5xx(HttpInteraction request)
+using Conjecture.AspNetCore;
+using Conjecture.Core;
+using Conjecture.Http;
+using Conjecture.Xunit;
+using Microsoft.AspNetCore.Mvc.Testing;
+
+public class ApiSafetyTests : IClassFixture<WebApplicationFactory<Program>>
 {
-    HttpResponseMessage resp = await request.Response(target);
-    await Task.FromResult(resp).AssertNot5xx();
+    private readonly WebApplicationFactory<Program> factory;
+
+    public ApiSafetyTests(WebApplicationFactory<Program> factory) => this.factory = factory;
+
+    [Property]
+    public async Task NeverReturns5xx(HttpInteraction request)
+    {
+        HttpClient client = this.factory.CreateClient();
+        Strategy<HttpInteraction> strategy = Generate
+            .AspNetCoreRequests(this.factory.Services.GetRequiredService<IHost>(), client)
+            .Build();
+
+        HostHttpTarget target = new(this.factory.Services.GetRequiredService<IHost>(), client);
+        await request.Response(target).AssertNot5xx();
+    }
 }
 ```
 
-See [ADR 0063](../docs/decisions/0063-conjecture-aspnetcore-package-design.md) for design.
+`MalformedRequestsOnly()` and `ValidRequestsOnly()` switch the generated request distribution; `ExcludeEndpoints(...)` skips routes whose metadata you don't want covered (e.g. `/admin`).
+
+## Design
+
+See [ADR 0063](https://github.com/kommundsen/Conjecture/blob/main/docs/decisions/0063-conjecture-aspnetcore-package-design.md) for the metadata-driven request synthesis design.
+
+## Links
+
+- [GitHub](https://github.com/kommundsen/Conjecture)
+- [Documentation](https://ommundsen.dev/Conjecture/)
+- [License](https://github.com/kommundsen/Conjecture/blob/main/LICENSE-MIT.txt)
