@@ -37,6 +37,7 @@ Conjecture.EFCore.DbInteraction.Payload.init -> void
 Conjecture.EFCore.IDbTarget
 Conjecture.EFCore.IDbTarget.ResourceName.get -> string!
 Conjecture.EFCore.IDbTarget.ResolveContext(string! resourceName) -> Microsoft.EntityFrameworkCore.DbContext!
+Conjecture.EFCore.IDbTarget.ResetAsync(string! resourceName, System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
 Conjecture.EFCore.DbInvariantExtensions
 static Conjecture.EFCore.DbInvariantExtensions.AssertRoundtripAsync<TEntity>(this Conjecture.EFCore.IDbTarget! target, TEntity! entity, System.Collections.Generic.IEqualityComparer<TEntity!>? comparer = null, System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
 static Conjecture.EFCore.DbInvariantExtensions.AssertConcurrencyTokenRespectedAsync<TEntity>(this Conjecture.EFCore.IDbTarget! target, TEntity! entity, System.Action<TEntity!>! mutateFirst, System.Action<TEntity!>! mutateSecond, System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
@@ -87,4 +88,4 @@ Conjecture.EFCore.EntitySnapshotter
 static Conjecture.EFCore.EntitySnapshotter.CaptureAsync(Conjecture.EFCore.IDbTarget! target, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Conjecture.EFCore.EntitySnapshot!>!
 static Conjecture.EFCore.EntitySnapshotter.Diff(Conjecture.EFCore.EntitySnapshot! before, Conjecture.EFCore.EntitySnapshot! after) -> Conjecture.EFCore.EntitySnapshotDiff!
 Conjecture.EFCore.IDbTargetExtensions
-static Conjecture.EFCore.IDbTargetExtensions.Resolve<TContext>(this Conjecture.EFCore.IDbTarget! target) -> TContext!
+static Conjecture.EFCore.IDbTargetExtensions.Resolve<TContext>(this Conjecture.EFCore.IDbTarget! target) -> TContext!

@@ -10,6 +10,26 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Version
 
 ---
 
+## [0.27.1] — 2026-04-28
+
+### Added
+
+**EFCore** (`Conjecture.EFCore`)
+- `IDbTarget.ResetAsync(resourceName, ct)` — interface contract for resetting a target's data state for the named resource
+
+**Aspire.EFCore** (`Conjecture.Aspire.EFCore`) — new package
+- `AspireDbTarget<TContext>` — `IDbTarget` resolving a `DbContext` against an Aspire-managed resource via `ConnectionStringResolver`, with `CreateAsync` overloads taking either a `DistributedApplication` or a `ConnectionStringResolver`
+- `AspireDbTargetRegistry` and `AspireDbFixtureExtensions.CreateDbRegistry` — registry of `IDbTarget`s with bulk `ResetAllAsync` and `IAsyncDisposable` lifetime
+- `IDbTargetWaitForExtensions.WaitForAsync` (typed and `DbContext` overloads) — polls a predicate on the resolved context until satisfied or timeout
+- `AspireEFCoreInvariants` — composite asserter over an `IInteractionTarget` writer and `IDbTarget`:
+  - `AssertIdempotentAsync` — replays an interaction and verifies row count is stable within an eventual-consistency window
+  - `AssertNoPartialWritesOnErrorAsync` — asserts a failing interaction leaves no row-count delta
+- `AspireEFCoreInvariantException` — thrown on composite invariant violations
+- `DbSnapshotInteraction` — addressed interaction record capturing `DbContext` state at a step boundary
+- `AspireInteractionSequenceBuilder` — fluent builder mixing `Http`, `Message`, and `DbSnapshot` steps into a `Strategy<IReadOnlyList<IAddressedInteraction>>` for end-to-end Aspire scenarios
+
+---
+
 ## [0.26.0] — 2026-04-27
 
 ### Added

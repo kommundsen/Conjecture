@@ -1,1 +1,46 @@
 #nullable enable
+Conjecture.Aspire.EFCore.AspireDbFixtureExtensions
+static Conjecture.Aspire.EFCore.AspireDbFixtureExtensions.CreateDbRegistry(this Conjecture.Aspire.IAspireAppFixture! fixture) -> Conjecture.Aspire.EFCore.AspireDbTargetRegistry!
+Conjecture.Aspire.EFCore.AspireDbTargetRegistry
+Conjecture.Aspire.EFCore.AspireDbTargetRegistry.AspireDbTargetRegistry() -> void
+Conjecture.Aspire.EFCore.AspireDbTargetRegistry.DisposeAsync() -> System.Threading.Tasks.ValueTask
+Conjecture.Aspire.EFCore.AspireDbTargetRegistry.Register(Conjecture.EFCore.IDbTarget! target) -> Conjecture.Aspire.EFCore.AspireDbTargetRegistry!
+Conjecture.Aspire.EFCore.AspireDbTargetRegistry.ResetAllAsync(System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+Conjecture.Aspire.EFCore.AspireDbTargetRegistry.Targets.get -> System.Collections.Generic.IReadOnlyList<Conjecture.EFCore.IDbTarget!>!
+Conjecture.Aspire.EFCore.AspireDbTarget<TContext>
+Conjecture.Aspire.EFCore.AspireDbTarget<TContext>.DisposeAsync() -> System.Threading.Tasks.ValueTask
+Conjecture.Aspire.EFCore.AspireDbTarget<TContext>.ExecuteAsync(Conjecture.Interactions.IInteraction! interaction, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<object?>!
+Conjecture.Aspire.EFCore.AspireDbTarget<TContext>.Resolve() -> TContext!
+Conjecture.Aspire.EFCore.AspireDbTarget<TContext>.ResetAsync(string! resourceName, System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+Conjecture.Aspire.EFCore.AspireDbTarget<TContext>.ResolveContext(string! resourceName) -> Microsoft.EntityFrameworkCore.DbContext!
+Conjecture.Aspire.EFCore.AspireDbTarget<TContext>.ResourceName.get -> string!
+Conjecture.Aspire.EFCore.ConnectionStringResolver
+static Conjecture.Aspire.EFCore.AspireDbTarget<TContext>.CreateAsync(Aspire.Hosting.DistributedApplication! app, string! resourceName, System.Func<string!, TContext!>! contextFactory) -> System.Threading.Tasks.Task<Conjecture.Aspire.EFCore.AspireDbTarget<TContext!>!>!
+static Conjecture.Aspire.EFCore.AspireDbTarget<TContext>.CreateAsync(Aspire.Hosting.DistributedApplication! app, string! resourceName, System.Func<string!, TContext!>! contextFactory, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<Conjecture.Aspire.EFCore.AspireDbTarget<TContext!>!>!
+static Conjecture.Aspire.EFCore.AspireDbTarget<TContext>.CreateAsync(Conjecture.Aspire.EFCore.ConnectionStringResolver! connectionStringResolver, string! resourceName, System.Func<string!, TContext!>! contextFactory) -> System.Threading.Tasks.Task<Conjecture.Aspire.EFCore.AspireDbTarget<TContext!>!>!
+static Conjecture.Aspire.EFCore.AspireDbTarget<TContext>.CreateAsync(Conjecture.Aspire.EFCore.ConnectionStringResolver! connectionStringResolver, string! resourceName, System.Func<string!, TContext!>! contextFactory, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<Conjecture.Aspire.EFCore.AspireDbTarget<TContext!>!>!
+Conjecture.Aspire.EFCore.IDbTargetWaitForExtensions
+static Conjecture.Aspire.EFCore.IDbTargetWaitForExtensions.WaitForAsync(this Conjecture.EFCore.IDbTarget! target, System.Func<Microsoft.EntityFrameworkCore.DbContext!, System.Threading.Tasks.Task<bool>!>! predicate, System.TimeSpan timeout, System.TimeSpan? pollInterval = null, System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+static Conjecture.Aspire.EFCore.IDbTargetWaitForExtensions.WaitForAsync<TContext>(this Conjecture.EFCore.IDbTarget! target, System.Func<TContext!, System.Threading.Tasks.Task<bool>!>! predicate, System.TimeSpan timeout, System.TimeSpan? pollInterval = null, System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+Conjecture.Aspire.EFCore.AspireEFCoreInvariantException
+Conjecture.Aspire.EFCore.AspireEFCoreInvariantException.AspireEFCoreInvariantException(string! message) -> void
+Conjecture.Aspire.EFCore.AspireEFCoreInvariantException.AspireEFCoreInvariantException(string! message, System.Exception! innerException) -> void
+Conjecture.Aspire.EFCore.AspireEFCoreInvariants
+Conjecture.Aspire.EFCore.AspireEFCoreInvariants.AspireEFCoreInvariants(Conjecture.Interactions.IInteractionTarget! writer, Conjecture.EFCore.IDbTarget! db) -> void
+Conjecture.Aspire.EFCore.AspireEFCoreInvariants.AssertIdempotentAsync(Conjecture.Interactions.IInteraction! operation, System.Func<Microsoft.EntityFrameworkCore.DbContext!, System.Threading.Tasks.Task<int>!>! rowCount, System.TimeSpan eventualTimeout, System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+Conjecture.Aspire.EFCore.AspireEFCoreInvariants.AssertNoPartialWritesOnErrorAsync(Conjecture.Interactions.IInteraction! operation, System.Func<Microsoft.EntityFrameworkCore.DbContext!, System.Threading.Tasks.Task<int>!>! rowCount, System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+Conjecture.Aspire.EFCore.DbSnapshotInteraction
+Conjecture.Aspire.EFCore.DbSnapshotInteraction.DbSnapshotInteraction() -> void
+Conjecture.Aspire.EFCore.DbSnapshotInteraction.DbSnapshotInteraction(string! ResourceName, string! Label, System.Func<Microsoft.EntityFrameworkCore.DbContext!, System.Threading.Tasks.Task<object?>!>! Capture) -> void
+Conjecture.Aspire.EFCore.DbSnapshotInteraction.ResourceName.get -> string!
+Conjecture.Aspire.EFCore.DbSnapshotInteraction.ResourceName.init -> void
+Conjecture.Aspire.EFCore.DbSnapshotInteraction.Label.get -> string!
+Conjecture.Aspire.EFCore.DbSnapshotInteraction.Label.init -> void
+Conjecture.Aspire.EFCore.DbSnapshotInteraction.Capture.get -> System.Func<Microsoft.EntityFrameworkCore.DbContext!, System.Threading.Tasks.Task<object?>!>!
+Conjecture.Aspire.EFCore.DbSnapshotInteraction.Capture.init -> void
+Conjecture.Aspire.EFCore.AspireInteractionSequenceBuilder
+Conjecture.Aspire.EFCore.AspireInteractionSequenceBuilder.AspireInteractionSequenceBuilder() -> void
+Conjecture.Aspire.EFCore.AspireInteractionSequenceBuilder.Http(string! resourceName, Conjecture.Core.Strategy<Conjecture.Http.HttpInteraction>! step) -> Conjecture.Aspire.EFCore.AspireInteractionSequenceBuilder!
+Conjecture.Aspire.EFCore.AspireInteractionSequenceBuilder.Message(string! resourceName, Conjecture.Core.Strategy<Conjecture.Messaging.MessageInteraction!>! step) -> Conjecture.Aspire.EFCore.AspireInteractionSequenceBuilder!
+Conjecture.Aspire.EFCore.AspireInteractionSequenceBuilder.DbSnapshot(string! resourceName, string! label, System.Func<Microsoft.EntityFrameworkCore.DbContext!, System.Threading.Tasks.Task<object?>!>! capture) -> Conjecture.Aspire.EFCore.AspireInteractionSequenceBuilder!
+Conjecture.Aspire.EFCore.AspireInteractionSequenceBuilder.Build(int minSize = 1, int maxSize = 20) -> Conjecture.Core.Strategy<System.Collections.Generic.IReadOnlyList<Conjecture.Interactions.IAddressedInteraction!>!>!
