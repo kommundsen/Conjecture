@@ -1,0 +1,28 @@
+{{!Conjecture · DocFx head partial — drop in templates/conjecture/partials/head.tmpl.partial}}
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>{{#title}}{{title}}{{/title}}{{^title}}{{>partials/title}}{{/title}} {{#_appTitle}}| {{_appTitle}} {{/_appTitle}}</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="title"   content="{{#title}}{{title}}{{/title}}{{^title}}{{>partials/title}}{{/title}} {{#_appTitle}}| {{_appTitle}} {{/_appTitle}}">
+  <meta name="generator" content="docfx {{_docfxVersion}}">
+  {{#_description}}<meta name="description" content="{{_description}}">{{/_description}}
+  <meta name="theme-color" content="#0E0B1A">
+
+  <link rel="icon" href="{{_rel}}images/favicon.png" type="image/png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link rel="stylesheet" href="{{_rel}}public/docfx.min.css">
+  <link rel="stylesheet" href="{{_rel}}public/main.css">
+
+  {{#_noindex}}<meta name="robots" content="noindex,nofollow">{{/_noindex}}
+
+  {{!Open Graph}}
+  <meta property="og:title"       content="Conjecture">
+  <meta property="og:description" content="Property-based testing for .NET — Hypothesis's engine, reimagined for idiomatic C#.">
+  <meta property="og:image"       content="https://ommundsen.dev/Conjecture/conjecture-github-social.png">
+  <meta property="og:type"        content="website">
+  <meta name="twitter:card"       content="summary_large_image">
+</head>
