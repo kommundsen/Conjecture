@@ -73,7 +73,7 @@ internal static class CharRangeHelpers
         return result;
     }
 
-    internal static char SampleFromRanges(IReadOnlyList<CharRange> ranges, IGeneratorContext ctx)
+    internal static char SampleFromRanges(IReadOnlyList<CharRange> ranges, IGenerationContext ctx)
     {
         int total = 0;
         foreach (CharRange r in ranges)

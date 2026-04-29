@@ -8,16 +8,16 @@
 namespace Conjecture.Core;
 
 /// <summary>Provides imperative draw and assume operations within a <c>Generate.Compose</c> factory.</summary>
-public interface IGeneratorContext
+public interface IGenerationContext
 {
     /// <summary>Generates a value from <paramref name="strategy"/>.</summary>
     T Generate<T>(Strategy<T> strategy);
 
-    /// <summary>Rejects the current test case if <paramref name="condition"/> is false.</summary>
+    /// <summary>Rejects the current example if <paramref name="condition"/> is false.</summary>
     void Assume(bool condition);
 
     /// <summary>Records a numeric observation to guide targeted generation.</summary>
     /// <param name="observation">The value to maximize. Must be finite (not NaN or Infinity).</param>
-    /// <param name="label">Identifies this metric. Multiple labels are optimized independently.</param>
+    /// <param name="label">Identifies this observation label. Multiple labels are optimized independently.</param>
     void Target(double observation, string label = "default");
 }

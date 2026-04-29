@@ -21,11 +21,6 @@ static Conjecture.Core.Generate.Doubles() -> Conjecture.Core.Strategy<double>!
 static Conjecture.Core.Generate.Doubles(double min, double max) -> Conjecture.Core.Strategy<double>!
 static Conjecture.Core.Generate.Floats() -> Conjecture.Core.Strategy<float>!
 static Conjecture.Core.Generate.Floats(float min, float max) -> Conjecture.Core.Strategy<float>!
-Conjecture.Core.IGeneratorContext
-Conjecture.Core.IGeneratorContext.Assume(bool condition) -> void
-Conjecture.Core.IGeneratorContext.Generate<T>(Conjecture.Core.Strategy<T>! strategy) -> T
-Conjecture.Core.IGeneratorContext.Target(double observation, string! label = "default") -> void
-static Conjecture.Core.Generate.Compose<T>(System.Func<Conjecture.Core.IGeneratorContext!, T>! factory) -> Conjecture.Core.Strategy<T>!
 Conjecture.Core.UnsatisfiedAssumptionException
 Conjecture.Core.UnsatisfiedAssumptionException.UnsatisfiedAssumptionException() -> void
 Conjecture.Core.IStrategyFormatter<T>
@@ -191,8 +186,6 @@ Conjecture.Core.ConjectureSettings.TestName.get -> string?
 Conjecture.Core.ConjectureSettings.TestName.init -> void
 static Conjecture.Core.ConjectureObservability.ActivitySource.get -> System.Diagnostics.ActivitySource!
 static Conjecture.Core.ConjectureObservability.Meter.get -> System.Diagnostics.Metrics.Meter!
-static Conjecture.Core.PartialConstructorContext.Current.get -> Conjecture.Core.IGeneratorContext!
-static Conjecture.Core.PartialConstructorContext.Use(Conjecture.Core.IGeneratorContext! ctx) -> System.IDisposable!
 Conjecture.Core.ForConfiguration<T>
 Conjecture.Core.ForConfiguration<T>.ForConfiguration() -> void
 Conjecture.Core.ForConfiguration<T>.Override<TProp>(System.Linq.Expressions.Expression<System.Func<T, TProp>!>! selector, Conjecture.Core.Strategy<TProp>! strategy) -> Conjecture.Core.ForConfiguration<T>!

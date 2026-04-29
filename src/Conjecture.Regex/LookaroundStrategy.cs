@@ -72,7 +72,7 @@ internal static class LookaroundStrategy
     /// appears in the body. If not, splices one in at a random position.
     /// </summary>
     internal static void SatisfyPositiveRequirements(
-        IGeneratorContext ctx,
+        IGenerationContext ctx,
         StringBuilder body,
         List<IReadOnlyList<CharRange>> requirements,
         bool firstCharConstrained)

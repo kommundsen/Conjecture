@@ -76,7 +76,7 @@ internal sealed class ReDoSHunterStrategy(
         }).Generate(data);
     }
 
-    private static int SelectCount(IGeneratorContext ctx, Quantifier q)
+    private static int SelectCount(IGenerationContext ctx, Quantifier q)
     {
         bool isAdversarial = q.Inner switch
         {

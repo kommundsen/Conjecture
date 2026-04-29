@@ -83,7 +83,7 @@ internal sealed class MatchingStrategy(
     }
 
     private void GenerateNode(
-        IGeneratorContext ctx,
+        IGenerationContext ctx,
         RegexNode node,
         StringBuilder sb,
         Dictionary<int, string> captures,
@@ -162,7 +162,7 @@ internal sealed class MatchingStrategy(
     }
 
     private void GenerateSequence(
-        IGeneratorContext ctx,
+        IGenerationContext ctx,
         Sequence seq,
         StringBuilder sb,
         Dictionary<int, string> captures,
@@ -244,7 +244,7 @@ internal sealed class MatchingStrategy(
     /// Applies only to the first character-producing leaf of the node.
     /// </summary>
     private void GenerateNodeWithForbiddenFirst(
-        IGeneratorContext ctx,
+        IGenerationContext ctx,
         RegexNode node,
         StringBuilder sb,
         Dictionary<int, string> captures,
@@ -322,7 +322,7 @@ internal sealed class MatchingStrategy(
     }
 
     private void GenerateCharClassExcluding(
-        IGeneratorContext ctx,
+        IGenerationContext ctx,
         CharClass cc,
         StringBuilder sb,
         List<CharRange> forbidden)
@@ -347,7 +347,7 @@ internal sealed class MatchingStrategy(
         sb.Append(ch);
     }
 
-    private void GenerateLiteral(IGeneratorContext ctx, char ch, StringBuilder sb)
+    private void GenerateLiteral(IGenerationContext ctx, char ch, StringBuilder sb)
     {
         if (ignoreCase && char.IsLetter(ch))
         {
@@ -360,7 +360,7 @@ internal sealed class MatchingStrategy(
         }
     }
 
-    private void GenerateCharClass(IGeneratorContext ctx, CharClass cc, StringBuilder sb)
+    private void GenerateCharClass(IGenerationContext ctx, CharClass cc, StringBuilder sb)
     {
         IReadOnlyList<CharRange> ranges = cc.Ranges;
 
@@ -451,7 +451,7 @@ internal sealed class MatchingStrategy(
     }
 
     private void GenerateQuantifier(
-        IGeneratorContext ctx,
+        IGenerationContext ctx,
         Quantifier q,
         StringBuilder sb,
         Dictionary<int, string> captures,
@@ -466,7 +466,7 @@ internal sealed class MatchingStrategy(
         }
     }
 
-    private void GenerateDot(IGeneratorContext ctx, StringBuilder sb)
+    private void GenerateDot(IGenerationContext ctx, StringBuilder sb)
     {
         if (singleline)
         {
@@ -489,7 +489,7 @@ internal sealed class MatchingStrategy(
         }
     }
 
-    private void GenerateUnicodeCategory(IGeneratorContext ctx, UnicodeCategory uc, StringBuilder sb)
+    private void GenerateUnicodeCategory(IGenerationContext ctx, UnicodeCategory uc, StringBuilder sb)
     {
         if (genOptions.UnicodeCategories == UnicodeCoverage.Ascii)
         {
