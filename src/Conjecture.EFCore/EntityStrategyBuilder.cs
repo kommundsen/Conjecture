@@ -58,7 +58,7 @@ public sealed class EntityStrategyBuilder
         int currentDepth,
         HashSet<IEntityType> visitedPath) where TEntity : class
     {
-        return Generate.Compose<TEntity>(ctx =>
+        return Strategy.Compose<TEntity>(ctx =>
         {
             TEntity entity = (TEntity)Activator.CreateInstance(typeof(TEntity))!;
             PopulateEntity(ctx, entity, entityType, currentDepth, visitedPath);
@@ -138,7 +138,7 @@ public sealed class EntityStrategyBuilder
                 return;
             }
 
-            int count = ctx.Generate(Generate.Integers<int>(0, 3));
+            int count = ctx.Generate(Strategy.Integers<int>(0, 3));
             MethodInfo? addMethod = navProp.PropertyType.GetMethod("Add");
             if (addMethod is not null)
             {

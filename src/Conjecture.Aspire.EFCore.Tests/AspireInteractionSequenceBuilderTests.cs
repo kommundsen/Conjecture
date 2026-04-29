@@ -28,7 +28,7 @@ public sealed class AspireInteractionSequenceBuilderTests
     [Fact]
     public async Task Build_produces_sequence_with_only_registered_step_kinds()
     {
-        Strategy<HttpInteraction> httpStep = Generate.Http("api")
+        Strategy<HttpInteraction> httpStep = Strategy.Http("api")
             .Get("/health")
             .Build();
 
@@ -63,7 +63,7 @@ public sealed class AspireInteractionSequenceBuilderTests
     [Fact]
     public async Task Build_respects_minSize_and_maxSize()
     {
-        Strategy<HttpInteraction> httpStep = Generate.Http("api")
+        Strategy<HttpInteraction> httpStep = Strategy.Http("api")
             .Get("/ping")
             .Build();
 
@@ -94,16 +94,16 @@ public sealed class AspireInteractionSequenceBuilderTests
     [Fact]
     public async Task Build_can_interleave_Http_Message_and_DbSnapshot_steps()
     {
-        Strategy<HttpInteraction> httpStep = Generate.Http("api")
+        Strategy<HttpInteraction> httpStep = Strategy.Http("api")
             .Get("/ping")
             .Build();
 
-        Strategy<MessageInteraction> messageStep = Generate.Compose(static ctx =>
+        Strategy<MessageInteraction> messageStep = Strategy.Compose(static ctx =>
             new MessageInteraction(
                 Destination: "orders",
                 Body: new ReadOnlyMemory<byte>([]),
                 Headers: new Dictionary<string, string>(),
-                MessageId: ctx.Generate(Generate.Strings(minLength: 1, maxLength: 8))));
+                MessageId: ctx.Generate(Strategy.Strings(minLength: 1, maxLength: 8))));
 
         AspireInteractionSequenceBuilder builder = new AspireInteractionSequenceBuilder()
             .Http("api", httpStep)
@@ -157,7 +157,7 @@ public sealed class AspireInteractionSequenceBuilderTests
     [Fact]
     public async Task Build_returned_sequence_dispatches_correctly_through_CompositeInteractionTarget()
     {
-        Strategy<HttpInteraction> httpStep = Generate.Http("api")
+        Strategy<HttpInteraction> httpStep = Strategy.Http("api")
             .Get("/test")
             .Build();
 

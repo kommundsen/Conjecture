@@ -57,14 +57,14 @@ public sealed class ProtobufGenerateTests
     [Fact]
     public void FromProtobuf_Generic_ReturnsNonNullStrategy()
     {
-        Strategy<JsonElement> strategy = Generate.FromProtobuf<FileDescriptorProto>();
+        Strategy<JsonElement> strategy = Strategy.FromProtobuf<FileDescriptorProto>();
         Assert.NotNull(strategy);
     }
 
     [Fact]
     public void FromProtobuf_Generic_GeneratesObjectValueKind()
     {
-        Strategy<JsonElement> strategy = Generate.FromProtobuf<FileDescriptorProto>();
+        Strategy<JsonElement> strategy = Strategy.FromProtobuf<FileDescriptorProto>();
         IReadOnlyList<JsonElement> samples = DataGen.Sample(strategy, 10, 42UL);
         foreach (JsonElement element in samples)
         {
@@ -79,7 +79,7 @@ public sealed class ProtobufGenerateTests
         // because FileDescriptorProto has many fields. For the generic overload we
         // verify that the known scalar field "name" (index 0 in FileDescriptorProto) is present.
         // FileDescriptorProto has a "name" string field — it must appear in every generated object.
-        Strategy<JsonElement> strategy = Generate.FromProtobuf<FileDescriptorProto>();
+        Strategy<JsonElement> strategy = Strategy.FromProtobuf<FileDescriptorProto>();
         IReadOnlyList<JsonElement> samples = DataGen.Sample(strategy, 10, 42UL);
         foreach (JsonElement element in samples)
         {
@@ -91,7 +91,7 @@ public sealed class ProtobufGenerateTests
     public void FromProtobuf_Descriptor_ReturnsNonNullStrategy()
     {
         MessageDescriptor descriptor = BuildPersonDescriptor();
-        Strategy<JsonElement> strategy = Generate.FromProtobuf(descriptor);
+        Strategy<JsonElement> strategy = Strategy.FromProtobuf(descriptor);
         Assert.NotNull(strategy);
     }
 
@@ -99,7 +99,7 @@ public sealed class ProtobufGenerateTests
     public void FromProtobuf_Descriptor_GeneratesObjectValueKind()
     {
         MessageDescriptor descriptor = BuildPersonDescriptor();
-        Strategy<JsonElement> strategy = Generate.FromProtobuf(descriptor);
+        Strategy<JsonElement> strategy = Strategy.FromProtobuf(descriptor);
         IReadOnlyList<JsonElement> samples = DataGen.Sample(strategy, 10, 42UL);
         foreach (JsonElement element in samples)
         {
@@ -113,8 +113,8 @@ public sealed class ProtobufGenerateTests
         // Both overloads with the same underlying MessageDescriptor must produce
         // structurally identical JSON shapes (same property names).
         MessageDescriptor descriptor = FileDescriptorProto.Descriptor;
-        Strategy<JsonElement> genericStrategy = Generate.FromProtobuf<FileDescriptorProto>();
-        Strategy<JsonElement> descriptorStrategy = Generate.FromProtobuf(descriptor);
+        Strategy<JsonElement> genericStrategy = Strategy.FromProtobuf<FileDescriptorProto>();
+        Strategy<JsonElement> descriptorStrategy = Strategy.FromProtobuf(descriptor);
 
         IReadOnlyList<JsonElement> genericSamples = DataGen.Sample(genericStrategy, 5, 100UL);
         IReadOnlyList<JsonElement> descriptorSamples = DataGen.Sample(descriptorStrategy, 5, 100UL);
@@ -134,7 +134,7 @@ public sealed class ProtobufGenerateTests
     [Fact]
     public void FromProtobuf_Generic_WithExplicitMaxDepth_ReturnsNonNullStrategy()
     {
-        Strategy<JsonElement> strategy = Generate.FromProtobuf<FileDescriptorProto>(maxDepth: 2);
+        Strategy<JsonElement> strategy = Strategy.FromProtobuf<FileDescriptorProto>(maxDepth: 2);
         Assert.NotNull(strategy);
     }
 
@@ -142,7 +142,7 @@ public sealed class ProtobufGenerateTests
     public void FromProtobuf_Descriptor_WithExplicitMaxDepth_GeneratesObjectValueKind()
     {
         MessageDescriptor descriptor = BuildPersonDescriptor();
-        Strategy<JsonElement> strategy = Generate.FromProtobuf(descriptor, maxDepth: 2);
+        Strategy<JsonElement> strategy = Strategy.FromProtobuf(descriptor, maxDepth: 2);
         IReadOnlyList<JsonElement> samples = DataGen.Sample(strategy, 5, 7UL);
         foreach (JsonElement element in samples)
         {

@@ -12,7 +12,7 @@ public class StrategyToolsTimeTypesTests
     public void SuggestForType_DateOnly_ContainsDateOnlyValues()
     {
         string result = StrategyTools.SuggestForType("DateOnly");
-        Assert.Contains("Generate.DateOnlyValues()", result);
+        Assert.Contains("Strategy.DateOnlyValues()", result);
     }
 
     [Fact]
@@ -34,7 +34,7 @@ public class StrategyToolsTimeTypesTests
     public void SuggestForType_TimeOnly_ContainsTimeOnlyValues()
     {
         string result = StrategyTools.SuggestForType("TimeOnly");
-        Assert.Contains("Generate.TimeOnlyValues()", result);
+        Assert.Contains("Strategy.TimeOnlyValues()", result);
     }
 
     [Fact]
@@ -70,7 +70,7 @@ public class StrategyToolsTimeTypesTests
     public void SuggestForType_DateTime_ContainsGenerateDateTimes()
     {
         string result = StrategyTools.SuggestForType("DateTime");
-        Assert.Contains("Generate.DateTimes()", result);
+        Assert.Contains("Strategy.DateTimes()", result);
     }
 
     // TimeZoneInfo (DST focus)
@@ -78,7 +78,7 @@ public class StrategyToolsTimeTypesTests
     public void SuggestForType_TimeZoneInfo_ContainsTimeZonePreferDst()
     {
         string result = StrategyTools.SuggestForType("TimeZoneInfo");
-        Assert.Contains("Generate.TimeZone(preferDst: true)", result);
+        Assert.Contains("Strategy.TimeZone(preferDst: true)", result);
     }
 
     // FakeTimeProvider / TimeProvider (adversarial)
@@ -86,14 +86,14 @@ public class StrategyToolsTimeTypesTests
     public void SuggestForType_FakeTimeProvider_ContainsClockWithAdvances()
     {
         string result = StrategyTools.SuggestForType("FakeTimeProvider");
-        Assert.Contains("Generate.ClockWithAdvances(", result);
+        Assert.Contains("Strategy.ClockWithAdvances(", result);
     }
 
     [Fact]
     public void SuggestForType_TimeProvider_ContainsClockWithAdvances()
     {
         string result = StrategyTools.SuggestForType("TimeProvider");
-        Assert.Contains("Generate.ClockWithAdvances(", result);
+        Assert.Contains("Strategy.ClockWithAdvances(", result);
     }
 
     // DateTimeOffset — updated to mention WithPrecision and WithStrippedOffset
@@ -101,7 +101,7 @@ public class StrategyToolsTimeTypesTests
     public void SuggestForType_DateTimeOffset_ContainsGenerateDateTimeOffsets()
     {
         string result = StrategyTools.SuggestForType("DateTimeOffset");
-        Assert.Contains("Generate.DateTimeOffsets()", result);
+        Assert.Contains("Strategy.DateTimeOffsets()", result);
     }
 
     [Fact]

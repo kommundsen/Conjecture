@@ -15,7 +15,7 @@ public class StateMachineStrategyTests
     private sealed class CounterMachine : IStateMachine<int, string>
     {
         public int InitialState() => 0;
-        public IEnumerable<Strategy<string>> Commands(int state) => [Generate.Just("inc")];
+        public IEnumerable<Strategy<string>> Commands(int state) => [Strategy.Just("inc")];
         public int RunCommand(int state, string command) => state + 1;
         public void Invariant(int state) { }
     }
@@ -31,7 +31,7 @@ public class StateMachineStrategyTests
     private sealed class AlwaysFailMachine : IStateMachine<int, string>
     {
         public int InitialState() => 0;
-        public IEnumerable<Strategy<string>> Commands(int state) => [Generate.Just("cmd")];
+        public IEnumerable<Strategy<string>> Commands(int state) => [Strategy.Just("cmd")];
         public int RunCommand(int state, string command) => state + 1;
         public void Invariant(int state) => throw new InvalidOperationException("always fails");
     }

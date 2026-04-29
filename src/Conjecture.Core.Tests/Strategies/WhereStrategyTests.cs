@@ -14,7 +14,7 @@ public class WhereStrategyTests
     [Fact]
     public void Where_FiltersOutput()
     {
-        Strategy<int> strategy = Generate.Integers<int>(0, 10).Where(x => x % 2 == 0);
+        Strategy<int> strategy = Strategy.Integers<int>(0, 10).Where(x => x % 2 == 0);
         ConjectureData data = MakeData();
         for (int i = 0; i < 50; i++)
         {
@@ -25,7 +25,7 @@ public class WhereStrategyTests
     [Fact]
     public void Where_AllowsValuesMatchingPredicate()
     {
-        Strategy<bool> strategy = Generate.Booleans().Where(x => x);
+        Strategy<bool> strategy = Strategy.Booleans().Where(x => x);
         ConjectureData data = MakeData();
         for (int i = 0; i < 20; i++)
         {
@@ -37,7 +37,7 @@ public class WhereStrategyTests
     public void Where_ExhaustedBudget_MarksInvalid()
     {
         ConjectureData data = MakeData();
-        Strategy<int> strategy = Generate.Integers<int>(0, 10).Where(_ => false);
+        Strategy<int> strategy = Strategy.Integers<int>(0, 10).Where(_ => false);
         Assert.ThrowsAny<Exception>((Action)(() => strategy.Generate(data)));
         Assert.Equal(Status.Invalid, data.Status);
     }
@@ -51,7 +51,7 @@ public class WhereStrategyTests
             IRNode.ForInteger(1UL, 0UL, 1UL),
         ]);
 
-        Strategy<int> strategy = Generate.Integers<int>(0, 1).Where(x => x == 1);
+        Strategy<int> strategy = Strategy.Integers<int>(0, 1).Where(x => x == 1);
         int result = strategy.Generate(data);
 
         Assert.Equal(1, result);
@@ -61,8 +61,8 @@ public class WhereStrategyTests
     [Fact]
     public void Where_SingleAcceptedDraw_AllocatesAtMostBaselinePlus16Bytes()
     {
-        Strategy<int> baseline = Generate.Integers<int>(0, 100);
-        Strategy<int> where = Generate.Integers<int>(0, 100).Where(_ => true);
+        Strategy<int> baseline = Strategy.Integers<int>(0, 100);
+        Strategy<int> where = Strategy.Integers<int>(0, 100).Where(_ => true);
 
         ConjectureData warmupData = ConjectureData.ForRecord([IRNode.ForInteger(42UL, 0UL, 100UL)]);
         baseline.Generate(warmupData);

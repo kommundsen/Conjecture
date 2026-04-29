@@ -14,7 +14,7 @@ internal static class TestScaffoldingTools
     [McpServerTool(Name = "scaffold-property-test")]
     [Description(
         "Generates a Conjecture [Property] test skeleton for a given C# method signature. " +
-        "Infers Generate.* strategies from the parameter types and emits a ready-to-fill " +
+        "Infers Strategy.* strategies from the parameter types and emits a ready-to-fill " +
         "test class with the correct using directives for the chosen framework.")]
     public static string ScaffoldPropertyTest(
         [Description("The C# method signature to generate a property test for, e.g. 'public static int Add(int a, int b)'")] string methodSignature,

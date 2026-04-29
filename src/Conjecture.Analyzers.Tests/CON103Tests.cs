@@ -16,7 +16,7 @@ public sealed class CON103Tests
     {
         await VerifyAnalyzerAsync("""
             using Conjecture.Core;
-            class Test { void M() { var s = {|CON103:Generate.Integers(10, 5)|}; } }
+            class Test { void M() { var s = {|CON103:Strategy.Integers(10, 5)|}; } }
             """);
     }
 
@@ -26,7 +26,7 @@ public sealed class CON103Tests
         await VerifyAnalyzerAsync(
             """
             using Conjecture.Core;
-            class Test { void M() { var s = {|#0:Generate.Integers(10, 5)|}; } }
+            class Test { void M() { var s = {|#0:Strategy.Integers(10, 5)|}; } }
             """,
             new DiagnosticResult("CON103", DiagnosticSeverity.Error).WithLocation(0));
     }
@@ -36,7 +36,7 @@ public sealed class CON103Tests
     {
         await VerifyAnalyzerAsync("""
             using Conjecture.Core;
-            class Test { void M() { var s = Generate.Integers(0, 100); } }
+            class Test { void M() { var s = Strategy.Integers(0, 100); } }
             """);
     }
 
@@ -45,7 +45,7 @@ public sealed class CON103Tests
     {
         await VerifyAnalyzerAsync("""
             using Conjecture.Core;
-            class Test { void M(int a, int b) { var s = Generate.Integers(a, b); } }
+            class Test { void M(int a, int b) { var s = Strategy.Integers(a, b); } }
             """);
     }
 
@@ -56,7 +56,7 @@ public sealed class CON103Tests
     {
         await VerifyAnalyzerAsync("""
             using Conjecture.Core;
-            class Test { void M() { var s = {|CON103:Generate.Doubles(1.0, 0.5)|}; } }
+            class Test { void M() { var s = {|CON103:Strategy.Doubles(1.0, 0.5)|}; } }
             """);
     }
 
@@ -67,7 +67,7 @@ public sealed class CON103Tests
     {
         await VerifyAnalyzerAsync("""
             using Conjecture.Core;
-            class Test { void M() { var s = {|CON103:Generate.Floats(1f, 0f)|}; } }
+            class Test { void M() { var s = {|CON103:Strategy.Floats(1f, 0f)|}; } }
             """);
     }
 
@@ -78,7 +78,7 @@ public sealed class CON103Tests
     {
         await VerifyAnalyzerAsync("""
             using Conjecture.Core;
-            class Test { void M() { var s = {|CON103:Generate.Strings(minLength: 10, maxLength: 5)|}; } }
+            class Test { void M() { var s = {|CON103:Strategy.Strings(minLength: 10, maxLength: 5)|}; } }
             """);
     }
 
@@ -87,7 +87,7 @@ public sealed class CON103Tests
     {
         await VerifyAnalyzerAsync("""
             using Conjecture.Core;
-            class Test { void M() { var s = Generate.Strings(minLength: 0, maxLength: 20); } }
+            class Test { void M() { var s = Strategy.Strings(minLength: 0, maxLength: 20); } }
             """);
     }
 
@@ -99,11 +99,11 @@ public sealed class CON103Tests
         await VerifyCodeFixAsync(
             """
             using Conjecture.Core;
-            class Test { void M() { var s = {|CON103:Generate.Integers(10, 5)|}; } }
+            class Test { void M() { var s = {|CON103:Strategy.Integers(10, 5)|}; } }
             """,
             """
             using Conjecture.Core;
-            class Test { void M() { var s = Generate.Integers(5, 10); } }
+            class Test { void M() { var s = Strategy.Integers(5, 10); } }
             """);
     }
 
@@ -113,11 +113,11 @@ public sealed class CON103Tests
         await VerifyCodeFixAsync(
             """
             using Conjecture.Core;
-            class Test { void M() { var s = {|CON103:Generate.Doubles(1.0, 0.5)|}; } }
+            class Test { void M() { var s = {|CON103:Strategy.Doubles(1.0, 0.5)|}; } }
             """,
             """
             using Conjecture.Core;
-            class Test { void M() { var s = Generate.Doubles(0.5, 1.0); } }
+            class Test { void M() { var s = Strategy.Doubles(0.5, 1.0); } }
             """);
     }
 
@@ -127,11 +127,11 @@ public sealed class CON103Tests
         await VerifyCodeFixAsync(
             """
             using Conjecture.Core;
-            class Test { void M() { var s = {|CON103:Generate.Strings(minLength: 10, maxLength: 5)|}; } }
+            class Test { void M() { var s = {|CON103:Strategy.Strings(minLength: 10, maxLength: 5)|}; } }
             """,
             """
             using Conjecture.Core;
-            class Test { void M() { var s = Generate.Strings(minLength: 5, maxLength: 10); } }
+            class Test { void M() { var s = Strategy.Strings(minLength: 5, maxLength: 10); } }
             """);
     }
 

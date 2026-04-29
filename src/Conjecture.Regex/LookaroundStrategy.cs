@@ -109,7 +109,7 @@ internal static class LookaroundStrategy
                     int maxPos = body.Length;
                     int pos = minPos >= maxPos
                         ? maxPos
-                        : ctx.Generate(Conjecture.Core.Generate.Integers<int>(minPos, maxPos));
+                        : ctx.Generate(Conjecture.Core.Strategy.Integers<int>(minPos, maxPos));
                     body.Insert(pos, needed);
                 }
             }

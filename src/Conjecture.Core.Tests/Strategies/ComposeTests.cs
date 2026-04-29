@@ -15,7 +15,7 @@ public class ComposeTests
     [Fact]
     public void Compose_ImperativeDraw()
     {
-        var strategy = Generate.Compose(gen => gen.Generate(Generate.Integers<int>(1, 10)));
+        var strategy = Strategy.Compose(gen => gen.Generate(Strategy.Integers<int>(1, 10)));
         var data = MakeData();
         for (var i = 0; i < 100; i++)
         {
@@ -26,10 +26,10 @@ public class ComposeTests
     [Fact]
     public void Compose_DependentDraws()
     {
-        var strategy = Generate.Compose(gen =>
+        var strategy = Strategy.Compose(gen =>
         {
-            var x = gen.Generate(Generate.Integers<int>(1, 5));
-            var y = gen.Generate(Generate.Integers<int>(1, x));
+            var x = gen.Generate(Strategy.Integers<int>(1, 5));
+            var y = gen.Generate(Strategy.Integers<int>(1, x));
             return x * 10 + y;
         });
         var data = MakeData();
@@ -46,9 +46,9 @@ public class ComposeTests
     [Fact]
     public void Compose_Assume_RejectsInvalid()
     {
-        var strategy = Generate.Compose(gen =>
+        var strategy = Strategy.Compose(gen =>
         {
-            var x = gen.Generate(Generate.Integers<int>(0, 10));
+            var x = gen.Generate(Strategy.Integers<int>(0, 10));
             gen.Assume(x % 2 == 0);
             return x;
         });
@@ -62,7 +62,7 @@ public class ComposeTests
     [Fact]
     public void Compose_Assume_False_MarksInvalid()
     {
-        var strategy = Generate.Compose(gen => { gen.Assume(false); return 0; });
+        var strategy = Strategy.Compose(gen => { gen.Assume(false); return 0; });
         var data = MakeData();
         Assert.ThrowsAny<Exception>((Action)(() => strategy.Generate(data)));
         Assert.Equal(Status.Invalid, data.Status);

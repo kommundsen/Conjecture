@@ -10,14 +10,14 @@ namespace Conjecture.Messaging;
 
 /// <summary>
 /// Fluent builder for <see cref="Strategy{T}"/> of <see cref="MessageInteraction"/>.
-/// Entry point: <c>Generate.Messaging</c>.
+/// Entry point: <c>Strategy.Messaging</c>.
 /// </summary>
 public sealed class MessagingGenerateBuilder
 {
     private static readonly IReadOnlyDictionary<string, string> EmptyHeaders =
         new Dictionary<string, string>(0);
 
-    private static readonly Strategy<Guid> GuidStrategy = Generate.Guids();
+    private static readonly Strategy<Guid> GuidStrategy = Strategy.Guids();
 
     internal MessagingGenerateBuilder()
     {
@@ -34,7 +34,7 @@ public sealed class MessagingGenerateBuilder
         ArgumentNullException.ThrowIfNull(destination);
         ArgumentNullException.ThrowIfNull(bodyStrategy);
 
-        return Generate.Compose<MessageInteraction>(ctx =>
+        return Strategy.Compose<MessageInteraction>(ctx =>
         {
             Guid messageId = ctx.Generate(GuidStrategy);
             ReadOnlyMemory<byte> body = ctx.Generate(bodyStrategy);
@@ -60,7 +60,7 @@ public sealed class MessagingGenerateBuilder
         ArgumentNullException.ThrowIfNull(bodyStrategy);
         ArgumentNullException.ThrowIfNull(headersStrategy);
 
-        return Generate.Compose<MessageInteraction>(ctx =>
+        return Strategy.Compose<MessageInteraction>(ctx =>
         {
             Guid messageId = ctx.Generate(GuidStrategy);
             ReadOnlyMemory<byte> body = ctx.Generate(bodyStrategy);
@@ -85,7 +85,7 @@ public sealed class MessagingGenerateBuilder
     {
         ArgumentNullException.ThrowIfNull(destination);
 
-        return Generate.Just(new MessageInteraction(
+        return Strategy.Just(new MessageInteraction(
             destination,
             ReadOnlyMemory<byte>.Empty,
             EmptyHeaders,

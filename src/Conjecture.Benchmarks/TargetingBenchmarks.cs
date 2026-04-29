@@ -31,7 +31,7 @@ public class TargetingBenchmarks
             TargetingProportion = 0.5,
             UseDatabase = false,
         };
-        intStrategy = Generate.Integers<int>(0, 1000);
+        intStrategy = Strategy.Integers<int>(0, 1000);
     }
 
     /// <summary>100-example run with one <c>Target.Maximize</c> call per example (single label).</summary>
@@ -123,7 +123,7 @@ public class HillClimberBenchmarks
 }
 
 /// <summary>
-/// Throughput benchmarks for <see cref="Generate.Recursive{T}"/> at varying depths.
+/// Throughput benchmarks for <see cref="Strategy.Recursive{T}"/> at varying depths.
 /// Uses an expression tree ADT (Literal, Add, Mul). One tree is generated per iteration;
 /// BenchmarkDotNet reports operations per second.
 /// </summary>
@@ -144,20 +144,20 @@ public class RecursiveGenerationBenchmarks
     public void Setup()
     {
         rng = new SplittableRandom(42UL);
-        Strategy<Expr> baseCase = Generate.Integers<int>(0, 100).Select(n => (Expr)new Literal(n));
-        exprDepth5 = Generate.Recursive<Expr>(
+        Strategy<Expr> baseCase = Strategy.Integers<int>(0, 100).Select(n => (Expr)new Literal(n));
+        exprDepth5 = Strategy.Recursive<Expr>(
             baseCase,
-            self => Generate.OneOf(
+            self => Strategy.OneOf(
                 baseCase,
-                Generate.Tuples(self, self).Select(t => (Expr)new Add(t.Item1, t.Item2)),
-                Generate.Tuples(self, self).Select(t => (Expr)new Mul(t.Item1, t.Item2))),
+                Strategy.Tuples(self, self).Select(t => (Expr)new Add(t.Item1, t.Item2)),
+                Strategy.Tuples(self, self).Select(t => (Expr)new Mul(t.Item1, t.Item2))),
             maxDepth: 5);
-        exprDepth10 = Generate.Recursive<Expr>(
+        exprDepth10 = Strategy.Recursive<Expr>(
             baseCase,
-            self => Generate.OneOf(
+            self => Strategy.OneOf(
                 baseCase,
-                Generate.Tuples(self, self).Select(t => (Expr)new Add(t.Item1, t.Item2)),
-                Generate.Tuples(self, self).Select(t => (Expr)new Mul(t.Item1, t.Item2))),
+                Strategy.Tuples(self, self).Select(t => (Expr)new Add(t.Item1, t.Item2)),
+                Strategy.Tuples(self, self).Select(t => (Expr)new Mul(t.Item1, t.Item2))),
             maxDepth: 10);
     }
 

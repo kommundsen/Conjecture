@@ -17,7 +17,7 @@ public class StringSource
 
 public sealed class LocationProvider : IStrategyProvider<Location>
 {
-    public Strategy<Location> Create() => Generate.Integers<int>(1, 999)
+    public Strategy<Location> Create() => Strategy.Integers<int>(1, 999)
         .Select(static code => new Location { CityCode = code });
 }
 
@@ -30,6 +30,6 @@ public sealed class NoCtorModelProvider(int seed) : IStrategyProvider<NoCtorMode
 {
     private readonly int seed = seed;
 
-    public Strategy<NoCtorModel> Create() => Generate.Integers<int>(1, 100)
+    public Strategy<NoCtorModel> Create() => Strategy.Integers<int>(1, 100)
         .Select(static v => new NoCtorModel { Value = v });
 }

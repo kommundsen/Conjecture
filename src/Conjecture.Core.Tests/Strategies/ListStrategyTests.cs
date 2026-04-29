@@ -14,7 +14,7 @@ public class ListStrategyTests
     [Fact]
     public void Lists_ProducesListOfCorrectType()
     {
-        var strategy = Generate.Lists(Generate.Integers<int>());
+        var strategy = Strategy.Lists(Strategy.Integers<int>());
         var result = strategy.Generate(MakeData());
         Assert.IsType<List<int>>(result);
     }
@@ -22,7 +22,7 @@ public class ListStrategyTests
     [Fact]
     public void Lists_DefaultSizeVariesAcrossSeeds()
     {
-        var strategy = Generate.Lists(Generate.Integers<int>());
+        var strategy = Strategy.Lists(Strategy.Integers<int>());
         var sizes = new HashSet<int>();
         for (var i = 0; i < 200; i++)
         {
@@ -34,7 +34,7 @@ public class ListStrategyTests
     [Fact]
     public void Lists_DefaultSizeWithinRange()
     {
-        var strategy = Generate.Lists(Generate.Integers<int>());
+        var strategy = Strategy.Lists(Strategy.Integers<int>());
         for (var i = 0; i < 200; i++)
         {
             var count = strategy.Generate(MakeData((ulong)i)).Count;
@@ -45,7 +45,7 @@ public class ListStrategyTests
     [Fact]
     public void Lists_RespectsMinSizeAndMaxSize()
     {
-        var strategy = Generate.Lists(Generate.Integers<int>(), minSize: 3, maxSize: 5);
+        var strategy = Strategy.Lists(Strategy.Integers<int>(), minSize: 3, maxSize: 5);
         for (var i = 0; i < 100; i++)
         {
             var count = strategy.Generate(MakeData((ulong)i)).Count;
@@ -56,7 +56,7 @@ public class ListStrategyTests
     [Fact]
     public void Lists_EmptyListPossibleWhenMinSizeIsZero()
     {
-        var strategy = Generate.Lists(Generate.Integers<int>(), minSize: 0, maxSize: 10);
+        var strategy = Strategy.Lists(Strategy.Integers<int>(), minSize: 0, maxSize: 10);
         var seenEmpty = false;
         for (var i = 0; i < 500; i++)
         {
@@ -72,7 +72,7 @@ public class ListStrategyTests
     [Fact]
     public void Lists_DeterministicWithSameSeed()
     {
-        var strategy = Generate.Lists(Generate.Integers<int>());
+        var strategy = Strategy.Lists(Strategy.Integers<int>());
         var list1 = strategy.Generate(MakeData(99UL));
         var list2 = strategy.Generate(MakeData(99UL));
         Assert.Equal(list1, list2);
@@ -81,7 +81,7 @@ public class ListStrategyTests
     [Fact]
     public void Lists_ElementsComefromInnerStrategy()
     {
-        var strategy = Generate.Lists(Generate.Integers<int>(min: 7, max: 7), minSize: 5, maxSize: 5);
+        var strategy = Strategy.Lists(Strategy.Integers<int>(min: 7, max: 7), minSize: 5, maxSize: 5);
         var result = strategy.Generate(MakeData());
         Assert.All(result, x => Assert.Equal(7, x));
     }

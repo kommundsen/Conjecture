@@ -15,7 +15,7 @@ public class SampledFromStrategyTests
     public void SampledFrom_ReturnsOnlyValuesFromSet()
     {
         var source = new[] { 1, 2, 3 };
-        var strategy = Generate.SampledFrom(source);
+        var strategy = Strategy.SampledFrom(source);
         var data = MakeData();
 
         for (var i = 0; i < 100; i++)
@@ -29,7 +29,7 @@ public class SampledFromStrategyTests
     public void SampledFrom_CoversAllMembersOverManyDraws()
     {
         var source = new[] { 10, 20, 30 };
-        var strategy = Generate.SampledFrom(source);
+        var strategy = Strategy.SampledFrom(source);
         var data = MakeData();
         var seen = new HashSet<int>();
 
@@ -46,7 +46,7 @@ public class SampledFromStrategyTests
     [Fact]
     public void SampledFrom_SingleElement_AlwaysReturnsThatElement()
     {
-        var strategy = Generate.SampledFrom(new[] { 99 });
+        var strategy = Strategy.SampledFrom(new[] { 99 });
         var data = MakeData();
 
         for (var i = 0; i < 20; i++)
@@ -58,14 +58,14 @@ public class SampledFromStrategyTests
     [Fact]
     public void SampledFrom_EmptyCollection_ThrowsArgumentException()
     {
-        Assert.Throws<ArgumentException>(() => Generate.SampledFrom(Array.Empty<int>()));
+        Assert.Throws<ArgumentException>(() => Strategy.SampledFrom(Array.Empty<int>()));
     }
 
     [Fact]
     public void SampledFrom_DeterministicWithSeed()
     {
         var source = new[] { 1, 2, 3, 4, 5 };
-        var strategy = Generate.SampledFrom(source);
+        var strategy = Strategy.SampledFrom(source);
 
         var results1 = Enumerable.Range(0, 20)
             .Select(_ => strategy.Generate(MakeData(123UL)))

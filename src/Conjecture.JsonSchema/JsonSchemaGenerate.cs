@@ -8,10 +8,10 @@ using Conjecture.Core;
 
 namespace Conjecture.JsonSchema;
 
-/// <summary>Extension methods on <see cref="Generate"/> for JSON Schema-driven generation.</summary>
+/// <summary>Extension methods on <see cref="Strategy"/> for JSON Schema-driven generation.</summary>
 public static class JsonSchemaGenerate
 {
-    extension(Generate)
+    extension(Strategy)
     {
         /// <summary>Returns a <see cref="Strategy{T}"/> that generates <see cref="JsonElement"/> values conforming to <paramref name="jsonSchemaText"/>.</summary>
         /// <exception cref="JsonException">Thrown at construction time if <paramref name="jsonSchemaText"/> is not valid JSON.</exception>

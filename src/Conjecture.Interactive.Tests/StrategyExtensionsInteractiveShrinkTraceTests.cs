@@ -13,7 +13,7 @@ public class StrategyExtensionsInteractiveShrinkTraceTests
     [Fact]
     public void ShrinkTrace_PropertyPassesOnGeneratedValue_ThrowsArgumentException()
     {
-        Strategy<int> strategy = Generate.Integers<int>(0, 100);
+        Strategy<int> strategy = Strategy.Integers<int>(0, 100);
         ulong seed = FindSeedProducingValueBelow10(strategy);
 
         // property returns false = value is NOT a counterexample, so nothing to shrink
@@ -24,7 +24,7 @@ public class StrategyExtensionsInteractiveShrinkTraceTests
     [Fact]
     public void ShrinkTrace_NonTrivialShrink_ReturnsAtLeastOneStep()
     {
-        Strategy<int> strategy = Generate.Integers<int>(0, 100);
+        Strategy<int> strategy = Strategy.Integers<int>(0, 100);
         ulong seed = FindSeedProducingValueAtLeast10(strategy);
 
         ShrinkTraceResult<int> result = strategy.ShrinkTrace(seed, static x => x >= 10);
@@ -35,7 +35,7 @@ public class StrategyExtensionsInteractiveShrinkTraceTests
     [Fact]
     public void ShrinkTrace_FinalStep_ValueSatisfiesFailingProperty()
     {
-        Strategy<int> strategy = Generate.Integers<int>(0, 100);
+        Strategy<int> strategy = Strategy.Integers<int>(0, 100);
         ulong seed = FindSeedProducingValueAtLeast10(strategy);
 
         ShrinkTraceResult<int> result = strategy.ShrinkTrace(seed, static x => x >= 10);
@@ -47,7 +47,7 @@ public class StrategyExtensionsInteractiveShrinkTraceTests
     [Fact]
     public void ShrinkTrace_TextOutput_ContainsTableStructure()
     {
-        Strategy<int> strategy = Generate.Integers<int>(0, 100);
+        Strategy<int> strategy = Strategy.Integers<int>(0, 100);
         ulong seed = FindSeedProducingValueAtLeast10(strategy);
 
         ShrinkTraceResult<int> result = strategy.ShrinkTrace(seed, static x => x >= 10);

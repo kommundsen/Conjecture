@@ -19,7 +19,7 @@ public sealed class PrimitiveMappingTests
             "using Conjecture.Core; namespace MyApp; [Arbitrary] public partial record Order(System.Guid Id);",
             "Order.g.cs");
 
-        Assert.Contains("Generate.Guids()", text);
+        Assert.Contains("Strategy.Guids()", text);
     }
 
     [Fact]
@@ -29,7 +29,7 @@ public sealed class PrimitiveMappingTests
             "using Conjecture.Core; namespace MyApp; [Arbitrary] public partial record Invoice(decimal Total);",
             "Invoice.g.cs");
 
-        Assert.Contains("Generate.Decimals()", text);
+        Assert.Contains("Strategy.Decimals()", text);
     }
 
     [Fact]
@@ -39,7 +39,7 @@ public sealed class PrimitiveMappingTests
             "using Conjecture.Core; namespace MyApp; [Arbitrary] public partial record Event(System.DateOnly PlacedOn);",
             "Event.g.cs");
 
-        Assert.Contains("Generate.DateOnlyValues()", text);
+        Assert.Contains("Strategy.DateOnlyValues()", text);
     }
 
     [Fact]
@@ -49,8 +49,8 @@ public sealed class PrimitiveMappingTests
             "using Conjecture.Core; using System.Collections.Generic; namespace MyApp; [Arbitrary] public partial record Tags(List<string> Items);",
             "Tags.g.cs");
 
-        Assert.Contains("Generate.Lists(", text);
-        Assert.Contains("Generate.Strings()", text);
+        Assert.Contains("Strategy.Lists(", text);
+        Assert.Contains("Strategy.Strings()", text);
     }
 
     [Fact]
@@ -60,9 +60,9 @@ public sealed class PrimitiveMappingTests
             "using Conjecture.Core; using System.Collections.Generic; namespace MyApp; [Arbitrary] public partial record Lookup(Dictionary<string, int> Map);",
             "Lookup.g.cs");
 
-        Assert.Contains("Generate.Dictionaries(", text);
-        Assert.Contains("Generate.Strings()", text);
-        Assert.Contains("Generate.Integers<int>()", text);
+        Assert.Contains("Strategy.Dictionaries(", text);
+        Assert.Contains("Strategy.Strings()", text);
+        Assert.Contains("Strategy.Integers<int>()", text);
     }
 
     [Fact]
@@ -73,7 +73,7 @@ public sealed class PrimitiveMappingTests
             "Batch.g.cs");
 
         Assert.Contains("ImmutableArray", text);
-        Assert.Contains("Generate.Guids()", text);
+        Assert.Contains("Strategy.Guids()", text);
     }
 
     [Fact]
@@ -83,7 +83,7 @@ public sealed class PrimitiveMappingTests
             "using Conjecture.Core; namespace MyApp; [Arbitrary] public partial record Pair((int, string) Value);",
             "Pair.g.cs");
 
-        Assert.Contains("Generate.Tuples(", text);
+        Assert.Contains("Strategy.Tuples(", text);
     }
 
     [Fact]

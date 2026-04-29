@@ -71,13 +71,13 @@ public async Task AppBehavesCorrectly(IAspireAppFixture fixture)
 
 ## 4. Generate interactions
 
-Use `Generate.HttpPost` and `Generate.PublishMessage` to produce interaction strategies:
+Use `Strategy.HttpPost` and `Strategy.PublishMessage` to produce interaction strategies:
 
 ```csharp
-Generate.HttpPost("/api/orders", Generate.Strings())
+Strategy.HttpPost("/api/orders", Strategy.Strings())
 // → Strategy<Interaction> for HTTP POST interactions
 
-Generate.PublishMessage("orders-queue", Generate.Strings())
+Strategy.PublishMessage("orders-queue", Strategy.Strings())
 // → Strategy<Interaction> for message-publishing interactions
 ```
 

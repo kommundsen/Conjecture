@@ -57,7 +57,7 @@ public sealed class XunitV3ReportingTests : IDisposable
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            int x = Generate.Integers<int>().Generate(data);
+            int x = Strategy.Integers<int>().Generate(data);
             if (x > 5) { throw new Exception("fail"); }
         });
 
@@ -70,14 +70,14 @@ public sealed class XunitV3ReportingTests : IDisposable
     [Fact]
     public async Task BuildFailureMessage_WhenShrunk_ContainsMinimalCounterexampleSection()
     {
-        // Seed 42: Generate.Integers<int>() draws large ints; x > 5 ensures the initial failure
+        // Seed 42: Strategy.Integers<int>() draws large ints; x > 5 ensures the initial failure
         // is some large value that shrinks to 6 — extremely unlikely to already be minimal.
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 42UL };
         ParameterInfo[] parameters = Params(nameof(PropertyWithInt));
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            int x = Generate.Integers<int>().Generate(data);
+            int x = Strategy.Integers<int>().Generate(data);
             if (x > 5) { throw new Exception("fail"); }
         });
 

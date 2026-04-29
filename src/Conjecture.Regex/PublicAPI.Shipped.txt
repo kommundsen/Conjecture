@@ -1,6 +1,6 @@
 #nullable enable
 Conjecture.Core.RegexGenerateExtensions
-Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Generate!)
+Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Strategy!)
 Conjecture.Regex.KnownRegex
 Conjecture.Regex.RegexGenOptions
 Conjecture.Regex.RegexGenOptions.RegexGenOptions() -> void
@@ -9,26 +9,26 @@ Conjecture.Regex.RegexGenOptions.UnicodeCategories.init -> void
 Conjecture.Regex.UnicodeCoverage
 Conjecture.Regex.UnicodeCoverage.Ascii = 0 -> Conjecture.Regex.UnicodeCoverage
 Conjecture.Regex.UnicodeCoverage.Full = 1 -> Conjecture.Regex.UnicodeCoverage
-static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Generate!).CreditCard() -> Conjecture.Core.Strategy<string!>!
-static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Generate!).Date() -> Conjecture.Core.Strategy<string!>!
-static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Generate!).Email() -> Conjecture.Core.Strategy<string!>!
-static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Generate!).Ipv4() -> Conjecture.Core.Strategy<string!>!
-static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Generate!).Ipv6() -> Conjecture.Core.Strategy<string!>!
-static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Generate!).IsoDate() -> Conjecture.Core.Strategy<string!>!
-static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Generate!).Matching(string! pattern, Conjecture.Regex.RegexGenOptions? options = null) -> Conjecture.Core.Strategy<string!>!
-static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Generate!).Matching(System.Text.RegularExpressions.Regex! regex, Conjecture.Regex.RegexGenOptions? options = null) -> Conjecture.Core.Strategy<string!>!
-static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Generate!).NotCreditCard() -> Conjecture.Core.Strategy<string!>!
-static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Generate!).NotEmail() -> Conjecture.Core.Strategy<string!>!
-static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Generate!).NotIsoDate() -> Conjecture.Core.Strategy<string!>!
-static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Generate!).NotMatching(string! pattern, Conjecture.Regex.RegexGenOptions? options = null) -> Conjecture.Core.Strategy<string!>!
-static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Generate!).NotMatching(System.Text.RegularExpressions.Regex! regex, Conjecture.Regex.RegexGenOptions? options = null) -> Conjecture.Core.Strategy<string!>!
-static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Generate!).NotUrl() -> Conjecture.Core.Strategy<string!>!
-static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Generate!).NotUuid() -> Conjecture.Core.Strategy<string!>!
-static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Generate!).ReDoSHunter(string! pattern, int maxMatchMs = 5) -> Conjecture.Core.Strategy<string!>!
-static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Generate!).ReDoSHunter(System.Text.RegularExpressions.Regex! regex, int maxMatchMs = 5) -> Conjecture.Core.Strategy<string!>!
-static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Generate!).Time() -> Conjecture.Core.Strategy<string!>!
-static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Generate!).Url() -> Conjecture.Core.Strategy<string!>!
-static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Generate!).Uuid() -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Strategy!).CreditCard() -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Strategy!).Date() -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Strategy!).Email() -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Strategy!).Ipv4() -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Strategy!).Ipv6() -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Strategy!).IsoDate() -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Strategy!).Matching(string! pattern, Conjecture.Regex.RegexGenOptions? options = null) -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Strategy!).Matching(System.Text.RegularExpressions.Regex! regex, Conjecture.Regex.RegexGenOptions? options = null) -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Strategy!).NotCreditCard() -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Strategy!).NotEmail() -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Strategy!).NotIsoDate() -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Strategy!).NotMatching(string! pattern, Conjecture.Regex.RegexGenOptions? options = null) -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Strategy!).NotMatching(System.Text.RegularExpressions.Regex! regex, Conjecture.Regex.RegexGenOptions? options = null) -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Strategy!).NotUrl() -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Strategy!).NotUuid() -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Strategy!).ReDoSHunter(string! pattern, int maxMatchMs = 5) -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Strategy!).ReDoSHunter(System.Text.RegularExpressions.Regex! regex, int maxMatchMs = 5) -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Strategy!).Time() -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Strategy!).Url() -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Core.RegexGenerateExtensions.extension(Conjecture.Core.Strategy!).Uuid() -> Conjecture.Core.Strategy<string!>!
 static Conjecture.Regex.KnownRegex.CreditCard.get -> System.Text.RegularExpressions.Regex!
 static Conjecture.Regex.KnownRegex.Date.get -> System.Text.RegularExpressions.Regex!
 static Conjecture.Regex.KnownRegex.Email.get -> System.Text.RegularExpressions.Regex!

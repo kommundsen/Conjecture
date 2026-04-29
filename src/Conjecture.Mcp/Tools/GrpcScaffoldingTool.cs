@@ -78,10 +78,10 @@ internal static class GrpcScaffoldingTool
 
         string strategyCall = methodType switch
         {
-            "server-stream" => "Generate.Grpc.ServerStream",
-            "client-stream" => "Generate.Grpc.ClientStream",
-            "bidi" => "Generate.Grpc.BidiStream",
-            _ => "Generate.Grpc.Unary"
+            "server-stream" => "Strategy.Grpc.ServerStream",
+            "client-stream" => "Strategy.Grpc.ClientStream",
+            "bidi" => "Strategy.Grpc.BidiStream",
+            _ => "Strategy.Grpc.Unary"
         };
 
         string targetType = target == "channel" ? "GrpcChannelTarget" : "HostGrpcTarget";

@@ -42,7 +42,7 @@ public class AdvancedShrinkingE2ETests
     [Fact]
     public async Task String_ContainsErr_ShrinksToExactlyErr()
     {
-        Strategy<string> strategy = Generate.Strings(alphabet: "er");
+        Strategy<string> strategy = Strategy.Strings(alphabet: "er");
         ConjectureSettings settings = new() { MaxExamples = 50, Seed = 2UL, UseDatabase = false };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
@@ -66,7 +66,7 @@ public class AdvancedShrinkingE2ETests
     [Fact]
     public async Task List_SumGreaterThan100_ShrinksToSingleElementList()
     {
-        Strategy<List<int>> strategy = Generate.Lists(Generate.Integers<int>(0, 200));
+        Strategy<List<int>> strategy = Strategy.Lists(Strategy.Integers<int>(0, 200));
         ConjectureSettings settings = new() { MaxExamples = 200, Seed = 3UL, UseDatabase = false };
 
         TestRunResult result = await TestRunner.Run(settings, data =>

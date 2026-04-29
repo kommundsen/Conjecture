@@ -25,7 +25,7 @@ Then add it to your `.mcp.json`:
 
 | Tool | Description |
 |---|---|
-| `suggest-strategy` | Recommends the right `Generate.*` strategy for a given C# type |
+| `suggest-strategy` | Recommends the right `Strategy.*` strategy for a given C# type |
 | `scaffold-property-test` | Generates a `[Property]` test skeleton from a method signature |
 | `explain-shrink-output` | Parses and explains a Conjecture test failure |
 

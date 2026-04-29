@@ -16,7 +16,7 @@ public class TimeOnlyStrategyTests
     {
         TimeOnly min = new(6, 0, 0);
         TimeOnly max = new(18, 0, 0);
-        Strategy<TimeOnly> strategy = Generate.TimeOnlyValues(min, max);
+        Strategy<TimeOnly> strategy = Strategy.TimeOnlyValues(min, max);
         ConjectureData data = MakeData();
 
         for (int i = 0; i < 1000; i++)
@@ -29,7 +29,7 @@ public class TimeOnlyStrategyTests
     [Fact]
     public void TimeOnlyValues_DefaultRange_DoesNotThrow()
     {
-        Strategy<TimeOnly> strategy = Generate.TimeOnlyValues();
+        Strategy<TimeOnly> strategy = Strategy.TimeOnlyValues();
         ConjectureData data = MakeData();
 
         for (int i = 0; i < 100; i++)
@@ -42,7 +42,7 @@ public class TimeOnlyStrategyTests
     public void TimeOnlyValues_MinEqualsMax_ReturnsConstant()
     {
         TimeOnly t = new(14, 30, 0);
-        Strategy<TimeOnly> strategy = Generate.TimeOnlyValues(t, t);
+        Strategy<TimeOnly> strategy = Strategy.TimeOnlyValues(t, t);
         ConjectureData data = MakeData();
 
         for (int i = 0; i < 20; i++)
@@ -57,6 +57,6 @@ public class TimeOnlyStrategyTests
         TimeOnly later = new(20, 0, 0);
         TimeOnly earlier = new(8, 0, 0);
 
-        Assert.Throws<ArgumentOutOfRangeException>(() => Generate.TimeOnlyValues(later, earlier));
+        Assert.Throws<ArgumentOutOfRangeException>(() => Strategy.TimeOnlyValues(later, earlier));
     }
 }

@@ -14,7 +14,7 @@ internal enum CounterCommand { Increment }
 internal sealed class CounterMachineNoFail : IStateMachine<int, CounterCommand>
 {
     private static readonly Strategy<CounterCommand>[] AllCommands =
-        [Generate.Just(CounterCommand.Increment)];
+        [Strategy.Just(CounterCommand.Increment)];
 
     public int InitialState() => 0;
     public IEnumerable<Strategy<CounterCommand>> Commands(int state) => AllCommands;
@@ -26,7 +26,7 @@ internal sealed class CounterMachineNoFail : IStateMachine<int, CounterCommand>
 internal sealed class CounterMachineFailsAt3 : IStateMachine<int, CounterCommand>
 {
     private static readonly Strategy<CounterCommand>[] AllCommands =
-        [Generate.Just(CounterCommand.Increment)];
+        [Strategy.Just(CounterCommand.Increment)];
 
     public int InitialState() => 0;
     public IEnumerable<Strategy<CounterCommand>> Commands(int state) => AllCommands;
@@ -44,7 +44,7 @@ internal sealed class CounterMachineFailsAt3 : IStateMachine<int, CounterCommand
 internal sealed class CounterMachineFailsAt20 : IStateMachine<int, CounterCommand>
 {
     private static readonly Strategy<CounterCommand>[] AllCommands =
-        [Generate.Just(CounterCommand.Increment)];
+        [Strategy.Just(CounterCommand.Increment)];
 
     public int InitialState() => 0;
     public IEnumerable<Strategy<CounterCommand>> Commands(int state) => AllCommands;
@@ -76,9 +76,9 @@ public class StateMachineBenchmarks
     public void Setup()
     {
         rng = new SplittableRandom(42UL);
-        passingStrategy = Generate.StateMachine<CounterMachineNoFail, int, CounterCommand>(maxSteps: 50);
-        failingShortStrategy = Generate.StateMachine<CounterMachineFailsAt3, int, CounterCommand>(maxSteps: 10);
-        failingLongStrategy = Generate.StateMachine<CounterMachineFailsAt20, int, CounterCommand>(maxSteps: 50);
+        passingStrategy = Strategy.StateMachine<CounterMachineNoFail, int, CounterCommand>(maxSteps: 50);
+        failingShortStrategy = Strategy.StateMachine<CounterMachineFailsAt3, int, CounterCommand>(maxSteps: 10);
+        failingLongStrategy = Strategy.StateMachine<CounterMachineFailsAt20, int, CounterCommand>(maxSteps: 50);
         shrinkSettings = new ConjectureSettings { Seed = 42UL, MaxExamples = 100, UseDatabase = false };
     }
 

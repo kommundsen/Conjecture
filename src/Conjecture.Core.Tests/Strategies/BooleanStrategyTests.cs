@@ -14,7 +14,7 @@ public class BooleanStrategyTests
     [Fact]
     public void Booleans_ReturnsStrategy()
     {
-        var strategy = Generate.Booleans();
+        var strategy = Strategy.Booleans();
         Assert.NotNull(strategy);
         Assert.IsAssignableFrom<Strategy<bool>>(strategy);
     }
@@ -22,7 +22,7 @@ public class BooleanStrategyTests
     [Fact]
     public void Booleans_ReturnsBothValues()
     {
-        var strategy = Generate.Booleans();
+        var strategy = Strategy.Booleans();
         var data = MakeData();
         var seenTrue = false;
         var seenFalse = false;
@@ -41,7 +41,7 @@ public class BooleanStrategyTests
     [Fact]
     public void BooleanStrategy_Next_RecordsIRNode()
     {
-        var strategy = Generate.Booleans();
+        var strategy = Strategy.Booleans();
         var data = MakeData();
 
         strategy.Generate(data);

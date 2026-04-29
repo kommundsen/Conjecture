@@ -31,6 +31,6 @@ internal static class TestHelpers
         refs.Add(MetadataReference.CreateFromFile(Path.Combine(runtimeDir, "System.Collections.dll")));
         refs.Add(MetadataReference.CreateFromFile(Path.Combine(runtimeDir, "System.Numerics.dll")));
         refs.Add(MetadataReference.CreateFromFile(
-            typeof(Conjecture.Core.Generate).Assembly.Location));
+            typeof(Conjecture.Core.Strategy).Assembly.Location));
     }
 }

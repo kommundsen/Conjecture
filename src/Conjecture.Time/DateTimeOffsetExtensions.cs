@@ -25,11 +25,11 @@ public static class DateTimeOffsetExtensions
         /// <summary>Returns a strategy that generates values within ±30 minutes of midnight UTC.</summary>
         public Strategy<DateTimeOffset> NearMidnight()
         {
-            return Generate.Compose<DateTimeOffset>(ctx =>
+            return Strategy.Compose<DateTimeOffset>(ctx =>
             {
                 DateTimeOffset base_ = ctx.Generate(s);
                 DateTimeOffset utcDate = new(base_.UtcDateTime.Date, TimeSpan.Zero);
-                long jitterTicks = ctx.Generate(Generate.Integers<long>(
+                long jitterTicks = ctx.Generate(Strategy.Integers<long>(
                     -TimeSpan.FromMinutes(30).Ticks,
                     TimeSpan.FromMinutes(30).Ticks));
                 return utcDate.AddTicks(jitterTicks);
@@ -39,12 +39,12 @@ public static class DateTimeOffsetExtensions
         /// <summary>Returns a strategy that generates values within ±1 day of Feb 29 in a leap year.</summary>
         public Strategy<DateTimeOffset> NearLeapYear()
         {
-            return Generate.Compose<DateTimeOffset>(ctx =>
+            return Strategy.Compose<DateTimeOffset>(ctx =>
             {
-                int year = ctx.Generate(Generate.Integers<int>(1970, 2400));
+                int year = ctx.Generate(Strategy.Integers<int>(1970, 2400));
                 ctx.Assume(DateTime.IsLeapYear(year));
                 DateTimeOffset feb29 = new(year, 2, 29, 0, 0, 0, TimeSpan.Zero);
-                long jitterTicks = ctx.Generate(Generate.Integers<long>(
+                long jitterTicks = ctx.Generate(Strategy.Integers<long>(
                     -TimeSpan.FromDays(1).Ticks,
                     TimeSpan.FromDays(1).Ticks));
                 return feb29.AddTicks(jitterTicks);
@@ -56,11 +56,11 @@ public static class DateTimeOffsetExtensions
         {
             long maxJitter = TimeSpan.FromHours(1).Ticks;
 
-            return Generate.Compose<DateTimeOffset>(ctx =>
+            return Strategy.Compose<DateTimeOffset>(ctx =>
             {
-                int index = ctx.Generate(Generate.Integers<int>(0, EpochAnchors.Length - 1));
+                int index = ctx.Generate(Strategy.Integers<int>(0, EpochAnchors.Length - 1));
                 DateTimeOffset anchor = EpochAnchors[index];
-                long jitterTicks = ctx.Generate(Generate.Integers<long>(-maxJitter, maxJitter));
+                long jitterTicks = ctx.Generate(Strategy.Integers<long>(-maxJitter, maxJitter));
                 long clampedTicks = Math.Clamp(
                     anchor.Ticks + jitterTicks,
                     DateTimeOffset.MinValue.Ticks,
@@ -72,7 +72,7 @@ public static class DateTimeOffsetExtensions
         /// <summary>Returns a strategy that generates values within ±1 hour of a DST transition in <paramref name="zone"/>.</summary>
         public Strategy<DateTimeOffset> NearDstTransition(TimeZoneInfo? zone = null)
         {
-            return Generate.Compose<DateTimeOffset>(ctx =>
+            return Strategy.Compose<DateTimeOffset>(ctx =>
             {
                 TimeZoneInfo resolvedZone = zone ?? PickZoneWithRules(ctx);
                 List<DateTimeOffset> transitions = GetTransitions(resolvedZone);
@@ -82,9 +82,9 @@ public static class DateTimeOffsetExtensions
                     return ctx.Generate(s.NearEpoch());
                 }
 
-                int index = ctx.Generate(Generate.Integers<int>(0, transitions.Count - 1));
+                int index = ctx.Generate(Strategy.Integers<int>(0, transitions.Count - 1));
                 DateTimeOffset transition = transitions[index];
-                long jitterTicks = ctx.Generate(Generate.Integers<long>(
+                long jitterTicks = ctx.Generate(Strategy.Integers<long>(
                     -TimeSpan.FromHours(1).Ticks,
                     TimeSpan.FromHours(1).Ticks));
                 return transition.AddTicks(jitterTicks);
@@ -108,10 +108,10 @@ public static class DateTimeOffsetExtensions
         /// </summary>
         public Strategy<(DateTimeOffset Original, DateTimeOffset Stripped)> WithStrippedOffset()
         {
-            return Generate.Compose<(DateTimeOffset Original, DateTimeOffset Stripped)>(ctx =>
+            return Strategy.Compose<(DateTimeOffset Original, DateTimeOffset Stripped)>(ctx =>
             {
                 DateTimeOffset dto = ctx.Generate(s);
-                int offsetMinutes = ctx.Generate(Generate.Integers<int>(-840, 840));
+                int offsetMinutes = ctx.Generate(Strategy.Integers<int>(-840, 840));
                 TimeSpan offset = TimeSpan.FromMinutes(offsetMinutes);
                 DateTimeOffset original = new(dto.Ticks, offset);
                 DateTimeOffset stripped = new(dto.Ticks, TimeSpan.Zero);
@@ -127,7 +127,7 @@ public static class DateTimeOffsetExtensions
             return TimeZoneInfo.Utc;
         }
 
-        int index = ctx.Generate(Generate.Integers<int>(0, ZonesWithDst.Count - 1));
+        int index = ctx.Generate(Strategy.Integers<int>(0, ZonesWithDst.Count - 1));
         return ZonesWithDst[index];
     }
 

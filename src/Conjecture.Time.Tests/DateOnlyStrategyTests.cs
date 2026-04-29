@@ -13,7 +13,7 @@ public class DateOnlyStrategyTests
     {
         DateOnly min = new(2020, 1, 1);
         DateOnly max = new(2025, 12, 31);
-        Strategy<DateOnly> strategy = Generate.DateOnlyValues(min, max);
+        Strategy<DateOnly> strategy = Strategy.DateOnlyValues(min, max);
 
         IReadOnlyList<DateOnly> samples = DataGen.Sample(strategy, count: 50, seed: 1UL);
 
@@ -27,7 +27,7 @@ public class DateOnlyStrategyTests
     [Fact]
     public void NearMonthBoundary_ValuesAreOnLastOrFirstDay()
     {
-        Strategy<DateOnly> strategy = Generate.DateOnlyValues().NearMonthBoundary();
+        Strategy<DateOnly> strategy = Strategy.DateOnlyValues().NearMonthBoundary();
 
         IReadOnlyList<DateOnly> samples = DataGen.Sample(strategy, count: 50, seed: 1UL);
 
@@ -42,7 +42,7 @@ public class DateOnlyStrategyTests
     [Fact]
     public void NearLeapDay_ValuesAreWithinOneDayOfFeb29()
     {
-        Strategy<DateOnly> strategy = Generate.DateOnlyValues().NearLeapDay();
+        Strategy<DateOnly> strategy = Strategy.DateOnlyValues().NearLeapDay();
 
         IReadOnlyList<DateOnly> samples = DataGen.Sample(strategy, count: 50, seed: 1UL);
 

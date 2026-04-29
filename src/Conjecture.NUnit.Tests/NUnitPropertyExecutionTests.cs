@@ -13,7 +13,7 @@ namespace Conjecture.NUnit.Tests;
 
 file sealed class PositiveInts : IStrategyProvider<int>
 {
-    public Strategy<int> Create() => Generate.Integers(1, int.MaxValue);
+    public Strategy<int> Create() => Strategy.Integers(1, int.MaxValue);
 }
 
 /// <summary>
@@ -156,7 +156,7 @@ public class NUnitPropertyExecutionTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            int x = Generate.Integers<int>().Generate(data);
+            int x = Strategy.Integers<int>().Generate(data);
             if (x > 5) { throw new Exception("fail"); }
         });
 
@@ -173,7 +173,7 @@ public class NUnitPropertyExecutionTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            int x = Generate.Integers<int>().Generate(data);
+            int x = Strategy.Integers<int>().Generate(data);
             if (x > 5) { throw new Exception("fail"); }
         });
 
@@ -190,8 +190,8 @@ public class NUnitPropertyExecutionTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            _ = Generate.Integers<int>().Generate(data);
-            _ = Generate.Booleans().Generate(data);
+            _ = Strategy.Integers<int>().Generate(data);
+            _ = Strategy.Booleans().Generate(data);
             throw new Exception("always fail");
         });
 

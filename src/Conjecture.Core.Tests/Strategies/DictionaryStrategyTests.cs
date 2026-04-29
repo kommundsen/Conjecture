@@ -14,7 +14,7 @@ public class DictionaryStrategyTests
     [Fact]
     public void Dictionaries_ProducesIReadOnlyDictionary()
     {
-        var strategy = Generate.Dictionaries(Generate.Integers<int>(0, 100), Generate.Strings());
+        var strategy = Strategy.Dictionaries(Strategy.Integers<int>(0, 100), Strategy.Strings());
         var result = strategy.Generate(MakeData());
         Assert.IsAssignableFrom<IReadOnlyDictionary<int, string>>(result);
     }
@@ -22,7 +22,7 @@ public class DictionaryStrategyTests
     [Fact]
     public void Dictionaries_KeysAreUnique()
     {
-        var strategy = Generate.Dictionaries(Generate.Integers<int>(0, 100), Generate.Strings());
+        var strategy = Strategy.Dictionaries(Strategy.Integers<int>(0, 100), Strategy.Strings());
         for (var i = 0; i < 200; i++)
         {
             var result = strategy.Generate(MakeData((ulong)i));
@@ -33,7 +33,7 @@ public class DictionaryStrategyTests
     [Fact]
     public void Dictionaries_RespectsMinSizeAndMaxSize()
     {
-        var strategy = Generate.Dictionaries(Generate.Integers<int>(0, 100), Generate.Strings(), minSize: 2, maxSize: 5);
+        var strategy = Strategy.Dictionaries(Strategy.Integers<int>(0, 100), Strategy.Strings(), minSize: 2, maxSize: 5);
         for (var i = 0; i < 100; i++)
         {
             var count = strategy.Generate(MakeData((ulong)i)).Count;
@@ -44,7 +44,7 @@ public class DictionaryStrategyTests
     [Fact]
     public void Dictionaries_EmptyDictionaryPossibleWhenMinSizeIsZero()
     {
-        var strategy = Generate.Dictionaries(Generate.Integers<int>(0, 100), Generate.Strings(), minSize: 0, maxSize: 10);
+        var strategy = Strategy.Dictionaries(Strategy.Integers<int>(0, 100), Strategy.Strings(), minSize: 0, maxSize: 10);
         var seenEmpty = false;
         for (var i = 0; i < 200; i++)
         {
@@ -60,7 +60,7 @@ public class DictionaryStrategyTests
     [Fact]
     public void Dictionaries_DeterministicWithSameSeed()
     {
-        var strategy = Generate.Dictionaries(Generate.Integers<int>(0, 100), Generate.Strings());
+        var strategy = Strategy.Dictionaries(Strategy.Integers<int>(0, 100), Strategy.Strings());
         var dict1 = strategy.Generate(MakeData(99UL));
         var dict2 = strategy.Generate(MakeData(99UL));
         Assert.Equal(dict1.OrderBy(kv => kv.Key), dict2.OrderBy(kv => kv.Key));

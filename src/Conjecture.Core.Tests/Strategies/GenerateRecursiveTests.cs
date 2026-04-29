@@ -14,9 +14,9 @@ public class GenerateRecursiveTests
     [Fact]
     public void Recursive_WithExplicitMaxDepth_GeneratesValuesInRange()
     {
-        Strategy<int> strategy = Generate.Recursive<int>(
-            Generate.Just(0),
-            self => Generate.OneOf(Generate.Just(0), self.Select(n => n + 1)),
+        Strategy<int> strategy = Strategy.Recursive<int>(
+            Strategy.Just(0),
+            self => Strategy.OneOf(Strategy.Just(0), self.Select(n => n + 1)),
             maxDepth: 3);
 
         for (ulong seed = 0; seed < 50; seed++)
@@ -32,9 +32,9 @@ public class GenerateRecursiveTests
     [Fact]
     public void Recursive_DefaultMaxDepth_GeneratesValuesUpTo5()
     {
-        Strategy<int> strategy = Generate.Recursive<int>(
-            Generate.Just(0),
-            self => Generate.OneOf(Generate.Just(0), self.Select(n => n + 1)));
+        Strategy<int> strategy = Strategy.Recursive<int>(
+            Strategy.Just(0),
+            self => Strategy.OneOf(Strategy.Just(0), self.Select(n => n + 1)));
 
         for (ulong seed = 0; seed < 50; seed++)
         {
@@ -50,22 +50,22 @@ public class GenerateRecursiveTests
     public void Recursive_NullBaseCase_ThrowsArgumentNullException()
     {
         Assert.Throws<ArgumentNullException>(() =>
-            Generate.Recursive<int>(null!, self => self));
+            Strategy.Recursive<int>(null!, self => self));
     }
 
     [Fact]
     public void Recursive_NullRecursive_ThrowsArgumentNullException()
     {
         Assert.Throws<ArgumentNullException>(() =>
-            Generate.Recursive<int>(Generate.Just(0), null!));
+            Strategy.Recursive<int>(Strategy.Just(0), null!));
     }
 
     [Fact]
     public void Recursive_ComposesWithSelect()
     {
-        Strategy<string> strategy = Generate.Recursive<int>(
-            Generate.Just(0),
-            self => Generate.OneOf(Generate.Just(0), self.Select(n => n + 1)),
+        Strategy<string> strategy = Strategy.Recursive<int>(
+            Strategy.Just(0),
+            self => Strategy.OneOf(Strategy.Just(0), self.Select(n => n + 1)),
             maxDepth: 3)
             .Select(n => n.ToString());
 
@@ -80,9 +80,9 @@ public class GenerateRecursiveTests
     [Fact]
     public void Recursive_ComposesWithWhere()
     {
-        Strategy<int> strategy = Generate.Recursive<int>(
-            Generate.Just(0),
-            self => Generate.OneOf(Generate.Just(0), self.Select(n => n + 1)),
+        Strategy<int> strategy = Strategy.Recursive<int>(
+            Strategy.Just(0),
+            self => Strategy.OneOf(Strategy.Just(0), self.Select(n => n + 1)),
             maxDepth: 3)
             .Where(n => n % 2 == 0);
 
@@ -96,11 +96,11 @@ public class GenerateRecursiveTests
     [Fact]
     public void Recursive_ComposesWithSelectMany()
     {
-        Strategy<(int, int)> strategy = Generate.Recursive<int>(
-            Generate.Just(0),
-            self => Generate.OneOf(Generate.Just(0), self.Select(n => n + 1)),
+        Strategy<(int, int)> strategy = Strategy.Recursive<int>(
+            Strategy.Just(0),
+            self => Strategy.OneOf(Strategy.Just(0), self.Select(n => n + 1)),
             maxDepth: 2)
-            .SelectMany(n => Generate.Just(n * 10).Select(m => (n, m)));
+            .SelectMany(n => Strategy.Just(n * 10).Select(m => (n, m)));
 
         ConjectureData data = MakeData();
         for (int i = 0; i < 50; i++)
@@ -113,12 +113,12 @@ public class GenerateRecursiveTests
     [Fact]
     public void Recursive_InGenCompose_WorksViaCtxGenerate()
     {
-        Strategy<int> recursive = Generate.Recursive<int>(
-            Generate.Just(0),
-            self => Generate.OneOf(Generate.Just(0), self.Select(n => n + 1)),
+        Strategy<int> recursive = Strategy.Recursive<int>(
+            Strategy.Just(0),
+            self => Strategy.OneOf(Strategy.Just(0), self.Select(n => n + 1)),
             maxDepth: 3);
 
-        Strategy<int> composed = Generate.Compose(ctx => ctx.Generate(recursive));
+        Strategy<int> composed = Strategy.Compose(ctx => ctx.Generate(recursive));
 
         ConjectureData data = MakeData();
         for (int i = 0; i < 50; i++)

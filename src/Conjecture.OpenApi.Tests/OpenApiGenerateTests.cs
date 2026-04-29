@@ -130,7 +130,7 @@ public sealed class OpenApiGenerateTests
         string path = WriteTempFile();
         try
         {
-            OpenApiDocument doc = await Generate.FromOpenApi(path);
+            OpenApiDocument doc = await Strategy.FromOpenApi(path);
             Assert.NotNull(doc);
         }
         finally
@@ -146,7 +146,7 @@ public sealed class OpenApiGenerateTests
         try
         {
             FileInfo file = new(path);
-            OpenApiDocument doc = await Generate.FromOpenApi(file);
+            OpenApiDocument doc = await Strategy.FromOpenApi(file);
             Assert.NotNull(doc);
         }
         finally
@@ -162,7 +162,7 @@ public sealed class OpenApiGenerateTests
         try
         {
             Uri uri = new(path);
-            OpenApiDocument doc = await Generate.FromOpenApi(uri);
+            OpenApiDocument doc = await Strategy.FromOpenApi(uri);
             Assert.NotNull(doc);
         }
         finally
@@ -177,7 +177,7 @@ public sealed class OpenApiGenerateTests
         string path = WriteTempFile();
         try
         {
-            OpenApiDocument doc = await Generate.FromOpenApi(path);
+            OpenApiDocument doc = await Strategy.FromOpenApi(path);
             Strategy<JsonElement> strategy = doc.RequestBody("POST", "/pets");
             Assert.NotNull(strategy);
         }
@@ -193,7 +193,7 @@ public sealed class OpenApiGenerateTests
         string path = WriteTempFile();
         try
         {
-            OpenApiDocument doc = await Generate.FromOpenApi(path);
+            OpenApiDocument doc = await Strategy.FromOpenApi(path);
             Strategy<JsonElement> strategy = doc.RequestBody("POST", "/pets");
             IReadOnlyList<JsonElement> samples = DataGen.Sample(strategy, 20, 42UL);
 
@@ -215,7 +215,7 @@ public sealed class OpenApiGenerateTests
         string path = WriteTempFile();
         try
         {
-            OpenApiDocument doc = await Generate.FromOpenApi(path);
+            OpenApiDocument doc = await Strategy.FromOpenApi(path);
             Strategy<JsonElement> strategy = doc.ResponseBody("GET", "/pets", 200);
             Assert.NotNull(strategy);
         }
@@ -231,7 +231,7 @@ public sealed class OpenApiGenerateTests
         string path = WriteTempFile();
         try
         {
-            OpenApiDocument doc = await Generate.FromOpenApi(path);
+            OpenApiDocument doc = await Strategy.FromOpenApi(path);
             Strategy<JsonElement> strategy = doc.PathParameter("GET", "/pets/{petId}", "petId");
             IReadOnlyList<JsonElement> samples = DataGen.Sample(strategy, 20, 42UL);
 
@@ -253,7 +253,7 @@ public sealed class OpenApiGenerateTests
         string path = WriteTempFile();
         try
         {
-            OpenApiDocument doc = await Generate.FromOpenApi(path);
+            OpenApiDocument doc = await Strategy.FromOpenApi(path);
             Strategy<JsonElement> strategy = doc.QueryParameter("GET", "/pets", "limit");
             IReadOnlyList<JsonElement> samples = DataGen.Sample(strategy, 20, 42UL);
 
@@ -273,6 +273,6 @@ public sealed class OpenApiGenerateTests
     public async Task FromOpenApi_NonExistentFilePath_ThrowsException()
     {
         await Assert.ThrowsAnyAsync<Exception>(
-            static async () => await Generate.FromOpenApi("/nonexistent/path/petstore.json"));
+            static async () => await Strategy.FromOpenApi("/nonexistent/path/petstore.json"));
     }
 }

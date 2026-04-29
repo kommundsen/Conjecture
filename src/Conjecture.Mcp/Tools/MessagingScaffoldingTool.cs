@@ -238,7 +238,7 @@ internal static class MessagingScaffoldingTool
         AppendBodyTypeComment(sb, bodyType);
         sb.AppendLine("        await Property.ForAll(");
         sb.AppendLine(needsFixture ? "            fixture.Target," : "            bus,");
-        sb.AppendLine($"            Generate.Messaging.Publish(\"{destination}\", Generate.Bytes(0, 1024)),");
+        sb.AppendLine($"            Strategy.Messaging.Publish(\"{destination}\", Strategy.Bytes(0, 1024)),");
         sb.AppendLine("            async (target, sent) =>");
         sb.AppendLine("            {");
         sb.AppendLine("                await target.ExecuteAsync(sent, ct);");
@@ -257,10 +257,10 @@ internal static class MessagingScaffoldingTool
         switch (bodyType)
         {
             case "protobuf":
-                sb.AppendLine("        // Suggested strategy: Generate.FromProtobuf<T>()");
+                sb.AppendLine("        // Suggested strategy: Strategy.FromProtobuf<T>()");
                 break;
             case "jsonschema":
-                sb.AppendLine("        // Suggested strategy: Generate.FromJsonSchema(schema)");
+                sb.AppendLine("        // Suggested strategy: Strategy.FromJsonSchema(schema)");
                 break;
         }
     }

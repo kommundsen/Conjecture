@@ -27,7 +27,7 @@ public class StrategyToolsAspNetCoreEFCoreTypesTests
     {
         string result = StrategyTools.SuggestForType("DbContext");
 
-        Assert.Contains("Generate.Entity", result);
+        Assert.Contains("Strategy.Entity", result);
         Assert.DoesNotContain("AspNetCoreDbTarget", result, StringComparison.Ordinal);
         Assert.DoesNotContain("AssertNoPartialWritesOnErrorAsync", result, StringComparison.Ordinal);
     }

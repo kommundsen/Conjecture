@@ -26,7 +26,7 @@ public sealed class ReDoSHunterTests
     {
         string pattern = @"(a+)+$";
         DotNetRegex slowRegex = new(pattern, RegexOptions.None, TimeSpan.FromMilliseconds(10));
-        Strategy<string> strategy = Generate.ReDoSHunter(pattern, maxMatchMs: 5);
+        Strategy<string> strategy = Strategy.ReDoSHunter(pattern, maxMatchMs: 5);
 
         IReadOnlyList<string> samples = DataGen.Sample(strategy, SampleSize, Seed);
 
@@ -44,7 +44,7 @@ public sealed class ReDoSHunterTests
     {
         string pattern = @"([a-zA-Z]+)*$";
         DotNetRegex slowRegex = new(pattern, RegexOptions.None, TimeSpan.FromMilliseconds(10));
-        Strategy<string> strategy = Generate.ReDoSHunter(pattern, maxMatchMs: 5);
+        Strategy<string> strategy = Strategy.ReDoSHunter(pattern, maxMatchMs: 5);
 
         IReadOnlyList<string> samples = DataGen.Sample(strategy, SampleSize, Seed);
 
@@ -62,7 +62,7 @@ public sealed class ReDoSHunterTests
     {
         string pattern = @"(a|aa)+$";
         DotNetRegex slowRegex = new(pattern, RegexOptions.None, TimeSpan.FromMilliseconds(10));
-        Strategy<string> strategy = Generate.ReDoSHunter(pattern, maxMatchMs: 5);
+        Strategy<string> strategy = Strategy.ReDoSHunter(pattern, maxMatchMs: 5);
 
         IReadOnlyList<string> samples = DataGen.Sample(strategy, SampleSize, Seed);
 
@@ -80,7 +80,7 @@ public sealed class ReDoSHunterTests
     {
         string pattern = @"^[a-z]+$";
         DotNetRegex regex = new(pattern);
-        Strategy<string> strategy = Generate.ReDoSHunter(pattern, maxMatchMs: 5);
+        Strategy<string> strategy = Strategy.ReDoSHunter(pattern, maxMatchMs: 5);
 
         IReadOnlyList<string> samples = DataGen.Sample(strategy, SampleSize, Seed);
 
@@ -94,7 +94,7 @@ public sealed class ReDoSHunterTests
     {
         DotNetRegex regex = new("a+", RegexOptions.NonBacktracking);
 
-        Strategy<string> strategy = Generate.ReDoSHunter(regex, maxMatchMs: 5);
+        Strategy<string> strategy = Strategy.ReDoSHunter(regex, maxMatchMs: 5);
 
         Assert.Contains("non-backtracking", strategy.Label, StringComparison.OrdinalIgnoreCase);
     }
@@ -104,7 +104,7 @@ public sealed class ReDoSHunterTests
     {
         DotNetRegex regex = new("a+", RegexOptions.NonBacktracking);
         DotNetRegex verifyRegex = new("a+");
-        Strategy<string> strategy = Generate.ReDoSHunter(regex, maxMatchMs: 5);
+        Strategy<string> strategy = Strategy.ReDoSHunter(regex, maxMatchMs: 5);
 
         IReadOnlyList<string> samples = DataGen.Sample(strategy, SampleSize, Seed);
 
@@ -118,7 +118,7 @@ public sealed class ReDoSHunterTests
     {
         string pattern = @"(a+)+$";
         DotNetRegex slowRegex = new(pattern, RegexOptions.None, TimeSpan.FromMilliseconds(5));
-        Strategy<string> strategy = Generate.ReDoSHunter(pattern, maxMatchMs: 5);
+        Strategy<string> strategy = Strategy.ReDoSHunter(pattern, maxMatchMs: 5);
 
         IReadOnlyList<string> samples = DataGen.Sample(strategy, SampleSize, Seed);
 

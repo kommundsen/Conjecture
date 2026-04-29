@@ -16,7 +16,7 @@ public class DateOnlyStrategyTests
     {
         DateOnly min = new(2000, 1, 1);
         DateOnly max = new(2030, 12, 31);
-        Strategy<DateOnly> strategy = Generate.DateOnlyValues(min, max);
+        Strategy<DateOnly> strategy = Strategy.DateOnlyValues(min, max);
         ConjectureData data = MakeData();
 
         for (int i = 0; i < 1000; i++)
@@ -29,7 +29,7 @@ public class DateOnlyStrategyTests
     [Fact]
     public void DateOnlyValues_DefaultRange_DoesNotThrow()
     {
-        Strategy<DateOnly> strategy = Generate.DateOnlyValues();
+        Strategy<DateOnly> strategy = Strategy.DateOnlyValues();
         ConjectureData data = MakeData();
 
         for (int i = 0; i < 100; i++)
@@ -42,7 +42,7 @@ public class DateOnlyStrategyTests
     public void DateOnlyValues_MinEqualsMax_ReturnsConstant()
     {
         DateOnly t = new(2025, 3, 14);
-        Strategy<DateOnly> strategy = Generate.DateOnlyValues(t, t);
+        Strategy<DateOnly> strategy = Strategy.DateOnlyValues(t, t);
         ConjectureData data = MakeData();
 
         for (int i = 0; i < 20; i++)
@@ -57,6 +57,6 @@ public class DateOnlyStrategyTests
         DateOnly later = new(2030, 1, 1);
         DateOnly earlier = new(2020, 1, 1);
 
-        Assert.Throws<ArgumentOutOfRangeException>(() => Generate.DateOnlyValues(later, earlier));
+        Assert.Throws<ArgumentOutOfRangeException>(() => Strategy.DateOnlyValues(later, earlier));
     }
 }

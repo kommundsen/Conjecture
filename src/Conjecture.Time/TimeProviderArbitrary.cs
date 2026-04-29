@@ -18,7 +18,7 @@ public sealed class TimeProviderArbitrary : IStrategyProvider<TimeProvider>
     /// <summary>Returns a strategy that generates fresh <see cref="FakeTimeProvider"/> instances.</summary>
     public static Strategy<TimeProvider> Create()
     {
-        return Generate.Compose<TimeProvider>(static _ => new FakeTimeProvider());
+        return Strategy.Compose<TimeProvider>(static _ => new FakeTimeProvider());
     }
 
     Strategy<TimeProvider> IStrategyProvider<TimeProvider>.Create()

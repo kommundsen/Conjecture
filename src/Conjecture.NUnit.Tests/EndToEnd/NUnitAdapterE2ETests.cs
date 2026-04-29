@@ -12,7 +12,7 @@ namespace Conjecture.NUnit.Tests.EndToEnd;
 
 file sealed class BoundedPositiveInts : IStrategyProvider<int>
 {
-    public Strategy<int> Create() => Generate.Integers<int>(1, 100);
+    public Strategy<int> Create() => Strategy.Integers<int>(1, 100);
 }
 
 /// <summary>
@@ -42,7 +42,7 @@ public sealed class NUnitAdapterE2ETests
     // ── Helpers for resolver-based tests ────────────────────────────────────────
 
     private static Strategy<int> EvenPositiveInts() =>
-        Generate.Integers<int>(1, 50).Where(n => n % 2 == 0);
+        Strategy.Integers<int>(1, 50).Where(n => n % 2 == 0);
 
 #pragma warning disable IDE0060
     private static void IntMethod(int x) { }
@@ -248,7 +248,7 @@ public sealed class NUnitAdapterE2ETests
         TestRunResult result = await TestRunner.RunAsync(settings, async data =>
         {
             await Task.Yield();
-            _ = Generate.Integers<int>().Generate(data);
+            _ = Strategy.Integers<int>().Generate(data);
             count++;
         });
 

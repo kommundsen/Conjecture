@@ -13,7 +13,7 @@ public static class StrategyExtensionProperties
         /// </summary>
         /// <remarks>
         /// For tight value ranges, prefer a targeted strategy such as
-        /// <c>Generate.Integers(1, 100)</c> over chaining <c>.Where()</c>,
+        /// <c>Strategy.Integers(1, 100)</c> over chaining <c>.Where()</c>,
         /// which may exhaust the filter budget on sparse distributions.
         /// </remarks>
         public Strategy<int> Positive => s.Where(static x => x > 0);
@@ -23,7 +23,7 @@ public static class StrategyExtensionProperties
         /// </summary>
         /// <remarks>
         /// For tight value ranges, prefer a targeted strategy such as
-        /// <c>Generate.Integers(-100, -1)</c> over chaining <c>.Where()</c>,
+        /// <c>Strategy.Integers(-100, -1)</c> over chaining <c>.Where()</c>,
         /// which may exhaust the filter budget on sparse distributions.
         /// </remarks>
         public Strategy<int> Negative => s.Where(static x => x < 0);
@@ -33,7 +33,7 @@ public static class StrategyExtensionProperties
         /// </summary>
         /// <remarks>
         /// For tight value ranges, prefer a targeted strategy such as
-        /// <c>Generate.Integers(1, 100)</c> over chaining <c>.Where()</c>,
+        /// <c>Strategy.Integers(1, 100)</c> over chaining <c>.Where()</c>,
         /// which may exhaust the filter budget on sparse distributions.
         /// </remarks>
         public Strategy<int> NonZero => s.Where(static x => x is not 0);
@@ -46,7 +46,7 @@ public static class StrategyExtensionProperties
         /// </summary>
         /// <remarks>
         /// For tight value ranges, prefer a targeted strategy such as
-        /// <c>Generate.Strings(minLength: 1)</c> over chaining <c>.Where()</c>,
+        /// <c>Strategy.Strings(minLength: 1)</c> over chaining <c>.Where()</c>,
         /// which may exhaust the filter budget on sparse distributions.
         /// </remarks>
         public Strategy<string> NonEmpty => s.Where(static x => x.Length > 0);
@@ -59,7 +59,7 @@ public static class StrategyExtensionProperties
         /// </summary>
         /// <remarks>
         /// For tight value ranges, prefer a targeted strategy such as
-        /// <c>Generate.Lists(inner, minSize: 1)</c> over chaining <c>.Where()</c>,
+        /// <c>Strategy.Lists(inner, minSize: 1)</c> over chaining <c>.Where()</c>,
         /// which may exhaust the filter budget on sparse distributions.
         /// </remarks>
         public Strategy<List<T>> NonEmpty => s.Where(static x => x.Count > 0);
@@ -69,6 +69,6 @@ public static class StrategyExtensionProperties
     {
         /// <summary>Combines two strategies into a single strategy that draws from either, chosen uniformly at random.</summary>
         public static Strategy<T> operator |(Strategy<T> left, Strategy<T> right)
-            => Generate.OneOf(left, right);
+            => Strategy.OneOf(left, right);
     }
 }

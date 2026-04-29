@@ -18,7 +18,7 @@ public static class RecurringEventExtensions
         /// </summary>
         public Strategy<RecurringEventSample> NearDstTransition()
         {
-            return Generate.Compose<RecurringEventSample>(ctx =>
+            return Strategy.Compose<RecurringEventSample>(ctx =>
             {
                 RecurringEventSample sample = ctx.Generate(s);
                 List<DateTimeOffset> transitions = DstTransitionHelper.GetTransitionsUtc(sample.Zone, yearMinus: 2, yearPlus: 2);
@@ -28,12 +28,12 @@ public static class RecurringEventExtensions
                     return sample;
                 }
 
-                int index = ctx.Generate(Generate.Integers<int>(0, transitions.Count - 1));
+                int index = ctx.Generate(Strategy.Integers<int>(0, transitions.Count - 1));
                 DateTimeOffset transition = transitions[index];
                 TimeSpan windowDuration = sample.WindowEnd - sample.WindowStart;
 
                 // Jitter so the transition lands somewhere inside the window.
-                long jitterTicks = ctx.Generate(Generate.Integers<long>(-windowDuration.Ticks, 0));
+                long jitterTicks = ctx.Generate(Strategy.Integers<long>(-windowDuration.Ticks, 0));
                 DateTimeOffset newWindowStart = transition.AddTicks(jitterTicks);
                 DateTimeOffset newWindowEnd = newWindowStart + windowDuration;
 

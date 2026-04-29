@@ -18,7 +18,7 @@ public class ReportingQualityE2ETests
     [Fact]
     public async Task FailingProperty_WithShrinks_MessageContainsBothFalsifyingAndMinimalSections()
     {
-        Strategy<int> strategy = Generate.Integers<int>(0, 1000);
+        Strategy<int> strategy = Strategy.Integers<int>(0, 1000);
         ConjectureSettings settings = new() { MaxExamples = 200, Seed = 1UL, UseDatabase = false };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
@@ -84,7 +84,7 @@ public class ReportingQualityE2ETests
     [Fact]
     public async Task FailingProperty_StringValue_AppearsInQuotesInMessage()
     {
-        Strategy<string> strategy = Generate.Strings(minLength: 3, maxLength: 5);
+        Strategy<string> strategy = Strategy.Strings(minLength: 3, maxLength: 5);
         ConjectureSettings settings = new() { MaxExamples = 50, Seed = 10UL, UseDatabase = false };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
@@ -112,7 +112,7 @@ public class ReportingQualityE2ETests
     [Fact]
     public async Task FailingProperty_ListValue_AppearsInBracketsInMessage()
     {
-        Strategy<List<int>> strategy = Generate.Lists(Generate.Integers<int>(0, 5), minSize: 2, maxSize: 4);
+        Strategy<List<int>> strategy = Strategy.Lists(Strategy.Integers<int>(0, 5), minSize: 2, maxSize: 4);
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 20UL, UseDatabase = false };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
@@ -175,7 +175,7 @@ public class ReportingQualityE2ETests
     public async Task FailingProperty_SeedInMessage_ReproducesSameCounterexample()
     {
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 40UL, UseDatabase = false };
-        Strategy<int> strategy = Generate.Integers<int>(0, 1000);
+        Strategy<int> strategy = Strategy.Integers<int>(0, 1000);
 
         TestRunResult result1 = await TestRunner.Run(settings, data =>
         {

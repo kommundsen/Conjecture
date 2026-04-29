@@ -29,9 +29,9 @@ internal static class DecimalStrategy
 
         long iMin = (long)scaledMin;
         long iMax = (long)scaledMax;
-        Strategy<long> inner = Generate.Integers<long>(iMin, iMax);
+        Strategy<long> inner = Strategy.Integers<long>(iMin, iMax);
 
-        return Generate.Compose<decimal>(ctx =>
+        return Strategy.Compose<decimal>(ctx =>
         {
             long raw = ctx.Generate(inner);
             decimal result = (decimal)raw / multiplier;

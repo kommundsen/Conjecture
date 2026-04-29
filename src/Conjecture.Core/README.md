@@ -37,7 +37,7 @@ using Conjecture.Xunit;
 
 public sealed class SmallPositiveInt : IStrategyProvider<int>
 {
-    public Strategy<int> Create() => Generate.Integers<int>(1, 100);
+    public Strategy<int> Create() => Strategy.Integers<int>(1, 100);
 }
 
 public class MathTests

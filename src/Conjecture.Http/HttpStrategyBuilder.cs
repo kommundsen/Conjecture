@@ -10,7 +10,7 @@ namespace Conjecture.Http;
 
 /// <summary>
 /// Fluent builder for <see cref="Strategy{T}"/> of <see cref="HttpInteraction"/>.
-/// Entry point: <c>Generate.Http(resourceName)</c>. Terminal: <see cref="Build"/>.
+/// Entry point: <c>Strategy.Http(resourceName)</c>. Terminal: <see cref="Build"/>.
 /// </summary>
 public sealed class HttpStrategyBuilder
 {
@@ -117,7 +117,7 @@ public sealed class HttpStrategyBuilder
         Strategy<object?>? capturedBodyStrategy = this.bodyStrategy;
         IReadOnlyDictionary<string, string>? capturedHeaders = this.headers;
 
-        return Generate.Compose<HttpInteraction>(ctx =>
+        return Strategy.Compose<HttpInteraction>(ctx =>
         {
             object? body = capturedBodyStrategy is not null
                 ? ctx.Generate(capturedBodyStrategy)

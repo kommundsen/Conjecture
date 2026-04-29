@@ -14,7 +14,7 @@ public static class EFCoreGenerateExtensions
 {
     // Both overloads take optional maxDepth; suppress RS0026 as in RegexGenerateExtensions.
 #pragma warning disable RS0026
-    extension(Generate)
+    extension(Strategy)
     {
         /// <summary>Returns a strategy that generates instances of <typeparamref name="T"/> using the given <paramref name="context"/>.</summary>
         public static Strategy<T> Entity<T>(DbContext context, int maxDepth = 2) where T : class
@@ -29,7 +29,7 @@ public static class EFCoreGenerateExtensions
         public static Strategy<T> Entity<T>(Func<DbContext> contextFactory, int maxDepth = 2) where T : class
         {
             ArgumentNullException.ThrowIfNull(contextFactory);
-            return Generate.Compose<T>(ctx =>
+            return Strategy.Compose<T>(ctx =>
             {
                 using DbContext context = contextFactory();
                 Strategy<T> inner = new EntityStrategyBuilder(context.Model)

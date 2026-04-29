@@ -20,8 +20,8 @@ using Conjecture.Messaging.AzureServiceBus;
 await using AzureServiceBusTarget target = AzureServiceBusTarget.Connect(
     "Endpoint=sb://my.servicebus.windows.net/;SharedAccessKeyName=…;SharedAccessKey=…");
 
-Strategy<MessageInteraction> publishes = Generate.Messaging
-    .Publish("orders", Generate.Bytes(0, 1024));
+Strategy<MessageInteraction> publishes = Strategy.Messaging
+    .Publish("orders", Strategy.Bytes(0, 1024));
 
 await target.ExecuteAsync(publishes.Sample(), CancellationToken.None);
 

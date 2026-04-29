@@ -1,11 +1,11 @@
 # Recursive Strategies API Reference
 
-`Generate.Recursive<T>` generates bounded-depth recursive structures (trees, ASTs, JSON-like values) that shrink toward base cases automatically.
+`Strategy.Recursive<T>` generates bounded-depth recursive structures (trees, ASTs, JSON-like values) that shrink toward base cases automatically.
 
 ## API
 
 ```csharp
-Strategy<T> Generate.Recursive<T>(
+Strategy<T> Strategy.Recursive<T>(
     Strategy<T> baseCase,
     Func<Strategy<T>, Strategy<T>> recursive,
     int maxDepth = 5)
@@ -22,15 +22,15 @@ The engine draws a target depth from `[0, maxDepth]` per example. The shrinker r
 ## Example: Expression Trees
 
 ```csharp
-Strategy<Expr> baseCase = Generate.Integers<int>(0, 100)
+Strategy<Expr> baseCase = Strategy.Integers<int>(0, 100)
     .Select(n => (Expr)new Literal(n));
 
-Strategy<Expr> exprStrategy = Generate.Recursive<Expr>(
+Strategy<Expr> exprStrategy = Strategy.Recursive<Expr>(
     baseCase,
-    self => Generate.OneOf(
+    self => Strategy.OneOf(
         baseCase,
-        Generate.Tuples(self, self).Select(t => (Expr)new Add(t.Item1, t.Item2)),
-        Generate.Tuples(self, self).Select(t => (Expr)new Mul(t.Item1, t.Item2))),
+        Strategy.Tuples(self, self).Select(t => (Expr)new Add(t.Item1, t.Item2)),
+        Strategy.Tuples(self, self).Select(t => (Expr)new Mul(t.Item1, t.Item2))),
     maxDepth: 5);
 ```
 
@@ -50,10 +50,10 @@ Recursive strategies are ordinary `Strategy<T>` values:
 ```csharp
 exprStrategy.Where(e => Eval(e) > 0)          // filter
 exprStrategy.Select(ExprDepth)                 // project
-Generate.Tuples(exprStrategy, Generate.Strings()) // combine
+Strategy.Tuples(exprStrategy, Strategy.Strings()) // combine
 ```
 
-`ctx.Generate(recursiveStrategy)` inside `Generate.Compose` integrates depth tracking transparently.
+`ctx.Generate(recursiveStrategy)` inside `Strategy.Compose` integrates depth tracking transparently.
 
 ## Stack Safety
 

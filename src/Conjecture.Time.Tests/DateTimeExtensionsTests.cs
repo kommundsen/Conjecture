@@ -11,7 +11,7 @@ public class DateTimeExtensionsTests
     [Fact]
     public void WithKinds_ValueHasSpecifiedKind()
     {
-        Strategy<(DateTime Value, DateTimeKind Kind)> strategy = Generate.DateTimes().WithKinds();
+        Strategy<(DateTime Value, DateTimeKind Kind)> strategy = Strategy.DateTimes().WithKinds();
 
         IReadOnlyList<(DateTime Value, DateTimeKind Kind)> samples = DataGen.Sample(strategy, count: 30, seed: 1UL);
 
@@ -21,7 +21,7 @@ public class DateTimeExtensionsTests
     [Fact]
     public void WithKinds_AllThreeKindsAreGenerated()
     {
-        Strategy<(DateTime Value, DateTimeKind Kind)> strategy = Generate.DateTimes().WithKinds();
+        Strategy<(DateTime Value, DateTimeKind Kind)> strategy = Strategy.DateTimes().WithKinds();
 
         IReadOnlyList<(DateTime Value, DateTimeKind Kind)> samples = DataGen.Sample(strategy, count: 30, seed: 1UL);
 
@@ -34,7 +34,7 @@ public class DateTimeExtensionsTests
     [Fact]
     public void WithKinds_ShrinksToUtcKind()
     {
-        Strategy<(DateTime Value, DateTimeKind Kind)> strategy = Generate.DateTimes().WithKinds();
+        Strategy<(DateTime Value, DateTimeKind Kind)> strategy = Strategy.DateTimes().WithKinds();
 
         // Seed 0 produces minimum IR values; OneOf index 0 = Utc, so the minimal
         // generated tuple must carry DateTimeKind.Utc.
@@ -46,7 +46,7 @@ public class DateTimeExtensionsTests
     [Fact]
     public void WithKinds_PreservesDateTimeValue()
     {
-        Strategy<(DateTime Value, DateTimeKind Kind)> strategy = Generate.DateTimes().WithKinds();
+        Strategy<(DateTime Value, DateTimeKind Kind)> strategy = Strategy.DateTimes().WithKinds();
 
         IReadOnlyList<(DateTime Value, DateTimeKind Kind)> samples = DataGen.Sample(strategy, count: 30, seed: 2UL);
 

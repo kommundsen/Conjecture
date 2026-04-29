@@ -11,10 +11,10 @@ namespace Conjecture.SelfTests;
 
 public class TargetingSelfTests
 {
-    // Generate.Just(0) draws no IR nodes per element, so the only IR node the HillClimber can
+    // Strategy.Just(0) draws no IR nodes per element, so the only IR node the HillClimber can
     // mutate is the list-size node — isolating size as the sole dimension of variation.
     private static readonly Strategy<List<int>> ListStrategy =
-        Generate.Lists(Generate.Just(0), 0, 100);
+        Strategy.Lists(Strategy.Just(0), 0, 100);
 
     [Property]
     public async Task HillClimbing_MonotoneScoredProperty_ScoreNeverRegressesBelowGenerationBest()

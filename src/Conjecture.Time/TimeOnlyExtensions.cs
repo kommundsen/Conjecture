@@ -17,9 +17,9 @@ public static class TimeOnlyExtensions
         public Strategy<TimeOnly> NearMidnight()
         {
             long threshold = 30 * TimeSpan.TicksPerSecond;
-            Strategy<TimeOnly> nearStart = Generate.TimeOnlyValues(TimeOnly.MinValue, new TimeOnly(threshold));
-            Strategy<TimeOnly> nearEnd = Generate.TimeOnlyValues(new TimeOnly(TimeOnly.MaxValue.Ticks - threshold), TimeOnly.MaxValue);
-            return Generate.OneOf(nearStart, nearEnd);
+            Strategy<TimeOnly> nearStart = Strategy.TimeOnlyValues(TimeOnly.MinValue, new TimeOnly(threshold));
+            Strategy<TimeOnly> nearEnd = Strategy.TimeOnlyValues(new TimeOnly(TimeOnly.MaxValue.Ticks - threshold), TimeOnly.MaxValue);
+            return Strategy.OneOf(nearStart, nearEnd);
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ public static class TimeOnlyExtensions
         {
             long noonTicks = new TimeOnly(12, 0, 0).Ticks;
             long threshold = 30 * TimeSpan.TicksPerSecond;
-            return Generate.TimeOnlyValues(new TimeOnly(noonTicks - threshold), new TimeOnly(noonTicks + threshold));
+            return Strategy.TimeOnlyValues(new TimeOnly(noonTicks - threshold), new TimeOnly(noonTicks + threshold));
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ public static class TimeOnlyExtensions
         public Strategy<TimeOnly> NearEndOfDay()
         {
             long threshold = 30 * TimeSpan.TicksPerSecond;
-            return Generate.TimeOnlyValues(new TimeOnly(TimeOnly.MaxValue.Ticks - threshold), TimeOnly.MaxValue);
+            return Strategy.TimeOnlyValues(new TimeOnly(TimeOnly.MaxValue.Ticks - threshold), TimeOnly.MaxValue);
         }
     }
 }

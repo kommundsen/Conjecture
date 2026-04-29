@@ -127,7 +127,7 @@ public sealed class DatabaseRegressionE2ETests : IDisposable
     [Fact]
     public async Task FailureMessage_IncludesSeed_ForReproduction()
     {
-        Strategy<int> strategy = Generate.Integers<int>(0, 100);
+        Strategy<int> strategy = Strategy.Integers<int>(0, 100);
         ConjectureSettings settings = new() { MaxExamples = 50, UseDatabase = true };
         string testId = "e2e-seed-in-message";
 
@@ -153,7 +153,7 @@ public sealed class DatabaseRegressionE2ETests : IDisposable
     [Fact]
     public async Task FailureMessage_SeedAllowsReproduction_ReplayProducesSameCounterexample()
     {
-        Strategy<int> strategy = Generate.Integers<int>(0, 100);
+        Strategy<int> strategy = Strategy.Integers<int>(0, 100);
 
         // First run: no seed, find a failing example
         ConjectureSettings settings1 = new() { MaxExamples = 50, UseDatabase = false };

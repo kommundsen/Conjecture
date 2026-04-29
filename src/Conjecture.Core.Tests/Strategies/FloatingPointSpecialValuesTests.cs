@@ -11,47 +11,47 @@ public class FloatingPointSpecialValuesTests
     private static double DrawDouble(ulong seed)
     {
         var data = ConjectureData.ForGeneration(new SplittableRandom(seed));
-        return Generate.Doubles().Generate(data);
+        return Strategy.Doubles().Generate(data);
     }
 
     private static float DrawFloat(ulong seed)
     {
         var data = ConjectureData.ForGeneration(new SplittableRandom(seed));
-        return Generate.Floats().Generate(data);
+        return Strategy.Floats().Generate(data);
     }
 
     private static double DrawBoundedDouble(ulong seed)
     {
         var data = ConjectureData.ForGeneration(new SplittableRandom(seed));
-        return Generate.Doubles(0.0, 1.0).Generate(data);
+        return Strategy.Doubles(0.0, 1.0).Generate(data);
     }
 
     [Fact]
     public void Doubles_Unbounded_CanProduceNaN()
     {
         var found = Enumerable.Range(0, 10_000).Any(s => double.IsNaN(DrawDouble((ulong)s)));
-        Assert.True(found, "Expected Generate.Doubles() to produce NaN over 10,000 seeds");
+        Assert.True(found, "Expected Strategy.Doubles() to produce NaN over 10,000 seeds");
     }
 
     [Fact]
     public void Doubles_Unbounded_CanProducePositiveInfinity()
     {
         var found = Enumerable.Range(0, 10_000).Any(s => double.IsPositiveInfinity(DrawDouble((ulong)s)));
-        Assert.True(found, "Expected Generate.Doubles() to produce +Infinity over 10,000 seeds");
+        Assert.True(found, "Expected Strategy.Doubles() to produce +Infinity over 10,000 seeds");
     }
 
     [Fact]
     public void Doubles_Unbounded_CanProduceNegativeInfinity()
     {
         var found = Enumerable.Range(0, 10_000).Any(s => double.IsNegativeInfinity(DrawDouble((ulong)s)));
-        Assert.True(found, "Expected Generate.Doubles() to produce -Infinity over 10,000 seeds");
+        Assert.True(found, "Expected Strategy.Doubles() to produce -Infinity over 10,000 seeds");
     }
 
     [Fact]
     public void Floats_Unbounded_CanProduceNaN()
     {
         var found = Enumerable.Range(0, 10_000).Any(s => float.IsNaN(DrawFloat((ulong)s)));
-        Assert.True(found, "Expected Generate.Floats() to produce NaN over 10,000 seeds");
+        Assert.True(found, "Expected Strategy.Floats() to produce NaN over 10,000 seeds");
     }
 
     [Fact]
@@ -76,6 +76,6 @@ public class FloatingPointSpecialValuesTests
     public void Doubles_Unbounded_CanProduceSubnormals()
     {
         var found = Enumerable.Range(0, 10_000).Any(s => double.IsSubnormal(DrawDouble((ulong)s)));
-        Assert.True(found, "Expected Generate.Doubles() to produce subnormal values over 10,000 seeds");
+        Assert.True(found, "Expected Strategy.Doubles() to produce subnormal values over 10,000 seeds");
     }
 }

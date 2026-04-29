@@ -14,7 +14,7 @@ public class FloatingPointRangeTests
     [Fact]
     public void Doubles_Range_StaysWithinBounds()
     {
-        var strategy = Generate.Doubles(0.0, 1.0);
+        var strategy = Strategy.Doubles(0.0, 1.0);
         var data = MakeData();
 
         for (var i = 0; i < 1000; i++)
@@ -26,7 +26,7 @@ public class FloatingPointRangeTests
     [Fact]
     public void Doubles_NegativeRange_StaysWithinBounds()
     {
-        var strategy = Generate.Doubles(-100.0, -1.0);
+        var strategy = Strategy.Doubles(-100.0, -1.0);
         var data = MakeData();
 
         for (var i = 0; i < 1000; i++)
@@ -38,7 +38,7 @@ public class FloatingPointRangeTests
     [Fact]
     public void Doubles_MinEqualsMax_ReturnsConstant()
     {
-        var strategy = Generate.Doubles(3.14, 3.14);
+        var strategy = Strategy.Doubles(3.14, 3.14);
         var data = MakeData();
 
         for (var i = 0; i < 20; i++)
@@ -50,13 +50,13 @@ public class FloatingPointRangeTests
     [Fact]
     public void Doubles_MinGreaterThanMax_ThrowsArgumentException()
     {
-        Assert.Throws<ArgumentException>(() => Generate.Doubles(1.0, 0.0));
+        Assert.Throws<ArgumentException>(() => Strategy.Doubles(1.0, 0.0));
     }
 
     [Fact]
     public void Floats_Range_StaysWithinBounds()
     {
-        var strategy = Generate.Floats(-1f, 1f);
+        var strategy = Strategy.Floats(-1f, 1f);
         var data = MakeData();
 
         for (var i = 0; i < 1000; i++)
@@ -68,7 +68,7 @@ public class FloatingPointRangeTests
     [Fact]
     public void Floats_MinEqualsMax_ReturnsConstant()
     {
-        var strategy = Generate.Floats(2.5f, 2.5f);
+        var strategy = Strategy.Floats(2.5f, 2.5f);
         var data = MakeData();
 
         for (var i = 0; i < 20; i++)
@@ -80,13 +80,13 @@ public class FloatingPointRangeTests
     [Fact]
     public void Floats_MinGreaterThanMax_ThrowsArgumentException()
     {
-        Assert.Throws<ArgumentException>(() => Generate.Floats(1f, 0f));
+        Assert.Throws<ArgumentException>(() => Strategy.Floats(1f, 0f));
     }
 
     [Fact]
     public void Doubles_Range_ProducesDistinctValues()
     {
-        var strategy = Generate.Doubles(0.0, 1.0);
+        var strategy = Strategy.Doubles(0.0, 1.0);
         var data = MakeData();
         var values = Enumerable.Range(0, 50).Select(_ => strategy.Generate(data)).ToList();
         Assert.True(values.Distinct().Count() > 1, "Expected multiple distinct values in range");
@@ -95,7 +95,7 @@ public class FloatingPointRangeTests
     [Fact]
     public void Floats_Range_ProducesDistinctValues()
     {
-        var strategy = Generate.Floats(0f, 1f);
+        var strategy = Strategy.Floats(0f, 1f);
         var data = MakeData();
         var values = Enumerable.Range(0, 50).Select(_ => strategy.Generate(data)).ToList();
         Assert.True(values.Distinct().Count() > 1, "Expected multiple distinct values in range");

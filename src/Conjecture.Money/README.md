@@ -15,23 +15,23 @@ using Conjecture.Core;
 using Conjecture.Money;
 
 // Generate valid ISO 4217 currency codes
-Strategy<string> currencies = Generate.Iso4217Codes();
+Strategy<string> currencies = Strategy.Iso4217Codes();
 
 // Generate monetary amounts for a given currency
-Strategy<decimal> amounts = Generate.Amounts(min: 0m, max: 1_000_000m, scale: 2);
+Strategy<decimal> amounts = Strategy.Amounts(min: 0m, max: 1_000_000m, scale: 2);
 
 // Generate rounding modes
-Strategy<MidpointRounding> rounding = Generate.RoundingModes();
+Strategy<MidpointRounding> rounding = Strategy.RoundingModes();
 ```
 
 ## API
 
 | Method | Returns | Description |
 |---|---|---|
-| `Generate.Iso4217Codes()` | `Strategy<string>` | Active ISO 4217 alphabetic currency codes, shrinks toward `"USD"` |
-| `Generate.Amounts(min, max, scale)` | `Strategy<decimal>` | Scaled decimal amounts within bounds |
-| `Generate.Decimal(min, max, scale)` | `Strategy<decimal>` | General-purpose scaled decimal generation |
-| `Generate.RoundingModes()` | `Strategy<MidpointRounding>` | All `MidpointRounding` enum values |
+| `Strategy.Iso4217Codes()` | `Strategy<string>` | Active ISO 4217 alphabetic currency codes, shrinks toward `"USD"` |
+| `Strategy.Amounts(min, max, scale)` | `Strategy<decimal>` | Scaled decimal amounts within bounds |
+| `Strategy.Decimal(min, max, scale)` | `Strategy<decimal>` | General-purpose scaled decimal generation |
+| `Strategy.RoundingModes()` | `Strategy<MidpointRounding>` | All `MidpointRounding` enum values |
 
 ## Links
 

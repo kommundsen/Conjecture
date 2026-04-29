@@ -14,14 +14,14 @@ public sealed class JsonSchemaGenerateTests
     [Fact]
     public void FromJsonSchema_IntegerSchemaText_ReturnsNonNullStrategy()
     {
-        Strategy<JsonElement> strategy = Generate.FromJsonSchema("""{"type": "integer"}""");
+        Strategy<JsonElement> strategy = Strategy.FromJsonSchema("""{"type": "integer"}""");
         Assert.NotNull(strategy);
     }
 
     [Fact]
     public void FromJsonSchema_IntegerSchemaText_GeneratesNumberValueKind()
     {
-        Strategy<JsonElement> strategy = Generate.FromJsonSchema("""{"type": "integer"}""");
+        Strategy<JsonElement> strategy = Strategy.FromJsonSchema("""{"type": "integer"}""");
         IReadOnlyList<JsonElement> samples = DataGen.Sample(strategy, 20, 42UL);
         foreach (JsonElement element in samples)
         {
@@ -33,7 +33,7 @@ public sealed class JsonSchemaGenerateTests
     public void FromJsonSchema_JsonElementOverload_GeneratesNumberValueKind()
     {
         using JsonDocument doc = JsonDocument.Parse("""{"type": "integer"}""");
-        Strategy<JsonElement> strategy = Generate.FromJsonSchema(doc.RootElement);
+        Strategy<JsonElement> strategy = Strategy.FromJsonSchema(doc.RootElement);
         IReadOnlyList<JsonElement> samples = DataGen.Sample(strategy, 20, 42UL);
         foreach (JsonElement element in samples)
         {
@@ -49,7 +49,7 @@ public sealed class JsonSchemaGenerateTests
         {
             File.WriteAllText(tempPath, """{"type": "integer"}""");
             FileInfo schemaFile = new(tempPath);
-            Strategy<JsonElement> strategy = Generate.FromJsonSchema(schemaFile);
+            Strategy<JsonElement> strategy = Strategy.FromJsonSchema(schemaFile);
             IReadOnlyList<JsonElement> samples = DataGen.Sample(strategy, 20, 42UL);
             foreach (JsonElement element in samples)
             {
@@ -65,6 +65,6 @@ public sealed class JsonSchemaGenerateTests
     [Fact]
     public void FromJsonSchema_InvalidJsonText_ThrowsJsonExceptionAtConstruction()
     {
-        Assert.ThrowsAny<JsonException>(() => Generate.FromJsonSchema("not valid json"));
+        Assert.ThrowsAny<JsonException>(() => Strategy.FromJsonSchema("not valid json"));
     }
 }

@@ -19,7 +19,7 @@ public static class RegexGenerateExtensions
     // Simple and allocation-free; true LRU is not required for this use case.
     private static readonly ConcurrentDictionary<string, DotNetRegex> Cache = new();
 
-    extension(Generate)
+    extension(Strategy)
     {
         // Matching(string) and Matching(Regex) are intentionally separate overloads; callers always
         // pass one or the other, so the 'ambiguous on optional parameter' warning does not apply.
@@ -28,7 +28,7 @@ public static class RegexGenerateExtensions
         public static Strategy<string> Matching(string pattern, RegexGenOptions? options = null)
         {
             DotNetRegex regex = GetOrAddCached(pattern);
-            return Generate.Matching(regex, options);
+            return Strategy.Matching(regex, options);
         }
 
         /// <summary>Returns a strategy that generates strings matching <paramref name="regex"/>.</summary>
@@ -43,7 +43,7 @@ public static class RegexGenerateExtensions
         public static Strategy<string> NotMatching(string pattern, RegexGenOptions? options = null)
         {
             DotNetRegex regex = GetOrAddCached(pattern);
-            return Generate.NotMatching(regex, options);
+            return Strategy.NotMatching(regex, options);
         }
 
         /// <summary>Returns a strategy that generates strings that do not match <paramref name="regex"/>.</summary>
@@ -54,14 +54,14 @@ public static class RegexGenerateExtensions
 
         /// <summary>Returns a strategy that generates strings that may trigger ReDoS for <paramref name="pattern"/>.</summary>
         public static Strategy<string> ReDoSHunter(string pattern, int maxMatchMs = 5)
-            => Generate.ReDoSHunter(GetOrAddCached(pattern), maxMatchMs);
+            => Strategy.ReDoSHunter(GetOrAddCached(pattern), maxMatchMs);
 
         /// <summary>Returns a strategy that generates strings that may trigger ReDoS for <paramref name="regex"/>.</summary>
         public static Strategy<string> ReDoSHunter(DotNetRegex regex, int maxMatchMs = 5)
         {
             if (regex.Options.HasFlag(RegexOptions.NonBacktracking))
             {
-                return new DelegatingStrategy<string>(Generate.Matching(regex), "redos:non-backtracking");
+                return new DelegatingStrategy<string>(Strategy.Matching(regex), "redos:non-backtracking");
             }
 
             RegexNode root = RegexParser.Parse(regex.ToString(), regex.Options);
@@ -70,46 +70,46 @@ public static class RegexGenerateExtensions
 #pragma warning restore RS0026
 
         /// <summary>Returns a strategy that generates strings matching <see cref="KnownRegex.Email"/>.</summary>
-        public static Strategy<string> Email() => Generate.Matching(KnownRegex.Email);
+        public static Strategy<string> Email() => Strategy.Matching(KnownRegex.Email);
 
         /// <summary>Returns a strategy that generates strings that do not match <see cref="KnownRegex.Email"/>.</summary>
-        public static Strategy<string> NotEmail() => Generate.NotMatching(KnownRegex.Email);
+        public static Strategy<string> NotEmail() => Strategy.NotMatching(KnownRegex.Email);
 
         /// <summary>Returns a strategy that generates strings matching <see cref="KnownRegex.Url"/>.</summary>
-        public static Strategy<string> Url() => Generate.Matching(KnownRegex.Url);
+        public static Strategy<string> Url() => Strategy.Matching(KnownRegex.Url);
 
         /// <summary>Returns a strategy that generates strings that do not match <see cref="KnownRegex.Url"/>.</summary>
-        public static Strategy<string> NotUrl() => Generate.NotMatching(KnownRegex.Url);
+        public static Strategy<string> NotUrl() => Strategy.NotMatching(KnownRegex.Url);
 
         /// <summary>Returns a strategy that generates strings matching <see cref="KnownRegex.Uuid"/>.</summary>
-        public static Strategy<string> Uuid() => Generate.Matching(KnownRegex.Uuid);
+        public static Strategy<string> Uuid() => Strategy.Matching(KnownRegex.Uuid);
 
         /// <summary>Returns a strategy that generates strings that do not match <see cref="KnownRegex.Uuid"/>.</summary>
-        public static Strategy<string> NotUuid() => Generate.NotMatching(KnownRegex.Uuid);
+        public static Strategy<string> NotUuid() => Strategy.NotMatching(KnownRegex.Uuid);
 
         /// <summary>Returns a strategy that generates strings matching <see cref="KnownRegex.IsoDate"/>.</summary>
-        public static Strategy<string> IsoDate() => Generate.Matching(KnownRegex.IsoDate);
+        public static Strategy<string> IsoDate() => Strategy.Matching(KnownRegex.IsoDate);
 
         /// <summary>Returns a strategy that generates strings that do not match <see cref="KnownRegex.IsoDate"/>.</summary>
-        public static Strategy<string> NotIsoDate() => Generate.NotMatching(KnownRegex.IsoDate);
+        public static Strategy<string> NotIsoDate() => Strategy.NotMatching(KnownRegex.IsoDate);
 
         /// <summary>Returns a strategy that generates strings matching <see cref="KnownRegex.CreditCard"/>.</summary>
-        public static Strategy<string> CreditCard() => Generate.Matching(KnownRegex.CreditCard);
+        public static Strategy<string> CreditCard() => Strategy.Matching(KnownRegex.CreditCard);
 
         /// <summary>Returns a strategy that generates strings that do not match <see cref="KnownRegex.CreditCard"/>.</summary>
-        public static Strategy<string> NotCreditCard() => Generate.NotMatching(KnownRegex.CreditCard);
+        public static Strategy<string> NotCreditCard() => Strategy.NotMatching(KnownRegex.CreditCard);
 
         /// <summary>Returns a strategy that generates strings matching <see cref="KnownRegex.Ipv4"/>.</summary>
-        public static Strategy<string> Ipv4() => Generate.Matching(KnownRegex.Ipv4);
+        public static Strategy<string> Ipv4() => Strategy.Matching(KnownRegex.Ipv4);
 
         /// <summary>Returns a strategy that generates strings matching <see cref="KnownRegex.Ipv6"/>.</summary>
-        public static Strategy<string> Ipv6() => Generate.Matching(KnownRegex.Ipv6);
+        public static Strategy<string> Ipv6() => Strategy.Matching(KnownRegex.Ipv6);
 
         /// <summary>Returns a strategy that generates strings matching <see cref="KnownRegex.Date"/>.</summary>
-        public static Strategy<string> Date() => Generate.Matching(KnownRegex.Date);
+        public static Strategy<string> Date() => Strategy.Matching(KnownRegex.Date);
 
         /// <summary>Returns a strategy that generates strings matching <see cref="KnownRegex.Time"/>.</summary>
-        public static Strategy<string> Time() => Generate.Matching(KnownRegex.Time);
+        public static Strategy<string> Time() => Strategy.Matching(KnownRegex.Time);
     }
 
     private static DotNetRegex GetOrAddCached(string pattern)

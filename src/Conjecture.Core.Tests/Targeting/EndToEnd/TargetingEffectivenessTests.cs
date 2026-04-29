@@ -8,10 +8,10 @@ namespace Conjecture.Core.Tests.Targeting.EndToEnd;
 
 public class TargetingEffectivenessTests
 {
-    // Generate.Just(0) uses no IR nodes beyond the list-size draw, so the HillClimber
+    // Strategy.Just(0) uses no IR nodes beyond the list-size draw, so the HillClimber
     // directly optimizes the single IR node that controls xs.Count.
     private static readonly Strategy<List<int>> ListStrategy =
-        Generate.Lists(Generate.Just(0), 0, 100);
+        Strategy.Lists(Strategy.Just(0), 0, 100);
 
     [Fact]
     public async Task Maximize_ListSize_WithTargeting_BeatsRandomBaseline()

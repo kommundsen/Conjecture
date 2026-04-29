@@ -19,10 +19,10 @@ internal static class CreateOrderRequestStrategySupport
         GenerateForRegistry.Register(
             typeof(CreateOrderRequest),
             static () => new CreateOrderRequestProvider(),
-            Generate.Compose<object?>(static ctx =>
+            Strategy.Compose<object?>(static ctx =>
             {
-                string productId = ctx.Generate(Generate.Strings(minLength: 1, maxLength: 10));
-                int quantity = ctx.Generate(Generate.Integers<int>(1, 100));
+                string productId = ctx.Generate(Strategy.Strings(minLength: 1, maxLength: 10));
+                int quantity = ctx.Generate(Strategy.Integers<int>(1, 100));
                 return (object?)new CreateOrderRequest(productId, quantity);
             }));
     }
@@ -30,10 +30,10 @@ internal static class CreateOrderRequestStrategySupport
     private sealed class CreateOrderRequestProvider : IStrategyProvider<CreateOrderRequest>
     {
         public Strategy<CreateOrderRequest> Create() =>
-            Generate.Compose<CreateOrderRequest>(static ctx =>
+            Strategy.Compose<CreateOrderRequest>(static ctx =>
             {
-                string productId = ctx.Generate(Generate.Strings(minLength: 1, maxLength: 10));
-                int quantity = ctx.Generate(Generate.Integers<int>(1, 100));
+                string productId = ctx.Generate(Strategy.Strings(minLength: 1, maxLength: 10));
+                int quantity = ctx.Generate(Strategy.Integers<int>(1, 100));
                 return new CreateOrderRequest(productId, quantity);
             });
     }

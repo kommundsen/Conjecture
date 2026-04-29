@@ -25,10 +25,10 @@ public class Phase1GenerationBenchmarks
     public void Setup()
     {
         rng = new SplittableRandom(42UL);
-        doubles = Generate.Doubles();
-        floats = Generate.Floats();
-        strings = Generate.Strings();
-        lists = Generate.Lists(Generate.Integers<int>());
+        doubles = Strategy.Doubles();
+        floats = Strategy.Floats();
+        strings = Strategy.Strings();
+        lists = Strategy.Lists(Strategy.Integers<int>());
     }
 
     [Benchmark]
@@ -58,7 +58,7 @@ public class Phase1GenerationBenchmarks
     [Benchmark]
     public List<int> ListNext()
     {
-        var bounded = Generate.Lists(Generate.Integers<int>(), minSize: ListSize, maxSize: ListSize);
+        var bounded = Strategy.Lists(Strategy.Integers<int>(), minSize: ListSize, maxSize: ListSize);
         var data = ConjectureData.ForGeneration(rng.Split());
         return bounded.Generate(data);
     }

@@ -16,7 +16,7 @@ public class EnumStrategyTests
     [Fact]
     public void Enums_ReturnsOnlyValidDayOfWeekValues()
     {
-        var strategy = Generate.Enums<DayOfWeek>();
+        var strategy = Strategy.Enums<DayOfWeek>();
         var data = MakeData();
         var valid = Enum.GetValues<DayOfWeek>();
 
@@ -29,7 +29,7 @@ public class EnumStrategyTests
     [Fact]
     public void Enums_CoversAllDayOfWeekMembersOverManyDraws()
     {
-        var strategy = Generate.Enums<DayOfWeek>();
+        var strategy = Strategy.Enums<DayOfWeek>();
         var data = MakeData();
         var seen = new HashSet<DayOfWeek>();
 
@@ -47,7 +47,7 @@ public class EnumStrategyTests
     [Fact]
     public void Enums_WorksWithCustomEnum_ReturnsOnlyValidMembers()
     {
-        var strategy = Generate.Enums<Colour>();
+        var strategy = Strategy.Enums<Colour>();
         var data = MakeData();
         var valid = Enum.GetValues<Colour>();
 
@@ -60,7 +60,7 @@ public class EnumStrategyTests
     [Fact]
     public void Enums_CustomEnum_CoversAllMembersOverManyDraws()
     {
-        var strategy = Generate.Enums<Colour>();
+        var strategy = Strategy.Enums<Colour>();
         var data = MakeData();
         var seen = new HashSet<Colour>();
 
@@ -78,7 +78,7 @@ public class EnumStrategyTests
     [Fact]
     public void Enums_DeterministicWithSeed()
     {
-        var strategy = Generate.Enums<DayOfWeek>();
+        var strategy = Strategy.Enums<DayOfWeek>();
 
         var results1 = Enumerable.Range(0, 20)
             .Select(_ => strategy.Generate(MakeData(99UL)))

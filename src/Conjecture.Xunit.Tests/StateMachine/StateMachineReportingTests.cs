@@ -9,7 +9,7 @@ namespace Conjecture.Xunit.Tests.StateMachine;
 internal sealed class AlwaysFailReportingMachine : IStateMachine<int, string>
 {
     public int InitialState() => 0;
-    public IEnumerable<Strategy<string>> Commands(int state) => [Generate.Just("cmd")];
+    public IEnumerable<Strategy<string>> Commands(int state) => [Strategy.Just("cmd")];
     public int RunCommand(int state, string command) => state + 1;
     public void Invariant(int state) => throw new InvalidOperationException("always fails");
 }
@@ -17,7 +17,7 @@ internal sealed class AlwaysFailReportingMachine : IStateMachine<int, string>
 internal sealed class FailsAtThreeReportingMachine : IStateMachine<int, string>
 {
     public int InitialState() => 0;
-    public IEnumerable<Strategy<string>> Commands(int state) => [Generate.Just("step")];
+    public IEnumerable<Strategy<string>> Commands(int state) => [Strategy.Just("step")];
     public int RunCommand(int state, string _) => state + 1;
     public void Invariant(int state)
     {
@@ -58,7 +58,7 @@ public class StateMachineReportingTests
     {
         TestRunResult result = await TestRunner.Run(
             new ConjectureSettings { MaxExamples = 1, Seed = 0xCAFEUL, UseDatabase = false },
-            data => _ = Generate.StateMachine<AlwaysFailReportingMachine, int, string>(maxSteps: 3).Generate(data));
+            data => _ = Strategy.StateMachine<AlwaysFailReportingMachine, int, string>(maxSteps: 3).Generate(data));
 
         Assert.False(result.Passed);
         string message = TestCaseHelper.BuildFailureMessage(result, []);
@@ -70,7 +70,7 @@ public class StateMachineReportingTests
     {
         TestRunResult result = await TestRunner.Run(
             new ConjectureSettings { MaxExamples = 50, Seed = 1UL, UseDatabase = false },
-            data => _ = Generate.StateMachine<FailsAtThreeReportingMachine, int, string>(maxSteps: 20).Generate(data));
+            data => _ = Strategy.StateMachine<FailsAtThreeReportingMachine, int, string>(maxSteps: 20).Generate(data));
 
         Assert.False(result.Passed);
         Assert.True(result.ShrinkCount > 0, $"Expected shrink count > 0, got {result.ShrinkCount}.");

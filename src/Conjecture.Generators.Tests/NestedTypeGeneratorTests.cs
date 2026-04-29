@@ -20,7 +20,7 @@ public sealed class NestedTypeGeneratorTests
         string text = GetGeneratedText(
             "using Conjecture.Core; namespace MyApp; [Arbitrary] public partial record W(string Name);",
             "W.g.cs");
-        Assert.Contains("Generate.Strings()", text);
+        Assert.Contains("Strategy.Strings()", text);
     }
 
     [Fact]
@@ -29,7 +29,7 @@ public sealed class NestedTypeGeneratorTests
         string text = GetGeneratedText(
             "using Conjecture.Core; namespace MyApp; [Arbitrary] public partial record W(bool Flag);",
             "W.g.cs");
-        Assert.Contains("Generate.Booleans()", text);
+        Assert.Contains("Strategy.Booleans()", text);
     }
 
     [Fact]
@@ -38,7 +38,7 @@ public sealed class NestedTypeGeneratorTests
         string text = GetGeneratedText(
             "using Conjecture.Core; namespace MyApp; [Arbitrary] public partial record W(long Value);",
             "W.g.cs");
-        Assert.Contains("Generate.Integers<long>()", text);
+        Assert.Contains("Strategy.Integers<long>()", text);
     }
 
     [Fact]
@@ -47,7 +47,7 @@ public sealed class NestedTypeGeneratorTests
         string text = GetGeneratedText(
             "using Conjecture.Core; namespace MyApp; [Arbitrary] public partial record W(byte Value);",
             "W.g.cs");
-        Assert.Contains("Generate.Integers<byte>()", text);
+        Assert.Contains("Strategy.Integers<byte>()", text);
     }
 
     [Fact]
@@ -56,7 +56,7 @@ public sealed class NestedTypeGeneratorTests
         string text = GetGeneratedText(
             "using Conjecture.Core; namespace MyApp; [Arbitrary] public partial record W(float Value);",
             "W.g.cs");
-        Assert.Contains("Generate.Floats()", text);
+        Assert.Contains("Strategy.Floats()", text);
     }
 
     [Fact]
@@ -65,7 +65,7 @@ public sealed class NestedTypeGeneratorTests
         string text = GetGeneratedText(
             "using Conjecture.Core; namespace MyApp; [Arbitrary] public partial record W(double Value);",
             "W.g.cs");
-        Assert.Contains("Generate.Doubles()", text);
+        Assert.Contains("Strategy.Doubles()", text);
     }
 
     // --- List<T> ---
@@ -76,8 +76,8 @@ public sealed class NestedTypeGeneratorTests
         string text = GetGeneratedText(
             "using Conjecture.Core; using System.Collections.Generic; namespace MyApp; [Arbitrary] public partial record W(List<int> Items);",
             "W.g.cs");
-        Assert.Contains("Generate.Lists(", text);
-        Assert.Contains("Generate.Integers<int>()", text);
+        Assert.Contains("Strategy.Lists(", text);
+        Assert.Contains("Strategy.Integers<int>()", text);
     }
 
     // --- Enum ---
@@ -88,7 +88,7 @@ public sealed class NestedTypeGeneratorTests
         string text = GetGeneratedText(
             "using Conjecture.Core; namespace MyApp; public enum Color { Red, Green, Blue } [Arbitrary] public partial record W(Color C);",
             "W.g.cs");
-        Assert.Contains("Generate.Enums<", text);
+        Assert.Contains("Strategy.Enums<", text);
         Assert.Contains("Color", text);
     }
 
@@ -100,8 +100,8 @@ public sealed class NestedTypeGeneratorTests
         string text = GetGeneratedText(
             "using Conjecture.Core; namespace MyApp; [Arbitrary] public partial record W(int? Value);",
             "W.g.cs");
-        Assert.Contains("Generate.Nullable<int>(", text);
-        Assert.Contains("Generate.Integers<int>()", text);
+        Assert.Contains("Strategy.Nullable<int>(", text);
+        Assert.Contains("Strategy.Integers<int>()", text);
     }
 
     // --- Cross-type [Arbitrary] reference ---

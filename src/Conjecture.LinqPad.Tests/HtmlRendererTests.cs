@@ -14,7 +14,7 @@ public class HtmlRendererTests
     [Fact]
     public void HtmlSampleTable_Render_OutputContainsTableElement()
     {
-        Strategy<int> strategy = Generate.Just(1);
+        Strategy<int> strategy = Strategy.Just(1);
 
         string html = HtmlSampleTable.Render(strategy, count: 5, seed: 0);
 
@@ -24,7 +24,7 @@ public class HtmlRendererTests
     [Fact]
     public void HtmlSampleTable_Render_OutputContainsThElement()
     {
-        Strategy<int> strategy = Generate.Just(1);
+        Strategy<int> strategy = Strategy.Just(1);
 
         string html = HtmlSampleTable.Render(strategy, count: 5, seed: 0);
 
@@ -37,7 +37,7 @@ public class HtmlRendererTests
     [InlineData(10)]
     public void HtmlSampleTable_Render_ContainsExactlyCountDataRows(int count)
     {
-        Strategy<int> strategy = Generate.Integers<int>(1, 1000);
+        Strategy<int> strategy = Strategy.Integers<int>(1, 1000);
 
         string html = HtmlSampleTable.Render(strategy, count: count, seed: 0);
 
@@ -49,7 +49,7 @@ public class HtmlRendererTests
     [Fact]
     public void HtmlSampleTable_Render_CountAbove50_CapsAt50Rows()
     {
-        Strategy<int> strategy = Generate.Integers<int>(1, 1000);
+        Strategy<int> strategy = Strategy.Integers<int>(1, 1000);
 
         string html = HtmlSampleTable.Render(strategy, count: 75, seed: 0);
 
@@ -60,7 +60,7 @@ public class HtmlRendererTests
     [Fact]
     public void HtmlSampleTable_Render_CountAbove50_ContainsTruncationNotice()
     {
-        Strategy<int> strategy = Generate.Integers<int>(1, 1000);
+        Strategy<int> strategy = Strategy.Integers<int>(1, 1000);
 
         string html = HtmlSampleTable.Render(strategy, count: 75, seed: 0);
 
@@ -70,7 +70,7 @@ public class HtmlRendererTests
     [Fact]
     public void HtmlSampleTable_Render_SameSeedTwice_ProducesIdenticalOutput()
     {
-        Strategy<int> strategy = Generate.Integers<int>(1, 1000);
+        Strategy<int> strategy = Strategy.Integers<int>(1, 1000);
 
         string first = HtmlSampleTable.Render(strategy, count: 10, seed: 99);
         string second = HtmlSampleTable.Render(strategy, count: 10, seed: 99);
@@ -83,7 +83,7 @@ public class HtmlRendererTests
     [Fact]
     public void HtmlPreview_Render_OutputIsSpanElement()
     {
-        Strategy<int> strategy = Generate.Just(7);
+        Strategy<int> strategy = Strategy.Just(7);
 
         string html = HtmlPreview.Render(strategy, count: 5, seed: 0);
 
@@ -93,7 +93,7 @@ public class HtmlRendererTests
     [Fact]
     public void HtmlPreview_Render_OutputContainsCommaSeparatedValues()
     {
-        Strategy<int> strategy = Generate.Just(42);
+        Strategy<int> strategy = Strategy.Just(42);
 
         string html = HtmlPreview.Render(strategy, count: 5, seed: 0);
 
@@ -104,7 +104,7 @@ public class HtmlRendererTests
     [Fact]
     public void HtmlPreview_Render_DefaultCount_Contains20Values()
     {
-        Strategy<int> strategy = Generate.Integers<int>(1, 1000);
+        Strategy<int> strategy = Strategy.Integers<int>(1, 1000);
 
         string html = HtmlPreview.Render(strategy, seed: 0);
 
@@ -116,7 +116,7 @@ public class HtmlRendererTests
     [Fact]
     public void HtmlPreview_Render_CountAbove100_CapsAt100Values()
     {
-        Strategy<int> strategy = Generate.Integers<int>(1, 1000);
+        Strategy<int> strategy = Strategy.Integers<int>(1, 1000);
 
         string html = HtmlPreview.Render(strategy, count: 150, seed: 0);
 
@@ -129,7 +129,7 @@ public class HtmlRendererTests
     [Fact]
     public void HtmlPreview_Render_CountAbove100_ContainsTruncationNotice()
     {
-        Strategy<int> strategy = Generate.Integers<int>(1, 1000);
+        Strategy<int> strategy = Strategy.Integers<int>(1, 1000);
 
         string html = HtmlPreview.Render(strategy, count: 150, seed: 0);
 
@@ -139,7 +139,7 @@ public class HtmlRendererTests
     [Fact]
     public void HtmlPreview_Render_SameSeedTwice_ProducesIdenticalOutput()
     {
-        Strategy<int> strategy = Generate.Integers<int>(1, 1000);
+        Strategy<int> strategy = Strategy.Integers<int>(1, 1000);
 
         string first = HtmlPreview.Render(strategy, count: 20, seed: 7);
         string second = HtmlPreview.Render(strategy, count: 20, seed: 7);
@@ -152,7 +152,7 @@ public class HtmlRendererTests
     [Fact]
     public void SvgHistogram_Render_OutputContainsSvgElement()
     {
-        Strategy<int> strategy = Generate.Integers<int>(1, 100);
+        Strategy<int> strategy = Strategy.Integers<int>(1, 100);
 
         string svg = SvgHistogram.Render(strategy, sampleSize: 100, bucketCount: 10, seed: 0);
 
@@ -165,7 +165,7 @@ public class HtmlRendererTests
     [InlineData(20)]
     public void SvgHistogram_Render_ContainsExactlyBucketCountRectElements(int bucketCount)
     {
-        Strategy<int> strategy = Generate.Integers<int>(1, 1000);
+        Strategy<int> strategy = Strategy.Integers<int>(1, 1000);
 
         string svg = SvgHistogram.Render(strategy, sampleSize: 200, bucketCount: bucketCount, seed: 0);
 
@@ -176,7 +176,7 @@ public class HtmlRendererTests
     [Fact]
     public void SvgHistogram_Render_SameSeedTwice_ProducesIdenticalOutput()
     {
-        Strategy<int> strategy = Generate.Integers<int>(1, 1000);
+        Strategy<int> strategy = Strategy.Integers<int>(1, 1000);
 
         string first = SvgHistogram.Render(strategy, sampleSize: 100, bucketCount: 20, seed: 5);
         string second = SvgHistogram.Render(strategy, sampleSize: 100, bucketCount: 20, seed: 5);
@@ -187,7 +187,7 @@ public class HtmlRendererTests
     [Fact]
     public void SvgHistogram_Render_OutputContainsBucketRangeLabels()
     {
-        Strategy<int> strategy = Generate.Integers<int>(1, 100);
+        Strategy<int> strategy = Strategy.Integers<int>(1, 100);
 
         string svg = SvgHistogram.Render(strategy, sampleSize: 100, bucketCount: 10, seed: 0);
 
@@ -200,7 +200,7 @@ public class HtmlRendererTests
     [Fact]
     public void HtmlSampleTable_Render_ZeroCount_ReturnsTableWithNoDataRows()
     {
-        Strategy<int> strategy = Generate.Integers<int>(1, 1000);
+        Strategy<int> strategy = Strategy.Integers<int>(1, 1000);
 
         string html = HtmlSampleTable.Render(strategy, count: 0, seed: 0);
 
@@ -211,7 +211,7 @@ public class HtmlRendererTests
     [Fact]
     public void HtmlPreview_Render_ZeroCount_ReturnsEmptySpan()
     {
-        Strategy<int> strategy = Generate.Integers<int>(1, 1000);
+        Strategy<int> strategy = Strategy.Integers<int>(1, 1000);
 
         string html = HtmlPreview.Render(strategy, count: 0, seed: 0);
 
@@ -222,7 +222,7 @@ public class HtmlRendererTests
     [Fact]
     public void SvgHistogram_Render_ZeroSampleSize_ReturnsSvgElement()
     {
-        Strategy<int> strategy = Generate.Integers<int>(1, 1000);
+        Strategy<int> strategy = Strategy.Integers<int>(1, 1000);
 
         string svg = SvgHistogram.Render(strategy, sampleSize: 0, seed: 0);
 

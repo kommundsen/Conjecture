@@ -12,7 +12,7 @@ public class StrategyToolsEFCoreTypesTests
     {
         string result = StrategyTools.SuggestForType("DbContext");
 
-        Assert.Contains("Generate.Entity", result);
+        Assert.Contains("Strategy.Entity", result);
     }
 
     [Fact]
@@ -20,7 +20,7 @@ public class StrategyToolsEFCoreTypesTests
     {
         string result = StrategyTools.SuggestForType("EntitySet");
 
-        Assert.Contains("Generate.EntitySet", result);
+        Assert.Contains("Strategy.EntitySet", result);
     }
 
     [Fact]
@@ -28,7 +28,7 @@ public class StrategyToolsEFCoreTypesTests
     {
         string result = StrategyTools.SuggestForType("int");
 
-        Assert.DoesNotContain("Generate.EFCore", result, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Strategy.EFCore", result, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("EntityStrategyBuilder", result, StringComparison.OrdinalIgnoreCase);
     }
 }

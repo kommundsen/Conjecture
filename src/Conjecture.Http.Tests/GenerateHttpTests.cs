@@ -13,14 +13,14 @@ public class GenerateHttpTests
     [Fact]
     public void Http_EntryPoint_ReturnsBuilder()
     {
-        HttpStrategyBuilder builder = Generate.Http("api");
+        HttpStrategyBuilder builder = Strategy.Http("api");
         Assert.NotNull(builder);
     }
 
     [Fact]
     public void Build_WithGet_ProducesGetInteraction()
     {
-        Strategy<HttpInteraction> strategy = Generate.Http("api").Get("/ping").Build();
+        Strategy<HttpInteraction> strategy = Strategy.Http("api").Get("/ping").Build();
 
         HttpInteraction sample = DataGen.SampleOne(strategy, seed: 1UL);
 
@@ -33,7 +33,7 @@ public class GenerateHttpTests
     [Fact]
     public void Build_WithPost_IncludesMethodAndPath()
     {
-        Strategy<HttpInteraction> strategy = Generate.Http("api").Post("/items").Build();
+        Strategy<HttpInteraction> strategy = Strategy.Http("api").Post("/items").Build();
 
         HttpInteraction sample = DataGen.SampleOne(strategy, seed: 1UL);
 
@@ -45,7 +45,7 @@ public class GenerateHttpTests
     public void Build_WithPostAndBody_CapturesBody()
     {
         object body = new { Name = "alice" };
-        Strategy<HttpInteraction> strategy = Generate.Http("api").Post("/items", body).Build();
+        Strategy<HttpInteraction> strategy = Strategy.Http("api").Post("/items", body).Build();
 
         HttpInteraction sample = DataGen.SampleOne(strategy, seed: 1UL);
 
@@ -56,7 +56,7 @@ public class GenerateHttpTests
     [Fact]
     public void Build_WithPut_IncludesMethodAndPath()
     {
-        Strategy<HttpInteraction> strategy = Generate.Http("api").Put("/items/1").Build();
+        Strategy<HttpInteraction> strategy = Strategy.Http("api").Put("/items/1").Build();
 
         HttpInteraction sample = DataGen.SampleOne(strategy, seed: 1UL);
 
@@ -67,7 +67,7 @@ public class GenerateHttpTests
     [Fact]
     public void Build_WithDelete_IncludesMethod()
     {
-        Strategy<HttpInteraction> strategy = Generate.Http("api").Delete("/items/1").Build();
+        Strategy<HttpInteraction> strategy = Strategy.Http("api").Delete("/items/1").Build();
 
         HttpInteraction sample = DataGen.SampleOne(strategy, seed: 1UL);
 
@@ -79,7 +79,7 @@ public class GenerateHttpTests
     [Fact]
     public void Build_WithPatch_IncludesMethod()
     {
-        Strategy<HttpInteraction> strategy = Generate.Http("api").Patch("/items/1").Build();
+        Strategy<HttpInteraction> strategy = Strategy.Http("api").Patch("/items/1").Build();
 
         HttpInteraction sample = DataGen.SampleOne(strategy, seed: 1UL);
 
@@ -90,7 +90,7 @@ public class GenerateHttpTests
     public void Build_WithHeaders_AttachesHeaders()
     {
         Dictionary<string, string> headers = new() { ["X-Trace"] = "abc" };
-        Strategy<HttpInteraction> strategy = Generate.Http("api")
+        Strategy<HttpInteraction> strategy = Strategy.Http("api")
             .Get("/ping")
             .WithHeaders(headers)
             .Build();
@@ -104,7 +104,7 @@ public class GenerateHttpTests
     [Fact]
     public void Build_WithResource_OverridesResourceName()
     {
-        Strategy<HttpInteraction> strategy = Generate.Http("api")
+        Strategy<HttpInteraction> strategy = Strategy.Http("api")
             .Get("/ping")
             .WithResource("orders")
             .Build();
@@ -118,9 +118,9 @@ public class GenerateHttpTests
     public void Build_WithBodyStrategy_OverridesLiteralBody()
     {
         object literalBody = "literal";
-        Strategy<object?> bodyStrategy = Generate.Just<object?>("from-strategy");
+        Strategy<object?> bodyStrategy = Strategy.Just<object?>("from-strategy");
 
-        Strategy<HttpInteraction> strategy = Generate.Http("api")
+        Strategy<HttpInteraction> strategy = Strategy.Http("api")
             .Post("/items", literalBody)
             .WithBodyStrategy(bodyStrategy)
             .Build();
@@ -133,8 +133,8 @@ public class GenerateHttpTests
     [Fact]
     public void Build_WithBodyStrategy_OnPutWithoutLiteralBody_UsesStrategyBody()
     {
-        Strategy<object?> bodyStrategy = Generate.Just<object?>("put-body");
-        Strategy<HttpInteraction> strategy = Generate.Http("api")
+        Strategy<object?> bodyStrategy = Strategy.Just<object?>("put-body");
+        Strategy<HttpInteraction> strategy = Strategy.Http("api")
             .Put("/items/1")
             .WithBodyStrategy(bodyStrategy)
             .Build();
@@ -147,8 +147,8 @@ public class GenerateHttpTests
     [Fact]
     public void Build_ReturnsDeterministicResults_ForSameSeed()
     {
-        Strategy<object?> bodyStrategy = Generate.Integers(0, 1_000_000).Select(i => (object?)i);
-        Strategy<HttpInteraction> strategy = Generate.Http("api")
+        Strategy<object?> bodyStrategy = Strategy.Integers(0, 1_000_000).Select(i => (object?)i);
+        Strategy<HttpInteraction> strategy = Strategy.Http("api")
             .Post("/items")
             .WithBodyStrategy(bodyStrategy)
             .Build();
@@ -166,8 +166,8 @@ public class GenerateHttpTests
     [Fact]
     public void Build_IsComposable_WithOtherStrategies()
     {
-        Strategy<HttpInteraction> httpStrategy = Generate.Http("api").Get("/ping").Build();
-        Strategy<(HttpInteraction, int)> paired = httpStrategy.Zip(Generate.Integers(0, 10));
+        Strategy<HttpInteraction> httpStrategy = Strategy.Http("api").Get("/ping").Build();
+        Strategy<(HttpInteraction, int)> paired = httpStrategy.Zip(Strategy.Integers(0, 10));
 
         (HttpInteraction interaction, int number) = DataGen.SampleOne(paired, seed: 1UL);
 
@@ -178,20 +178,20 @@ public class GenerateHttpTests
     [Fact]
     public void Http_NullResourceName_Throws()
     {
-        Assert.Throws<ArgumentNullException>(() => Generate.Http(null!));
+        Assert.Throws<ArgumentNullException>(() => Strategy.Http(null!));
     }
 
     [Fact]
     public void Get_NullPath_Throws()
     {
-        HttpStrategyBuilder builder = Generate.Http("api");
+        HttpStrategyBuilder builder = Strategy.Http("api");
         Assert.Throws<ArgumentNullException>(() => builder.Get(null!));
     }
 
     [Fact]
     public void WithBodyStrategy_Null_Throws()
     {
-        HttpStrategyBuilder builder = Generate.Http("api").Post("/items");
+        HttpStrategyBuilder builder = Strategy.Http("api").Post("/items");
         Assert.Throws<ArgumentNullException>(() => builder.WithBodyStrategy(null!));
     }
 }

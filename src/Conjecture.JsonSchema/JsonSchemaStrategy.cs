@@ -8,8 +8,8 @@ using Conjecture.Core;
 using Conjecture.Core.Internal;
 
 // Local alias: this class extends Strategy<T> and inherits a Generate(ConjectureData) method,
-// so unqualified `Gen.X` would bind to the inherited method rather than the static class.
-using Gen = Conjecture.Core.Generate;
+// so unqualified static-class access needs a non-conflicting alias.
+using Gen = Conjecture.Core.Strategy;
 
 namespace Conjecture.JsonSchema;
 

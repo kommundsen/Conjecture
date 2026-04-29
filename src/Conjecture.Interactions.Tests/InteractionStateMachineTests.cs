@@ -49,8 +49,8 @@ public class InteractionStateMachineTests
 
         public override IEnumerable<Strategy<IInteraction>> Commands(int state)
         {
-            yield return Generate.Just<IInteraction>(new PingInteraction());
-            yield return Generate.Just<IInteraction>(new PongInteraction());
+            yield return Strategy.Just<IInteraction>(new PingInteraction());
+            yield return Strategy.Just<IInteraction>(new PongInteraction());
         }
 
         public override int RunCommand(
@@ -87,7 +87,7 @@ public class InteractionStateMachineTests
     public void Generate_StateMachine_ProducesRun()
     {
         Strategy<StateMachineRun<int>> strategy =
-            Generate.StateMachine<CountingMachine, int, IInteraction>(maxSteps: 5);
+            Strategy.StateMachine<CountingMachine, int, IInteraction>(maxSteps: 5);
         StateMachineRun<int> run = DataGen.SampleOne(strategy, seed: 42UL);
         Assert.NotNull(run);
     }
@@ -96,7 +96,7 @@ public class InteractionStateMachineTests
     public void Generate_StateMachine_RunPasses()
     {
         Strategy<StateMachineRun<int>> strategy =
-            Generate.StateMachine<CountingMachine, int, IInteraction>(maxSteps: 5);
+            Strategy.StateMachine<CountingMachine, int, IInteraction>(maxSteps: 5);
         StateMachineRun<int> run = DataGen.SampleOne(strategy, seed: 42UL);
         Assert.True(run.Passed);
     }
@@ -105,7 +105,7 @@ public class InteractionStateMachineTests
     public void Generate_StateMachine_StepCountMatchesFinalState()
     {
         Strategy<StateMachineRun<int>> strategy =
-            Generate.StateMachine<CountingMachine, int, IInteraction>(maxSteps: 10);
+            Strategy.StateMachine<CountingMachine, int, IInteraction>(maxSteps: 10);
         StateMachineRun<int> run = DataGen.SampleOne(strategy, seed: 1UL);
         Assert.Equal(run.Steps.Count, run.FinalState);
     }
@@ -119,7 +119,7 @@ public class InteractionStateMachineTests
     public void Generate_StateMachine_ProducesVariableLengthRuns()
     {
         Strategy<StateMachineRun<int>> strategy =
-            Generate.StateMachine<CountingMachine, int, IInteraction>(maxSteps: 10);
+            Strategy.StateMachine<CountingMachine, int, IInteraction>(maxSteps: 10);
         IReadOnlyList<StateMachineRun<int>> runs = DataGen.Sample(strategy, count: 20, seed: 7UL);
         int minSteps = runs.Min(r => r.Steps.Count);
         int maxSteps = runs.Max(r => r.Steps.Count);
@@ -132,7 +132,7 @@ public class InteractionStateMachineTests
     public void Generate_StateMachine_MaxStepsZero_ReturnsEmptyRun()
     {
         Strategy<StateMachineRun<int>> strategy =
-            Generate.StateMachine<CountingMachine, int, IInteraction>(maxSteps: 0);
+            Strategy.StateMachine<CountingMachine, int, IInteraction>(maxSteps: 0);
         StateMachineRun<int> run = DataGen.SampleOne(strategy, seed: 1UL);
         Assert.Empty(run.Steps);
     }

@@ -16,7 +16,7 @@ public class StrategyCustomMemberProviderTests
     [Fact]
     public void GetNames_NumericStrategy_ReturnsPreviewSampleTableHistogram()
     {
-        Strategy<int> strategy = Generate.Integers<int>(1, 100);
+        Strategy<int> strategy = Strategy.Integers<int>(1, 100);
         StrategyCustomMemberProvider<int> provider = new(strategy);
 
         IEnumerable<string> names = provider.GetNames();
@@ -29,7 +29,7 @@ public class StrategyCustomMemberProviderTests
     [Fact]
     public void GetNames_NonConvertibleStrategy_OmitsHistogram()
     {
-        Strategy<object> strategy = Generate.Just(new object());
+        Strategy<object> strategy = Strategy.Just(new object());
         StrategyCustomMemberProvider<object> provider = new(strategy);
 
         IEnumerable<string> names = provider.GetNames();
@@ -42,7 +42,7 @@ public class StrategyCustomMemberProviderTests
     [Fact]
     public void GetTypes_NumericStrategy_AllTypesAreObject()
     {
-        Strategy<int> strategy = Generate.Integers<int>(1, 100);
+        Strategy<int> strategy = Strategy.Integers<int>(1, 100);
         StrategyCustomMemberProvider<int> provider = new(strategy);
 
         IEnumerable<Type> types = provider.GetTypes();
@@ -53,7 +53,7 @@ public class StrategyCustomMemberProviderTests
     [Fact]
     public void GetTypes_NumericStrategy_CountMatchesNameCount()
     {
-        Strategy<int> strategy = Generate.Integers<int>(1, 100);
+        Strategy<int> strategy = Strategy.Integers<int>(1, 100);
         StrategyCustomMemberProvider<int> provider = new(strategy);
 
         List<string> names = provider.GetNames().ToList();
@@ -65,7 +65,7 @@ public class StrategyCustomMemberProviderTests
     [Fact]
     public void GetTypes_NonConvertibleStrategy_CountMatchesNameCount()
     {
-        Strategy<object> strategy = Generate.Just(new object());
+        Strategy<object> strategy = Strategy.Just(new object());
         StrategyCustomMemberProvider<object> provider = new(strategy);
 
         List<string> names = provider.GetNames().ToList();
@@ -79,7 +79,7 @@ public class StrategyCustomMemberProviderTests
     [Fact]
     public void GetValues_NumericStrategy_AllValuesNonNull()
     {
-        Strategy<int> strategy = Generate.Integers<int>(1, 100);
+        Strategy<int> strategy = Strategy.Integers<int>(1, 100);
         StrategyCustomMemberProvider<int> provider = new(strategy);
 
         IEnumerable<object?> values = provider.GetValues();
@@ -90,7 +90,7 @@ public class StrategyCustomMemberProviderTests
     [Fact]
     public void GetValues_NonConvertibleStrategy_AllValuesNonNull()
     {
-        Strategy<object> strategy = Generate.Just(new object());
+        Strategy<object> strategy = Strategy.Just(new object());
         StrategyCustomMemberProvider<object> provider = new(strategy);
 
         IEnumerable<object?> values = provider.GetValues();
@@ -103,7 +103,7 @@ public class StrategyCustomMemberProviderTests
     [Fact]
     public void GetValues_NumericStrategy_CountMatchesNameCount()
     {
-        Strategy<int> strategy = Generate.Integers<int>(1, 100);
+        Strategy<int> strategy = Strategy.Integers<int>(1, 100);
         StrategyCustomMemberProvider<int> provider = new(strategy);
 
         List<string> names = provider.GetNames().ToList();
@@ -115,7 +115,7 @@ public class StrategyCustomMemberProviderTests
     [Fact]
     public void GetValues_NonConvertibleStrategy_CountMatchesNameCount()
     {
-        Strategy<object> strategy = Generate.Just(new object());
+        Strategy<object> strategy = Strategy.Just(new object());
         StrategyCustomMemberProvider<object> provider = new(strategy);
 
         List<string> names = provider.GetNames().ToList();
@@ -129,7 +129,7 @@ public class StrategyCustomMemberProviderTests
     [Fact]
     public void GetValues_NumericStrategy_EachValueWrapsNonEmptyString()
     {
-        Strategy<int> strategy = Generate.Integers<int>(1, 100);
+        Strategy<int> strategy = Strategy.Integers<int>(1, 100);
         StrategyCustomMemberProvider<int> provider = new(strategy);
 
         IEnumerable<object?> values = provider.GetValues();
@@ -144,7 +144,7 @@ public class StrategyCustomMemberProviderTests
     [Fact]
     public void GetValues_NonConvertibleStrategy_EachValueWrapsNonEmptyString()
     {
-        Strategy<object> strategy = Generate.Just(new object());
+        Strategy<object> strategy = Strategy.Just(new object());
         StrategyCustomMemberProvider<object> provider = new(strategy);
 
         IEnumerable<object?> values = provider.GetValues();
@@ -161,7 +161,7 @@ public class StrategyCustomMemberProviderTests
     [Fact]
     public void StrategyCustomMemberProvider_ImplementsICustomMemberProvider()
     {
-        Strategy<int> strategy = Generate.Integers<int>(1, 100);
+        Strategy<int> strategy = Strategy.Integers<int>(1, 100);
         StrategyCustomMemberProvider<int> provider = new(strategy);
 
         bool implementsInterface = provider

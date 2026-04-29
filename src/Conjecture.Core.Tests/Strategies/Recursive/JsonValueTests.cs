@@ -64,20 +64,20 @@ public class JsonValueTests
         };
     }
 
-    private static readonly Strategy<JsonValue> ScalarStrategy = Generate.OneOf(
-        Generate.Just<JsonValue>(new JNull()),
-        Generate.Booleans().Select(b => (JsonValue)new JBool(b)),
-        Generate.Doubles(-1000, 1000).Select(d => (JsonValue)new JNumber(d)),
-        Generate.Strings(0, 10).Select(s => (JsonValue)new JString(s)));
+    private static readonly Strategy<JsonValue> ScalarStrategy = Strategy.OneOf(
+        Strategy.Just<JsonValue>(new JNull()),
+        Strategy.Booleans().Select(b => (JsonValue)new JBool(b)),
+        Strategy.Doubles(-1000, 1000).Select(d => (JsonValue)new JNumber(d)),
+        Strategy.Strings(0, 10).Select(s => (JsonValue)new JString(s)));
 
     private static Strategy<JsonValue> JsonStrategy(int maxDepth)
     {
-        return Generate.Recursive<JsonValue>(
+        return Strategy.Recursive<JsonValue>(
             ScalarStrategy,
-            self => Generate.OneOf(
+            self => Strategy.OneOf(
                 ScalarStrategy,
-                Generate.Lists(self, 0, 5).Select(items => (JsonValue)new JArray(items)),
-                Generate.Dictionaries(Generate.Strings(1, 8), self, 0, 3)
+                Strategy.Lists(self, 0, 5).Select(items => (JsonValue)new JArray(items)),
+                Strategy.Dictionaries(Strategy.Strings(1, 8), self, 0, 3)
                     .Select(d => (JsonValue)new JObject(d))),
             maxDepth);
     }

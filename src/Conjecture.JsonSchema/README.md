@@ -27,20 +27,20 @@ string schema = """
 }
 """;
 
-Strategy<JsonElement> people = Generate.FromJsonSchema(schema);
+Strategy<JsonElement> people = Strategy.FromJsonSchema(schema);
 
 // Sample values for use in property tests, fixture seeding, contract probing, etc.
 JsonElement person = people.Sample();
 Console.WriteLine(person.ToString());
 ```
 
-`Generate.FromJsonSchema` accepts a string, a `FileInfo`, or a parsed `JsonElement` — pick whichever is convenient.
+`Strategy.FromJsonSchema` accepts a string, a `FileInfo`, or a parsed `JsonElement` — pick whichever is convenient.
 
 ## Types
 
 | Type | Role |
 |---|---|
-| `Generate.FromJsonSchema(string)` / `(FileInfo)` / `(JsonElement)` | Returns `Strategy<JsonElement>` conforming to the supplied schema. |
+| `Strategy.FromJsonSchema(string)` / `(FileInfo)` / `(JsonElement)` | Returns `Strategy<JsonElement>` conforming to the supplied schema. |
 | `JsonSchemaType` | Enum of the JSON Schema primitive types (`String`, `Integer`, `Number`, `Boolean`, `Object`, `Array`, `Null`, `Any`). |
 
 ## Links

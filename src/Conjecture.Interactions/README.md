@@ -41,7 +41,7 @@ public sealed class CounterMachine : InteractionStateMachine<CounterState>
 
     public override IEnumerable<Strategy<IInteraction>> Commands(CounterState state)
     {
-        yield return Generate.Integers<int>(1, 10).Select(by => (IInteraction)new IncrementInteraction(by));
+        yield return Strategy.Integers<int>(1, 10).Select(by => (IInteraction)new IncrementInteraction(by));
     }
 
     public override CounterState RunCommand(CounterState state, IInteraction interaction, IInteractionTarget target, CancellationToken ct)

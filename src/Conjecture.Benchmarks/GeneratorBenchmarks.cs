@@ -82,7 +82,7 @@ public class GeneratorCompilationBenchmarks
 }
 
 /// <summary>
-/// Throughput: Generate.Tuples (hand-written) vs Generate.Compose (the pattern the source
+/// Throughput: Strategy.Tuples (hand-written) vs Strategy.Compose (the pattern the source
 /// generator emits for every [Arbitrary] record). Each iteration draws 100 values so
 /// per-draw overhead dominates over ConjectureData setup cost.
 /// </summary>
@@ -100,11 +100,11 @@ public class GeneratorThroughputBenchmarks
     public void Setup()
     {
         rng = new SplittableRandom(42UL);
-        handWritten = Generate.Tuples(Generate.Integers<int>(), Generate.Integers<int>());
+        handWritten = Strategy.Tuples(Strategy.Integers<int>(), Strategy.Integers<int>());
         generated = new PairArbitrary().Create();
     }
 
-    /// <summary>Direct Generate.Tuples — hand-written strategy baseline.</summary>
+    /// <summary>Direct Strategy.Tuples — hand-written strategy baseline.</summary>
     [Benchmark(Baseline = true)]
     public (int, int) HandWritten()
     {
@@ -117,7 +117,7 @@ public class GeneratorThroughputBenchmarks
         return last;
     }
 
-    /// <summary>Generate.Compose — mirrors the pattern every source-generated provider uses.</summary>
+    /// <summary>Strategy.Compose — mirrors the pattern every source-generated provider uses.</summary>
     [Benchmark]
     public (int, int) Generated()
     {
@@ -137,9 +137,9 @@ public class GeneratorThroughputBenchmarks
 /// </summary>
 internal sealed class PairArbitrary : IStrategyProvider<(int, int)>
 {
-    private static readonly Strategy<int> S0 = Generate.Integers<int>();
-    private static readonly Strategy<int> S1 = Generate.Integers<int>();
+    private static readonly Strategy<int> S0 = Strategy.Integers<int>();
+    private static readonly Strategy<int> S1 = Strategy.Integers<int>();
 
     public Strategy<(int, int)> Create() =>
-        Generate.Compose<(int, int)>(ctx => (ctx.Generate(S0), ctx.Generate(S1)));
+        Strategy.Compose<(int, int)>(ctx => (ctx.Generate(S0), ctx.Generate(S1)));
 }

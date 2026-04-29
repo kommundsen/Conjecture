@@ -13,7 +13,7 @@ public class TimeOnlyStrategyTests
     {
         TimeOnly min = new(8, 0);
         TimeOnly max = new(18, 0);
-        Strategy<TimeOnly> strategy = Generate.TimeOnlyValues(min, max);
+        Strategy<TimeOnly> strategy = Strategy.TimeOnlyValues(min, max);
 
         IReadOnlyList<TimeOnly> samples = DataGen.Sample(strategy, count: 50, seed: 1UL);
 
@@ -27,7 +27,7 @@ public class TimeOnlyStrategyTests
     [Fact]
     public void NearMidnight_ValuesAreWithin30SecondsOfMidnight()
     {
-        Strategy<TimeOnly> strategy = Generate.TimeOnlyValues().NearMidnight();
+        Strategy<TimeOnly> strategy = Strategy.TimeOnlyValues().NearMidnight();
         long threshold = 30 * TimeSpan.TicksPerSecond;
 
         IReadOnlyList<TimeOnly> samples = DataGen.Sample(strategy, count: 50, seed: 1UL);
@@ -43,7 +43,7 @@ public class TimeOnlyStrategyTests
     [Fact]
     public void NearNoon_ValuesAreWithin30SecondsOfNoon()
     {
-        Strategy<TimeOnly> strategy = Generate.TimeOnlyValues().NearNoon();
+        Strategy<TimeOnly> strategy = Strategy.TimeOnlyValues().NearNoon();
         TimeOnly noon = new(12, 0, 0);
         long threshold = 30 * TimeSpan.TicksPerSecond;
 
@@ -59,7 +59,7 @@ public class TimeOnlyStrategyTests
     [Fact]
     public void NearEndOfDay_ValuesAreWithin30SecondsOfEndOfDay()
     {
-        Strategy<TimeOnly> strategy = Generate.TimeOnlyValues().NearEndOfDay();
+        Strategy<TimeOnly> strategy = Strategy.TimeOnlyValues().NearEndOfDay();
         TimeOnly threshold = new(23, 59, 29);
 
         IReadOnlyList<TimeOnly> samples = DataGen.Sample(strategy, count: 50, seed: 1UL);

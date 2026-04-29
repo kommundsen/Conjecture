@@ -21,14 +21,14 @@ public class StrategyToolsAspireTypesTests
     public void SuggestForType_Interaction_SuggestsHttpPost()
     {
         string result = StrategyTools.SuggestForType("Interaction");
-        Assert.Contains("Generate.HttpPost", result);
+        Assert.Contains("Strategy.HttpPost", result);
     }
 
     [Fact]
     public void SuggestForType_Interaction_SuggestsPublishMessage()
     {
         string result = StrategyTools.SuggestForType("Interaction");
-        Assert.Contains("Generate.PublishMessage", result);
+        Assert.Contains("Strategy.PublishMessage", result);
     }
 
     [Fact]

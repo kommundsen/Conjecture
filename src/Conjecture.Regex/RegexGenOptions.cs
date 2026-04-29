@@ -3,7 +3,7 @@
 
 namespace Conjecture.Regex;
 
-/// <summary>Options controlling how <c>Generate.Matching</c> generates strings.</summary>
+/// <summary>Options controlling how <c>Strategy.Matching</c> generates strings.</summary>
 public sealed class RegexGenOptions
 {
     /// <summary>Gets whether to sample from ASCII or the full BMP for Unicode categories.</summary>

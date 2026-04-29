@@ -84,7 +84,7 @@ public void Test([From<PositiveIntStrategy>] int x) { ... }
 // Where:
 public class PositiveIntStrategy : IStrategyProvider<int>
 {
-    public static Strategy<int> GetStrategy() => Generate.Integers<int>(1, 100);
+    public static Strategy<int> GetStrategy() => Strategy.Integers<int>(1, 100);
 }
 ```
 
@@ -96,7 +96,7 @@ Overrides the strategy for a parameter by referencing a factory method name on t
 [Property]
 public void Test([FromFactory(nameof(MakePositive))] int x) { ... }
 
-private static Strategy<int> MakePositive() => Generate.Integers<int>(1, 100);
+private static Strategy<int> MakePositive() => Strategy.Integers<int>(1, 100);
 ```
 
 ## Strategy Resolution Order
@@ -119,9 +119,9 @@ Applied to a partial class that implements `IStrategyProvider<T>`. The source ge
 public partial class MyTypeStrategies : IStrategyProvider<MyType>
 {
     public static Strategy<MyType> GetStrategy() =>
-        Generate.Compose(ctx => new MyType(
-            ctx.Generate(Generate.Integers<int>()),
-            ctx.Generate(Generate.Strings())));
+        Strategy.Compose(ctx => new MyType(
+            ctx.Generate(Strategy.Integers<int>()),
+            ctx.Generate(Strategy.Strings())));
 }
 ```
 

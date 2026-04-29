@@ -14,7 +14,7 @@ public class JustStrategyTests
     [Fact]
     public void Just_Int_AlwaysReturnsSameValue()
     {
-        var strategy = Generate.Just(42);
+        var strategy = Strategy.Just(42);
         var data = MakeData();
 
         for (var i = 0; i < 20; i++)
@@ -26,7 +26,7 @@ public class JustStrategyTests
     [Fact]
     public void Just_String_AlwaysReturnsSameValue()
     {
-        var strategy = Generate.Just("hello");
+        var strategy = Strategy.Just("hello");
         var data = MakeData();
 
         for (var i = 0; i < 20; i++)
@@ -38,7 +38,7 @@ public class JustStrategyTests
     [Fact]
     public void Just_DrawsZeroIRNodes()
     {
-        var strategy = Generate.Just(42);
+        var strategy = Strategy.Just(42);
         var data = MakeData();
 
         strategy.Generate(data);
@@ -49,7 +49,7 @@ public class JustStrategyTests
     [Fact]
     public void Just_WorksWithSelectCombinator()
     {
-        var strategy = Generate.Just(42).Select(x => x * 2);
+        var strategy = Strategy.Just(42).Select(x => x * 2);
         var data = MakeData();
 
         var result = strategy.Generate(data);

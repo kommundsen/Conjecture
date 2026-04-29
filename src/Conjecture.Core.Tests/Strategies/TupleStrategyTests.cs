@@ -14,7 +14,7 @@ public class TupleStrategyTests
     [Fact]
     public void Tuples_ProducesTupleWithCorrectTypes()
     {
-        var strategy = Generate.Tuples(Generate.Integers<int>(), Generate.Booleans());
+        var strategy = Strategy.Tuples(Strategy.Integers<int>(), Strategy.Booleans());
         var data = MakeData();
         var (n, b) = strategy.Generate(data);
         Assert.IsType<int>(n);
@@ -24,7 +24,7 @@ public class TupleStrategyTests
     [Fact]
     public void Tuples_BothComponentsVary()
     {
-        var strategy = Generate.Tuples(Generate.Integers<int>(), Generate.Booleans());
+        var strategy = Strategy.Tuples(Strategy.Integers<int>(), Strategy.Booleans());
         var ints = new HashSet<int>();
         var bools = new HashSet<bool>();
         for (var i = 0; i < 100; i++)
@@ -41,7 +41,7 @@ public class TupleStrategyTests
     [Fact]
     public void Tuples_DeterministicWithSameSeed()
     {
-        var strategy = Generate.Tuples(Generate.Integers<int>(), Generate.Booleans());
+        var strategy = Strategy.Tuples(Strategy.Integers<int>(), Strategy.Booleans());
         var (n1, b1) = strategy.Generate(MakeData(99UL));
         var (n2, b2) = strategy.Generate(MakeData(99UL));
         Assert.Equal(n1, n2);
@@ -51,7 +51,7 @@ public class TupleStrategyTests
     [Fact]
     public void Tuples_DifferentSeedsDifferentValues()
     {
-        var strategy = Generate.Tuples(Generate.Integers<int>(), Generate.Booleans());
+        var strategy = Strategy.Tuples(Strategy.Integers<int>(), Strategy.Booleans());
         var results = Enumerable.Range(0, 20)
             .Select(i => strategy.Generate(MakeData((ulong)i)))
             .ToList();

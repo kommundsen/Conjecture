@@ -46,9 +46,9 @@ Reproduce with: [Property(Seed = 0xABCD1234)]
 
 ## Shrinking and Custom Strategies
 
-Shrinking works through the IR (Intermediate Representation) layer — it manipulates the underlying integer buffer, not the generated values directly. This means custom strategies built with `Generate.Compose`, `.Select()`, `.Where()`, etc. shrink automatically without any extra work.
+Shrinking works through the IR (Intermediate Representation) layer — it manipulates the underlying integer buffer, not the generated values directly. This means custom strategies built with `Strategy.Compose`, `.Select()`, `.Where()`, etc. shrink automatically without any extra work.
 
-**Exception:** `Strategy<T>.Where(pred)` with a tight filter can make shrinking less effective because many shrunk candidates are rejected. Prefer `Assume.That()` inside `Generate.Compose` or structure the strategy to avoid needing heavy filtering.
+**Exception:** `Strategy<T>.Where(pred)` with a tight filter can make shrinking less effective because many shrunk candidates are rejected. Prefer `Assume.That()` inside `Strategy.Compose` or structure the strategy to avoid needing heavy filtering.
 
 ## Reproducing Failures
 

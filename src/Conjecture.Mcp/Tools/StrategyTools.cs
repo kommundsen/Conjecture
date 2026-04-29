@@ -12,7 +12,7 @@ internal static class StrategyTools
 {
     [McpServerTool(Name = "suggest-strategy")]
     [Description(
-        "Suggests the Conjecture Generate.* strategy to use for a given C# type or description. " +
+        "Suggests the Conjecture Strategy.* strategy to use for a given C# type or description. " +
         "Handles primitives (int, bool, string, float, double, byte[]), date/time types " +
         "(DateTimeOffset, TimeSpan, DateOnly, TimeOnly), collections " +
         "(List<T>, IReadOnlySet<T>, IReadOnlyDictionary<K,V>), nullable types, value " +
@@ -21,16 +21,16 @@ internal static class StrategyTools
         "'backtracking' for adversarial ReDoS-hunting strategies, or a description keyword " +
         "such as 'email' for curated RegexGenerate helpers. " +
         "For sealed abstract class hierarchies, use the suggest-strategy-for-sealed-hierarchy tool instead. " +
-        "If the target type is decorated with `[Arbitrary]`, set `hasArbitraryAttribute: true` to get a `Generate.For<T>()` recommendation instead of manual composition.")]
+        "If the target type is decorated with `[Arbitrary]`, set `hasArbitraryAttribute: true` to get a `Strategy.For<T>()` recommendation instead of manual composition.")]
     public static string SuggestStrategy(
         [Description("The C# type name, e.g. 'int', 'string', 'List<int>', 'MyEnum', 'MyRecord'")] string typeName,
-        [Description("Set to true when the target type is decorated with [Arbitrary]; returns a Generate.For<T>() recommendation with optional property override DSL instead of manual composition.")] bool hasArbitraryAttribute = false)
+        [Description("Set to true when the target type is decorated with [Arbitrary]; returns a Strategy.For<T>() recommendation with optional property override DSL instead of manual composition.")] bool hasArbitraryAttribute = false)
     {
         return SuggestForType(typeName.Trim(), hasArbitraryAttribute);
     }
 
     [McpServerTool(Name = "suggest-strategy-for-sealed-hierarchy")]
-    [Description("Suggests the [Arbitrary] + Generate.OneOf pattern for sealed abstract class hierarchies. Use when the type is an abstract base of a sealed class hierarchy.")]
+    [Description("Suggests the [Arbitrary] + Strategy.OneOf pattern for sealed abstract class hierarchies. Use when the type is an abstract base of a sealed class hierarchy.")]
     public static string SuggestSealedHierarchyStrategy(
         [Description("The C# abstract base type name, e.g. 'Shape', 'Animal'")] string typeName)
     {
@@ -45,16 +45,16 @@ internal static class StrategyTools
     private static string SuggestForArbitraryType(string typeName)
     {
         return $$"""
-            The type `{{typeName}}` is decorated with `[Arbitrary]`. Use `Generate.For<{{typeName}}>()` — the source generator will emit the strategy automatically.
+            The type `{{typeName}}` is decorated with `[Arbitrary]`. Use `Strategy.For<{{typeName}}>()` — the source generator will emit the strategy automatically.
 
             **Primary recommendation:**
             ```csharp
-            Strategy<{{typeName}}> strategy = Generate.For<{{typeName}}>();
+            Strategy<{{typeName}}> strategy = Strategy.For<{{typeName}}>();
             ```
 
             **With property overrides:**
             ```csharp
-            Strategy<{{typeName}}> strategy = Generate.For<{{typeName}}>(cfg => cfg.Override(x => x.SomeProperty, Generate.Integers<int>(min: 0, max: 100)));
+            Strategy<{{typeName}}> strategy = Strategy.For<{{typeName}}>(cfg => cfg.Override(x => x.SomeProperty, Strategy.Integers<int>(min: 0, max: 100)));
             ```
             """;
     }
@@ -64,33 +64,33 @@ internal static class StrategyTools
         return typeName switch
         {
             "bool" =>
-                "Use `Generate.Booleans()` → `Strategy<bool>`.",
+                "Use `Strategy.Booleans()` → `Strategy<bool>`.",
 
             "int" =>
                 """
-            Use `Generate.Integers<int>()` for the full range, or `Generate.Integers<int>(min, max)` for a bounded range.
+            Use `Strategy.Integers<int>()` for the full range, or `Strategy.Integers<int>(min, max)` for a bounded range.
             Works for all `IBinaryInteger<T>` types: `byte`, `short`, `long`, `uint`, `ulong`, `ushort`, `sbyte`.
             """,
 
             "long" or "short" or "byte" or "uint" or "ulong" or "ushort" or "sbyte" =>
-                $"Use `Generate.Integers<{typeName}>()` for full range, or `Generate.Integers<{typeName}>(min, max)` for bounded.",
+                $"Use `Strategy.Integers<{typeName}>()` for full range, or `Strategy.Integers<{typeName}>(min, max)` for bounded.",
 
             "float" =>
-                "Use `Generate.Floats()` for the full range, or `Generate.Floats(min, max)` for bounded. Includes NaN and ±Infinity.",
+                "Use `Strategy.Floats()` for the full range, or `Strategy.Floats(min, max)` for bounded. Includes NaN and ±Infinity.",
 
             "double" =>
-                "Use `Generate.Doubles()` for the full range, or `Generate.Doubles(min, max)` for bounded. Includes NaN and ±Infinity.",
+                "Use `Strategy.Doubles()` for the full range, or `Strategy.Doubles(min, max)` for bounded. Includes NaN and ±Infinity.",
 
             "DateTimeOffset" =>
                 """
-            Use `Generate.DateTimeOffsets()` for the full range, or `Generate.DateTimeOffsets(min, max)` for bounded.
+            Use `Strategy.DateTimeOffsets()` for the full range, or `Strategy.DateTimeOffsets(min, max)` for bounded.
 
             For precision-sensitive roundtrip tests, chain the edge-case extensions from `Conjecture.Time`:
             ```csharp
-            Generate.DateTimeOffsets().WithPrecision(TimeSpan.FromMilliseconds(1))
+            Strategy.DateTimeOffsets().WithPrecision(TimeSpan.FromMilliseconds(1))
             // → Strategy<DateTimeOffset> truncated to millisecond precision
 
-            Generate.DateTimeOffsets().WithStrippedOffset()
+            Strategy.DateTimeOffsets().WithStrippedOffset()
             // → Strategy<(DateTimeOffset Original, DateTimeOffset Stripped)>
             ```
 
@@ -98,18 +98,18 @@ internal static class StrategyTools
             """,
 
             "TimeSpan" =>
-                "Use `Generate.TimeSpans()` for the full range, or `Generate.TimeSpans(min, max)` for bounded.",
+                "Use `Strategy.TimeSpans()` for the full range, or `Strategy.TimeSpans(min, max)` for bounded.",
 
             "DateOnly" =>
                 """
-            Use `Generate.DateOnlyValues()` for the full range, or `Generate.DateOnlyValues(min, max)` for bounded.
+            Use `Strategy.DateOnlyValues()` for the full range, or `Strategy.DateOnlyValues(min, max)` for bounded.
 
             For boundary-sensitive tests, chain the edge-case extensions from `Conjecture.Time`:
             ```csharp
-            Generate.DateOnlyValues().NearMonthBoundary()
+            Strategy.DateOnlyValues().NearMonthBoundary()
             // → Strategy<DateOnly> biased to first/last day of each month
 
-            Generate.DateOnlyValues().NearLeapDay()
+            Strategy.DateOnlyValues().NearLeapDay()
             // → Strategy<DateOnly> within ±1 day of Feb 29 in leap years
             ```
 
@@ -118,17 +118,17 @@ internal static class StrategyTools
 
             "TimeOnly" =>
                 """
-            Use `Generate.TimeOnlyValues()` for the full range, or `Generate.TimeOnlyValues(min, max)` for bounded.
+            Use `Strategy.TimeOnlyValues()` for the full range, or `Strategy.TimeOnlyValues(min, max)` for bounded.
 
             For boundary-sensitive tests, chain the edge-case extensions from `Conjecture.Time`:
             ```csharp
-            Generate.TimeOnlyValues().NearMidnight()
+            Strategy.TimeOnlyValues().NearMidnight()
             // → Strategy<TimeOnly> within 30 s of midnight (wraps both ends)
 
-            Generate.TimeOnlyValues().NearNoon()
+            Strategy.TimeOnlyValues().NearNoon()
             // → Strategy<TimeOnly> within 30 s of 12:00:00
 
-            Generate.TimeOnlyValues().NearEndOfDay()
+            Strategy.TimeOnlyValues().NearEndOfDay()
             // → Strategy<TimeOnly> within 30 s of 23:59:59
             ```
 
@@ -137,11 +137,11 @@ internal static class StrategyTools
 
             "DateTime" =>
                 """
-            Use `Generate.DateTimes()` for the full range, or `Generate.DateTimes(min, max)` for bounded.
+            Use `Strategy.DateTimes()` for the full range, or `Strategy.DateTimes(min, max)` for bounded.
 
             For kind-sensitive tests, chain the extension from `Conjecture.Time`:
             ```csharp
-            Generate.DateTimes().WithKinds()
+            Strategy.DateTimes().WithKinds()
             // → Strategy<(DateTime Value, DateTimeKind Kind)> covering Utc / Local / Unspecified
             ```
 
@@ -150,26 +150,26 @@ internal static class StrategyTools
 
             "TimeZoneInfo" =>
                 """
-            Use `Generate.TimeZone(preferDst: true)` from `Conjecture.Time` to sample cross-platform time zones, biased toward zones with DST transitions:
+            Use `Strategy.TimeZone(preferDst: true)` from `Conjecture.Time` to sample cross-platform time zones, biased toward zones with DST transitions:
             ```csharp
-            Generate.TimeZone(preferDst: true)
+            Strategy.TimeZone(preferDst: true)
             // → Strategy<TimeZoneInfo> from the cross-platform DST-aware subset
             ```
 
-            For raw IANA/Windows IDs, use `Generate.IanaZoneIds()` or `Generate.WindowsZoneIds()`.
+            For raw IANA/Windows IDs, use `Strategy.IanaZoneIds()` or `Strategy.WindowsZoneIds()`.
 
             Add the NuGet package: `Conjecture.Time`
             """,
 
             "FakeTimeProvider" or "TimeProvider" =>
                 """
-            Use `Generate.ClockWithAdvances(advanceCount, maxJump)` from `Conjecture.Time` to generate an adversarial clock paired with pre-drawn time advances:
+            Use `Strategy.ClockWithAdvances(advanceCount, maxJump)` from `Conjecture.Time` to generate an adversarial clock paired with pre-drawn time advances:
             ```csharp
-            Generate.ClockWithAdvances(advanceCount: 5, maxJump: TimeSpan.FromMinutes(10))
+            Strategy.ClockWithAdvances(advanceCount: 5, maxJump: TimeSpan.FromMinutes(10))
             // → Strategy<(FakeTimeProvider Clock, IReadOnlyList<TimeSpan> Advances)>
 
             // Allow backward jumps to test clock-skew handling:
-            Generate.ClockWithAdvances(advanceCount: 3, maxJump: TimeSpan.FromSeconds(30), allowBackward: true)
+            Strategy.ClockWithAdvances(advanceCount: 3, maxJump: TimeSpan.FromSeconds(30), allowBackward: true)
             ```
 
             Add the NuGet package: `Conjecture.Time`
@@ -177,41 +177,41 @@ internal static class StrategyTools
 
             "string" =>
                 """
-            Use `Generate.Strings()` for random printable-ASCII strings (length 0–20 by default).
+            Use `Strategy.Strings()` for random printable-ASCII strings (length 0–20 by default).
 
             Options:
-            - `Generate.Strings(minLength: 1, maxLength: 50)` — length bounds
-            - `Generate.Strings(minCodepoint: 65, maxCodepoint: 122)` — Unicode range
-            - `Generate.Strings(alphabet: "abcdef")` — fixed character set
-            - `Generate.Text()` — alias for Strings()
+            - `Strategy.Strings(minLength: 1, maxLength: 50)` — length bounds
+            - `Strategy.Strings(minCodepoint: 65, maxCodepoint: 122)` — Unicode range
+            - `Strategy.Strings(alphabet: "abcdef")` — fixed character set
+            - `Strategy.Text()` — alias for Strings()
             """,
 
             "char" =>
                 """
-            There is no `Generate.Chars()` built in. Use:
+            There is no `Strategy.Chars()` built in. Use:
             ```csharp
-            Generate.Strings(minLength: 1, maxLength: 1).Select(s => s[0])
+            Strategy.Strings(minLength: 1, maxLength: 1).Select(s => s[0])
             ```
             """,
 
             "byte[]" =>
-                "Use `Generate.Bytes(size)` for a fixed-length byte array → `Strategy<byte[]>`.",
+                "Use `Strategy.Bytes(size)` for a fixed-length byte array → `Strategy<byte[]>`.",
 
             "Regex" =>
                 """
-            Use `Generate.Matching(pattern)` or `Generate.NotMatching(pattern)` from the `Conjecture.Regex` package:
+            Use `Strategy.Matching(pattern)` or `Strategy.NotMatching(pattern)` from the `Conjecture.Regex` package:
             ```csharp
-            Generate.Matching(@"^\d{3}-\d{4}$")
+            Strategy.Matching(@"^\d{3}-\d{4}$")
             // → Strategy<string> of strings matching the pattern
 
-            Generate.NotMatching(@"^\d{3}-\d{4}$")
+            Strategy.NotMatching(@"^\d{3}-\d{4}$")
             // → Strategy<string> of strings NOT matching the pattern
             ```
 
             For common patterns, use the `Generate` helpers contributed by `Conjecture.Regex`:
             ```csharp
-            Generate.Email()    // → Strategy<string> of valid email addresses
-            Generate.Url()      // → Strategy<string> of valid URLs
+            Strategy.Email()    // → Strategy<string> of valid email addresses
+            Strategy.Url()      // → Strategy<string> of valid URLs
             ```
 
             Add the NuGet package: `Conjecture.Regex`
@@ -219,9 +219,9 @@ internal static class StrategyTools
 
             "email" or "Email" =>
                 """
-            Use `Generate.Email()` from the `Conjecture.Regex` package:
+            Use `Strategy.Email()` from the `Conjecture.Regex` package:
             ```csharp
-            Generate.Email()
+            Strategy.Email()
             // → Strategy<string> of valid email address strings
             ```
 
@@ -230,9 +230,9 @@ internal static class StrategyTools
 
             "ReDoS" or "redos" or "backtracking" or "Backtracking" or "catastrophic" or "Catastrophic" or "adversarial" or "Adversarial" =>
                 """
-            Use `Generate.ReDoSHunter(pattern, maxMatchMs: 5)` from the `Conjecture.Regex` package to generate adversarial strings that trigger catastrophic backtracking:
+            Use `Strategy.ReDoSHunter(pattern, maxMatchMs: 5)` from the `Conjecture.Regex` package to generate adversarial strings that trigger catastrophic backtracking:
             ```csharp
-            Generate.ReDoSHunter(@"(a+)+$", maxMatchMs: 5)
+            Strategy.ReDoSHunter(@"(a+)+$", maxMatchMs: 5)
             // → Strategy<string> biased toward inputs that cause ReDoS timeouts
             ```
 
@@ -248,9 +248,9 @@ internal static class StrategyTools
 
             "decimal" =>
                 """
-            Use `Generate.Decimal(min, max, scale)` for scaled decimal values:
+            Use `Strategy.Decimal(min, max, scale)` for scaled decimal values:
             ```csharp
-            Generate.Decimal(min: 0m, max: 1000m, scale: 2)
+            Strategy.Decimal(min: 0m, max: 1000m, scale: 2)
             // → Strategy<decimal> with at most 2 decimal places
             ```
 
@@ -258,7 +258,7 @@ internal static class StrategyTools
             ```csharp
             using Conjecture.Money;
 
-            Generate.Amounts("USD")
+            Strategy.Amounts("USD")
             // → Strategy<decimal> of valid currency amounts in USD
             ```
 
@@ -267,14 +267,14 @@ internal static class StrategyTools
 
             "currency" or "currencies" or "currencyCode" or "ISO4217" or "iso4217" or "ISO 4217" =>
                 """
-            Use `Generate.Iso4217Codes()` to sample currency codes, and `Generate.Amounts(currencyCode)` for amounts:
+            Use `Strategy.Iso4217Codes()` to sample currency codes, and `Strategy.Amounts(currencyCode)` for amounts:
             ```csharp
             using Conjecture.Money;
 
-            Generate.Iso4217Codes()
+            Strategy.Iso4217Codes()
             // → Strategy<string> of ISO 4217 currency codes, e.g. "USD", "EUR", "GBP"
 
-            Generate.Amounts("USD")
+            Strategy.Amounts("USD")
             // → Strategy<decimal> of valid currency amounts for the given currency code
             ```
 
@@ -283,11 +283,11 @@ internal static class StrategyTools
 
             "MidpointRounding" or "rounding" =>
                 """
-            Use `Generate.RoundingModes()` to sample `MidpointRounding` values:
+            Use `Strategy.RoundingModes()` to sample `MidpointRounding` values:
             ```csharp
             using Conjecture.Money;
 
-            Generate.RoundingModes()
+            Strategy.RoundingModes()
             // → Strategy<MidpointRounding>
             ```
 
@@ -296,14 +296,14 @@ internal static class StrategyTools
 
             "money" or "amount" or "price" =>
                 """
-            Use `Generate.Amounts(currencyCode)` from the `Conjecture.Money` package:
+            Use `Strategy.Amounts(currencyCode)` from the `Conjecture.Money` package:
             ```csharp
             using Conjecture.Money;
 
-            Generate.Amounts("USD")
+            Strategy.Amounts("USD")
             // → Strategy<decimal> of valid currency amounts in USD
 
-            Generate.Iso4217Codes()
+            Strategy.Iso4217Codes()
             // → Strategy<string> of ISO 4217 currency codes if you need to vary the currency
             ```
 
@@ -331,10 +331,10 @@ internal static class StrategyTools
             ```csharp
             using Conjecture.Aspire;
 
-            Generate.HttpPost("/endpoint", Generate.Strings())
+            Strategy.HttpPost("/endpoint", Strategy.Strings())
             // → Strategy<Interaction> for HTTP POST interactions
 
-            Generate.PublishMessage("queue-name", Generate.Strings())
+            Strategy.PublishMessage("queue-name", Strategy.Strings())
             // → Strategy<Interaction> for message-publishing interactions
             ```
 
@@ -462,12 +462,12 @@ internal static class StrategyTools
 
             "DbContext" =>
                 """
-            This type is an EF Core `DbContext`. Use `Generate.Entity<T>(context)` from `Conjecture.EFCore` to generate entities registered in the model:
+            This type is an EF Core `DbContext`. Use `Strategy.Entity<T>(context)` from `Conjecture.EFCore` to generate entities registered in the model:
 
             ```csharp
             using Conjecture.EFCore;
 
-            Generate.Entity<Order>(db)
+            Strategy.Entity<Order>(db)
             // → Strategy<Order> drawing entities tracked by the DbContext
             ```
 
@@ -476,12 +476,12 @@ internal static class StrategyTools
 
             "EntitySet" =>
                 """
-            This type appears to be an EF Core entity. Use `Generate.EntitySet<T>(context)` from `Conjecture.EFCore` to draw from the full set persisted in the database:
+            This type appears to be an EF Core entity. Use `Strategy.EntitySet<T>(context)` from `Conjecture.EFCore` to draw from the full set persisted in the database:
 
             ```csharp
             using Conjecture.EFCore;
 
-            Generate.EntitySet<Order>(db)
+            Strategy.EntitySet<Order>(db)
             // → Strategy<Order> sampling from existing rows in the DbSet<Order>
             ```
 
@@ -495,12 +495,12 @@ internal static class StrategyTools
 
             _ when typeName.StartsWith("DbSet<", StringComparison.Ordinal) =>
                 """
-            This type appears to be an EF Core entity. Use `Generate.EntitySet<T>(context)` from `Conjecture.EFCore` to draw from the full set persisted in the database:
+            This type appears to be an EF Core entity. Use `Strategy.EntitySet<T>(context)` from `Conjecture.EFCore` to draw from the full set persisted in the database:
 
             ```csharp
             using Conjecture.EFCore;
 
-            Generate.EntitySet<Order>(db)
+            Strategy.EntitySet<Order>(db)
             // → Strategy<Order> sampling from existing rows in the DbSet<Order>
             ```
 
@@ -518,7 +518,7 @@ internal static class StrategyTools
             _ when typeName.StartsWith("IReadOnlyList<", StringComparison.Ordinal)
                 || typeName.StartsWith("IList<", StringComparison.Ordinal)
                 || typeName.StartsWith("IEnumerable<", StringComparison.Ordinal) =>
-                SuggestList(InnerType(typeName)) + "\n\nNote: `Generate.Lists` returns `Strategy<List<T>>`, which satisfies `IReadOnlyList<T>` and `IEnumerable<T>`.",
+                SuggestList(InnerType(typeName)) + "\n\nNote: `Strategy.Lists` returns `Strategy<List<T>>`, which satisfies `IReadOnlyList<T>` and `IEnumerable<T>`.",
 
             _ when typeName.StartsWith("HashSet<", StringComparison.Ordinal)
                 || typeName.StartsWith("ISet<", StringComparison.Ordinal)
@@ -538,12 +538,12 @@ internal static class StrategyTools
 
             _ when typeName.StartsWith("(", StringComparison.Ordinal) && typeName.EndsWith(")", StringComparison.Ordinal) =>
                 """
-            Use `Generate.Tuples(strategy1, strategy2)` for 2-element tuples (up to 4 elements):
+            Use `Strategy.Tuples(strategy1, strategy2)` for 2-element tuples (up to 4 elements):
             ```csharp
-            Generate.Tuples(Generate.Integers<int>(), Generate.Strings())
+            Strategy.Tuples(Strategy.Integers<int>(), Strategy.Strings())
             // → Strategy<(int, string)>
 
-            Generate.Tuples(Generate.Integers<int>(), Generate.Strings(), Generate.Booleans())
+            Strategy.Tuples(Strategy.Integers<int>(), Strategy.Strings(), Strategy.Booleans())
             // → Strategy<(int, string, bool)>
             ```
             """,
@@ -552,11 +552,11 @@ internal static class StrategyTools
                 $$"""
             For custom type `{{typeName}}`, choose one of:
 
-            **Option 1 – `Generate.Compose` (recommended for simple types):**
+            **Option 1 – `Strategy.Compose` (recommended for simple types):**
             ```csharp
-            Generate.Compose(ctx => new {{typeName}}(
-                ctx.Generate(Generate.Integers<int>()),
-                ctx.Generate(Generate.Strings())
+            Strategy.Compose(ctx => new {{typeName}}(
+                ctx.Generate(Strategy.Integers<int>()),
+                ctx.Generate(Strategy.Strings())
                 // draw each field from ctx
             ))
             ```
@@ -568,23 +568,23 @@ internal static class StrategyTools
             public partial class {{typeName}}Strategies : IStrategyProvider<{{typeName}}>
             {
                 public static Strategy<{{typeName}}> GetStrategy() =>
-                    Generate.Compose(ctx => new {{typeName}}( /* ... */ ));
+                    Strategy.Compose(ctx => new {{typeName}}( /* ... */ ));
             }
             ```
 
             **Option 3 – If `{{typeName}}` is an enum:**
             ```csharp
-            Generate.Enums<{{typeName}}>()
+            Strategy.Enums<{{typeName}}>()
             ```
 
             **Option 4 – If `{{typeName}}` has a known finite set of instances:**
             ```csharp
-            Generate.SampledFrom(new {{typeName}}[] { val1, val2, val3 })
+            Strategy.SampledFrom(new {{typeName}}[] { val1, val2, val3 })
             ```
 
             **Option 5 – If `{{typeName}}` can be derived from another strategy:**
             ```csharp
-            Generate.Strings().Select(s => new {{typeName}}(s))
+            Strategy.Strings().Select(s => new {{typeName}}(s))
             ```
             """
         };
@@ -592,50 +592,50 @@ internal static class StrategyTools
 
     private static string SuggestList(string inner) =>
         $"""
-        Use `Generate.Lists(innerStrategy)`:
+        Use `Strategy.Lists(innerStrategy)`:
         ```csharp
-        Generate.Lists({Inline(inner)})
+        Strategy.Lists({Inline(inner)})
         // → Strategy<List<{inner}>>
 
         // With size bounds:
-        Generate.Lists({Inline(inner)}, minSize: 1, maxSize: 10)
+        Strategy.Lists({Inline(inner)}, minSize: 1, maxSize: 10)
         ```
         """;
 
     private static string SuggestSet(string inner) =>
         $"""
-        Use `Generate.Sets(innerStrategy)`:
+        Use `Strategy.Sets(innerStrategy)`:
         ```csharp
-        Generate.Sets({Inline(inner)})
+        Strategy.Sets({Inline(inner)})
         // → Strategy<IReadOnlySet<{inner}>>
 
-        Generate.Sets({Inline(inner)}, minSize: 1, maxSize: 10)
+        Strategy.Sets({Inline(inner)}, minSize: 1, maxSize: 10)
         ```
         """;
 
     private static string SuggestDictionary() =>
         """
-        Use `Generate.Dictionaries(keyStrategy, valueStrategy)`:
+        Use `Strategy.Dictionaries(keyStrategy, valueStrategy)`:
         ```csharp
-        Generate.Dictionaries(Generate.Strings(), Generate.Integers<int>())
+        Strategy.Dictionaries(Strategy.Strings(), Strategy.Integers<int>())
         // → Strategy<IReadOnlyDictionary<string, int>>
 
         // With size bounds:
-        Generate.Dictionaries(Generate.Strings(), Generate.Integers<int>(), minSize: 1, maxSize: 10)
+        Strategy.Dictionaries(Strategy.Strings(), Strategy.Integers<int>(), minSize: 1, maxSize: 10)
         ```
         """;
 
     private static string SuggestNullable(string inner) =>
         $"""
         For `{inner}?`:
-        - Value type: `Generate.Nullable({Inline(inner)})` → `Strategy<{inner}?>`
+        - Value type: `Strategy.Nullable({Inline(inner)})` → `Strategy<{inner}?>`
         - Reference type: `{Inline(inner)}.OrNull()` → `Strategy<{inner}?>`
         """;
 
     internal static string SuggestForSealedAbstractType(string typeName) =>
         $$"""
         For sealed abstract type `{{typeName}}`, annotate the abstract base with `[Arbitrary]` and each concrete subtype with `[Arbitrary]`.
-        The source generator will emit a `Generate.OneOf(...)` strategy automatically — no manual wiring required.
+        The source generator will emit a `Strategy.OneOf(...)` strategy automatically — no manual wiring required.
 
         ```csharp
         [Arbitrary]
@@ -655,12 +655,12 @@ internal static class StrategyTools
 
     private static string Inline(string typeName) => typeName switch
     {
-        "int" => "Generate.Integers<int>()",
-        "long" => "Generate.Integers<long>()",
-        "string" => "Generate.Strings()",
-        "bool" => "Generate.Booleans()",
-        "double" => "Generate.Doubles()",
-        "float" => "Generate.Floats()",
+        "int" => "Strategy.Integers<int>()",
+        "long" => "Strategy.Integers<long>()",
+        "string" => "Strategy.Strings()",
+        "bool" => "Strategy.Booleans()",
+        "double" => "Strategy.Doubles()",
+        "float" => "Strategy.Floats()",
         _ => $"/* strategy for {typeName} */"
     };
 
