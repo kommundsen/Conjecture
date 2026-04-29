@@ -3,6 +3,10 @@
 - Follow .editorconfig rules when writing code.
 - Use workspace-relative paths in all tool calls (not absolute paths)
 
+## Context and glossary
+
+When discussing terms naming new concepts and types etc referer `./CONTEXT.MD` for glossary and rules.
+
 ## Build & Test
 
 `dotnet format` runs automatically via hook after every .cs file edit — no need to run manually.
