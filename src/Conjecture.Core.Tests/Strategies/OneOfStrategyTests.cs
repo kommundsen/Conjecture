@@ -14,7 +14,7 @@ public class OneOfStrategyTests
     [Fact]
     public void OneOf_ReturnsOnlyValuesFromSuppliedStrategies()
     {
-        var strategy = Generate.OneOf(Generate.Just(1), Generate.Just(2));
+        var strategy = Strategy.OneOf(Strategy.Just(1), Strategy.Just(2));
         var data = MakeData();
 
         for (var i = 0; i < 50; i++)
@@ -27,7 +27,7 @@ public class OneOfStrategyTests
     [Fact]
     public void OneOf_CoversAllBranchesOverManyDraws()
     {
-        var strategy = Generate.OneOf(Generate.Just(1), Generate.Just(2), Generate.Just(3));
+        var strategy = Strategy.OneOf(Strategy.Just(1), Strategy.Just(2), Strategy.Just(3));
         var data = MakeData();
         var seen = new HashSet<int>();
 
@@ -44,7 +44,7 @@ public class OneOfStrategyTests
     [Fact]
     public void OneOf_SingleStrategy_DelegatesDirectly()
     {
-        var strategy = Generate.OneOf(Generate.Just(42));
+        var strategy = Strategy.OneOf(Strategy.Just(42));
         var data = MakeData();
 
         for (var i = 0; i < 10; i++)
@@ -56,13 +56,13 @@ public class OneOfStrategyTests
     [Fact]
     public void OneOf_EmptyArray_ThrowsArgumentException()
     {
-        Assert.Throws<ArgumentException>(() => Generate.OneOf<int>());
+        Assert.Throws<ArgumentException>(() => Strategy.OneOf<int>());
     }
 
     [Fact]
     public void OneOf_SpanOverload_ReturnsOnlyValuesFromSuppliedStrategies()
     {
-        Strategy<int> strategy = Generate.OneOf(Generate.Just(1), Generate.Just(2));
+        Strategy<int> strategy = Strategy.OneOf(Strategy.Just(1), Strategy.Just(2));
         ConjectureData data = MakeData();
 
         for (int i = 0; i < 50; i++)
@@ -75,7 +75,7 @@ public class OneOfStrategyTests
     [Fact]
     public void OneOf_SpanOverload_ThreeArgs_CoversAllBranches()
     {
-        Strategy<int> strategy = Generate.OneOf(Generate.Just(1), Generate.Just(2), Generate.Just(3));
+        Strategy<int> strategy = Strategy.OneOf(Strategy.Just(1), Strategy.Just(2), Strategy.Just(3));
         ConjectureData data = MakeData();
         HashSet<int> seen = [];
 
@@ -92,13 +92,13 @@ public class OneOfStrategyTests
     [Fact]
     public void OneOf_SpanOverload_SixArgs_CoversAllBranches()
     {
-        Strategy<int> strategy = Generate.OneOf(
-            Generate.Just(1),
-            Generate.Just(2),
-            Generate.Just(3),
-            Generate.Just(4),
-            Generate.Just(5),
-            Generate.Just(6));
+        Strategy<int> strategy = Strategy.OneOf(
+            Strategy.Just(1),
+            Strategy.Just(2),
+            Strategy.Just(3),
+            Strategy.Just(4),
+            Strategy.Just(5),
+            Strategy.Just(6));
         ConjectureData data = MakeData();
         HashSet<int> seen = [];
 
@@ -120,7 +120,7 @@ public class OneOfStrategyTests
         bool threw = false;
         try
         {
-            Generate.OneOf(span);
+            Strategy.OneOf(span);
         }
         catch (ArgumentException)
         {

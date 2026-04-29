@@ -48,7 +48,7 @@ public sealed class InMemoryDbTarget(string resourceName, Func<DbContext> contex
     /// Each <see cref="ExecuteAsync"/> call opens its own <see cref="DbContext"/>. Sequencing an
     /// <see cref="DbOpKind.Add"/> and a separate <see cref="DbOpKind.SaveChanges"/> across two
     /// <c>ExecuteAsync</c> calls will NOT see each other through the change tracker — the second
-    /// call sees an empty context. Use <c>Generate.Db.Sequence</c> to produce a single state-machine
+    /// call sees an empty context. Use <c>Strategy.Db.Sequence</c> to produce a single state-machine
     /// run that batches operations correctly.
     /// </remarks>
     public async Task<object?> ExecuteAsync(IInteraction interaction, CancellationToken ct)

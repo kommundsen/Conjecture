@@ -12,7 +12,7 @@ public sealed class AsyncPropertyE2ETests
 
     private sealed class PositiveIntsProvider : IStrategyProvider<int>
     {
-        public Strategy<int> Create() => Generate.Integers<int>(1, 50);
+        public Strategy<int> Create() => Strategy.Integers<int>(1, 50);
     }
 
     // ── Async [Property] returning Task passes ────────────────────────────────
@@ -24,7 +24,7 @@ public sealed class AsyncPropertyE2ETests
 
         TestRunResult result = await TestRunner.RunAsync(settings, async data =>
         {
-            int x = Generate.Integers<int>(0, 100).Generate(data);
+            int x = Strategy.Integers<int>(0, 100).Generate(data);
             await Task.Yield();
             if (x < 0) { throw new Exception("impossible"); }
         });
@@ -51,7 +51,7 @@ public sealed class AsyncPropertyE2ETests
     public async Task AsyncTask_FailingProperty_ShrinksToMinimalCounterexample()
     {
         ConjectureSettings settings = new() { MaxExamples = 200, Seed = 1UL, UseDatabase = false };
-        Strategy<int> strategy = Generate.Integers<int>(0, 100);
+        Strategy<int> strategy = Strategy.Integers<int>(0, 100);
 
         TestRunResult result = await TestRunner.RunAsync(settings, async data =>
         {
@@ -73,7 +73,7 @@ public sealed class AsyncPropertyE2ETests
     public async Task AsyncTask_FailingProperty_ShrunkCounterexampleStillFails()
     {
         ConjectureSettings settings = new() { MaxExamples = 200, Seed = 5UL, UseDatabase = false };
-        Strategy<int> strategy = Generate.Integers<int>(0, 200);
+        Strategy<int> strategy = Strategy.Integers<int>(0, 200);
 
         TestRunResult result = await TestRunner.RunAsync(settings, async data =>
         {
@@ -108,7 +108,7 @@ public sealed class AsyncPropertyE2ETests
 
         TestRunResult generated = await TestRunner.RunAsync(settings, async data =>
         {
-            int v = Generate.Integers<int>(0, 10).Generate(data);
+            int v = Strategy.Integers<int>(0, 10).Generate(data);
             await Task.Yield();
             if (v < 0) { throw new Exception("impossible"); }
         });
@@ -145,7 +145,7 @@ public sealed class AsyncPropertyE2ETests
             generationPhaseReached = true;
             await TestRunner.RunAsync(new ConjectureSettings { MaxExamples = 10 }, async data =>
             {
-                Generate.Integers<int>().Generate(data);
+                Strategy.Integers<int>().Generate(data);
                 await Task.Yield();
             });
         }
@@ -197,7 +197,7 @@ public sealed class AsyncPropertyE2ETests
     public async Task AsyncTask_MixedFromProviderAndInferred_BothWorkTogether()
     {
         Strategy<int> fromProvider = new PositiveIntsProvider().Create();
-        Strategy<bool> inferred = Generate.Booleans();
+        Strategy<bool> inferred = Strategy.Booleans();
         ConjectureSettings settings = new() { MaxExamples = 50, Seed = 40UL };
 
         TestRunResult result = await TestRunner.RunAsync(settings, async data =>

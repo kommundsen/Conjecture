@@ -24,7 +24,7 @@ public class AspNetCoreScaffoldingToolTests
             entryPointType: "Program",
             endpointRoute: "/orders");
 
-        Assert.Contains("Generate.AspNetCoreRequests", result);
+        Assert.Contains("Strategy.AspNetCoreRequests", result);
     }
 
     [Fact]

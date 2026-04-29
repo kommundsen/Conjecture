@@ -8,13 +8,13 @@ namespace Conjecture.Mcp.Tests.Tools;
 public class StrategyToolsTests
 {
     [Theory]
-    [InlineData("bool", "Generate.Booleans()")]
-    [InlineData("int", "Generate.Integers<int>()")]
-    [InlineData("long", "Generate.Integers<long>()")]
-    [InlineData("float", "Generate.Floats()")]
-    [InlineData("double", "Generate.Doubles()")]
-    [InlineData("string", "Generate.Strings()")]
-    [InlineData("byte[]", "Generate.Bytes(size)")]
+    [InlineData("bool", "Strategy.Booleans()")]
+    [InlineData("int", "Strategy.Integers<int>()")]
+    [InlineData("long", "Strategy.Integers<long>()")]
+    [InlineData("float", "Strategy.Floats()")]
+    [InlineData("double", "Strategy.Doubles()")]
+    [InlineData("string", "Strategy.Strings()")]
+    [InlineData("byte[]", "Strategy.Bytes(size)")]
     public void SuggestForType_KnownPrimitive_ContainsExpectedCall(string typeName, string expectedCall)
     {
         var result = StrategyTools.SuggestForType(typeName);
@@ -22,11 +22,11 @@ public class StrategyToolsTests
     }
 
     [Theory]
-    [InlineData("List<int>", "Generate.Lists(")]
-    [InlineData("IReadOnlyList<string>", "Generate.Lists(")]
-    [InlineData("IEnumerable<bool>", "Generate.Lists(")]
-    [InlineData("HashSet<int>", "Generate.Sets(")]
-    [InlineData("IReadOnlySet<string>", "Generate.Sets(")]
+    [InlineData("List<int>", "Strategy.Lists(")]
+    [InlineData("IReadOnlyList<string>", "Strategy.Lists(")]
+    [InlineData("IEnumerable<bool>", "Strategy.Lists(")]
+    [InlineData("HashSet<int>", "Strategy.Sets(")]
+    [InlineData("IReadOnlySet<string>", "Strategy.Sets(")]
     public void SuggestForType_Collection_ContainsExpectedFactory(string typeName, string expectedFactory)
     {
         var result = StrategyTools.SuggestForType(typeName);
@@ -34,8 +34,8 @@ public class StrategyToolsTests
     }
 
     [Theory]
-    [InlineData("Dictionary<string, int>", "Generate.Dictionaries(")]
-    [InlineData("IReadOnlyDictionary<int, bool>", "Generate.Dictionaries(")]
+    [InlineData("Dictionary<string, int>", "Strategy.Dictionaries(")]
+    [InlineData("IReadOnlyDictionary<int, bool>", "Strategy.Dictionaries(")]
     public void SuggestForType_Dictionary_ContainsDictionariesFactory(string typeName, string expectedFactory)
     {
         var result = StrategyTools.SuggestForType(typeName);
@@ -48,7 +48,7 @@ public class StrategyToolsTests
     public void SuggestForType_Nullable_ContainsNullableOrOrNull(string typeName)
     {
         var result = StrategyTools.SuggestForType(typeName);
-        Assert.True(result.Contains("Generate.Nullable(") || result.Contains(".OrNull()"),
+        Assert.True(result.Contains("Strategy.Nullable(") || result.Contains(".OrNull()"),
             $"Expected Nullable or OrNull in: {result}");
     }
 
@@ -56,14 +56,14 @@ public class StrategyToolsTests
     public void SuggestForType_Tuple_MentionsTuples()
     {
         var result = StrategyTools.SuggestForType("(int, string)");
-        Assert.Contains("Generate.Tuples(", result);
+        Assert.Contains("Strategy.Tuples(", result);
     }
 
     [Fact]
     public void SuggestForType_CustomType_MentionsCompose()
     {
         var result = StrategyTools.SuggestForType("MyRecord");
-        Assert.Contains("Generate.Compose", result);
+        Assert.Contains("Strategy.Compose", result);
     }
 
     [Fact]
@@ -77,14 +77,14 @@ public class StrategyToolsTests
     public void SuggestForSealedAbstractType_SealedAbstractBase_ContainsGenerateOneOf()
     {
         string result = StrategyTools.SuggestForSealedAbstractType("MyAbstractBase");
-        Assert.Contains("Generate.OneOf", result);
+        Assert.Contains("Strategy.OneOf", result);
     }
 
     [Fact]
     public void SuggestForSealedAbstractType_SealedAbstractBase_DoesNotMentionComposeAsMainRecommendation()
     {
         string result = StrategyTools.SuggestForSealedAbstractType("MyAbstractBase");
-        Assert.DoesNotContain("Generate.Compose (recommended", result);
+        Assert.DoesNotContain("Strategy.Compose (recommended", result);
     }
 
     [Fact]
@@ -101,8 +101,8 @@ public class StrategyToolsTests
     {
         string result = StrategyTools.SuggestForType("Regex");
         Assert.True(
-            result.Contains("Generate.Matching"),
-            $"Expected Generate.Matching in: {result}");
+            result.Contains("Strategy.Matching"),
+            $"Expected Strategy.Matching in: {result}");
     }
 
     [Theory]
@@ -111,14 +111,14 @@ public class StrategyToolsTests
     public void SuggestForType_EmailKeyword_ContainsGenerateEmail(string typeName)
     {
         string result = StrategyTools.SuggestForType(typeName);
-        Assert.Contains("Generate.Email()", result);
+        Assert.Contains("Strategy.Email()", result);
     }
 
     [Fact]
     public void SuggestForType_WithArbitraryAttribute_ReturnsGenerateFor()
     {
         string result = StrategyTools.SuggestForType("MyRecord", hasArbitraryAttribute: true);
-        Assert.Contains("Generate.For<MyRecord>()", result);
+        Assert.Contains("Strategy.For<MyRecord>()", result);
     }
 
     [Fact]
@@ -132,21 +132,21 @@ public class StrategyToolsTests
     public void SuggestForType_WithArbitraryAttribute_DoesNotRecommendCompose()
     {
         string result = StrategyTools.SuggestForType("MyRecord", hasArbitraryAttribute: true);
-        Assert.DoesNotContain("Generate.Compose (recommended", result);
+        Assert.DoesNotContain("Strategy.Compose (recommended", result);
     }
 
     [Fact]
     public void SuggestForType_WithoutArbitraryAttribute_FallsBackToCompose()
     {
         string result = StrategyTools.SuggestForType("MyRecord");
-        Assert.Contains("Generate.Compose", result);
+        Assert.Contains("Strategy.Compose", result);
     }
 
     [Fact]
     public void SuggestStrategy_WithArbitraryAttribute_ReturnsGenerateFor()
     {
         string result = StrategyTools.SuggestStrategy(typeName: "MyRecord", hasArbitraryAttribute: true);
-        Assert.Contains("Generate.For<MyRecord>()", result);
+        Assert.Contains("Strategy.For<MyRecord>()", result);
     }
 
     [Fact]
@@ -170,7 +170,7 @@ public class StrategyToolsTests
     public void SuggestForType_Decimal_ContainsGenerateDecimal()
     {
         string result = StrategyTools.SuggestForType("decimal");
-        Assert.Contains("Generate.Decimal(", result);
+        Assert.Contains("Strategy.Decimal(", result);
     }
 
     [Fact]
@@ -189,21 +189,21 @@ public class StrategyToolsTests
     public void SuggestForType_CurrencyKeyword_ContainsIso4217Codes(string typeName)
     {
         string result = StrategyTools.SuggestForType(typeName);
-        Assert.Contains("Generate.Iso4217Codes()", result);
+        Assert.Contains("Strategy.Iso4217Codes()", result);
     }
 
     [Fact]
     public void SuggestForType_CurrencyKeyword_ContainsAmounts()
     {
         string result = StrategyTools.SuggestForType("currency");
-        Assert.Contains("Generate.Amounts(", result);
+        Assert.Contains("Strategy.Amounts(", result);
     }
 
     [Fact]
     public void SuggestForType_MidpointRounding_ContainsRoundingModes()
     {
         string result = StrategyTools.SuggestForType("MidpointRounding");
-        Assert.Contains("Generate.RoundingModes()", result);
+        Assert.Contains("Strategy.RoundingModes()", result);
     }
 
     [Theory]
@@ -213,13 +213,13 @@ public class StrategyToolsTests
     public void SuggestForType_MoneyKeyword_ContainsAmounts(string typeName)
     {
         string result = StrategyTools.SuggestForType(typeName);
-        Assert.Contains("Generate.Amounts(", result);
+        Assert.Contains("Strategy.Amounts(", result);
     }
 
     [Fact]
     public void SuggestForType_RoundingKeyword_ContainsRoundingModes()
     {
         string result = StrategyTools.SuggestForType("rounding");
-        Assert.Contains("Generate.RoundingModes()", result);
+        Assert.Contains("Strategy.RoundingModes()", result);
     }
 }

@@ -19,9 +19,9 @@ internal static class BuilderTestDtoStrategySupport
         GenerateForRegistry.Register(
             typeof(BuilderTestDto),
             static () => new BuilderTestDtoProvider(),
-            Generate.Compose<object?>(static ctx =>
+            Strategy.Compose<object?>(static ctx =>
             {
-                string name = ctx.Generate(Generate.Strings(minLength: 1, maxLength: 20));
+                string name = ctx.Generate(Strategy.Strings(minLength: 1, maxLength: 20));
                 return (object?)new BuilderTestDto(name);
             }));
     }
@@ -29,9 +29,9 @@ internal static class BuilderTestDtoStrategySupport
     private sealed class BuilderTestDtoProvider : IStrategyProvider<BuilderTestDto>
     {
         public Strategy<BuilderTestDto> Create() =>
-            Generate.Compose<BuilderTestDto>(static ctx =>
+            Strategy.Compose<BuilderTestDto>(static ctx =>
             {
-                string name = ctx.Generate(Generate.Strings(minLength: 1, maxLength: 20));
+                string name = ctx.Generate(Strategy.Strings(minLength: 1, maxLength: 20));
                 return new BuilderTestDto(name);
             });
     }

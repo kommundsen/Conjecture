@@ -17,9 +17,9 @@ public class FromFactoryAttributeResolverTests
     // ─── Factory methods used by helper params below ──────────────────────────
 
     public static Strategy<int> EvenInts() =>
-        Generate.Integers<int>(0, 25).Select(n => n * 2);
+        Strategy.Integers<int>(0, 25).Select(n => n * 2);
 
-    public Strategy<int> NonStaticFactory() => Generate.Integers<int>();
+    public Strategy<int> NonStaticFactory() => Strategy.Integers<int>();
 
     public static string WrongReturnType() => "not a strategy";
 

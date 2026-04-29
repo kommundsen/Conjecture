@@ -17,24 +17,13 @@ using Microsoft.Extensions.Hosting;
 
 namespace Conjecture.AspNetCore.Tests;
 
-public sealed class AspNetCoreExtensionsTests : IClassFixture<WebApplicationFactory<AspNetCoreExtensionsTestsApp>>
+public sealed class AspNetCoreExtensionsTests(WebApplicationFactory<AspNetCoreExtensionsTestsApp> factory) : IClassFixture<WebApplicationFactory<AspNetCoreExtensionsTestsApp>>
 {
-    private readonly WebApplicationFactory<AspNetCoreExtensionsTestsApp> factory;
-
-    public AspNetCoreExtensionsTests(WebApplicationFactory<AspNetCoreExtensionsTestsApp> factory)
-    {
-        this.factory = factory.WithWebHostBuilder(static webBuilder =>
-        {
-            webBuilder.Configure(static app =>
+    private readonly WebApplicationFactory<AspNetCoreExtensionsTestsApp> factory = factory.WithWebHostBuilder(static webBuilder => webBuilder.Configure(static app =>
             {
                 app.UseRouting();
-                app.UseEndpoints(static endpoints =>
-                {
-                    endpoints.MapGet("/ping", static () => Results.Ok("pong"));
-                });
-            });
-        });
-    }
+                app.UseEndpoints(static endpoints => endpoints.MapGet("/ping", static () => Results.Ok("pong")));
+            }));
 
     [Fact]
     public void AspNetCoreRequests_ReturnsBuilder()
@@ -42,7 +31,7 @@ public sealed class AspNetCoreExtensionsTests : IClassFixture<WebApplicationFact
         HttpClient client = factory.CreateClient();
         IHost host = factory.Services.GetRequiredService<IHost>();
 
-        AspNetCoreRequestBuilder builder = Generate.AspNetCoreRequests(host, client);
+        AspNetCoreRequestBuilder builder = Strategy.AspNetCoreRequests(host, client);
 
         Assert.NotNull(builder);
     }
@@ -53,7 +42,7 @@ public sealed class AspNetCoreExtensionsTests : IClassFixture<WebApplicationFact
         HttpClient client = factory.CreateClient();
         IHost host = factory.Services.GetRequiredService<IHost>();
 
-        Strategy<HttpInteraction> strategy = Generate
+        Strategy<HttpInteraction> strategy = Strategy
             .AspNetCoreRequests(host, client)
             .ValidRequestsOnly()
             .Build();
@@ -66,7 +55,7 @@ public sealed class AspNetCoreExtensionsTests : IClassFixture<WebApplicationFact
     {
         HttpClient client = factory.CreateClient();
 
-        Assert.Throws<ArgumentNullException>(() => Generate.AspNetCoreRequests(null!, client));
+        Assert.Throws<ArgumentNullException>(() => Strategy.AspNetCoreRequests(null!, client));
     }
 
     [Fact]
@@ -74,7 +63,7 @@ public sealed class AspNetCoreExtensionsTests : IClassFixture<WebApplicationFact
     {
         IHost host = factory.Services.GetRequiredService<IHost>();
 
-        Assert.Throws<ArgumentNullException>(() => Generate.AspNetCoreRequests(host, null!));
+        Assert.Throws<ArgumentNullException>(() => Strategy.AspNetCoreRequests(host, null!));
     }
 }
 

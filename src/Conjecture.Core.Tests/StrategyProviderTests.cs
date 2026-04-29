@@ -13,12 +13,12 @@ public class StrategyProviderTests
 
     private sealed class PositiveIntsProvider : IStrategyProvider<int>
     {
-        public Strategy<int> Create() => Generate.Integers<int>(1, int.MaxValue);
+        public Strategy<int> Create() => Strategy.Integers<int>(1, int.MaxValue);
     }
 
     private sealed class EvenIntsProvider : IStrategyProvider<int>
     {
-        public Strategy<int> Create() => Generate.Integers<int>(0, 50).Where(n => n % 2 == 0);
+        public Strategy<int> Create() => Strategy.Integers<int>(0, 50).Where(n => n % 2 == 0);
     }
 
     [Fact]

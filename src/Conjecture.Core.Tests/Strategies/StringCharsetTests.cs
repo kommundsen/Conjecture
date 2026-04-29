@@ -14,7 +14,7 @@ public class StringCharsetTests
     [Fact]
     public void Strings_Alphabet_OnlyProducesCharsFromAlphabet()
     {
-        var strategy = Generate.Strings(alphabet: "abc");
+        var strategy = Strategy.Strings(alphabet: "abc");
         var data = MakeData();
 
         for (var i = 0; i < 200; i++)
@@ -30,7 +30,7 @@ public class StringCharsetTests
     [Fact]
     public void Strings_Alphabet_CoversAllAlphabetCharsOverManyDraws()
     {
-        var strategy = Generate.Strings(alphabet: "abc", minLength: 10, maxLength: 20);
+        var strategy = Strategy.Strings(alphabet: "abc", minLength: 10, maxLength: 20);
         var seen = new HashSet<char>();
 
         for (var seed = 0UL; seed < 500UL && seen.Count < 3; seed++)
@@ -50,7 +50,7 @@ public class StringCharsetTests
     [Fact]
     public void Strings_Alphabet_SingleChar_AlwaysProducesThatChar()
     {
-        var strategy = Generate.Strings(alphabet: "z", minLength: 3, maxLength: 3);
+        var strategy = Strategy.Strings(alphabet: "z", minLength: 3, maxLength: 3);
         var data = MakeData();
 
         for (var i = 0; i < 50; i++)
@@ -63,14 +63,14 @@ public class StringCharsetTests
     [Fact]
     public void Strings_EmptyAlphabet_ThrowsArgumentException()
     {
-        Assert.Throws<ArgumentException>(() => Generate.Strings(alphabet: ""));
+        Assert.Throws<ArgumentException>(() => Strategy.Strings(alphabet: ""));
     }
 
     [Fact]
     public void Strings_MinMaxCodepoint_RespectsRange()
     {
         // Latin Extended-A range: U+0100–U+017F
-        var strategy = Generate.Strings(minCodepoint: 0x0100, maxCodepoint: 0x017F, minLength: 5, maxLength: 10);
+        var strategy = Strategy.Strings(minCodepoint: 0x0100, maxCodepoint: 0x017F, minLength: 5, maxLength: 10);
         var data = MakeData();
 
         for (var i = 0; i < 100; i++)
@@ -86,7 +86,7 @@ public class StringCharsetTests
     [Fact]
     public void Strings_MinMaxCodepoint_LengthBoundsRespected()
     {
-        var strategy = Generate.Strings(minCodepoint: 65, maxCodepoint: 90, minLength: 3, maxLength: 7);
+        var strategy = Strategy.Strings(minCodepoint: 65, maxCodepoint: 90, minLength: 3, maxLength: 7);
         var data = MakeData();
 
         for (var i = 0; i < 100; i++)
@@ -100,7 +100,7 @@ public class StringCharsetTests
     public void Strings_UnicodeRange_CanProduceHighCodepointChars()
     {
         // Greek letters: U+0391–U+03C9
-        var strategy = Generate.Strings(minCodepoint: 0x0391, maxCodepoint: 0x03C9, minLength: 1, maxLength: 5);
+        var strategy = Strategy.Strings(minCodepoint: 0x0391, maxCodepoint: 0x03C9, minLength: 1, maxLength: 5);
         var data = MakeData();
 
         var sawHighCodepoint = false;

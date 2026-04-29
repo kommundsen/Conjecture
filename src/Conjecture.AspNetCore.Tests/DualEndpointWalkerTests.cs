@@ -3,11 +3,12 @@
 
 using System.Collections.Generic;
 using System.Linq;
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -23,13 +24,9 @@ public class DualEndpointWalkerTestsApp
 {
 }
 
-public sealed class DualEndpointWalkerTests : IClassFixture<WebApplicationFactory<DualEndpointWalkerTestsApp>>
+public sealed class DualEndpointWalkerTests(WebApplicationFactory<DualEndpointWalkerTestsApp> factory) : IClassFixture<WebApplicationFactory<DualEndpointWalkerTestsApp>>
 {
-    private readonly WebApplicationFactory<DualEndpointWalkerTestsApp> factory;
-
-    public DualEndpointWalkerTests(WebApplicationFactory<DualEndpointWalkerTestsApp> factory)
-    {
-        this.factory = factory.WithWebHostBuilder(builder =>
+    private readonly WebApplicationFactory<DualEndpointWalkerTestsApp> factory = factory.WithWebHostBuilder(builder =>
         {
             builder.UseTestServer();
 
@@ -53,7 +50,6 @@ public sealed class DualEndpointWalkerTests : IClassFixture<WebApplicationFactor
                 });
             });
         });
-    }
 
     [Fact]
     public void Discover_WithMinimalApiAndController_ReturnsBothEndpoints()

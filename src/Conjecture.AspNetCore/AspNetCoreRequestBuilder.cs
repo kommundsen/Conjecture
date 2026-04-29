@@ -92,7 +92,7 @@ public sealed class AspNetCoreRequestBuilder
     /// <summary>
     /// Returns a new builder that uses <paramref name="doc"/> as the source of body strategies.
     /// When an endpoint's (method, path) matches an OpenAPI operation with a request body schema,
-    /// the synthesised body is generated from the schema; otherwise the registered <c>Generate.For&lt;T&gt;()</c>
+    /// the synthesised body is generated from the schema; otherwise the registered <c>Strategy.For&lt;T&gt;()</c>
     /// strategy is used as a fallback.
     /// </summary>
     public AspNetCoreRequestBuilder FromOpenApi(Conjecture.OpenApi.OpenApiDocument doc)
@@ -125,7 +125,7 @@ public sealed class AspNetCoreRequestBuilder
 
         Func<Task> capturedSetup = this.setup;
 
-        return Generate.Compose<HttpInteraction>(ctx =>
+        return Strategy.Compose<HttpInteraction>(ctx =>
         {
             capturedSetup().GetAwaiter().GetResult();
             return ctx.Generate(inner);
@@ -158,7 +158,7 @@ public sealed class AspNetCoreRequestBuilder
         {
             0 => null,
             1 => strategies[0],
-            _ => Generate.OneOf(strategies.ToArray()),
+            _ => Strategy.OneOf(strategies.ToArray()),
         };
     }
 
@@ -168,7 +168,7 @@ public sealed class AspNetCoreRequestBuilder
             .Select(static ep => new RequestSynthesizer(ep).MalformedStrategy())
             .ToArray();
 
-        return strategies.Length == 1 ? strategies[0] : Generate.OneOf(strategies);
+        return strategies.Length == 1 ? strategies[0] : Strategy.OneOf(strategies);
     }
 
     private static Strategy<HttpInteraction> BuildMixedStrategy(
@@ -195,6 +195,6 @@ public sealed class AspNetCoreRequestBuilder
             arms[i] = malformedStrategy;
         }
 
-        return Generate.OneOf(arms);
+        return Strategy.OneOf(arms);
     }
 }

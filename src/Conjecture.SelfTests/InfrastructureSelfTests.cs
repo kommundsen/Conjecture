@@ -16,18 +16,18 @@ public class InfrastructureSelfTests
     private sealed class RandomBuffer : IStrategyProvider<byte[]>
     {
         public Strategy<byte[]> Create() =>
-            Generate.Lists(Generate.Integers<byte>(), minSize: 1, maxSize: 64)
+            Strategy.Lists(Strategy.Integers<byte>(), minSize: 1, maxSize: 64)
                .Select(list => list.ToArray());
     }
 
     private sealed class PositiveInt : IStrategyProvider<int>
     {
-        public Strategy<int> Create() => Generate.Integers<int>(1, 10_000);
+        public Strategy<int> Create() => Strategy.Integers<int>(1, 10_000);
     }
 
     private sealed class NonNegativeInt : IStrategyProvider<int>
     {
-        public Strategy<int> Create() => Generate.Integers<int>(0, 1_000);
+        public Strategy<int> Create() => Strategy.Integers<int>(0, 1_000);
     }
 
     [Property(MaxExamples = 30)]

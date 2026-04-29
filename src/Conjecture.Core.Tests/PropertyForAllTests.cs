@@ -25,7 +25,7 @@ public sealed class PropertyForAllTests
     [Fact]
     public async Task StrategyOverload_PassingAssertion_CompletesWithoutThrowing()
     {
-        Strategy<int> strategy = Generate.Integers<int>(0, 10);
+        Strategy<int> strategy = Strategy.Integers<int>(0, 10);
         ConjectureSettings settings = new() { MaxExamples = 20, Seed = 1UL };
 
         await Property.ForAll(
@@ -38,7 +38,7 @@ public sealed class PropertyForAllTests
     [Fact]
     public async Task StrategyOverload_FailingAssertion_ThrowsConjectureException()
     {
-        Strategy<int> strategy = Generate.Integers<int>(0, 100);
+        Strategy<int> strategy = Strategy.Integers<int>(0, 100);
         ConjectureSettings settings = new() { MaxExamples = 200, Seed = 1UL };
 
         await Assert.ThrowsAsync<ConjectureException>(async () =>
@@ -52,7 +52,7 @@ public sealed class PropertyForAllTests
     [Fact]
     public async Task StrategyOverload_FailingAssertion_ShrinksToBoundary()
     {
-        Strategy<int> strategy = Generate.Integers<int>(0, 100);
+        Strategy<int> strategy = Strategy.Integers<int>(0, 100);
         ConjectureSettings settings = new() { MaxExamples = 200, Seed = 1UL };
 
         ConjectureException ex = await Assert.ThrowsAsync<ConjectureException>(async () =>
@@ -72,7 +72,7 @@ public sealed class PropertyForAllTests
         using CancellationTokenSource cts = new();
         cts.Cancel();
 
-        Strategy<int> strategy = Generate.Integers<int>(0, 100);
+        Strategy<int> strategy = Strategy.Integers<int>(0, 100);
         int executionCount = 0;
 
         try
@@ -98,7 +98,7 @@ public sealed class PropertyForAllTests
     [Fact]
     public async Task StrategyOverload_SettingsOverride_UsesProvidedSettings()
     {
-        Strategy<int> strategy = Generate.Integers<int>(0, 10);
+        Strategy<int> strategy = Strategy.Integers<int>(0, 10);
         ConjectureSettings settings = new() { MaxExamples = 1, Seed = 1UL };
         int executionCount = 0;
 
@@ -125,7 +125,7 @@ public sealed class PropertyForAllTests
 
         public override IEnumerable<Strategy<IInteraction>> Commands(int state)
         {
-            yield return Generate.Just<IInteraction>(new IncrementInteraction());
+            yield return Strategy.Just<IInteraction>(new IncrementInteraction());
         }
 
         public override int RunCommand(int state, IInteraction interaction, IInteractionTarget target, CancellationToken ct) =>
@@ -148,7 +148,7 @@ public sealed class PropertyForAllTests
 
         public override IEnumerable<Strategy<IInteraction>> Commands(int state)
         {
-            yield return Generate.Just<IInteraction>(new IncrementInteraction());
+            yield return Strategy.Just<IInteraction>(new IncrementInteraction());
         }
 
         public override int RunCommand(int state, IInteraction interaction, IInteractionTarget target, CancellationToken ct) =>

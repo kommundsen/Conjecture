@@ -12,8 +12,8 @@ public class RecursiveStrategyTests
         ConjectureData.ForGeneration(new SplittableRandom(seed));
 
     private static RecursiveStrategy<int> IntRecursive(int maxDepth) =>
-        new(Generate.Just(0),
-            self => Generate.OneOf(Generate.Just(0), self.Select(n => n + 1)),
+        new(Strategy.Just(0),
+            self => Strategy.OneOf(Strategy.Just(0), self.Select(n => n + 1)),
             maxDepth);
 
     [Fact]
@@ -77,13 +77,13 @@ public class RecursiveStrategyTests
     public void RecursiveStrategy_NegativeMaxDepth_ThrowsArgumentOutOfRangeException()
     {
         Assert.Throws<ArgumentOutOfRangeException>(() =>
-            new RecursiveStrategy<int>(Generate.Just(0), self => self, -1));
+            new RecursiveStrategy<int>(Strategy.Just(0), self => self, -1));
     }
 
     [Fact]
     public void RecursiveStrategy_WhenBaseCaseThrowsAssumption_PropagatesException()
     {
-        Strategy<int> badBase = Generate.Just(0).Where(_ => false);
+        Strategy<int> badBase = Strategy.Just(0).Where(_ => false);
         RecursiveStrategy<int> strategy = new(badBase, self => self, 0);
         ConjectureData data = MakeData();
 
@@ -93,10 +93,10 @@ public class RecursiveStrategyTests
     [Fact]
     public void RecursiveStrategy_WithComplexType_GeneratesValidExprTrees()
     {
-        Strategy<Expr> numStrategy = Generate.Just<Expr>(new Num(1));
+        Strategy<Expr> numStrategy = Strategy.Just<Expr>(new Num(1));
         RecursiveStrategy<Expr> strategy = new(
             numStrategy,
-            self => Generate.OneOf(numStrategy, self.Select(e => (Expr)new Add(e, e))),
+            self => Strategy.OneOf(numStrategy, self.Select(e => (Expr)new Add(e, e))),
             maxDepth: 3);
         ConjectureData data = MakeData();
 

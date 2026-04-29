@@ -59,7 +59,7 @@ public sealed class AspireInteractionSequenceBuilder
         ArgumentNullException.ThrowIfNull(label);
         ArgumentNullException.ThrowIfNull(capture);
         DbSnapshotInteraction snapshot = new(resourceName, label, capture);
-        steps.Add(Generate.Just<IAddressedInteraction>(snapshot));
+        steps.Add(Strategy.Just<IAddressedInteraction>(snapshot));
         return this;
     }
 
@@ -75,8 +75,8 @@ public sealed class AspireInteractionSequenceBuilder
             throw new InvalidOperationException("At least one step strategy must be registered before calling Build.");
         }
 
-        Strategy<IAddressedInteraction> stepStrategy = Generate.OneOf(steps.ToArray());
-        return Generate.Lists(stepStrategy, minSize, maxSize)
+        Strategy<IAddressedInteraction> stepStrategy = Strategy.OneOf(steps.ToArray());
+        return Strategy.Lists(stepStrategy, minSize, maxSize)
             .Select(static list => (IReadOnlyList<IAddressedInteraction>)list);
     }
 }

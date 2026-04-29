@@ -12,12 +12,12 @@ namespace Conjecture.SelfTests;
 public class RecursiveStrategySelfTests
 {
     // Value equals depth of recursion: 0 = base case, n = n levels deep.
-    // Generate.Just(0) as base case ensures the only way to get a value > 0 is
+    // Strategy.Just(0) as base case ensures the only way to get a value > 0 is
     // through actual recursive expansion, so the generated int directly tracks depth.
-    private static readonly Strategy<int> DepthCountingStrategy = Generate.Recursive<int>(
-        Generate.Just(0),
-        self => Generate.OneOf(
-            Generate.Just(0),
+    private static readonly Strategy<int> DepthCountingStrategy = Strategy.Recursive<int>(
+        Strategy.Just(0),
+        self => Strategy.OneOf(
+            Strategy.Just(0),
             self.Select(n => n + 1)),
         maxDepth: 5);
 

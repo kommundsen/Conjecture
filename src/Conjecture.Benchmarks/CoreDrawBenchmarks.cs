@@ -23,8 +23,8 @@ public class CoreGenerationBenchmarks
     public void Setup()
     {
         rng = new SplittableRandom(42UL);
-        integers = Generate.Integers<int>();
-        booleans = Generate.Booleans();
+        integers = Strategy.Integers<int>();
+        booleans = Strategy.Booleans();
     }
 
     // --- ConjectureData raw generation ---

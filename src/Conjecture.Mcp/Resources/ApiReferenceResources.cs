@@ -13,17 +13,17 @@ internal static class ApiReferenceResources
 {
     private static readonly IReadOnlyList<(string Topic, string Name, string Description)> Topics =
     [
-        ("strategies",     "Conjecture Strategies",     "All Generate.* factory methods and LINQ combinators"),
+        ("strategies",     "Conjecture Strategies",     "All Strategy.* factory methods and LINQ combinators"),
         ("settings",       "Conjecture Settings",        "ConjectureSettings, ConjectureSettingsAttribute, and configuration options"),
-        ("state-machines", "Stateful Testing",           "IStateMachine<TState,TCommand>, StateMachineRun, and Generate.StateMachine"),
+        ("state-machines", "Stateful Testing",           "IStateMachine<TState,TCommand>, StateMachineRun, and Strategy.StateMachine"),
         ("shrinking",      "Shrinking Explained",        "How Conjecture finds minimal counterexamples"),
         ("assumptions",          "Assumptions and Filtering",  "Assume.That(), IGenerationContext.Assume(), and UnsatisfiedAssumptionException"),
         ("attributes",           "Test Attributes",            "[Property], [Example], [From<T>], [FromFactory], [ConjectureSettings]"),
         ("targeted-testing",     "Targeted Testing",           "Target.Maximize, Target.Minimize, IGenerationContext.Target, and targeting settings"),
-        ("recursive-strategies", "Recursive Strategies",       "Generate.Recursive<T> for tree-shaped and self-referential types"),
+        ("recursive-strategies", "Recursive Strategies",       "Strategy.Recursive<T> for tree-shaped and self-referential types"),
         ("testing-platform",     "Microsoft Testing Platform Adapter", "Conjecture.TestingPlatform setup, [Property] attribute, CLI options, TRX reports, and CrashDump"),
         ("aspire-setup",         "Aspire Integration Setup",           "Step-by-step guide for wiring up Conjecture.Aspire: IAspireAppFixture, AspireStateMachine<TState>, ResetAsync lifecycle, and [Property] attribute"),
-        ("efcore-setup",         "EF Core Integration Setup",          "Step-by-step guide for wiring up Conjecture.EFCore: Generate.Entity, Generate.EntitySet, RoundtripAsserter, and MigrationHarness"),
+        ("efcore-setup",         "EF Core Integration Setup",          "Step-by-step guide for wiring up Conjecture.EFCore: Strategy.Entity, Strategy.EntitySet, RoundtripAsserter, and MigrationHarness"),
         ("aspnetcore-efcore-setup", "ASP.NET Core + EF Core Integration Setup", "Step-by-step guide for wiring up Conjecture.AspNetCore.EFCore: AspNetCoreDbTarget, AssertNoPartialWritesOnErrorAsync, AssertCascadeCorrectnessAsync, and AssertIdempotentAsync"),
     ];
 

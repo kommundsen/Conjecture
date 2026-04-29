@@ -9,7 +9,7 @@ using System.Numerics;
 namespace Conjecture.Core;
 
 /// <summary>Factory methods for creating and composing Conjecture strategies.</summary>
-public static class Generate
+public static class Strategy
 {
     /// <summary>Creates a strategy from an imperative factory function using <see cref="IGenerationContext"/>.</summary>
     public static Strategy<T> Compose<T>(Func<IGenerationContext, T> factory)
@@ -137,17 +137,17 @@ public static class Generate
     /// <returns>
     ///   A <see cref="Strategy{T}"/> whose generated values have depth at most <paramref name="maxDepth"/>.
     ///   The depth draw is an IR integer, so the shrinker reduces it toward 0, producing shallower structures
-    ///   when minimising a counterexample.
+    ///   when shrinking a counterexample.
     /// </returns>
     /// <example>
     /// <code>
     /// // Expression tree: Literal | Add | Mul, up to 5 levels deep
-    /// Strategy&lt;Expr&gt; exprStrategy = Generate.Recursive&lt;Expr&gt;(
-    ///     baseCase: Generate.Integers&lt;int&gt;(0, 100).Select(n =&gt; (Expr)new Literal(n)),
-    ///     recursive: self =&gt; Generate.OneOf(
-    ///         Generate.Integers&lt;int&gt;(0, 100).Select(n =&gt; (Expr)new Literal(n)),
-    ///         Generate.Tuples(self, self).Select(t =&gt; (Expr)new Add(t.Item1, t.Item2)),
-    ///         Generate.Tuples(self, self).Select(t =&gt; (Expr)new Mul(t.Item1, t.Item2))),
+    /// Strategy&lt;Expr&gt; exprStrategy = Strategy.Recursive&lt;Expr&gt;(
+    ///     baseCase: Strategy.Integers&lt;int&gt;(0, 100).Select(n =&gt; (Expr)new Literal(n)),
+    ///     recursive: self =&gt; Strategy.OneOf(
+    ///         Strategy.Integers&lt;int&gt;(0, 100).Select(n =&gt; (Expr)new Literal(n)),
+    ///         Strategy.Tuples(self, self).Select(t =&gt; (Expr)new Add(t.Item1, t.Item2)),
+    ///         Strategy.Tuples(self, self).Select(t =&gt; (Expr)new Mul(t.Item1, t.Item2))),
     ///     maxDepth: 5);
     /// </code>
     /// </example>
@@ -176,7 +176,7 @@ public static class Generate
     /// public sealed class CounterMachine : IStateMachine&lt;int, string&gt;
     /// {
     ///     public int InitialState() =&gt; 0;
-    ///     public IEnumerable&lt;Strategy&lt;string&gt;&gt; Commands(int state) =&gt; [Generate.Just("inc")];
+    ///     public IEnumerable&lt;Strategy&lt;string&gt;&gt; Commands(int state) =&gt; [Strategy.Just("inc")];
     ///     public int RunCommand(int state, string cmd) =&gt; state + 1;
     ///     public void Invariant(int state)
     ///     {
@@ -186,7 +186,7 @@ public static class Generate
     /// }
     ///
     /// Strategy&lt;StateMachineRun&lt;int&gt;&gt; strategy =
-    ///     Generate.StateMachine&lt;CounterMachine, int, string&gt;(maxSteps: 50);
+    ///     Strategy.StateMachine&lt;CounterMachine, int, string&gt;(maxSteps: 50);
     /// </code>
     /// </example>
     public static Strategy<StateMachineRun<TState>> StateMachine<TMachine, TState, TCommand>(int maxSteps = 50)
@@ -227,7 +227,7 @@ public static class Generate
     public static Strategy<TimeOnly> TimeOnlyValues(TimeOnly min, TimeOnly max)
         => new TimeOnlyStrategy(min, max);
 
-    /// <summary>Returns a strategy that generates identifier strings of the form <c>[a-z]+\d+</c>. The alpha prefix is drawn via IR string nodes so <c>StringAwarePass</c> can simplify it toward 'a', and the digit suffix is drawn so <c>NumericAwareShrinkPass</c> can minimize it.</summary>
+    /// <summary>Returns a strategy that generates identifier strings of the form <c>[a-z]+\d+</c>. The alpha prefix is drawn via IR string nodes so <c>StringAwarePass</c> can simplify it toward 'a', and the digit suffix is drawn so <c>NumericAwareShrinkPass</c> can shrink it.</summary>
     public static Strategy<string> Identifiers(
         int minPrefixLength = 1,
         int maxPrefixLength = 6,
@@ -235,7 +235,7 @@ public static class Generate
         int maxDigits = 4)
         => new IdentifierStrategy(minPrefixLength, maxPrefixLength, minDigits, maxDigits);
 
-    /// <summary>Returns a strategy that generates strings of the form <c>[prefix][digits][suffix]</c> where the digit part is drawn via IR string nodes so <c>NumericAwareShrinkPass</c> can minimize it.</summary>
+    /// <summary>Returns a strategy that generates strings of the form <c>[prefix][digits][suffix]</c> where the digit part is drawn via IR string nodes so <c>NumericAwareShrinkPass</c> can shrink it.</summary>
     public static Strategy<string> NumericStrings(
         int minDigits = 1,
         int maxDigits = 6,
@@ -243,7 +243,7 @@ public static class Generate
         string? suffix = null)
         => new NumericStringStrategy(minDigits, maxDigits, prefix, suffix);
 
-    /// <summary>Returns a strategy that generates version strings of the form <c>MAJOR.MINOR.PATCH</c> where each component is a numeric string drawn via IR string nodes so <c>NumericAwareShrinkPass</c> can minimize each segment independently.</summary>
+    /// <summary>Returns a strategy that generates version strings of the form <c>MAJOR.MINOR.PATCH</c> where each component is a numeric string drawn via IR string nodes so <c>NumericAwareShrinkPass</c> can shrink each segment independently.</summary>
     public static Strategy<string> VersionStrings(
         int maxMajor = 9,
         int maxMinor = 9,
@@ -251,7 +251,7 @@ public static class Generate
         => new VersionStringStrategy(maxMajor, maxMinor, maxPatch);
 
     /// <summary>
-    /// Creates a strategy that replays values from a fixed byte buffer.
+    /// Creates a strategy that replays values from a fixed byte array (IR replay source).
     /// Useful for deterministic seed replay and round-trip testing.
     /// </summary>
     public static Strategy<T> FromBytes<T>(ReadOnlySpan<byte> buffer)

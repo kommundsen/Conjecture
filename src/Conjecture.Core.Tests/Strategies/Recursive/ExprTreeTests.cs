@@ -64,13 +64,13 @@ public class ExprTreeTests
 
     private static Strategy<Expr> ExprStrategy(int maxDepth)
     {
-        Strategy<Expr> baseCase = Generate.Integers<int>(0, 10).Select(n => (Expr)new Literal(n));
-        return Generate.Recursive<Expr>(
+        Strategy<Expr> baseCase = Strategy.Integers<int>(0, 10).Select(n => (Expr)new Literal(n));
+        return Strategy.Recursive<Expr>(
             baseCase,
-            self => Generate.OneOf(
+            self => Strategy.OneOf(
                 baseCase,
-                Generate.Tuples(self, self).Select(t => (Expr)new Add(t.Item1, t.Item2)),
-                Generate.Tuples(self, self).Select(t => (Expr)new Mul(t.Item1, t.Item2))),
+                Strategy.Tuples(self, self).Select(t => (Expr)new Add(t.Item1, t.Item2)),
+                Strategy.Tuples(self, self).Select(t => (Expr)new Mul(t.Item1, t.Item2))),
             maxDepth);
     }
 
@@ -121,13 +121,13 @@ public class ExprTreeTests
         // Reducing the depth-selection node to 0 always yields a failing Literal(negative),
         // so the shrinker reaches depth 0 without needing to restructure multiple IR nodes.
         ConjectureSettings settings = new() { MaxExamples = 200, Seed = 1UL };
-        Strategy<Expr> signedBase = Generate.Integers<int>(-10, 10).Select(n => (Expr)new Literal(n));
-        Strategy<Expr> signedStrategy = Generate.Recursive<Expr>(
+        Strategy<Expr> signedBase = Strategy.Integers<int>(-10, 10).Select(n => (Expr)new Literal(n));
+        Strategy<Expr> signedStrategy = Strategy.Recursive<Expr>(
             signedBase,
-            self => Generate.OneOf(
+            self => Strategy.OneOf(
                 signedBase,
-                Generate.Tuples(self, self).Select(t => (Expr)new Add(t.Item1, t.Item2)),
-                Generate.Tuples(self, self).Select(t => (Expr)new Mul(t.Item1, t.Item2))),
+                Strategy.Tuples(self, self).Select(t => (Expr)new Add(t.Item1, t.Item2)),
+                Strategy.Tuples(self, self).Select(t => (Expr)new Mul(t.Item1, t.Item2))),
             maxDepth: 5);
         int? lastFailingDepth = null;
 

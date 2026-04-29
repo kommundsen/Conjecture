@@ -53,7 +53,7 @@ internal sealed class MatchingStrategy(
     internal override string Generate(ConjectureData data)
     {
         return hasLookaround
-            ? Conjecture.Core.Generate.Compose<string>(ctx =>
+            ? Conjecture.Core.Strategy.Compose<string>(ctx =>
             {
                 const int maxAttempts = 50;
                 for (int attempt = 0; attempt < maxAttempts; attempt++)
@@ -72,7 +72,7 @@ internal sealed class MatchingStrategy(
                 data.MarkInvalid();
                 throw new UnsatisfiedAssumptionException();
             }).Generate(data)
-            : Conjecture.Core.Generate.Compose<string>(ctx =>
+            : Conjecture.Core.Strategy.Compose<string>(ctx =>
         {
             StringBuilder sb = new();
             Dictionary<int, string> captures = [];
@@ -105,7 +105,7 @@ internal sealed class MatchingStrategy(
 
             case Alternation alt:
                 {
-                    int idx = ctx.Generate(Conjecture.Core.Generate.Integers<int>(0, alt.Arms.Count - 1));
+                    int idx = ctx.Generate(Conjecture.Core.Strategy.Integers<int>(0, alt.Arms.Count - 1));
                     GenerateNode(ctx, alt.Arms[idx], sb, captures, namedCaptures);
                     break;
                 }
@@ -262,7 +262,7 @@ internal sealed class MatchingStrategy(
                 GenerateNodeWithForbiddenFirst(ctx, q.Inner, sb, captures, namedCaptures, forbidden);
                 // Remaining repetitions are unconstrained.
                 int maxCount = q.Max ?? (q.Min + 16);
-                int count = ctx.Generate(Conjecture.Core.Generate.Integers<int>(q.Min, maxCount));
+                int count = ctx.Generate(Conjecture.Core.Strategy.Integers<int>(q.Min, maxCount));
                 for (int i = 1; i < count; i++)
                 {
                     GenerateNode(ctx, q.Inner, sb, captures, namedCaptures);
@@ -290,7 +290,7 @@ internal sealed class MatchingStrategy(
 
             case Alternation alt:
                 {
-                    int idx = ctx.Generate(Conjecture.Core.Generate.Integers<int>(0, alt.Arms.Count - 1));
+                    int idx = ctx.Generate(Conjecture.Core.Strategy.Integers<int>(0, alt.Arms.Count - 1));
                     RegexNode chosenArm = alt.Arms[idx];
                     // Recurse into the chosen arm with the forbidden constraint on its first node.
                     if (chosenArm is Sequence armSeq && armSeq.Items.Count > 0)
@@ -351,7 +351,7 @@ internal sealed class MatchingStrategy(
     {
         if (ignoreCase && char.IsLetter(ch))
         {
-            bool flip = ctx.Generate(Conjecture.Core.Generate.Booleans());
+            bool flip = ctx.Generate(Conjecture.Core.Strategy.Booleans());
             sb.Append(flip ? (char.IsUpper(ch) ? char.ToLower(ch) : char.ToUpper(ch)) : ch);
         }
         else
@@ -459,7 +459,7 @@ internal sealed class MatchingStrategy(
     {
         const int extraSpan = 16;
         int maxCount = q.Max ?? (q.Min + extraSpan);
-        int count = ctx.Generate(Conjecture.Core.Generate.Integers<int>(q.Min, maxCount));
+        int count = ctx.Generate(Conjecture.Core.Strategy.Integers<int>(q.Min, maxCount));
         for (int i = 0; i < count; i++)
         {
             GenerateNode(ctx, q.Inner, sb, captures, namedCaptures);
@@ -472,13 +472,13 @@ internal sealed class MatchingStrategy(
         {
             // Singleline: dot matches any char including newline.
             // Sample [0x00..0xFF] so '\n' appears with sufficient probability for fixed-seed tests.
-            char c = (char)ctx.Generate(Conjecture.Core.Generate.Integers<int>(0x00, 0xFF));
+            char c = (char)ctx.Generate(Conjecture.Core.Strategy.Integers<int>(0x00, 0xFF));
             sb.Append(c);
         }
         else
         {
             // Non-singleline: dot matches any char except '\n'; sample full BMP then shift if needed.
-            int cp = ctx.Generate(Conjecture.Core.Generate.Integers<int>(0x00, 0xFFFF));
+            int cp = ctx.Generate(Conjecture.Core.Strategy.Integers<int>(0x00, 0xFFFF));
             if (cp == '\n')
             {
                 // Shift deterministically: move to next codepoint, wrapping away from '\n'.
@@ -500,7 +500,7 @@ internal sealed class MatchingStrategy(
                 return;
             }
 
-            char picked = ctx.Generate(Conjecture.Core.Generate.SampledFrom(candidates));
+            char picked = ctx.Generate(Conjecture.Core.Strategy.SampledFrom(candidates));
             sb.Append(picked);
         }
         else

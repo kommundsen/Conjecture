@@ -54,7 +54,7 @@ internal sealed class CON103Analyzer : DiagnosticAnalyzer
             return;
         }
 
-        if (method.ContainingType.ToDisplayString() != "Conjecture.Core.Generate")
+        if (method.ContainingType.ToDisplayString() != "Conjecture.Core.Strategy")
         {
             return;
         }

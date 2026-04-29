@@ -17,7 +17,7 @@ public class TimeProviderStrategyTests
     public void ClockWithAdvances_AdvanceCountMatchesRequested(int advanceCount)
     {
         Strategy<(FakeTimeProvider Clock, IReadOnlyList<TimeSpan> Advances)> strategy =
-            Generate.ClockWithAdvances(advanceCount, TimeSpan.FromSeconds(10));
+            Strategy.ClockWithAdvances(advanceCount, TimeSpan.FromSeconds(10));
         (_, IReadOnlyList<TimeSpan> advances) = DataGen.SampleOne(strategy, seed: 1UL);
 
         Assert.Equal(advanceCount, advances.Count);
@@ -27,7 +27,7 @@ public class TimeProviderStrategyTests
     public void ClockWithAdvances_ForwardOnly_AllAdvancesAreNonNegative()
     {
         Strategy<(FakeTimeProvider Clock, IReadOnlyList<TimeSpan> Advances)> strategy =
-            Generate.ClockWithAdvances(20, TimeSpan.FromMinutes(1), allowBackward: false);
+            Strategy.ClockWithAdvances(20, TimeSpan.FromMinutes(1), allowBackward: false);
 
         IReadOnlyList<(FakeTimeProvider Clock, IReadOnlyList<TimeSpan> Advances)> samples =
             DataGen.Sample(strategy, count: 10, seed: 1UL);
@@ -41,7 +41,7 @@ public class TimeProviderStrategyTests
     public void ClockWithAdvances_WithBackward_SomeAdvancesAreNegative()
     {
         Strategy<(FakeTimeProvider Clock, IReadOnlyList<TimeSpan> Advances)> strategy =
-            Generate.ClockWithAdvances(10, TimeSpan.FromMinutes(1), allowBackward: true);
+            Strategy.ClockWithAdvances(10, TimeSpan.FromMinutes(1), allowBackward: true);
 
         IReadOnlyList<(FakeTimeProvider Clock, IReadOnlyList<TimeSpan> Advances)> samples =
             DataGen.Sample(strategy, count: 30, seed: 42UL);
@@ -55,7 +55,7 @@ public class TimeProviderStrategyTests
     {
         TimeSpan maxJump = TimeSpan.FromSeconds(30);
         Strategy<(FakeTimeProvider Clock, IReadOnlyList<TimeSpan> Advances)> strategy =
-            Generate.ClockWithAdvances(10, maxJump, allowBackward: true);
+            Strategy.ClockWithAdvances(10, maxJump, allowBackward: true);
 
         IReadOnlyList<(FakeTimeProvider Clock, IReadOnlyList<TimeSpan> Advances)> samples =
             DataGen.Sample(strategy, count: 20, seed: 1UL);
@@ -68,7 +68,7 @@ public class TimeProviderStrategyTests
     [Fact]
     public void AdvancingClocks_ProducesVariety()
     {
-        Strategy<FakeTimeProvider> strategy = Generate.AdvancingClocks(TimeSpan.FromMinutes(5));
+        Strategy<FakeTimeProvider> strategy = Strategy.AdvancingClocks(TimeSpan.FromMinutes(5));
 
         IReadOnlyList<FakeTimeProvider> samples = DataGen.Sample(strategy, count: 20, seed: 1UL);
 

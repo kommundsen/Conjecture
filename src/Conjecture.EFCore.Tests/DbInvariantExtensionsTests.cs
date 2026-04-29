@@ -226,8 +226,8 @@ public class DbInvariantExtensionsTests
         await Assert.ThrowsAnyAsync<Exception>(
             async () => await target.AssertConcurrencyTokenRespectedAsync(
                 entity,
-                first => { first.Name = "First update"; },
-                second => { second.Name = "Second update"; }));
+                first => first.Name = "First update",
+                second => second.Name = "Second update"));
     }
 
     [Fact]
@@ -286,17 +286,7 @@ public class DbInvariantExtensionsTests
     {
         public bool Equals(Product? x, Product? y)
         {
-            if (x is null && y is null)
-            {
-                return true;
-            }
-
-            if (x is null || y is null)
-            {
-                return false;
-            }
-
-            return x.CreatedAt.Ticks == y.CreatedAt.Ticks;
+            return x is null && y is null || x is not null && y is not null && x.CreatedAt.Ticks == y.CreatedAt.Ticks;
         }
 
         public int GetHashCode(Product obj) => obj.CreatedAt.GetHashCode();

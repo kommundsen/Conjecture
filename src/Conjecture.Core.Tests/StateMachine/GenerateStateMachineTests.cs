@@ -13,7 +13,7 @@ public class GenerateStateMachineTests
     private sealed class CounterMachine : IStateMachine<int, string>
     {
         public int InitialState() => 0;
-        public IEnumerable<Strategy<string>> Commands(int state) => [Generate.Just("inc")];
+        public IEnumerable<Strategy<string>> Commands(int state) => [Strategy.Just("inc")];
         public int RunCommand(int state, string command) => state + 1;
         public void Invariant(int state) { }
     }
@@ -24,14 +24,14 @@ public class GenerateStateMachineTests
     [Fact]
     public void StateMachine_ReturnsStrategyOfStateMachineRun()
     {
-        Strategy<StateMachineRun<int>> strategy = Generate.StateMachine<CounterMachine, int, string>();
+        Strategy<StateMachineRun<int>> strategy = Strategy.StateMachine<CounterMachine, int, string>();
         Assert.NotNull(strategy);
     }
 
     [Fact]
     public void StateMachine_DefaultMaxSteps_GeneratesRun()
     {
-        Strategy<StateMachineRun<int>> strategy = Generate.StateMachine<CounterMachine, int, string>();
+        Strategy<StateMachineRun<int>> strategy = Strategy.StateMachine<CounterMachine, int, string>();
         StateMachineRun<int> run = strategy.Generate(MakeData());
         Assert.NotNull(run);
     }
@@ -39,7 +39,7 @@ public class GenerateStateMachineTests
     [Fact]
     public void StateMachine_WithMaxStepsBound_StepsDoNotExceedBound()
     {
-        Strategy<StateMachineRun<int>> strategy = Generate.StateMachine<CounterMachine, int, string>(maxSteps: 3);
+        Strategy<StateMachineRun<int>> strategy = Strategy.StateMachine<CounterMachine, int, string>(maxSteps: 3);
         StateMachineRun<int> run = strategy.Generate(MakeData());
         Assert.True(run.Steps.Count <= 3);
     }
@@ -47,7 +47,7 @@ public class GenerateStateMachineTests
     [Fact]
     public void StateMachine_WithMaxStepsZero_ProducesEmptyRun()
     {
-        Strategy<StateMachineRun<int>> strategy = Generate.StateMachine<CounterMachine, int, string>(maxSteps: 0);
+        Strategy<StateMachineRun<int>> strategy = Strategy.StateMachine<CounterMachine, int, string>(maxSteps: 0);
         StateMachineRun<int> run = strategy.Generate(MakeData());
         Assert.Empty(run.Steps);
     }
@@ -55,8 +55,8 @@ public class GenerateStateMachineTests
     [Fact]
     public void StateMachine_ComposesWithGenerateCompose()
     {
-        Strategy<int> derived = Generate.Compose(ctx =>
-            ctx.Generate(Generate.StateMachine<CounterMachine, int, string>(maxSteps: 5)).Steps.Count);
+        Strategy<int> derived = Strategy.Compose(ctx =>
+            ctx.Generate(Strategy.StateMachine<CounterMachine, int, string>(maxSteps: 5)).Steps.Count);
         int count = derived.Generate(MakeData());
         Assert.True(count >= 0);
     }

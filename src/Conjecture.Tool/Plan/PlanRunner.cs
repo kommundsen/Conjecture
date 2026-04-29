@@ -76,7 +76,7 @@ public class PlanRunner
                 step,
                 resolvedBindings,
                 elem => elem.GetInt32(),
-                () => Generate.Integers<int>());
+                () => Strategy.Integers<int>());
         }
 
         if (IsString(step.Type))
@@ -85,7 +85,7 @@ public class PlanRunner
                 step,
                 resolvedBindings,
                 elem => elem.GetString()!,
-                () => Generate.Strings());
+                () => Strategy.Strings());
         }
 
         Type? providerType = AssemblyLoader.ResolveByTargetType(assembly, step.Type);
@@ -179,7 +179,7 @@ public class PlanRunner
 
             try
             {
-                Strategy<T> strategy = Generate.SampledFrom(allBoundValues);
+                Strategy<T> strategy = Strategy.SampledFrom(allBoundValues);
                 return DataGen.Sample(strategy, step.Count, step.Seed);
             }
             catch (ArgumentException)

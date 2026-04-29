@@ -18,7 +18,7 @@ public class MessagingGenerateExtensionsTests
     [Fact]
     public void Messaging_ReturnsMessagingGenerateBuilder()
     {
-        MessagingGenerateBuilder builder = Generate.Messaging;
+        MessagingGenerateBuilder builder = Strategy.Messaging;
 
         Assert.NotNull(builder);
     }
@@ -26,9 +26,9 @@ public class MessagingGenerateExtensionsTests
     [Fact]
     public void Publish_ReturnsStrategyOfMessageInteraction()
     {
-        Strategy<MessageInteraction> strategy = Generate.Messaging.Publish(
+        Strategy<MessageInteraction> strategy = Strategy.Messaging.Publish(
             "orders",
-            Generate.Bytes(8).Select(static b => (ReadOnlyMemory<byte>)b));
+            Strategy.Bytes(8).Select(static b => (ReadOnlyMemory<byte>)b));
 
         Assert.NotNull(strategy);
     }
@@ -36,9 +36,9 @@ public class MessagingGenerateExtensionsTests
     [Fact]
     public void Publish_GeneratedValue_HasCorrectDestination()
     {
-        Strategy<MessageInteraction> strategy = Generate.Messaging.Publish(
+        Strategy<MessageInteraction> strategy = Strategy.Messaging.Publish(
             "orders",
-            Generate.Bytes(4).Select(static b => (ReadOnlyMemory<byte>)b));
+            Strategy.Bytes(4).Select(static b => (ReadOnlyMemory<byte>)b));
 
         MessageInteraction sample = DataGen.SampleOne(strategy, seed: 1UL);
 
@@ -48,9 +48,9 @@ public class MessagingGenerateExtensionsTests
     [Fact]
     public void Publish_GeneratedValue_HasNonEmptyMessageId()
     {
-        Strategy<MessageInteraction> strategy = Generate.Messaging.Publish(
+        Strategy<MessageInteraction> strategy = Strategy.Messaging.Publish(
             "orders",
-            Generate.Bytes(4).Select(static b => (ReadOnlyMemory<byte>)b));
+            Strategy.Bytes(4).Select(static b => (ReadOnlyMemory<byte>)b));
 
         MessageInteraction sample = DataGen.SampleOne(strategy, seed: 1UL);
 
@@ -60,9 +60,9 @@ public class MessagingGenerateExtensionsTests
     [Fact]
     public void Publish_SameSeed_ProducesSameMessageId()
     {
-        Strategy<MessageInteraction> strategy = Generate.Messaging.Publish(
+        Strategy<MessageInteraction> strategy = Strategy.Messaging.Publish(
             "invoices",
-            Generate.Bytes(4).Select(static b => (ReadOnlyMemory<byte>)b));
+            Strategy.Bytes(4).Select(static b => (ReadOnlyMemory<byte>)b));
 
         MessageInteraction first = DataGen.SampleOne(strategy, seed: 42UL);
         MessageInteraction second = DataGen.SampleOne(strategy, seed: 42UL);
@@ -73,9 +73,9 @@ public class MessagingGenerateExtensionsTests
     [Fact]
     public void Publish_DifferentSeeds_LikelyProduceDifferentMessageIds()
     {
-        Strategy<MessageInteraction> strategy = Generate.Messaging.Publish(
+        Strategy<MessageInteraction> strategy = Strategy.Messaging.Publish(
             "invoices",
-            Generate.Bytes(4).Select(static b => (ReadOnlyMemory<byte>)b));
+            Strategy.Bytes(4).Select(static b => (ReadOnlyMemory<byte>)b));
 
         MessageInteraction first = DataGen.SampleOne(strategy, seed: 1UL);
         MessageInteraction second = DataGen.SampleOne(strategy, seed: 2UL);
@@ -86,9 +86,9 @@ public class MessagingGenerateExtensionsTests
     [Fact]
     public void Publish_DefaultHeaders_AreEmpty()
     {
-        Strategy<MessageInteraction> strategy = Generate.Messaging.Publish(
+        Strategy<MessageInteraction> strategy = Strategy.Messaging.Publish(
             "orders",
-            Generate.Bytes(4).Select(static b => (ReadOnlyMemory<byte>)b));
+            Strategy.Bytes(4).Select(static b => (ReadOnlyMemory<byte>)b));
 
         MessageInteraction sample = DataGen.SampleOne(strategy, seed: 1UL);
 
@@ -98,9 +98,9 @@ public class MessagingGenerateExtensionsTests
     [Fact]
     public void Publish_DefaultCorrelationId_IsNull()
     {
-        Strategy<MessageInteraction> strategy = Generate.Messaging.Publish(
+        Strategy<MessageInteraction> strategy = Strategy.Messaging.Publish(
             "orders",
-            Generate.Bytes(4).Select(static b => (ReadOnlyMemory<byte>)b));
+            Strategy.Bytes(4).Select(static b => (ReadOnlyMemory<byte>)b));
 
         MessageInteraction sample = DataGen.SampleOne(strategy, seed: 1UL);
 
@@ -110,7 +110,7 @@ public class MessagingGenerateExtensionsTests
     [Fact]
     public void Consume_ReturnsStrategyOfMessageInteraction()
     {
-        Strategy<MessageInteraction> strategy = Generate.Messaging.Consume("orders");
+        Strategy<MessageInteraction> strategy = Strategy.Messaging.Consume("orders");
 
         Assert.NotNull(strategy);
     }
@@ -118,7 +118,7 @@ public class MessagingGenerateExtensionsTests
     [Fact]
     public void Consume_GeneratedValue_HasCorrectDestination()
     {
-        Strategy<MessageInteraction> strategy = Generate.Messaging.Consume("orders");
+        Strategy<MessageInteraction> strategy = Strategy.Messaging.Consume("orders");
 
         MessageInteraction sample = DataGen.SampleOne(strategy, seed: 1UL);
 
@@ -128,7 +128,7 @@ public class MessagingGenerateExtensionsTests
     [Fact]
     public void Consume_GeneratedValue_HasEmptyBody()
     {
-        Strategy<MessageInteraction> strategy = Generate.Messaging.Consume("orders");
+        Strategy<MessageInteraction> strategy = Strategy.Messaging.Consume("orders");
 
         MessageInteraction sample = DataGen.SampleOne(strategy, seed: 1UL);
 
@@ -141,9 +141,9 @@ public class MessagingGenerateExtensionsTests
     [InlineData("my-queue")]
     public void Publish_VariousDestinations_DestinationPreserved(string destination)
     {
-        Strategy<MessageInteraction> strategy = Generate.Messaging.Publish(
+        Strategy<MessageInteraction> strategy = Strategy.Messaging.Publish(
             destination,
-            Generate.Bytes(2).Select(static b => (ReadOnlyMemory<byte>)b));
+            Strategy.Bytes(2).Select(static b => (ReadOnlyMemory<byte>)b));
 
         MessageInteraction sample = DataGen.SampleOne(strategy, seed: 1UL);
 
@@ -156,7 +156,7 @@ public class MessagingGenerateExtensionsTests
     [InlineData("my-queue")]
     public void Consume_VariousDestinations_DestinationPreserved(string destination)
     {
-        Strategy<MessageInteraction> strategy = Generate.Messaging.Consume(destination);
+        Strategy<MessageInteraction> strategy = Strategy.Messaging.Consume(destination);
 
         MessageInteraction sample = DataGen.SampleOne(strategy, seed: 1UL);
 
@@ -166,9 +166,9 @@ public class MessagingGenerateExtensionsTests
     [Fact]
     public async Task Publish_RoundTrip_ViaInMemoryMessageBusTarget()
     {
-        Strategy<MessageInteraction> strategy = Generate.Messaging.Publish(
+        Strategy<MessageInteraction> strategy = Strategy.Messaging.Publish(
             "orders",
-            Generate.Bytes(8).Select(static b => (ReadOnlyMemory<byte>)b));
+            Strategy.Bytes(8).Select(static b => (ReadOnlyMemory<byte>)b));
 
         MessageInteraction sent = DataGen.SampleOne(strategy, seed: 77UL);
         InMemoryMessageBusTarget target = new();
@@ -184,12 +184,12 @@ public class MessagingGenerateExtensionsTests
     public void Publish_FullOverload_WithCustomHeadersAndCorrelationId()
     {
         Strategy<IReadOnlyDictionary<string, string>> headersStrategy =
-            Generate.Just<IReadOnlyDictionary<string, string>>(new Dictionary<string, string> { ["content-type"] = "application/json" });
-        Strategy<string?> correlationStrategy = Generate.Just<string?>("corr-abc");
+            Strategy.Just<IReadOnlyDictionary<string, string>>(new Dictionary<string, string> { ["content-type"] = "application/json" });
+        Strategy<string?> correlationStrategy = Strategy.Just<string?>("corr-abc");
 
-        Strategy<MessageInteraction> strategy = Generate.Messaging.Publish(
+        Strategy<MessageInteraction> strategy = Strategy.Messaging.Publish(
             "events",
-            Generate.Bytes(4).Select(static b => (ReadOnlyMemory<byte>)b),
+            Strategy.Bytes(4).Select(static b => (ReadOnlyMemory<byte>)b),
             headersStrategy,
             correlationStrategy);
 

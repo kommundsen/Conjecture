@@ -16,7 +16,7 @@ public class TimeSpanStrategyTests
     {
         TimeSpan min = TimeSpan.FromSeconds(-3600);
         TimeSpan max = TimeSpan.FromSeconds(3600);
-        Strategy<TimeSpan> strategy = Generate.TimeSpans(min, max);
+        Strategy<TimeSpan> strategy = Strategy.TimeSpans(min, max);
         ConjectureData data = MakeData();
 
         for (int i = 0; i < 1000; i++)
@@ -29,7 +29,7 @@ public class TimeSpanStrategyTests
     [Fact]
     public void TimeSpans_DefaultRange_DoesNotThrow()
     {
-        Strategy<TimeSpan> strategy = Generate.TimeSpans();
+        Strategy<TimeSpan> strategy = Strategy.TimeSpans();
         ConjectureData data = MakeData();
 
         for (int i = 0; i < 100; i++)
@@ -42,7 +42,7 @@ public class TimeSpanStrategyTests
     public void TimeSpans_MinEqualsMax_ReturnsConstant()
     {
         TimeSpan t = TimeSpan.FromMinutes(90);
-        Strategy<TimeSpan> strategy = Generate.TimeSpans(t, t);
+        Strategy<TimeSpan> strategy = Strategy.TimeSpans(t, t);
         ConjectureData data = MakeData();
 
         for (int i = 0; i < 20; i++)
@@ -57,6 +57,6 @@ public class TimeSpanStrategyTests
         TimeSpan big = TimeSpan.FromHours(10);
         TimeSpan small = TimeSpan.FromHours(1);
 
-        Assert.Throws<ArgumentOutOfRangeException>(() => Generate.TimeSpans(big, small));
+        Assert.Throws<ArgumentOutOfRangeException>(() => Strategy.TimeSpans(big, small));
     }
 }

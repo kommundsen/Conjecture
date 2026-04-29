@@ -20,12 +20,12 @@ public interface IStateMachine<TState, TCommand>
 }
 ```
 
-## `Generate.StateMachine<TMachine, TState, TCommand>(maxSteps)`
+## `Strategy.StateMachine<TMachine, TState, TCommand>(maxSteps)`
 
 ```csharp
 // TMachine must implement IStateMachine<TState, TCommand> and have a public parameterless ctor.
 Strategy<StateMachineRun<TState>> strategy =
-    Generate.StateMachine<MyMachine, MyState, MyCommand>(maxSteps: 50);
+    Strategy.StateMachine<MyMachine, MyState, MyCommand>(maxSteps: 50);
 ```
 
 ## `StateMachineRun<TState>`
@@ -58,9 +58,9 @@ public sealed class StackMachine : IStateMachine<Stack<int>, string>
 
     public IEnumerable<Strategy<string>> Commands(Stack<int> state)
     {
-        yield return Generate.Integers<int>().Select(n => $"push:{n}");
+        yield return Strategy.Integers<int>().Select(n => $"push:{n}");
         if (state.Count > 0)
-            yield return Generate.Just("pop");
+            yield return Strategy.Just("pop");
     }
 
     public Stack<int> RunCommand(Stack<int> state, string command)

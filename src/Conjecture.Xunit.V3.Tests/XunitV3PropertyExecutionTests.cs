@@ -13,7 +13,7 @@ namespace Conjecture.Xunit.V3.Tests;
 
 file sealed class PositiveInts : IStrategyProvider<int>
 {
-    public Strategy<int> Create() => Generate.Integers(1, int.MaxValue);
+    public Strategy<int> Create() => Strategy.Integers(1, int.MaxValue);
 }
 
 /// <summary>
@@ -100,7 +100,7 @@ public class XunitV3PropertyExecutionTests
 
     // --- BuildFailureMessage tests ---
     // These verify that TestCaseHelper.BuildFailureMessage formats the output correctly.
-    // The test lambdas draw integers the same way the resolver does for int params (Generate.Integers<int>()),
+    // The test lambdas draw integers the same way the resolver does for int params (Strategy.Integers<int>()),
     // so BuildFailureMessage can replay the counterexample through the resolver.
 
 #pragma warning disable IDE0060
@@ -121,7 +121,7 @@ public class XunitV3PropertyExecutionTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            int x = Generate.Integers<int>().Generate(data);
+            int x = Strategy.Integers<int>().Generate(data);
             if (x > 5) { throw new Exception("fail"); }
         });
 
@@ -138,7 +138,7 @@ public class XunitV3PropertyExecutionTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            int x = Generate.Integers<int>().Generate(data);
+            int x = Strategy.Integers<int>().Generate(data);
             if (x > 5) { throw new Exception("fail"); }
         });
 
@@ -155,8 +155,8 @@ public class XunitV3PropertyExecutionTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            _ = Generate.Integers<int>().Generate(data);
-            _ = Generate.Booleans().Generate(data);
+            _ = Strategy.Integers<int>().Generate(data);
+            _ = Strategy.Booleans().Generate(data);
             throw new Exception("always fail");
         });
 

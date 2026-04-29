@@ -18,7 +18,7 @@ public class IdentifierStrategyTests
     [Fact]
     public void Identifiers_AllValuesMatchPattern()
     {
-        Strategy<string> strategy = Generate.Identifiers();
+        Strategy<string> strategy = Strategy.Identifiers();
         ConjectureData data = MakeData();
 
         for (int i = 0; i < 200; i++)
@@ -36,7 +36,7 @@ public class IdentifierStrategyTests
     [InlineData(3, 3)]
     public void Identifiers_PrefixLengthWithinBounds(int minPrefixLength, int maxPrefixLength)
     {
-        Strategy<string> strategy = Generate.Identifiers(
+        Strategy<string> strategy = Strategy.Identifiers(
             minPrefixLength: minPrefixLength,
             maxPrefixLength: maxPrefixLength,
             minDigits: 1,
@@ -60,7 +60,7 @@ public class IdentifierStrategyTests
     [InlineData(4, 4)]
     public void Identifiers_DigitCountWithinBounds(int minDigits, int maxDigits)
     {
-        Strategy<string> strategy = Generate.Identifiers(
+        Strategy<string> strategy = Strategy.Identifiers(
             minPrefixLength: 1,
             maxPrefixLength: 1,
             minDigits: minDigits,
@@ -93,7 +93,7 @@ public class IdentifierStrategyTests
         ];
 
         ConjectureData replay = ConjectureData.ForRecord(nodes);
-        Strategy<string> strategy = Generate.Identifiers();
+        Strategy<string> strategy = Strategy.Identifiers();
         string value = strategy.Generate(replay);
 
         Assert.Equal("a0", value);

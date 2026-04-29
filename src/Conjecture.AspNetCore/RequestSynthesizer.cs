@@ -22,24 +22,24 @@ internal sealed class RequestSynthesizer(DiscoveredEndpoint endpoint, Conjecture
 
     private static readonly Dictionary<Type, Func<IGenerationContext, object>> PrimitiveFactories = new()
     {
-        [typeof(int)] = static ctx => ctx.Generate(Generate.Integers<int>()),
-        [typeof(long)] = static ctx => ctx.Generate(Generate.Integers<long>()),
-        [typeof(short)] = static ctx => ctx.Generate(Generate.Integers<short>()),
-        [typeof(byte)] = static ctx => ctx.Generate(Generate.Integers<byte>()),
-        [typeof(uint)] = static ctx => ctx.Generate(Generate.Integers<uint>()),
-        [typeof(ulong)] = static ctx => ctx.Generate(Generate.Integers<ulong>()),
-        [typeof(ushort)] = static ctx => ctx.Generate(Generate.Integers<ushort>()),
-        [typeof(float)] = static ctx => ctx.Generate(Generate.Floats()),
-        [typeof(double)] = static ctx => ctx.Generate(Generate.Doubles()),
-        [typeof(decimal)] = static ctx => ctx.Generate(Generate.Decimals()),
-        [typeof(bool)] = static ctx => ctx.Generate(Generate.Booleans()),
-        [typeof(string)] = static ctx => ctx.Generate(Generate.Strings()),
-        [typeof(Guid)] = static ctx => ctx.Generate(Generate.Guids()),
-        [typeof(DateOnly)] = static ctx => ctx.Generate(Generate.DateOnlyValues()),
-        [typeof(DateTime)] = static ctx => ctx.Generate(Generate.DateTimes()),
-        [typeof(DateTimeOffset)] = static ctx => ctx.Generate(Generate.DateTimeOffsets()),
-        [typeof(TimeSpan)] = static ctx => ctx.Generate(Generate.TimeSpans()),
-        [typeof(TimeOnly)] = static ctx => ctx.Generate(Generate.TimeOnlyValues()),
+        [typeof(int)] = static ctx => ctx.Generate(Strategy.Integers<int>()),
+        [typeof(long)] = static ctx => ctx.Generate(Strategy.Integers<long>()),
+        [typeof(short)] = static ctx => ctx.Generate(Strategy.Integers<short>()),
+        [typeof(byte)] = static ctx => ctx.Generate(Strategy.Integers<byte>()),
+        [typeof(uint)] = static ctx => ctx.Generate(Strategy.Integers<uint>()),
+        [typeof(ulong)] = static ctx => ctx.Generate(Strategy.Integers<ulong>()),
+        [typeof(ushort)] = static ctx => ctx.Generate(Strategy.Integers<ushort>()),
+        [typeof(float)] = static ctx => ctx.Generate(Strategy.Floats()),
+        [typeof(double)] = static ctx => ctx.Generate(Strategy.Doubles()),
+        [typeof(decimal)] = static ctx => ctx.Generate(Strategy.Decimals()),
+        [typeof(bool)] = static ctx => ctx.Generate(Strategy.Booleans()),
+        [typeof(string)] = static ctx => ctx.Generate(Strategy.Strings()),
+        [typeof(Guid)] = static ctx => ctx.Generate(Strategy.Guids()),
+        [typeof(DateOnly)] = static ctx => ctx.Generate(Strategy.DateOnlyValues()),
+        [typeof(DateTime)] = static ctx => ctx.Generate(Strategy.DateTimes()),
+        [typeof(DateTimeOffset)] = static ctx => ctx.Generate(Strategy.DateTimeOffsets()),
+        [typeof(TimeSpan)] = static ctx => ctx.Generate(Strategy.TimeSpans()),
+        [typeof(TimeOnly)] = static ctx => ctx.Generate(Strategy.TimeOnlyValues()),
     };
 
     /// <summary>
@@ -62,7 +62,7 @@ internal sealed class RequestSynthesizer(DiscoveredEndpoint endpoint, Conjecture
 
         Conjecture.OpenApi.OpenApiDocument? doc = this.openApiDoc;
 
-        return Generate.Compose<HttpInteraction>(ctx =>
+        return Strategy.Compose<HttpInteraction>(ctx =>
         {
             string path = BuildPath(rawPattern, captured, ctx);
             object? body = GenerateBody(captured, ctx, doc, method, rawPattern);
@@ -82,7 +82,7 @@ internal sealed class RequestSynthesizer(DiscoveredEndpoint endpoint, Conjecture
         string rawPattern = endpoint.RoutePattern.RawText ?? string.Empty;
         string displayName = endpoint.DisplayName;
 
-        Strategy<HttpInteraction> wrongContentType = Generate.Compose<HttpInteraction>(ctx =>
+        Strategy<HttpInteraction> wrongContentType = Strategy.Compose<HttpInteraction>(ctx =>
         {
             string path = BuildPath(rawPattern, captured, ctx);
             IReadOnlyDictionary<string, string> headers = new Dictionary<string, string>
@@ -92,7 +92,7 @@ internal sealed class RequestSynthesizer(DiscoveredEndpoint endpoint, Conjecture
             return new HttpInteraction(displayName, method, path, null, headers);
         });
 
-        Strategy<HttpInteraction> nullBody = Generate.Compose<HttpInteraction>(ctx =>
+        Strategy<HttpInteraction> nullBody = Strategy.Compose<HttpInteraction>(ctx =>
         {
             string path = BuildPath(rawPattern, captured, ctx);
             IReadOnlyDictionary<string, string> headers = new Dictionary<string, string>
@@ -102,7 +102,7 @@ internal sealed class RequestSynthesizer(DiscoveredEndpoint endpoint, Conjecture
             return new HttpInteraction(displayName, method, path, null, headers);
         });
 
-        Strategy<HttpInteraction> malformedJson = Generate.Compose<HttpInteraction>(ctx =>
+        Strategy<HttpInteraction> malformedJson = Strategy.Compose<HttpInteraction>(ctx =>
         {
             string path = BuildPath(rawPattern, captured, ctx);
             IReadOnlyDictionary<string, string> headers = new Dictionary<string, string>
@@ -112,7 +112,7 @@ internal sealed class RequestSynthesizer(DiscoveredEndpoint endpoint, Conjecture
             return new HttpInteraction(displayName, method, path, "{ invalid json }", headers);
         });
 
-        return Generate.OneOf(wrongContentType, nullBody, malformedJson);
+        return Strategy.OneOf(wrongContentType, nullBody, malformedJson);
     }
 
     private void ValidateBodyParameters()
@@ -128,7 +128,7 @@ internal sealed class RequestSynthesizer(DiscoveredEndpoint endpoint, Conjecture
             {
                 throw new ArgumentException(
                     $"Cannot synthesize request for endpoint '{endpoint.DisplayName}': " +
-                    $"parameter '{param.Name}' has type '{param.ClrType.FullName}' which is not registered with Generate.For<T>(). " +
+                    $"parameter '{param.Name}' has type '{param.ClrType.FullName}' which is not registered with Strategy.For<T>(). " +
                     $"Decorate the type with [Arbitrary] or register it manually via GenerateForRegistry.Register().",
                     param.Name);
             }

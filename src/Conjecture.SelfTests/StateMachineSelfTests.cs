@@ -50,8 +50,8 @@ public class StateMachineSelfTests
 
         public IEnumerable<Strategy<CounterCommand>> Commands(int state)
         {
-            yield return Generate.Just((CounterCommand)new CounterCommand.Inc());
-            yield return Generate.Just((CounterCommand)new CounterCommand.Nop());
+            yield return Strategy.Just((CounterCommand)new CounterCommand.Inc());
+            yield return Strategy.Just((CounterCommand)new CounterCommand.Nop());
         }
 
         public int RunCommand(int state, CounterCommand cmd) =>
@@ -71,10 +71,10 @@ public class StateMachineSelfTests
     // Gen.Compose first draws a random step budget in [5, 20], then generates a
     // machine run within that budget, so test inputs vary in length.
     private static Strategy<StateMachineRun<int>> MachineStrategy() =>
-        Generate.Compose(ctx =>
+        Strategy.Compose(ctx =>
         {
-            int maxSteps = ctx.Generate(Generate.Integers(5, 20));
-            return ctx.Generate(Generate.StateMachine<BuggyCounterMachine, int, CounterCommand>(maxSteps));
+            int maxSteps = ctx.Generate(Strategy.Integers(5, 20));
+            return ctx.Generate(Strategy.StateMachine<BuggyCounterMachine, int, CounterCommand>(maxSteps));
         });
 
     // ─── Tests ────────────────────────────────────────────────────────────────

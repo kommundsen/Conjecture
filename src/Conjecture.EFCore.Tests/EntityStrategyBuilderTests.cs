@@ -5,8 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+
 using Conjecture.Core;
 using Conjecture.EFCore;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -47,10 +49,8 @@ public class EntityStrategyBuilderTests
 
     // ---- test DbContext ------------------------------------------------
 
-    private sealed class ShopContext : DbContext
+    private sealed class ShopContext(DbContextOptions<EntityStrategyBuilderTests.ShopContext> options) : DbContext(options)
     {
-        public ShopContext(DbContextOptions<ShopContext> options) : base(options) { }
-
         public DbSet<Customer> Customers { get; set; } = null!;
         public DbSet<Order> Orders { get; set; } = null!;
         public DbSet<Product> Products { get; set; } = null!;
@@ -160,10 +160,7 @@ public class EntityStrategyBuilderTests
         Assert.True(anyOrders, "Default depth 2 should populate Orders at depth 1");
 
         // At depth 2, the Order's Customer back-reference must be null (cycle terminated)
-        Assert.All(samples, static c =>
-        {
-            Assert.All(c.Orders, static o => Assert.Null(o.Customer));
-        });
+        Assert.All(samples, static c => Assert.All(c.Orders, static o => Assert.Null(o.Customer)));
     }
 
     [Fact]

@@ -15,13 +15,13 @@ using Conjecture.Core;
 using Conjecture.Interactive;
 
 // Quick-look at sample values
-Console.WriteLine(Generate.Integers<int>(0, 100).Preview());
+Console.WriteLine(Strategy.Integers<int>(0, 100).Preview());
 
 // Distribution histogram (text bar chart)
-Console.WriteLine(Generate.Doubles(0, 1).Histogram());
+Console.WriteLine(Strategy.Doubles(0, 1).Histogram());
 
 // Step-by-step shrink trace
-ShrinkTraceResult<int> trace = Generate.Integers<int>().ShrinkTrace(seed: 42, x => x < 1000);
+ShrinkTraceResult<int> trace = Strategy.Integers<int>().ShrinkTrace(seed: 42, x => x < 1000);
 Console.WriteLine(trace.Text);
 ```
 

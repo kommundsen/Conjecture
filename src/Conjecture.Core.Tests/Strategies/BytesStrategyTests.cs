@@ -14,14 +14,14 @@ public class BytesStrategyTests
     [Fact]
     public void Bytes_ReturnsArrayOfCorrectLength()
     {
-        var result = Generate.Bytes(8).Generate(MakeData());
+        var result = Strategy.Bytes(8).Generate(MakeData());
         Assert.Equal(8, result.Length);
     }
 
     [Fact]
     public void Bytes_ZeroLength_ReturnsEmptyArray()
     {
-        var result = Generate.Bytes(0).Generate(MakeData());
+        var result = Strategy.Bytes(0).Generate(MakeData());
         Assert.Empty(result);
     }
 
@@ -29,7 +29,7 @@ public class BytesStrategyTests
     public void Bytes_RecordsIRNode()
     {
         var data = MakeData();
-        Generate.Bytes(8).Generate(data);
+        Strategy.Bytes(8).Generate(data);
         var node = Assert.Single(data.IRNodes);
         Assert.Equal(IRNodeKind.Bytes, node.Kind);
     }
@@ -37,7 +37,7 @@ public class BytesStrategyTests
     [Fact]
     public void Bytes_ProducesNonZeroContent()
     {
-        var strategy = Generate.Bytes(16);
+        var strategy = Strategy.Bytes(16);
         var data = MakeData();
         var anyNonZero = false;
         for (var i = 0; i < 10; i++)

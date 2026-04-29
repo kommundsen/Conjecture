@@ -36,7 +36,7 @@ public sealed class TracingInstrumentationTests
         ConjectureSettings settings = new() { MaxExamples = 10, Seed = 1UL };
         await TestRunner.Run(settings, data =>
         {
-            int x = Generate.Integers<int>(0, 100).Generate(data);
+            int x = Strategy.Integers<int>(0, 100).Generate(data);
             if (x < 0) { throw new Exception("impossible"); }
         });
 
@@ -52,7 +52,7 @@ public sealed class TracingInstrumentationTests
         ConjectureSettings settings = new() { MaxExamples = 10, Seed = 1UL };
         await TestRunner.Run(settings, data =>
         {
-            int x = Generate.Integers<int>(0, 100).Generate(data);
+            int x = Strategy.Integers<int>(0, 100).Generate(data);
             if (x < 0) { throw new Exception("impossible"); }
         });
 
@@ -68,7 +68,7 @@ public sealed class TracingInstrumentationTests
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 1UL };
         await TestRunner.Run(settings, data =>
         {
-            int x = Generate.Integers<int>(0, 100).Generate(data);
+            int x = Strategy.Integers<int>(0, 100).Generate(data);
             if (x > 5) { throw new Exception("too large"); }
         });
 
@@ -84,7 +84,7 @@ public sealed class TracingInstrumentationTests
         ConjectureSettings settings = new() { MaxExamples = 20, Seed = 1UL, Targeting = true };
         await TestRunner.Run(settings, data =>
         {
-            int x = Generate.Integers<int>(0, 100).Generate(data);
+            int x = Strategy.Integers<int>(0, 100).Generate(data);
             Target.Maximize(x, "x");
         });
 
@@ -100,7 +100,7 @@ public sealed class TracingInstrumentationTests
         ConjectureSettings settings = new() { MaxExamples = 10, Seed = 1UL, Targeting = false };
         await TestRunner.Run(settings, data =>
         {
-            int x = Generate.Integers<int>(0, 100).Generate(data);
+            int x = Strategy.Integers<int>(0, 100).Generate(data);
             if (x < 0) { throw new Exception("impossible"); }
         });
 
@@ -116,7 +116,7 @@ public sealed class TracingInstrumentationTests
         ConjectureSettings settings = new() { MaxExamples = 10, Seed = 42UL };
         await TestRunner.Run(settings, data =>
         {
-            int x = Generate.Integers<int>(0, 100).Generate(data);
+            int x = Strategy.Integers<int>(0, 100).Generate(data);
             if (x < 0) { throw new Exception("impossible"); }
         });
 
@@ -134,7 +134,7 @@ public sealed class TracingInstrumentationTests
         ConjectureSettings settings = new() { MaxExamples = 10, Seed = 1UL };
         await TestRunner.Run(settings, data =>
         {
-            int x = Generate.Integers<int>(0, 100).Generate(data);
+            int x = Strategy.Integers<int>(0, 100).Generate(data);
             if (x < 0) { throw new Exception("impossible"); }
         });
 
@@ -152,7 +152,7 @@ public sealed class TracingInstrumentationTests
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 1UL };
         await TestRunner.Run(settings, data =>
         {
-            int x = Generate.Integers<int>(0, 100).Generate(data);
+            int x = Strategy.Integers<int>(0, 100).Generate(data);
             if (x > 5) { throw new Exception("too large"); }
         });
 
@@ -170,7 +170,7 @@ public sealed class TracingInstrumentationTests
         ConjectureSettings settings = new() { MaxExamples = 10, Seed = 1UL };
         await TestRunner.Run(settings, data =>
         {
-            int x = Generate.Integers<int>(0, 100).Generate(data);
+            int x = Strategy.Integers<int>(0, 100).Generate(data);
             if (x < 0) { throw new Exception("impossible"); }
         });
 
@@ -188,7 +188,7 @@ public sealed class TracingInstrumentationTests
         ConjectureSettings settings = new() { MaxExamples = 10, Seed = 1UL, TestName = "MyTestMethod" };
         await TestRunner.Run(settings, data =>
         {
-            int x = Generate.Integers<int>(0, 100).Generate(data);
+            int x = Strategy.Integers<int>(0, 100).Generate(data);
             if (x < 0) { throw new Exception("impossible"); }
         });
 
@@ -206,7 +206,7 @@ public sealed class TracingInstrumentationTests
         ConjectureSettings settings = new() { MaxExamples = 10, Seed = 1UL };
         await TestRunner.Run(settings, data =>
         {
-            int x = Generate.Integers<int>(0, 100).Generate(data);
+            int x = Strategy.Integers<int>(0, 100).Generate(data);
             if (x < 0) { throw new Exception("impossible"); }
         });
 
@@ -224,7 +224,7 @@ public sealed class TracingInstrumentationTests
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 1UL };
         await TestRunner.Run(settings, data =>
         {
-            int x = Generate.Integers<int>(0, 100).Generate(data);
+            int x = Strategy.Integers<int>(0, 100).Generate(data);
             if (x > 5) { throw new Exception("too large"); }
         });
 
@@ -244,7 +244,7 @@ public sealed class TracingInstrumentationTests
         ConjectureSettings settings = new() { MaxExamples = 10, Seed = 1UL };
         await TestRunner.Run(settings, data =>
         {
-            int x = Generate.Integers<int>(0, 100).Generate(data);
+            int x = Strategy.Integers<int>(0, 100).Generate(data);
             if (x < 0) { throw new Exception("impossible"); }
         });
 

@@ -7,7 +7,7 @@
 
 namespace Conjecture.Core;
 
-/// <summary>Provides imperative draw and assume operations within a <c>Generate.Compose</c> factory.</summary>
+/// <summary>Provides imperative draw and assume operations within a <c>Strategy.Compose</c> factory.</summary>
 public interface IGenerationContext
 {
     /// <summary>Generates a value from <paramref name="strategy"/>.</summary>

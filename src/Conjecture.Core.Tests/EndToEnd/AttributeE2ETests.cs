@@ -12,18 +12,18 @@ public sealed class AttributeE2ETests
 
     private sealed class PositiveIntsProvider : IStrategyProvider<int>
     {
-        public Strategy<int> Create() => Generate.Integers<int>(1, int.MaxValue);
+        public Strategy<int> Create() => Strategy.Integers<int>(1, int.MaxValue);
     }
 
     private sealed class PositiveBoundedProvider : IStrategyProvider<int>
     {
-        public Strategy<int> Create() => Generate.Integers<int>(1, 100);
+        public Strategy<int> Create() => Strategy.Integers<int>(1, 100);
     }
 
     // ── Factory method (mirrors [FromFactory(nameof(EvenInts))]) ──────────────
 
     private static Strategy<int> EvenInts() =>
-        Generate.Integers<int>(0, 50).Where(n => n % 2 == 0);
+        Strategy.Integers<int>(0, 50).Where(n => n % 2 == 0);
 
     // ── [Example] before generated: explicit count merges with TestRunner count ─
 
@@ -35,7 +35,7 @@ public sealed class AttributeE2ETests
         int explicitCount = 2;
 
         ConjectureSettings settings = new() { MaxExamples = 10, Seed = 1UL };
-        TestRunResult generated = await TestRunner.Run(settings, data => _ = Generate.Integers<int>(0, 5).Generate(data));
+        TestRunResult generated = await TestRunner.Run(settings, data => _ = Strategy.Integers<int>(0, 5).Generate(data));
 
         Assert.True(generated.Passed);
         Assert.Equal(10, generated.ExampleCount);
@@ -53,7 +53,7 @@ public sealed class AttributeE2ETests
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 2UL, UseDatabase = false };
         TestRunResult generated = await TestRunner.Run(settings, data =>
         {
-            int v = Generate.Integers<int>(0, 100).Generate(data);
+            int v = Strategy.Integers<int>(0, 100).Generate(data);
             if (v > 5) { throw new Exception("too large"); }
         });
 
@@ -105,7 +105,7 @@ public sealed class AttributeE2ETests
     public async Task Mixed_ProviderAndInferred_BothStrategiesWork()
     {
         Strategy<int> fromProvider = new PositiveIntsProvider().Create();
-        Strategy<bool> inferred = Generate.Booleans();
+        Strategy<bool> inferred = Strategy.Booleans();
         ConjectureSettings settings = new() { MaxExamples = 50, Seed = 40UL };
 
         TestRunResult result = await TestRunner.Run(settings, data =>

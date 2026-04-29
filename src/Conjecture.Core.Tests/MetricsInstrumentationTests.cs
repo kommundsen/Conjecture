@@ -30,7 +30,7 @@ public sealed class MetricsInstrumentationTests
         ConjectureSettings settings = new() { MaxExamples = 10, Seed = 1UL };
         await TestRunner.Run(settings, data =>
         {
-            int x = Generate.Integers<int>(0, 100).Generate(data);
+            int x = Strategy.Integers<int>(0, 100).Generate(data);
             if (x < 0) { throw new Exception("impossible"); }
         });
 
@@ -55,7 +55,7 @@ public sealed class MetricsInstrumentationTests
         ConjectureSettings settings = new() { MaxExamples = 10, Seed = 1UL };
         await TestRunner.Run(settings, data =>
         {
-            int x = Generate.Integers<int>(0, 100).Generate(data);
+            int x = Strategy.Integers<int>(0, 100).Generate(data);
             if (x < 0) { throw new Exception("impossible"); }
         });
 
@@ -81,7 +81,7 @@ public sealed class MetricsInstrumentationTests
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 1UL };
         await TestRunner.Run(settings, data =>
         {
-            int x = Generate.Integers<int>(0, 100).Generate(data);
+            int x = Strategy.Integers<int>(0, 100).Generate(data);
             if (x > 5) { throw new Exception("too large"); }
         });
 
@@ -106,7 +106,7 @@ public sealed class MetricsInstrumentationTests
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 1UL };
         await TestRunner.Run(settings, data =>
         {
-            int x = Generate.Integers<int>(0, 100).Generate(data);
+            int x = Strategy.Integers<int>(0, 100).Generate(data);
             if (x > 5) { throw new Exception("too large"); }
         });
 
@@ -131,7 +131,7 @@ public sealed class MetricsInstrumentationTests
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 1UL };
         await TestRunner.Run(settings, data =>
         {
-            int x = Generate.Integers<int>(0, 100).Generate(data);
+            int x = Strategy.Integers<int>(0, 100).Generate(data);
             if (x > 5) { throw new Exception("too large"); }
         });
 
@@ -158,7 +158,7 @@ public sealed class MetricsInstrumentationTests
         ConjectureSettings settings = new() { MaxExamples = 5, Seed = 1UL };
         await TestRunner.Run(settings, data =>
         {
-            int x = Generate.Integers<int>(0, 10).Generate(data);
+            int x = Strategy.Integers<int>(0, 10).Generate(data);
             Assume.That(x % 2 == 0); // odd values are rejected
         });
 
@@ -183,7 +183,7 @@ public sealed class MetricsInstrumentationTests
         ConjectureSettings settings = new() { MaxExamples = 10, Seed = 1UL };
         await TestRunner.Run(settings, data =>
         {
-            int x = Generate.Integers<int>(0, 100).Generate(data);
+            int x = Strategy.Integers<int>(0, 100).Generate(data);
             if (x < 0) { throw new Exception("impossible"); }
         });
 

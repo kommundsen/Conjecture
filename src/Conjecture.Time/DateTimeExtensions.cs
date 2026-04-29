@@ -16,7 +16,7 @@ public static class DateTimeExtensions
         /// </summary>
         public Strategy<(DateTime Value, DateTimeKind Kind)> WithKinds()
         {
-            return Generate.OneOf(
+            return Strategy.OneOf(
                 s.Select(static dt => (DateTime.SpecifyKind(dt, DateTimeKind.Utc), DateTimeKind.Utc)),
                 s.Select(static dt => (DateTime.SpecifyKind(dt, DateTimeKind.Local), DateTimeKind.Local)),
                 s.Select(static dt => (DateTime.SpecifyKind(dt, DateTimeKind.Unspecified), DateTimeKind.Unspecified)));

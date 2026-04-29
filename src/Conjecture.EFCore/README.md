@@ -22,7 +22,7 @@ public class OrderTests
     public async Task Order_Roundtrips_Without_Loss()
     {
         Func<DbContext> factory = () => new MyContext(/* ... */);
-        Strategy<Order> orders = Generate.Entity<Order>(factory);
+        Strategy<Order> orders = Strategy.Entity<Order>(factory);
         Order order = orders.Sample();
 
         await RoundtripAsserter.AssertRoundtripAsync(factory, order);
@@ -30,7 +30,7 @@ public class OrderTests
 }
 ```
 
-For composed transports, dispatch `DbInteraction` blocks (`Generate.Db.Add<T>(...)`, `.Update<T>(...)`, `.SaveChanges(...)`, `.Sequence(...)`) through an `IDbTarget` such as `InMemoryDbTarget` or `SqliteDbTarget`, then assert with `AssertNoOrphansAsync`, `AssertConcurrencyTokenRespectedAsync`, or `AssertNoTrackingMatchesTrackedAsync`.
+For composed transports, dispatch `DbInteraction` blocks (`Strategy.Db.Add<T>(...)`, `.Update<T>(...)`, `.SaveChanges(...)`, `.Sequence(...)`) through an `IDbTarget` such as `InMemoryDbTarget` or `SqliteDbTarget`, then assert with `AssertNoOrphansAsync`, `AssertConcurrencyTokenRespectedAsync`, or `AssertNoTrackingMatchesTrackedAsync`.
 
 ## Design
 

@@ -22,7 +22,7 @@ public class OrderingServiceTests
     [Property]
     public async Task UnaryCall_NeverPanics(GrpcInteraction interaction)
     {
-        Strategy<PlaceOrderRequest> requests = Generate.Just(new PlaceOrderRequest { Quantity = 1 });
+        Strategy<PlaceOrderRequest> requests = Strategy.Just(new PlaceOrderRequest { Quantity = 1 });
         Strategy<GrpcInteraction> calls = GenerateGrpc.Unary(
             "ordering",
             OrderingService.PlaceOrderMethod,

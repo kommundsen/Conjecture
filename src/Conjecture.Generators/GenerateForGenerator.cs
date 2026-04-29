@@ -11,7 +11,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Conjecture.Generators;
 
-/// <summary>Incremental source generator that emits <c>GenerateForRegistry.g.cs</c> — a <c>[ModuleInitializer]</c> that registers <c>IStrategyProvider</c> factories for all <c>[Arbitrary]</c> types, enabling <c>Generate.For&lt;T&gt;()</c>.</summary>
+/// <summary>Incremental source generator that emits <c>GenerateForRegistry.g.cs</c> — a <c>[ModuleInitializer]</c> that registers <c>IStrategyProvider</c> factories for all <c>[Arbitrary]</c> types, enabling <c>Strategy.For&lt;T&gt;()</c>.</summary>
 [Generator(LanguageNames.CSharp)]
 public sealed class GenerateForGenerator : IIncrementalGenerator
 {
@@ -170,7 +170,7 @@ public sealed class GenerateForGenerator : IIncrementalGenerator
             _ => string.Empty,
         };
 
-        return receiverName == "Generate";
+        return receiverName == "Strategy";
     }
 
     private static (ITypeSymbol? TypeArg, Location Location, Compilation Compilation) ResolveForTypeArg(
@@ -190,7 +190,7 @@ public sealed class GenerateForGenerator : IIncrementalGenerator
         ITypeSymbol? typeArg = semanticModel.GetTypeInfo(typeArgSyntax).Type;
 
         if (semanticModel.GetSymbolInfo(invocation).Symbol is IMethodSymbol method &&
-            method.ContainingType.ToDisplayString() != "Conjecture.Core.Generate")
+            method.ContainingType.ToDisplayString() != "Conjecture.Core.Strategy")
         {
             return (null, invocation.GetLocation(), compilation);
         }
@@ -315,12 +315,12 @@ public sealed class GenerateForGenerator : IIncrementalGenerator
         if (model.Members.IsEmpty)
         {
             sb.AppendLine("    public global::Conjecture.Core.Strategy<" + fqn + "> Create() =>");
-            sb.AppendLine("        global::Conjecture.Core.Generate.Compose<" + fqn + ">(_ => new " + fqn + "());");
+            sb.AppendLine("        global::Conjecture.Core.Strategy.Compose<" + fqn + ">(_ => new " + fqn + "());");
         }
         else if (model.ConstructionMode == ConstructionMode.ObjectInitializer)
         {
             sb.AppendLine("    public global::Conjecture.Core.Strategy<" + fqn + "> Create() =>");
-            sb.AppendLine("        global::Conjecture.Core.Generate.Compose<" + fqn + ">(ctx => new " + fqn + " {");
+            sb.AppendLine("        global::Conjecture.Core.Strategy.Compose<" + fqn + ">(ctx => new " + fqn + " {");
 
             for (int i = 0; i < model.Members.Length; i++)
             {
@@ -332,7 +332,7 @@ public sealed class GenerateForGenerator : IIncrementalGenerator
 
             sb.AppendLine();
             sb.AppendLine("    public global::Conjecture.Core.Strategy<" + fqn + "> CreateWithOverrides(global::Conjecture.Core.ForConfiguration<" + fqn + "> cfg) =>");
-            sb.AppendLine("        global::Conjecture.Core.Generate.Compose<" + fqn + ">(ctx => new " + fqn + " {");
+            sb.AppendLine("        global::Conjecture.Core.Strategy.Compose<" + fqn + ">(ctx => new " + fqn + " {");
 
             for (int i = 0; i < model.Members.Length; i++)
             {
@@ -346,7 +346,7 @@ public sealed class GenerateForGenerator : IIncrementalGenerator
         else
         {
             sb.AppendLine("    public global::Conjecture.Core.Strategy<" + fqn + "> Create() =>");
-            sb.AppendLine("        global::Conjecture.Core.Generate.Compose<" + fqn + ">(ctx => new " + fqn + "(");
+            sb.AppendLine("        global::Conjecture.Core.Strategy.Compose<" + fqn + ">(ctx => new " + fqn + "(");
 
             for (int i = 0; i < model.Members.Length; i++)
             {
@@ -357,7 +357,7 @@ public sealed class GenerateForGenerator : IIncrementalGenerator
 
             sb.AppendLine();
             sb.AppendLine("    public global::Conjecture.Core.Strategy<" + fqn + "> CreateWithOverrides(global::Conjecture.Core.ForConfiguration<" + fqn + "> cfg) =>");
-            sb.AppendLine("        global::Conjecture.Core.Generate.Compose<" + fqn + ">(ctx => new " + fqn + "(");
+            sb.AppendLine("        global::Conjecture.Core.Strategy.Compose<" + fqn + ">(ctx => new " + fqn + "(");
 
             for (int i = 0; i < model.Members.Length; i++)
             {

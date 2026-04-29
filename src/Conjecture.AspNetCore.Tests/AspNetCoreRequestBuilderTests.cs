@@ -39,13 +39,9 @@ public class AspNetCoreRequestBuilderTestsApp
 /// promoted to <c>public</c> in cycle 5. PublicAPI.Unshipped.txt must declare the
 /// full signatures of both types before the build will pass.
 /// </summary>
-public sealed class AspNetCoreRequestBuilderTests : IClassFixture<WebApplicationFactory<AspNetCoreRequestBuilderTestsApp>>
+public sealed class AspNetCoreRequestBuilderTests(WebApplicationFactory<AspNetCoreRequestBuilderTestsApp> factory) : IClassFixture<WebApplicationFactory<AspNetCoreRequestBuilderTestsApp>>
 {
-    private readonly WebApplicationFactory<AspNetCoreRequestBuilderTestsApp> factory;
-
-    public AspNetCoreRequestBuilderTests(WebApplicationFactory<AspNetCoreRequestBuilderTestsApp> factory)
-    {
-        this.factory = factory.WithWebHostBuilder(builder =>
+    private readonly WebApplicationFactory<AspNetCoreRequestBuilderTestsApp> factory = factory.WithWebHostBuilder(builder =>
         {
             builder.UseTestServer();
 
@@ -65,7 +61,6 @@ public sealed class AspNetCoreRequestBuilderTests : IClassFixture<WebApplication
                 });
             });
         });
-    }
 
     // ---------------------------------------------------------------------------
     // Test 1 — Constructor accepts IHost + HttpClient
@@ -218,10 +213,7 @@ public sealed class AspNetCoreRequestBuilderTests : IClassFixture<WebApplication
                 builder.Configure(app =>
                 {
                     app.UseRouting();
-                    app.UseEndpoints(endpoints =>
-                    {
-                        endpoints.MapPost("/submit", static (BuilderTestDto _) => Results.Ok());
-                    });
+                    app.UseEndpoints(endpoints => endpoints.MapPost("/submit", static (BuilderTestDto _) => Results.Ok()));
                 });
             });
 
@@ -283,10 +275,7 @@ public sealed class AspNetCoreRequestBuilderTests : IClassFixture<WebApplication
                 builder.Configure(app =>
                 {
                     app.UseRouting();
-                    app.UseEndpoints(endpoints =>
-                    {
-                        endpoints.MapPost("/orders", static (BuilderTestDto _) => Results.Ok());
-                    });
+                    app.UseEndpoints(endpoints => endpoints.MapPost("/orders", static (BuilderTestDto _) => Results.Ok()));
                 });
             });
 

@@ -9,15 +9,15 @@ Conjecture.Time.DateTimeOffsetExtensions.extension(Conjecture.Core.Strategy<Syst
 Conjecture.Time.DateTimeOffsetExtensions.extension(Conjecture.Core.Strategy<System.DateTimeOffset>!).NearEpoch() -> Conjecture.Core.Strategy<System.DateTimeOffset>!
 Conjecture.Time.DateTimeOffsetExtensions.extension(Conjecture.Core.Strategy<System.DateTimeOffset>!).NearDstTransition(System.TimeZoneInfo? zone = null) -> Conjecture.Core.Strategy<System.DateTimeOffset>!
 Conjecture.Time.TimeGenerateExtensions
-Conjecture.Time.TimeGenerateExtensions.extension(Conjecture.Core.Generate!)
-static Conjecture.Time.TimeGenerateExtensions.extension(Conjecture.Core.Generate!).TimeZones() -> Conjecture.Core.Strategy<System.TimeZoneInfo!>!
-static Conjecture.Time.TimeGenerateExtensions.extension(Conjecture.Core.Generate!).ClockSet(int nodeCount, System.TimeSpan maxSkew) -> Conjecture.Core.Strategy<Microsoft.Extensions.Time.Testing.FakeTimeProvider![]!>!
+Conjecture.Time.TimeGenerateExtensions.extension(Conjecture.Core.Strategy!)
+static Conjecture.Time.TimeGenerateExtensions.extension(Conjecture.Core.Strategy!).TimeZones() -> Conjecture.Core.Strategy<System.TimeZoneInfo!>!
+static Conjecture.Time.TimeGenerateExtensions.extension(Conjecture.Core.Strategy!).ClockSet(int nodeCount, System.TimeSpan maxSkew) -> Conjecture.Core.Strategy<Microsoft.Extensions.Time.Testing.FakeTimeProvider![]!>!
 Conjecture.Time.DateTimeExtensions
 Conjecture.Time.DateTimeExtensions.extension(Conjecture.Core.Strategy<System.DateTime>!)
 Conjecture.Time.DateTimeExtensions.extension(Conjecture.Core.Strategy<System.DateTime>!).WithKinds() -> Conjecture.Core.Strategy<(System.DateTime Value, System.DateTimeKind Kind)>!
-static Conjecture.Time.TimeGenerateExtensions.extension(Conjecture.Core.Generate!).IanaZoneIds(bool preferDst = false) -> Conjecture.Core.Strategy<string!>!
-static Conjecture.Time.TimeGenerateExtensions.extension(Conjecture.Core.Generate!).WindowsZoneIds() -> Conjecture.Core.Strategy<string!>!
-static Conjecture.Time.TimeGenerateExtensions.extension(Conjecture.Core.Generate!).TimeZone(bool preferDst = false) -> Conjecture.Core.Strategy<System.TimeZoneInfo!>!
+static Conjecture.Time.TimeGenerateExtensions.extension(Conjecture.Core.Strategy!).IanaZoneIds(bool preferDst = false) -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Time.TimeGenerateExtensions.extension(Conjecture.Core.Strategy!).WindowsZoneIds() -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Time.TimeGenerateExtensions.extension(Conjecture.Core.Strategy!).TimeZone(bool preferDst = false) -> Conjecture.Core.Strategy<System.TimeZoneInfo!>!
 Conjecture.Time.DateOnlyExtensions
 Conjecture.Time.DateOnlyExtensions.extension(Conjecture.Core.Strategy<System.DateOnly>!)
 Conjecture.Time.DateOnlyExtensions.extension(Conjecture.Core.Strategy<System.DateOnly>!).NearMonthBoundary() -> Conjecture.Core.Strategy<System.DateOnly>!
@@ -39,11 +39,11 @@ Conjecture.Time.RecurringEventSample.Zone.init -> void
 Conjecture.Time.RecurringEventExtensions
 Conjecture.Time.RecurringEventExtensions.extension(Conjecture.Core.Strategy<Conjecture.Time.RecurringEventSample!>!)
 Conjecture.Time.RecurringEventExtensions.extension(Conjecture.Core.Strategy<Conjecture.Time.RecurringEventSample!>!).NearDstTransition() -> Conjecture.Core.Strategy<Conjecture.Time.RecurringEventSample!>!
-static Conjecture.Time.TimeGenerateExtensions.extension(Conjecture.Core.Generate!).RecurringEvents(System.Func<System.DateTimeOffset, System.DateTimeOffset?>! nextOccurrence, System.TimeZoneInfo! zone, System.TimeSpan window) -> Conjecture.Core.Strategy<Conjecture.Time.RecurringEventSample!>!
+static Conjecture.Time.TimeGenerateExtensions.extension(Conjecture.Core.Strategy!).RecurringEvents(System.Func<System.DateTimeOffset, System.DateTimeOffset?>! nextOccurrence, System.TimeZoneInfo! zone, System.TimeSpan window) -> Conjecture.Core.Strategy<Conjecture.Time.RecurringEventSample!>!
 Conjecture.Time.TimeOnlyExtensions
 Conjecture.Time.TimeOnlyExtensions.extension(Conjecture.Core.Strategy<System.TimeOnly>!)
 Conjecture.Time.TimeOnlyExtensions.extension(Conjecture.Core.Strategy<System.TimeOnly>!).NearMidnight() -> Conjecture.Core.Strategy<System.TimeOnly>!
 Conjecture.Time.TimeOnlyExtensions.extension(Conjecture.Core.Strategy<System.TimeOnly>!).NearNoon() -> Conjecture.Core.Strategy<System.TimeOnly>!
 Conjecture.Time.TimeOnlyExtensions.extension(Conjecture.Core.Strategy<System.TimeOnly>!).NearEndOfDay() -> Conjecture.Core.Strategy<System.TimeOnly>!
-static Conjecture.Time.TimeGenerateExtensions.extension(Conjecture.Core.Generate!).AdvancingClocks(System.TimeSpan maxJump) -> Conjecture.Core.Strategy<Microsoft.Extensions.Time.Testing.FakeTimeProvider!>!
-static Conjecture.Time.TimeGenerateExtensions.extension(Conjecture.Core.Generate!).ClockWithAdvances(int advanceCount, System.TimeSpan maxJump, bool allowBackward = false) -> Conjecture.Core.Strategy<(Microsoft.Extensions.Time.Testing.FakeTimeProvider! Clock, System.Collections.Generic.IReadOnlyList<System.TimeSpan>! Advances)>!
+static Conjecture.Time.TimeGenerateExtensions.extension(Conjecture.Core.Strategy!).AdvancingClocks(System.TimeSpan maxJump) -> Conjecture.Core.Strategy<Microsoft.Extensions.Time.Testing.FakeTimeProvider!>!
+static Conjecture.Time.TimeGenerateExtensions.extension(Conjecture.Core.Strategy!).ClockWithAdvances(int advanceCount, System.TimeSpan maxJump, bool allowBackward = false) -> Conjecture.Core.Strategy<(Microsoft.Extensions.Time.Testing.FakeTimeProvider! Clock, System.Collections.Generic.IReadOnlyList<System.TimeSpan>! Advances)>!

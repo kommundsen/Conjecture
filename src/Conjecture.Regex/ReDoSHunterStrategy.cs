@@ -33,7 +33,7 @@ internal sealed class ReDoSHunterStrategy(
     private static Strategy<string>? BuildFallback(RegexNode root, DotNetRegex regex)
     {
         return !NestedQuantifierDetector.HasNestedQuantifiers(root)
-            ? new DelegatingStrategy<string>(Conjecture.Core.Generate.Matching(regex), "redos:no-nested-quantifiers")
+            ? new DelegatingStrategy<string>(Conjecture.Core.Strategy.Matching(regex), "redos:no-nested-quantifiers")
             : (Strategy<string>?)null;
     }
 
@@ -41,7 +41,7 @@ internal sealed class ReDoSHunterStrategy(
     {
         return fallback is not null
             ? fallback.Generate(data)
-            : Conjecture.Core.Generate.Compose<string>(ctx =>
+            : Conjecture.Core.Strategy.Compose<string>(ctx =>
         {
             StringBuilder sb = new();
             Dictionary<int, string> captures = [];
@@ -89,7 +89,7 @@ internal sealed class ReDoSHunterStrategy(
         int cap = isAdversarial ? AdversarialCap : InnerCap;
         int maxCount = q.Max ?? (q.Min + cap);
 
-        return ctx.Generate(Conjecture.Core.Generate.Integers<int>(q.Min, maxCount));
+        return ctx.Generate(Conjecture.Core.Strategy.Integers<int>(q.Min, maxCount));
     }
 
     private static bool ContainsQuantifierOrAlternation(RegexNode node)

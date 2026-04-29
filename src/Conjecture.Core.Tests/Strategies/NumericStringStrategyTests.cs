@@ -16,7 +16,7 @@ public class NumericStringStrategyTests
     [Fact]
     public void NumericStrings_NoAffixes_AllCharsAreDigits()
     {
-        Strategy<string> strategy = Generate.NumericStrings();
+        Strategy<string> strategy = Strategy.NumericStrings();
         ConjectureData data = MakeData();
 
         for (int i = 0; i < 200; i++)
@@ -38,7 +38,7 @@ public class NumericStringStrategyTests
     [InlineData(1, 10)]
     public void NumericStrings_BoundedDigits_LengthWithinRange(int minDigits, int maxDigits)
     {
-        Strategy<string> strategy = Generate.NumericStrings(minDigits: minDigits, maxDigits: maxDigits);
+        Strategy<string> strategy = Strategy.NumericStrings(minDigits: minDigits, maxDigits: maxDigits);
         ConjectureData data = MakeData(77UL);
 
         for (int i = 0; i < 100; i++)
@@ -53,7 +53,7 @@ public class NumericStringStrategyTests
     [Fact]
     public void NumericStrings_WithPrefix_AllValuesStartWithPrefix()
     {
-        Strategy<string> strategy = Generate.NumericStrings(prefix: "item");
+        Strategy<string> strategy = Strategy.NumericStrings(prefix: "item");
         ConjectureData data = MakeData();
 
         for (int i = 0; i < 100; i++)
@@ -67,7 +67,7 @@ public class NumericStringStrategyTests
     [Fact]
     public void NumericStrings_WithPrefix_DigitPartAfterPrefixContainsOnlyDigits()
     {
-        Strategy<string> strategy = Generate.NumericStrings(prefix: "item");
+        Strategy<string> strategy = Strategy.NumericStrings(prefix: "item");
         ConjectureData data = MakeData();
 
         for (int i = 0; i < 100; i++)
@@ -86,7 +86,7 @@ public class NumericStringStrategyTests
     [Fact]
     public void NumericStrings_WithSuffix_AllValuesEndWithSuffix()
     {
-        Strategy<string> strategy = Generate.NumericStrings(suffix: "_end");
+        Strategy<string> strategy = Strategy.NumericStrings(suffix: "_end");
         ConjectureData data = MakeData();
 
         for (int i = 0; i < 100; i++)
@@ -100,7 +100,7 @@ public class NumericStringStrategyTests
     [Fact]
     public void NumericStrings_WithSuffix_DigitPartBeforeSuffixContainsOnlyDigits()
     {
-        Strategy<string> strategy = Generate.NumericStrings(suffix: "_end");
+        Strategy<string> strategy = Strategy.NumericStrings(suffix: "_end");
         ConjectureData data = MakeData();
 
         for (int i = 0; i < 100; i++)
@@ -119,7 +119,7 @@ public class NumericStringStrategyTests
     [Fact]
     public void NumericStrings_DefaultBounds_GeneratesValuesWithin1To6Digits()
     {
-        Strategy<string> strategy = Generate.NumericStrings();
+        Strategy<string> strategy = Strategy.NumericStrings();
         ConjectureData data = MakeData();
 
         for (int i = 0; i < 200; i++)
@@ -132,7 +132,7 @@ public class NumericStringStrategyTests
     [Fact]
     public void NumericStrings_DefaultBounds_CanGenerateSingleDigitValue()
     {
-        Strategy<string> strategy = Generate.NumericStrings();
+        Strategy<string> strategy = Strategy.NumericStrings();
         bool sawSingleDigit = false;
 
         for (ulong seed = 0UL; seed < 500UL && !sawSingleDigit; seed++)

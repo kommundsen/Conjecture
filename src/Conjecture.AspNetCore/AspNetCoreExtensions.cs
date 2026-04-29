@@ -10,10 +10,10 @@ using Microsoft.Extensions.Hosting;
 
 namespace Conjecture.AspNetCore;
 
-/// <summary>Extension methods on <see cref="Generate"/> for ASP.NET Core endpoint discovery.</summary>
+/// <summary>Extension methods on <see cref="Strategy"/> for ASP.NET Core endpoint discovery.</summary>
 public static class AspNetCoreExtensions
 {
-    extension(Generate)
+    extension(Strategy)
     {
         /// <summary>Returns a fluent <see cref="AspNetCoreRequestBuilder"/> bound to <paramref name="host"/> and <paramref name="client"/>.</summary>
         public static AspNetCoreRequestBuilder AspNetCoreRequests(IHost host, HttpClient client)

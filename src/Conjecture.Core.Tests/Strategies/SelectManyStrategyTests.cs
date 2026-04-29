@@ -14,7 +14,7 @@ public class SelectManyStrategyTests
     [Fact]
     public void SelectMany_DependentGeneration()
     {
-        var strategy = Generate.Integers<int>(1, 5).SelectMany(n => Generate.Integers<int>(0, n));
+        var strategy = Strategy.Integers<int>(1, 5).SelectMany(n => Strategy.Integers<int>(0, n));
         var data = MakeData();
         for (var i = 0; i < 100; i++)
         {
@@ -26,8 +26,8 @@ public class SelectManyStrategyTests
     public void SelectMany_QuerySyntax()
     {
         var strategy =
-            from x in Generate.Integers<int>(1, 3)
-            from y in Generate.Integers<int>(1, x)
+            from x in Strategy.Integers<int>(1, 3)
+            from y in Strategy.Integers<int>(1, x)
             select x * 10 + y;
 
         var data = MakeData();
@@ -43,14 +43,14 @@ public class SelectManyStrategyTests
     public void SelectMany_RecordsMultipleIRNodes()
     {
         ConjectureData data = MakeData();
-        Generate.Integers<int>(1, 5).SelectMany(n => Generate.Integers<int>(0, n)).Generate(data);
+        Strategy.Integers<int>(1, 5).SelectMany(n => Strategy.Integers<int>(0, n)).Generate(data);
         Assert.True(data.IRNodes.Count >= 2, $"Expected >= 2 IR nodes, got {data.IRNodes.Count}");
     }
 
     [Fact]
     public void SelectMany_ShrinkingPreservesDependency()
     {
-        Strategy<int> strategy = Generate.Integers<int>(1, 5).SelectMany(n => Generate.Integers<int>(0, n));
+        Strategy<int> strategy = Strategy.Integers<int>(1, 5).SelectMany(n => Strategy.Integers<int>(0, n));
         ConjectureData initial = MakeData(42UL);
         strategy.Generate(initial);
         Assert.Equal(2, initial.IRNodes.Count);
@@ -68,7 +68,7 @@ public class SelectManyStrategyTests
     [Fact]
     public void SelectMany_DirectPath_GeneratesCorrectly()
     {
-        Strategy<int> strategy = Generate.Integers<int>(1, 5)
+        Strategy<int> strategy = Strategy.Integers<int>(1, 5)
             .SelectMany(static (n, d) => (int)d.NextInteger(0UL, (ulong)n));
 
         for (int i = 0; i < 100; i++)
@@ -83,8 +83,8 @@ public class SelectManyStrategyTests
     [Fact]
     public void SelectMany_DirectPath_AllocationBudget()
     {
-        Strategy<int> baseline = Generate.Integers<int>();
-        Strategy<int> directPath = Generate.Integers<int>(0, 100)
+        Strategy<int> baseline = Strategy.Integers<int>();
+        Strategy<int> directPath = Strategy.Integers<int>(0, 100)
             .SelectMany(static (x, d) => (int)d.NextInteger(0UL, (ulong)x));
 
         // warm up

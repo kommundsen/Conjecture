@@ -89,7 +89,7 @@ public class ShrinkTraceLinqPadTests
     [Fact]
     public void ShrinkTraceHtml_ReturnsNonNull()
     {
-        Strategy<int> strategy = Generate.Integers<int>(1, 100);
+        Strategy<int> strategy = Strategy.Integers<int>(1, 100);
 
         object result = strategy.ShrinkTraceHtml(seed: 0, static x => x > 0);
 
@@ -99,7 +99,7 @@ public class ShrinkTraceLinqPadTests
     [Fact]
     public void ShrinkTraceHtml_ToStringContainsTableElement()
     {
-        Strategy<int> strategy = Generate.Integers<int>(1, 100);
+        Strategy<int> strategy = Strategy.Integers<int>(1, 100);
 
         object result = strategy.ShrinkTraceHtml(seed: 0, static x => x > 0);
 
@@ -109,7 +109,7 @@ public class ShrinkTraceLinqPadTests
     [Fact]
     public void ShrinkTraceHtml_ToStringContainsAtLeastOneTrElement()
     {
-        Strategy<int> strategy = Generate.Integers<int>(1, 100);
+        Strategy<int> strategy = Strategy.Integers<int>(1, 100);
 
         object result = strategy.ShrinkTraceHtml(seed: 0, static x => x > 0);
 
@@ -119,7 +119,7 @@ public class ShrinkTraceLinqPadTests
     [Fact]
     public void ShrinkTraceHtml_SameSeedTwice_ProducesIdenticalOutput()
     {
-        Strategy<int> strategy = Generate.Integers<int>(1, 100);
+        Strategy<int> strategy = Strategy.Integers<int>(1, 100);
 
         object first = strategy.ShrinkTraceHtml(seed: 1, static x => x > 0);
         object second = strategy.ShrinkTraceHtml(seed: 1, static x => x > 0);

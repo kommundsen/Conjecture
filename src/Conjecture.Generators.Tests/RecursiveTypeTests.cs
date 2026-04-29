@@ -12,7 +12,7 @@ namespace Conjecture.Generators.Tests;
 
 public sealed class RecursiveTypeTests
 {
-    // --- Behaviour 1: self-referential type emits Generate.Recursive with default maxDepth: 5 ---
+    // --- Behaviour 1: self-referential type emits Strategy.Recursive with default maxDepth: 5 ---
 
     [Fact]
     public void SelfReferentialRecord_EmitsGenerateRecursiveWrapper()
@@ -25,7 +25,7 @@ public sealed class RecursiveTypeTests
 
         string text = GetGeneratedText(source, "TreeNode.g.cs");
 
-        Assert.Contains("Generate.Recursive<", text);
+        Assert.Contains("Strategy.Recursive<", text);
     }
 
     [Fact]
@@ -121,7 +121,7 @@ public sealed class RecursiveTypeTests
         Assert.NotEmpty(trees);
     }
 
-    // --- Behaviour 4: non-recursive type does NOT emit Generate.Recursive ---
+    // --- Behaviour 4: non-recursive type does NOT emit Strategy.Recursive ---
 
     [Fact]
     public void NonRecursiveRecord_DoesNotEmitGenerateRecursive()
@@ -134,7 +134,7 @@ public sealed class RecursiveTypeTests
 
         string text = GetGeneratedText(source, "Person.g.cs");
 
-        Assert.DoesNotContain("Generate.Recursive", text);
+        Assert.DoesNotContain("Strategy.Recursive", text);
     }
 
     // --- Behaviour 5: base case passes null for recursive slot ---
@@ -153,7 +153,7 @@ public sealed class RecursiveTypeTests
         Assert.Contains("null", text);
     }
 
-    // --- Behaviour 6: self-referential class with object-initializer mode emits valid Generate.Recursive ---
+    // --- Behaviour 6: self-referential class with object-initializer mode emits valid Strategy.Recursive ---
 
     [Fact]
     public void SelfReferentialType_WithObjectInitializerMode_EmitsValidCode()
@@ -173,7 +173,7 @@ public sealed class RecursiveTypeTests
 
         string text = GetGeneratedText(source, "TreeClassArbitrary.g.cs");
 
-        Assert.Contains("Generate.Recursive<", text);
+        Assert.Contains("Strategy.Recursive<", text);
         Assert.DoesNotContain("new global::Tests.TreeClass(", text);
     }
 

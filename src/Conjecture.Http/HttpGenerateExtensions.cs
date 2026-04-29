@@ -7,10 +7,10 @@ using Conjecture.Core;
 
 namespace Conjecture.Http;
 
-/// <summary>Extension methods on <see cref="Generate"/> for HTTP interaction generation.</summary>
+/// <summary>Extension methods on <see cref="Strategy"/> for HTTP interaction generation.</summary>
 public static class HttpGenerateExtensions
 {
-    extension(Generate)
+    extension(Strategy)
     {
         /// <summary>Returns a fluent <see cref="HttpStrategyBuilder"/> bound to <paramref name="resourceName"/>.</summary>
         public static HttpStrategyBuilder Http(string resourceName)

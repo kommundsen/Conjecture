@@ -11,12 +11,12 @@ namespace Conjecture.Tool.Tests;
 // Providers defined in the test assembly so AssemblyLoader can discover them.
 public sealed class IntStrategyProvider : IStrategyProvider<int>
 {
-    public Strategy<int> Create() => Generate.Integers<int>(0, 100);
+    public Strategy<int> Create() => Strategy.Integers<int>(0, 100);
 }
 
 public sealed class StringStrategyProvider : IStrategyProvider<string>
 {
-    public Strategy<string> Create() => Generate.Strings();
+    public Strategy<string> Create() => Strategy.Strings();
 }
 
 public class AssemblyLoaderTests

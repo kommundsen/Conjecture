@@ -22,7 +22,7 @@ public sealed class ForConfigurationTests
     public void Override_SingleProperty_TryGetReturnsOverriddenStrategy()
     {
         ForConfiguration<SampleRecord> cfg = new();
-        Strategy<int> overrideStrategy = Generate.Just(42);
+        Strategy<int> overrideStrategy = Strategy.Just(42);
 
         cfg.Override(static (SampleRecord r) => r.Id, overrideStrategy);
 
@@ -34,7 +34,7 @@ public sealed class ForConfigurationTests
     public void Override_UnspecifiedProperty_TryGetReturnsNull()
     {
         ForConfiguration<SampleRecord> cfg = new();
-        Strategy<int> overrideStrategy = Generate.Just(42);
+        Strategy<int> overrideStrategy = Strategy.Just(42);
 
         cfg.Override(static (SampleRecord r) => r.Id, overrideStrategy);
 
@@ -46,8 +46,8 @@ public sealed class ForConfigurationTests
     public void Override_AllProperties_TryGetReturnsEachOverride()
     {
         ForConfiguration<SampleRecord> cfg = new();
-        Strategy<int> idStrategy = Generate.Just(99);
-        Strategy<string> nameStrategy = Generate.Just("test");
+        Strategy<int> idStrategy = Strategy.Just(99);
+        Strategy<string> nameStrategy = Strategy.Just("test");
 
         cfg.Override(static (SampleRecord r) => r.Id, idStrategy)
            .Override(static (SampleRecord r) => r.Name, nameStrategy);
@@ -60,9 +60,9 @@ public sealed class ForConfigurationTests
     public void Override_ReturnsThis_ForFluentChaining()
     {
         ForConfiguration<SampleRecord> cfg = new();
-        Strategy<int> s1 = Generate.Just(1);
-        Strategy<string> s2 = Generate.Just("a");
-        Strategy<int> s3 = Generate.Just(2);
+        Strategy<int> s1 = Strategy.Just(1);
+        Strategy<string> s2 = Strategy.Just("a");
+        Strategy<int> s3 = Strategy.Just(2);
 
         ForConfiguration<SampleRecord> r1 = cfg.Override(static (SampleRecord r) => r.Id, s1);
         ForConfiguration<SampleRecord> r2 = r1.Override(static (SampleRecord r) => r.Name, s2);
@@ -77,9 +77,9 @@ public sealed class ForConfigurationTests
     public void Override_ChainThreeCalls_AllApplied()
     {
         ForConfiguration<ThreePropertyRecord> cfg = new();
-        Strategy<int> s1 = Generate.Just(1);
-        Strategy<string> s2 = Generate.Just("b");
-        Strategy<bool> s3 = Generate.Just(true);
+        Strategy<int> s1 = Strategy.Just(1);
+        Strategy<string> s2 = Strategy.Just("b");
+        Strategy<bool> s3 = Strategy.Just(true);
 
         cfg.Override(static (ThreePropertyRecord r) => r.Alpha, s1)
            .Override(static (ThreePropertyRecord r) => r.Beta, s2)
@@ -104,7 +104,7 @@ public sealed class ForConfigurationTests
     public void Override_InvalidMemberExpression_ThrowsInvalidOperationException()
     {
         ForConfiguration<SampleRecord> cfg = new();
-        Strategy<int> strategy = Generate.Just(0);
+        Strategy<int> strategy = Strategy.Just(0);
 
         // Expression that doesn't refer to a direct member — e.g. a constant expression
         Expression<Func<SampleRecord, int>> badExpr = static _ => 42;
@@ -128,14 +128,14 @@ public sealed class ForConfigurationTests
     public void GenFor_WithConfigureOverload_NullDelegate_ThrowsArgumentNullException()
     {
         Assert.Throws<ArgumentNullException>(
-            () => Generate.For<SampleRecord>(null!));
+            () => Strategy.For<SampleRecord>(null!));
     }
 
     [Fact]
     public void GenFor_WithConfigureOverload_ReturnsNonNullStrategy()
     {
-        Strategy<SampleRecord> strategy = Generate.For<SampleRecord>(
-            static cfg => cfg.Override(static (SampleRecord r) => r.Id, Generate.Just(7)));
+        Strategy<SampleRecord> strategy = Strategy.For<SampleRecord>(
+            static cfg => cfg.Override(static (SampleRecord r) => r.Id, Strategy.Just(7)));
 
         Assert.NotNull(strategy);
     }

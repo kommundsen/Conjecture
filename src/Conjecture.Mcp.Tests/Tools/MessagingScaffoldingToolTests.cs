@@ -191,7 +191,7 @@ public class MessagingScaffoldingToolTests
             framework: "xunit",
             broker: "inmemory");
 
-        Assert.Contains("Generate.Messaging.Publish(", result);
+        Assert.Contains("Strategy.Messaging.Publish(", result);
     }
 
     // --- destination interpolation ---
@@ -234,7 +234,7 @@ public class MessagingScaffoldingToolTests
             framework: "xunit",
             broker: "inmemory");
 
-        Assert.Contains("Generate.Bytes(", result);
+        Assert.Contains("Strategy.Bytes(", result);
     }
 
     [Fact]
@@ -246,7 +246,7 @@ public class MessagingScaffoldingToolTests
             broker: "inmemory",
             bodyType: "protobuf");
 
-        Assert.Contains("Generate.FromProtobuf<T>()", result);
+        Assert.Contains("Strategy.FromProtobuf<T>()", result);
     }
 
     [Fact]
@@ -258,7 +258,7 @@ public class MessagingScaffoldingToolTests
             broker: "inmemory",
             bodyType: "jsonschema");
 
-        Assert.Contains("Generate.FromJsonSchema(", result);
+        Assert.Contains("Strategy.FromJsonSchema(", result);
     }
 
     // --- required destination: empty/null ---

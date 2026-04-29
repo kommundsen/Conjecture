@@ -15,7 +15,7 @@ internal static class AspNetCoreScaffoldingTool
     [Description(
         "Generates a Conjecture.AspNetCore property-test skeleton for a given entry-point type, route, and framework. " +
         "Emits a ready-to-fill test class with the correct using directives, WebApplicationFactory wiring, " +
-        "Generate.AspNetCoreRequests strategy construction, and the AssertNot5xx invariant. " +
+        "Strategy.AspNetCoreRequests strategy construction, and the AssertNot5xx invariant. " +
         "When bodyType is provided, emits a paired malformed-request test asserting Assert4xx.")]
     public static string ScaffoldAspNetCorePropertyTest(
         [Description("ASP.NET Core entry-point type, e.g. 'Program'. Required.")] string entryPointType,
@@ -115,7 +115,7 @@ internal static class AspNetCoreScaffoldingTool
         sb.AppendLine("        IHost host = factory.Services.GetRequiredService<IHost>();");
         sb.AppendLine("        HostHttpTarget target = new(host, client);");
         sb.AppendLine();
-        sb.AppendLine("        Strategy<HttpInteraction> strategy = Generate.AspNetCoreRequests(host, client)");
+        sb.AppendLine("        Strategy<HttpInteraction> strategy = Strategy.AspNetCoreRequests(host, client)");
         sb.AppendLine($"            .ExcludeEndpoints(static ep => !string.Equals(ep.RoutePattern.RawText, \"{endpointRoute}\", System.StringComparison.OrdinalIgnoreCase) || !string.Equals(ep.HttpMethod, \"{httpMethod}\", System.StringComparison.OrdinalIgnoreCase))");
         sb.AppendLine("            .ValidRequestsOnly()");
         sb.AppendLine("            .Build();");
@@ -138,7 +138,7 @@ internal static class AspNetCoreScaffoldingTool
             sb.AppendLine("        IHost host = factory.Services.GetRequiredService<IHost>();");
             sb.AppendLine("        HostHttpTarget target = new(host, client);");
             sb.AppendLine();
-            sb.AppendLine("        Strategy<HttpInteraction> malformed = Generate.AspNetCoreRequests(host, client)");
+            sb.AppendLine("        Strategy<HttpInteraction> malformed = Strategy.AspNetCoreRequests(host, client)");
             sb.AppendLine($"            .ExcludeEndpoints(static ep => !string.Equals(ep.RoutePattern.RawText, \"{endpointRoute}\", System.StringComparison.OrdinalIgnoreCase) || !string.Equals(ep.HttpMethod, \"{httpMethod}\", System.StringComparison.OrdinalIgnoreCase))");
             sb.AppendLine("            .MalformedRequestsOnly()");
             sb.AppendLine("            .Build();");

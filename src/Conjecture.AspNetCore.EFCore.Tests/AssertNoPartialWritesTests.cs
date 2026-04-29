@@ -35,11 +35,8 @@ public sealed class PartialWritesFixture : IDisposable
 
         Factory = new WebApplicationFactory<TestApp>().WithWebHostBuilder(builder =>
         {
-            builder.ConfigureServices(services =>
-            {
-                services.AddDbContext<OrdersDb>(opts =>
-                    opts.UseSqlite(connection));
-            });
+            builder.ConfigureServices(services => services.AddDbContext<OrdersDb>(opts =>
+                    opts.UseSqlite(connection)));
 
             builder.Configure(app =>
             {
@@ -110,14 +107,9 @@ public sealed class PartialWritesFixture : IDisposable
     }
 }
 
-public sealed class AssertNoPartialWritesTests : IClassFixture<PartialWritesFixture>
+public sealed class AssertNoPartialWritesTests(PartialWritesFixture fixture) : IClassFixture<PartialWritesFixture>
 {
-    private readonly PartialWritesFixture fixture;
-
-    public AssertNoPartialWritesTests(PartialWritesFixture fixture)
-    {
-        this.fixture = fixture;
-    }
+    private readonly PartialWritesFixture fixture = fixture;
 
     private IHost Host => fixture.Factory.Services.GetRequiredService<IHost>();
 

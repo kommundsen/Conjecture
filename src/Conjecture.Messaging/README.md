@@ -17,8 +17,8 @@ using Conjecture.Messaging;
 
 InMemoryMessageBusTarget bus = new();
 
-Strategy<MessageInteraction> publishes = Generate.Messaging
-    .Publish("orders", Generate.Bytes(0, 256));
+Strategy<MessageInteraction> publishes = Strategy.Messaging
+    .Publish("orders", Strategy.Bytes(0, 256));
 
 await bus.ExecuteAsync(publishes.Sample(), CancellationToken.None);
 
@@ -33,7 +33,7 @@ if (received is not null)
 }
 ```
 
-Use `Generate.Messaging.Consume(queue)` to model the receive side, and compose with `InteractionStateMachine<TState>` for stateful tests across publish/consume cycles.
+Use `Strategy.Messaging.Consume(queue)` to model the receive side, and compose with `InteractionStateMachine<TState>` for stateful tests across publish/consume cycles.
 
 ## Types
 
@@ -42,8 +42,8 @@ Use `Generate.Messaging.Consume(queue)` to model the receive side, and compose w
 | `MessageInteraction` | Readonly record: destination, body, headers, message id, correlation id. |
 | `IMessageBusTarget` | Publish, receive, acknowledge, reject. |
 | `InMemoryMessageBusTarget` | In-process implementation for unit tests. |
-| `Generate.Messaging.Publish(dest, body)` | Strategy of `MessageInteraction` representing a publish. |
-| `Generate.Messaging.Consume(dest)` | Strategy of `MessageInteraction` representing a consume. |
+| `Strategy.Messaging.Publish(dest, body)` | Strategy of `MessageInteraction` representing a publish. |
+| `Strategy.Messaging.Consume(dest)` | Strategy of `MessageInteraction` representing a consume. |
 
 ## Links
 

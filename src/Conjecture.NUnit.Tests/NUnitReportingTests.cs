@@ -53,7 +53,7 @@ public sealed class NUnitReportingTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            int x = Generate.Integers<int>().Generate(data);
+            int x = Strategy.Integers<int>().Generate(data);
             if (x > 5) { throw new Exception("fail"); }
         });
 
@@ -70,7 +70,7 @@ public sealed class NUnitReportingTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            int x = Generate.Integers<int>().Generate(data);
+            int x = Strategy.Integers<int>().Generate(data);
             if (x > 5) { throw new Exception("fail"); }
         });
 
@@ -89,7 +89,7 @@ public sealed class NUnitReportingTests
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
-            int x = Generate.Integers<int>().Generate(data);
+            int x = Strategy.Integers<int>().Generate(data);
             if (x > 5) { throw new Exception("fail"); }
         });
 

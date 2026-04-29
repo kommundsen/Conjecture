@@ -21,7 +21,7 @@ public static class PropertyStrategyBuilder
         if (property.ValueGenerated == ValueGenerated.OnAdd || property.ValueGenerated == ValueGenerated.OnAddOrUpdate)
         {
             object? clrDefault = property.ClrType.IsValueType ? Activator.CreateInstance(property.ClrType) : null;
-            return Generate.Just<object?>(clrDefault);
+            return Strategy.Just<object?>(clrDefault);
         }
 
         Type clrType = property.ClrType;
@@ -30,7 +30,7 @@ public static class PropertyStrategyBuilder
         Strategy<object?> inner = BuildInner(property, underlying);
 
         return property.IsNullable
-            ? Generate.OneOf(inner, Generate.Just<object?>(null))
+            ? Strategy.OneOf(inner, Strategy.Just<object?>(null))
             : inner;
     }
 
@@ -38,47 +38,47 @@ public static class PropertyStrategyBuilder
     {
         if (underlying == typeof(int))
         {
-            return Generate.Integers<int>().Select(static v => (object?)v);
+            return Strategy.Integers<int>().Select(static v => (object?)v);
         }
 
         if (underlying == typeof(long))
         {
-            return Generate.Integers<long>().Select(static v => (object?)v);
+            return Strategy.Integers<long>().Select(static v => (object?)v);
         }
 
         if (underlying == typeof(short))
         {
-            return Generate.Integers<short>().Select(static v => (object?)v);
+            return Strategy.Integers<short>().Select(static v => (object?)v);
         }
 
         if (underlying == typeof(byte))
         {
-            return Generate.Integers<byte>().Select(static v => (object?)v);
+            return Strategy.Integers<byte>().Select(static v => (object?)v);
         }
 
         if (underlying == typeof(sbyte))
         {
-            return Generate.Integers<sbyte>().Select(static v => (object?)v);
+            return Strategy.Integers<sbyte>().Select(static v => (object?)v);
         }
 
         if (underlying == typeof(uint))
         {
-            return Generate.Integers<uint>().Select(static v => (object?)v);
+            return Strategy.Integers<uint>().Select(static v => (object?)v);
         }
 
         if (underlying == typeof(ulong))
         {
-            return Generate.Integers<ulong>().Select(static v => (object?)v);
+            return Strategy.Integers<ulong>().Select(static v => (object?)v);
         }
 
         if (underlying == typeof(ushort))
         {
-            return Generate.Integers<ushort>().Select(static v => (object?)v);
+            return Strategy.Integers<ushort>().Select(static v => (object?)v);
         }
 
         if (underlying == typeof(bool))
         {
-            return Generate.Booleans().Select(static v => (object?)v);
+            return Strategy.Booleans().Select(static v => (object?)v);
         }
 
         if (underlying == typeof(decimal))
@@ -88,12 +88,12 @@ public static class PropertyStrategyBuilder
 
         if (underlying == typeof(double))
         {
-            return Generate.Doubles().Select(static v => (object?)v);
+            return Strategy.Doubles().Select(static v => (object?)v);
         }
 
         if (underlying == typeof(float))
         {
-            return Generate.Floats().Select(static v => (object?)v);
+            return Strategy.Floats().Select(static v => (object?)v);
         }
 
         if (underlying == typeof(string))
@@ -103,34 +103,34 @@ public static class PropertyStrategyBuilder
 
         if (underlying == typeof(Guid))
         {
-            return Generate.Guids().Select(static v => (object?)v);
+            return Strategy.Guids().Select(static v => (object?)v);
         }
 
         if (underlying == typeof(DateTime))
         {
-            return Generate.DateTimes().Select(static v => (object?)v);
+            return Strategy.DateTimes().Select(static v => (object?)v);
         }
 
         if (underlying == typeof(DateTimeOffset))
         {
-            return Generate.DateTimeOffsets().Select(static v => (object?)v);
+            return Strategy.DateTimeOffsets().Select(static v => (object?)v);
         }
 
         if (underlying == typeof(byte[]))
         {
             int maxLength = property.GetMaxLength() ?? 256;
-            return Generate.Integers<int>(0, maxLength)
-                .SelectMany(len => Generate.Bytes(len))
+            return Strategy.Integers<int>(0, maxLength)
+                .SelectMany(len => Strategy.Bytes(len))
                 .Select(static b => (object?)b);
         }
 
         if (underlying.IsEnum)
         {
             object[] values = Enum.GetValues(underlying) is object[] arr ? arr : Array.Empty<object>();
-            return Generate.SampledFrom(values).Select(v => (object?)v);
+            return Strategy.SampledFrom(values).Select(v => (object?)v);
         }
 
-        return Generate.Just<object?>(null);
+        return Strategy.Just<object?>(null);
     }
 
     private static Strategy<object?> BuildDecimalStrategy(IProperty property)
@@ -140,7 +140,7 @@ public static class PropertyStrategyBuilder
 
         if (precision is null || scale is null)
         {
-            return Generate.Decimals().Select(static v => (object?)v);
+            return Strategy.Decimals().Select(static v => (object?)v);
         }
 
         int integerDigits = precision.Value - scale.Value;
@@ -159,7 +159,7 @@ public static class PropertyStrategyBuilder
         decimal mag = maxMagnitude;
         decimal mult = scaleMultiplier;
 
-        return Generate.Decimals(-mag, mag).Select(v =>
+        return Strategy.Decimals(-mag, mag).Select(v =>
         {
             decimal rounded = Math.Truncate(v * mult) / mult;
             return (object?)rounded;
@@ -169,6 +169,6 @@ public static class PropertyStrategyBuilder
     private static Strategy<object?> BuildStringStrategy(IProperty property)
     {
         int maxLength = property.GetMaxLength() ?? 4096;
-        return Generate.Strings(minLength: 0, maxLength: maxLength).Select(static s => (object?)s);
+        return Strategy.Strings(minLength: 0, maxLength: maxLength).Select(static s => (object?)s);
     }
 }

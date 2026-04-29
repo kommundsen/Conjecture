@@ -31,14 +31,8 @@ public sealed class AspNetCoreDbTargetFixture : IDisposable
         connection = new("DataSource=:memory:");
         connection.Open();
 
-        Factory = new WebApplicationFactory<TestApp>().WithWebHostBuilder(builder =>
-        {
-            builder.ConfigureServices(services =>
-            {
-                services.AddDbContext<OrdersDbContext>(opts =>
-                    opts.UseSqlite(connection));
-            });
-        });
+        Factory = new WebApplicationFactory<TestApp>().WithWebHostBuilder(builder => builder.ConfigureServices(services => services.AddDbContext<OrdersDbContext>(opts =>
+                    opts.UseSqlite(connection))));
 
         using IServiceScope scope = Factory.Services.CreateScope();
         OrdersDbContext ctx = scope.ServiceProvider.GetRequiredService<OrdersDbContext>();
@@ -67,14 +61,9 @@ public sealed class AspNetCoreDbTargetFixture : IDisposable
     }
 }
 
-public sealed class AspNetCoreDbTargetTests : IClassFixture<AspNetCoreDbTargetFixture>
+public sealed class AspNetCoreDbTargetTests(AspNetCoreDbTargetFixture fixture) : IClassFixture<AspNetCoreDbTargetFixture>
 {
-    private readonly AspNetCoreDbTargetFixture fixture;
-
-    public AspNetCoreDbTargetTests(AspNetCoreDbTargetFixture fixture)
-    {
-        this.fixture = fixture;
-    }
+    private readonly AspNetCoreDbTargetFixture fixture = fixture;
 
     private IHost Host => fixture.Factory.Services.GetRequiredService<IHost>();
 

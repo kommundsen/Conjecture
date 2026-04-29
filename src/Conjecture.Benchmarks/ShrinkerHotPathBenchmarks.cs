@@ -31,8 +31,8 @@ public class ShrinkerHotPathBenchmarks
             MaxExamples = 100,
             UseDatabase = false,
         };
-        commandSequenceStrategy = Generate.StateMachine<CounterMachineFailsAt3, int, CounterCommand>(maxSteps: 10);
-        collectionStrategy = Generate.Lists(Generate.Integers<int>(), minSize: 20, maxSize: 20);
+        commandSequenceStrategy = Strategy.StateMachine<CounterMachineFailsAt3, int, CounterCommand>(maxSteps: 10);
+        collectionStrategy = Strategy.Lists(Strategy.Integers<int>(), minSize: 20, maxSize: 20);
     }
 
     /// <summary>Fast-body baseline: a single integer failing at <c>&gt; 50</c>, exercising IntegerReductionPass.</summary>
@@ -41,7 +41,7 @@ public class ShrinkerHotPathBenchmarks
     {
         await TestRunner.Run(settings, data =>
         {
-            int n = Generate.Integers<int>(0, 100).Generate(data);
+            int n = Strategy.Integers<int>(0, 100).Generate(data);
             if (n > 50)
             {
                 throw new Exception("fail");
@@ -77,7 +77,7 @@ public class ShrinkerHotPathBenchmarks
     {
         await TestRunner.Run(settings, data =>
         {
-            int n = Generate.Integers<int>(0, 100).Generate(data);
+            int n = Strategy.Integers<int>(0, 100).Generate(data);
             Thread.SpinWait(1000);
             if (n > 50)
             {

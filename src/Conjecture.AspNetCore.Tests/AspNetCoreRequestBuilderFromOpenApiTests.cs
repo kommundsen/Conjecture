@@ -22,7 +22,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace Conjecture.AspNetCore.Tests;
 
-public sealed class AspNetCoreRequestBuilderFromOpenApiTests : IClassFixture<WebApplicationFactory<AspNetCoreRequestBuilderFromOpenApiTestsApp>>
+public sealed class AspNetCoreRequestBuilderFromOpenApiTests(WebApplicationFactory<AspNetCoreRequestBuilderFromOpenApiTestsApp> factory) : IClassFixture<WebApplicationFactory<AspNetCoreRequestBuilderFromOpenApiTestsApp>>
 {
     private const string PetstoreJson = """
         {
@@ -55,22 +55,11 @@ public sealed class AspNetCoreRequestBuilderFromOpenApiTests : IClassFixture<Web
         }
         """;
 
-    private readonly WebApplicationFactory<AspNetCoreRequestBuilderFromOpenApiTestsApp> factory;
-
-    public AspNetCoreRequestBuilderFromOpenApiTests(WebApplicationFactory<AspNetCoreRequestBuilderFromOpenApiTestsApp> factory)
-    {
-        this.factory = factory.WithWebHostBuilder(static webBuilder =>
-        {
-            webBuilder.Configure(static app =>
+    private readonly WebApplicationFactory<AspNetCoreRequestBuilderFromOpenApiTestsApp> factory = factory.WithWebHostBuilder(static webBuilder => webBuilder.Configure(static app =>
             {
                 app.UseRouting();
-                app.UseEndpoints(static endpoints =>
-                {
-                    endpoints.MapPost("/orders", static (BuilderTestDto _) => Results.Ok());
-                });
-            });
-        });
-    }
+                app.UseEndpoints(static endpoints => endpoints.MapPost("/orders", static (BuilderTestDto _) => Results.Ok()));
+            }));
 
     [Fact]
     public async Task FromOpenApi_ReturnsBuilder()
@@ -79,7 +68,7 @@ public sealed class AspNetCoreRequestBuilderFromOpenApiTests : IClassFixture<Web
         IHost host = factory.Services.GetRequiredService<IHost>();
         using HttpClient client = factory.CreateClient();
 
-        AspNetCoreRequestBuilder builder = Generate
+        AspNetCoreRequestBuilder builder = Strategy
             .AspNetCoreRequests(host, client)
             .FromOpenApi(doc);
 
@@ -93,7 +82,7 @@ public sealed class AspNetCoreRequestBuilderFromOpenApiTests : IClassFixture<Web
         IHost host = factory.Services.GetRequiredService<IHost>();
         using HttpClient client = factory.CreateClient();
 
-        Strategy<HttpInteraction> strategy = Generate
+        Strategy<HttpInteraction> strategy = Strategy
             .AspNetCoreRequests(host, client)
             .FromOpenApi(doc)
             .ValidRequestsOnly()
@@ -109,7 +98,7 @@ public sealed class AspNetCoreRequestBuilderFromOpenApiTests : IClassFixture<Web
         IHost host = factory.Services.GetRequiredService<IHost>();
         using HttpClient client = factory.CreateClient();
 
-        Strategy<HttpInteraction> strategy = Generate
+        Strategy<HttpInteraction> strategy = Strategy
             .AspNetCoreRequests(host, client)
             .FromOpenApi(doc)
             .ValidRequestsOnly()
@@ -134,7 +123,7 @@ public sealed class AspNetCoreRequestBuilderFromOpenApiTests : IClassFixture<Web
         IHost host = factory.Services.GetRequiredService<IHost>();
         using HttpClient client = factory.CreateClient();
 
-        AspNetCoreRequestBuilder builder = Generate.AspNetCoreRequests(host, client);
+        AspNetCoreRequestBuilder builder = Strategy.AspNetCoreRequests(host, client);
 
         await Task.Yield();
         Assert.Throws<ArgumentNullException>(() => builder.FromOpenApi(null!));
@@ -146,7 +135,7 @@ public sealed class AspNetCoreRequestBuilderFromOpenApiTests : IClassFixture<Web
         await File.WriteAllTextAsync(path, PetstoreJson);
         try
         {
-            return await Generate.FromOpenApi(path);
+            return await Strategy.FromOpenApi(path);
         }
         finally
         {

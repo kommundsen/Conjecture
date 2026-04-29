@@ -21,7 +21,7 @@ public class ApiTests
     [Property]
     public async Task NeverReturns5xx(HttpInteraction request)
     {
-        Strategy<HttpInteraction> strategy = Generate.Http("api")
+        Strategy<HttpInteraction> strategy = Strategy.Http("api")
             .Get("/items/{id}")
             .Build();
 
@@ -39,7 +39,7 @@ public class ApiTests
 | `HttpInteraction` | Readonly record: method, path, headers, body, named resource. |
 | `IHttpTarget` | Resolves an `HttpClient` for a named resource. |
 | `HostHttpTarget` | `IHttpTarget` over an `IHost` / `WebApplicationFactory`. |
-| `HttpStrategyBuilder` | Fluent builder for `HttpInteraction` strategies — `Generate.Http(resource).Get/Post/Put/Delete/Patch(...).Build()`. |
+| `HttpStrategyBuilder` | Fluent builder for `HttpInteraction` strategies — `Strategy.Http(resource).Get/Post/Put/Delete/Patch(...).Build()`. |
 | `HttpInvariantExtensions` | `AssertNot5xx`, `Assert4xx`, `AssertProblemDetailsShape`, `Response(target)`. |
 
 ## Links

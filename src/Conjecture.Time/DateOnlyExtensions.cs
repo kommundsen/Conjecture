@@ -16,11 +16,11 @@ public static class DateOnlyExtensions
         /// </summary>
         public Strategy<DateOnly> NearMonthBoundary()
         {
-            Strategy<int> yearStrategy = Generate.Integers(2000, 2099);
-            Strategy<int> monthStrategy = Generate.Integers(1, 12);
-            Strategy<int> edgeStrategy = Generate.Integers(0, 1);
+            Strategy<int> yearStrategy = Strategy.Integers(2000, 2099);
+            Strategy<int> monthStrategy = Strategy.Integers(1, 12);
+            Strategy<int> edgeStrategy = Strategy.Integers(0, 1);
 
-            return Generate.Compose<DateOnly>(ctx =>
+            return Strategy.Compose<DateOnly>(ctx =>
             {
                 int year = ctx.Generate(yearStrategy);
                 int month = ctx.Generate(monthStrategy);
@@ -37,10 +37,10 @@ public static class DateOnlyExtensions
         /// </summary>
         public Strategy<DateOnly> NearLeapDay()
         {
-            Strategy<int> yearStrategy = Generate.Integers(1970, 2400);
-            Strategy<int> offsetStrategy = Generate.Integers(-1, 1);
+            Strategy<int> yearStrategy = Strategy.Integers(1970, 2400);
+            Strategy<int> offsetStrategy = Strategy.Integers(-1, 1);
 
-            return Generate.Compose<DateOnly>(ctx =>
+            return Strategy.Compose<DateOnly>(ctx =>
             {
                 int year = ctx.Generate(yearStrategy);
                 ctx.Assume(DateTime.IsLeapYear(year));

@@ -13,7 +13,7 @@ public class TimeGenerateExtensionsTests
     [Fact]
     public void TimeZones_ReturnsStrategy()
     {
-        Strategy<TimeZoneInfo> strategy = Generate.TimeZones();
+        Strategy<TimeZoneInfo> strategy = Strategy.TimeZones();
 
         Assert.NotNull(strategy);
     }
@@ -21,7 +21,7 @@ public class TimeGenerateExtensionsTests
     [Fact]
     public void TimeZones_GeneratesOnlySystemZones()
     {
-        Strategy<TimeZoneInfo> strategy = Generate.TimeZones();
+        Strategy<TimeZoneInfo> strategy = Strategy.TimeZones();
         System.Collections.ObjectModel.ReadOnlyCollection<TimeZoneInfo> systemZones = TimeZoneInfo.GetSystemTimeZones();
         System.Collections.Generic.HashSet<string> systemIds = [.. systemZones.Select(static z => z.Id)];
 
@@ -33,7 +33,7 @@ public class TimeGenerateExtensionsTests
     [Fact]
     public void ClockSet_ReturnsArrayOfExactNodeCount()
     {
-        Strategy<FakeTimeProvider[]> strategy = Generate.ClockSet(3, TimeSpan.FromSeconds(5));
+        Strategy<FakeTimeProvider[]> strategy = Strategy.ClockSet(3, TimeSpan.FromSeconds(5));
 
         FakeTimeProvider[] clocks = DataGen.SampleOne(strategy, seed: 1UL);
 
@@ -44,7 +44,7 @@ public class TimeGenerateExtensionsTests
     public void ClockSet_EachClockIsWithinMaxSkewOfOthers()
     {
         TimeSpan maxSkew = TimeSpan.FromSeconds(1);
-        Strategy<FakeTimeProvider[]> strategy = Generate.ClockSet(3, maxSkew);
+        Strategy<FakeTimeProvider[]> strategy = Strategy.ClockSet(3, maxSkew);
 
         FakeTimeProvider[] clocks = DataGen.SampleOne(strategy, seed: 1UL);
 
@@ -62,13 +62,13 @@ public class TimeGenerateExtensionsTests
     public void ClockSet_NodeCountLessThanTwo_ThrowsArgumentOutOfRangeException()
     {
         Assert.Throws<ArgumentOutOfRangeException>(
-            static () => Generate.ClockSet(1, TimeSpan.FromSeconds(1)));
+            static () => Strategy.ClockSet(1, TimeSpan.FromSeconds(1)));
     }
 
     [Fact]
     public void ClockSet_ClocksAreIndependent()
     {
-        Strategy<FakeTimeProvider[]> strategy = Generate.ClockSet(3, TimeSpan.FromSeconds(5));
+        Strategy<FakeTimeProvider[]> strategy = Strategy.ClockSet(3, TimeSpan.FromSeconds(5));
 
         FakeTimeProvider[] clocks = DataGen.SampleOne(strategy, seed: 1UL);
         _ = clocks[0].GetUtcNow();
@@ -84,7 +84,7 @@ public class TimeGenerateExtensionsTests
     [Fact]
     public void ClockSet_EachElementIsFakeTimeProvider()
     {
-        Strategy<FakeTimeProvider[]> strategy = Generate.ClockSet(2, TimeSpan.FromSeconds(1));
+        Strategy<FakeTimeProvider[]> strategy = Strategy.ClockSet(2, TimeSpan.FromSeconds(1));
 
         FakeTimeProvider[] clocks = DataGen.SampleOne(strategy, seed: 1UL);
 
@@ -94,7 +94,7 @@ public class TimeGenerateExtensionsTests
     [Fact]
     public void IanaZoneIds_AllValuesHaveIanaIds()
     {
-        Strategy<string> strategy = Generate.IanaZoneIds();
+        Strategy<string> strategy = Strategy.IanaZoneIds();
 
         IReadOnlyList<string> samples = DataGen.Sample(strategy, count: 20, seed: 1UL);
 
@@ -104,7 +104,7 @@ public class TimeGenerateExtensionsTests
     [Fact]
     public void IanaZoneIds_WithPreferDst_AllZonesSupportDst()
     {
-        Strategy<string> strategy = Generate.IanaZoneIds(preferDst: true);
+        Strategy<string> strategy = Strategy.IanaZoneIds(preferDst: true);
 
         IReadOnlyList<string> samples = DataGen.Sample(strategy, count: 20, seed: 1UL);
 
@@ -118,7 +118,7 @@ public class TimeGenerateExtensionsTests
     [Fact]
     public void WindowsZoneIds_AllValuesAreWindowsZoneIds()
     {
-        Strategy<string> strategy = Generate.WindowsZoneIds();
+        Strategy<string> strategy = Strategy.WindowsZoneIds();
 
         IReadOnlyList<string> samples = DataGen.Sample(strategy, count: 20, seed: 1UL);
 
@@ -132,7 +132,7 @@ public class TimeGenerateExtensionsTests
     [Fact]
     public void TimeZone_WithPreferDst_AllZonesSupportDst()
     {
-        Strategy<TimeZoneInfo> strategy = Generate.TimeZone(preferDst: true);
+        Strategy<TimeZoneInfo> strategy = Strategy.TimeZone(preferDst: true);
 
         IReadOnlyList<TimeZoneInfo> samples = DataGen.Sample(strategy, count: 20, seed: 1UL);
 
@@ -143,7 +143,7 @@ public class TimeGenerateExtensionsTests
     [Fact]
     public void IanaZoneIds_ProducesVariety()
     {
-        Strategy<string> strategy = Generate.IanaZoneIds();
+        Strategy<string> strategy = Strategy.IanaZoneIds();
 
         IReadOnlyList<string> samples = DataGen.Sample(strategy, count: 20, seed: 1UL);
 
