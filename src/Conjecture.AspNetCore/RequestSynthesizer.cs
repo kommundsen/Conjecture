@@ -20,7 +20,7 @@ internal sealed class RequestSynthesizer(DiscoveredEndpoint endpoint, Conjecture
 {
     private readonly Conjecture.OpenApi.OpenApiDocument? openApiDoc = openApiDoc;
 
-    private static readonly Dictionary<Type, Func<IGeneratorContext, object>> PrimitiveFactories = new()
+    private static readonly Dictionary<Type, Func<IGenerationContext, object>> PrimitiveFactories = new()
     {
         [typeof(int)] = static ctx => ctx.Generate(Generate.Integers<int>()),
         [typeof(long)] = static ctx => ctx.Generate(Generate.Integers<long>()),
@@ -138,7 +138,7 @@ internal sealed class RequestSynthesizer(DiscoveredEndpoint endpoint, Conjecture
     private static bool IsSupportedType(Type type) =>
         PrimitiveFactories.ContainsKey(type) || GenerateForRegistry.IsRegistered(type);
 
-    private static string BuildPath(string rawPattern, IReadOnlyList<EndpointParameter> parameters, IGeneratorContext ctx)
+    private static string BuildPath(string rawPattern, IReadOnlyList<EndpointParameter> parameters, IGenerationContext ctx)
     {
         string path = rawPattern;
 
@@ -168,7 +168,7 @@ internal sealed class RequestSynthesizer(DiscoveredEndpoint endpoint, Conjecture
 
     private static object? GenerateBody(
         IReadOnlyList<EndpointParameter> parameters,
-        IGeneratorContext ctx,
+        IGenerationContext ctx,
         Conjecture.OpenApi.OpenApiDocument? openApiDoc,
         string method,
         string path)
@@ -219,8 +219,8 @@ internal sealed class RequestSynthesizer(DiscoveredEndpoint endpoint, Conjecture
         return headers.Count > 0 ? headers : null;
     }
 
-    private static object GeneratePrimitive(Type type, IGeneratorContext ctx) =>
-        PrimitiveFactories.TryGetValue(type, out Func<IGeneratorContext, object>? factory)
+    private static object GeneratePrimitive(Type type, IGenerationContext ctx) =>
+        PrimitiveFactories.TryGetValue(type, out Func<IGenerationContext, object>? factory)
             ? factory(ctx)
             : throw new ArgumentException(
                 $"No built-in strategy for primitive type '{type.FullName}'.",

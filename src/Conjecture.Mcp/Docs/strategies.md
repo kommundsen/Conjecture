@@ -38,7 +38,7 @@
 | `Generate.VersionStrings(maxMajor, maxMinor, maxPatch)` | `Strategy<string>` | Version strings (`MAJOR.MINOR.PATCH`) |
 | `Generate.FromBytes<T>(buffer)` | `Strategy<T>` | Replay values from a fixed byte buffer |
 | `Generate.Recursive<T>(baseCase, recursive, maxDepth)` | `Strategy<T>` | Tree-shaped / self-referential types; default maxDepth 5 |
-| `Generate.Compose<T>(factory)` | `Strategy<T>` | Imperative composition via `IGeneratorContext` |
+| `Generate.Compose<T>(factory)` | `Strategy<T>` | Imperative composition via `IGenerationContext` |
 | `Generate.StateMachine<TMachine, TState, TCommand>(maxSteps)` | `Strategy<StateMachineRun<TState>>` | Stateful testing |
 
 ## LINQ Combinators (extension methods on `Strategy<T>`)
@@ -74,7 +74,7 @@ Use `DataGen` to generate values outside property tests:
 | `DataGen.SampleOne<T>(strategy, seed?)` | `T` | Single value |
 | `DataGen.Stream<T>(strategy, count, seed?)` | `IEnumerable<T>` | Lazy enumeration of `count` values |
 
-## `IGeneratorContext` (inside `Generate.Compose`)
+## `IGenerationContext` (inside `Generate.Compose`)
 
 ```csharp
 Generate.Compose(ctx =>

@@ -58,7 +58,7 @@ internal sealed class NotMatchingStrategy : Strategy<string>
         }).Generate(data);
     }
 
-    private string Mutate(IGeneratorContext ctx, string s)
+    private string Mutate(IGenerationContext ctx, string s)
     {
         Op[] ops = [Op.Insert, Op.Delete, Op.Replace];
         Op op = ctx.Generate(Conjecture.Core.Generate.SampledFrom(ops));
@@ -82,20 +82,20 @@ internal sealed class NotMatchingStrategy : Strategy<string>
         };
     }
 
-    private static string DoInsert(IGeneratorContext ctx, string s)
+    private static string DoInsert(IGenerationContext ctx, string s)
     {
         int index = ctx.Generate(Conjecture.Core.Generate.Integers<int>(0, s.Length));
         char ch = (char)ctx.Generate(Conjecture.Core.Generate.Integers<int>(0x20, 0x7E));
         return s.Insert(index, new string(ch, 1));
     }
 
-    private static string DoDelete(IGeneratorContext ctx, string s)
+    private static string DoDelete(IGenerationContext ctx, string s)
     {
         int index = ctx.Generate(Conjecture.Core.Generate.Integers<int>(0, s.Length - 1));
         return s.Remove(index, 1);
     }
 
-    private static string DoReplace(IGeneratorContext ctx, string s)
+    private static string DoReplace(IGenerationContext ctx, string s)
     {
         int index = ctx.Generate(Conjecture.Core.Generate.Integers<int>(0, s.Length - 1));
         int charCode = ctx.Generate(Conjecture.Core.Generate.Integers<int>(0x20, 0x7E));

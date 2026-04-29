@@ -11,8 +11,8 @@ namespace Conjecture.Core;
 /// <summary>Factory methods for creating and composing Conjecture strategies.</summary>
 public static class Generate
 {
-    /// <summary>Creates a strategy from an imperative factory function using <see cref="IGeneratorContext"/>.</summary>
-    public static Strategy<T> Compose<T>(Func<IGeneratorContext, T> factory)
+    /// <summary>Creates a strategy from an imperative factory function using <see cref="IGenerationContext"/>.</summary>
+    public static Strategy<T> Compose<T>(Func<IGenerationContext, T> factory)
     {
         ArgumentNullException.ThrowIfNull(factory);
         return new ComposeStrategy<T>(factory);

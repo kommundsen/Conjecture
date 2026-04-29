@@ -16,7 +16,7 @@ public class PartialConstructorContextTests
     [Fact]
     public void Current_InsideUseScope_ReturnsProvidedContext()
     {
-        IGeneratorContext ctx = new StubGeneratorContext();
+        IGenerationContext ctx = new StubGenerationContext();
 
         using IDisposable scope = PartialConstructorContext.Use(ctx);
 
@@ -26,7 +26,7 @@ public class PartialConstructorContextTests
     [Fact]
     public void Current_AfterUseScopeDisposed_ThrowsInvalidOperationException()
     {
-        IGeneratorContext ctx = new StubGeneratorContext();
+        IGenerationContext ctx = new StubGenerationContext();
         IDisposable scope = PartialConstructorContext.Use(ctx);
 
         scope.Dispose();
@@ -37,8 +37,8 @@ public class PartialConstructorContextTests
     [Fact]
     public void Current_InnerNestedScope_SeesInnerContext()
     {
-        IGeneratorContext outer = new StubGeneratorContext();
-        IGeneratorContext inner = new StubGeneratorContext();
+        IGenerationContext outer = new StubGenerationContext();
+        IGenerationContext inner = new StubGenerationContext();
 
         using IDisposable outerScope = PartialConstructorContext.Use(outer);
         using IDisposable innerScope = PartialConstructorContext.Use(inner);
@@ -49,8 +49,8 @@ public class PartialConstructorContextTests
     [Fact]
     public void Current_AfterInnerScopeDisposed_RestoredToOuterContext()
     {
-        IGeneratorContext outer = new StubGeneratorContext();
-        IGeneratorContext inner = new StubGeneratorContext();
+        IGenerationContext outer = new StubGenerationContext();
+        IGenerationContext inner = new StubGenerationContext();
 
         using IDisposable outerScope = PartialConstructorContext.Use(outer);
         IDisposable innerScope = PartialConstructorContext.Use(inner);
@@ -80,7 +80,7 @@ public class PartialConstructorContextTests
             }
         });
 
-        IGeneratorContext ctx = new StubGeneratorContext();
+        IGenerationContext ctx = new StubGenerationContext();
         using IDisposable scope = PartialConstructorContext.Use(ctx);
 
         bool threwOutsideScope = await taskStartedBeforeScope;
@@ -93,18 +93,18 @@ public class PartialConstructorContextTests
         // With AsyncLocal, child tasks inherit the parent's value. A Task.Run
         // launched *inside* the scope should therefore see the same context.
         // This test distinguishes AsyncLocal from [ThreadStatic] behaviour.
-        IGeneratorContext ctx = new StubGeneratorContext();
+        IGenerationContext ctx = new StubGenerationContext();
 
         using IDisposable scope = PartialConstructorContext.Use(ctx);
 
-        IGeneratorContext contextSeenInsideTask = await Task.Run(() =>
+        IGenerationContext contextSeenInsideTask = await Task.Run(() =>
             // Capture inside the task — no static capture so lambda is not static.
             PartialConstructorContext.Current);
 
         Assert.Equal(ctx, contextSeenInsideTask);
     }
 
-    private sealed class StubGeneratorContext : IGeneratorContext
+    private sealed class StubGenerationContext : IGenerationContext
     {
         public T Generate<T>(Strategy<T> strategy) => throw new NotSupportedException();
         public void Assume(bool condition) { }

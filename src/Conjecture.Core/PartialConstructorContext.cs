@@ -3,28 +3,28 @@
 
 namespace Conjecture.Core;
 
-/// <summary>Ambient context that flows an <see cref="IGeneratorContext"/> to partial constructors via <see cref="AsyncLocal{T}"/>.</summary>
+/// <summary>Ambient context that flows an <see cref="IGenerationContext"/> to partial constructors via <see cref="AsyncLocal{T}"/>.</summary>
 public static class PartialConstructorContext
 {
-    private static readonly AsyncLocal<IGeneratorContext?> Current_ = new();
+    private static readonly AsyncLocal<IGenerationContext?> Current_ = new();
 
-    /// <summary>Gets the ambient <see cref="IGeneratorContext"/> for the current async context.</summary>
+    /// <summary>Gets the ambient <see cref="IGenerationContext"/> for the current async context.</summary>
     /// <exception cref="InvalidOperationException">Thrown when no scope is active.</exception>
-    public static IGeneratorContext Current =>
+    public static IGenerationContext Current =>
         Current_.Value
             ?? throw new InvalidOperationException(
-                "No IGeneratorContext is active. Partial constructors may only be called inside a Conjecture test.");
+                "No IGenerationContext is active. Partial constructors may only be called inside a Conjecture test.");
 
     /// <summary>Sets <paramref name="ctx"/> as the ambient context for the duration of the returned scope.</summary>
-    public static IDisposable Use(IGeneratorContext ctx)
+    public static IDisposable Use(IGenerationContext ctx)
     {
         ArgumentNullException.ThrowIfNull(ctx);
-        IGeneratorContext? previous = Current_.Value;
+        IGenerationContext? previous = Current_.Value;
         Current_.Value = ctx;
         return new Scope(previous);
     }
 
-    private sealed class Scope(IGeneratorContext? previous) : IDisposable
+    private sealed class Scope(IGenerationContext? previous) : IDisposable
     {
         public void Dispose()
         {
