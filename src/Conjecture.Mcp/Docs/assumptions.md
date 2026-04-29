@@ -18,7 +18,7 @@ public void Division_IsExact(int numerator, int denominator)
 
 `Assume.That` throws `UnsatisfiedAssumptionException` internally — the test framework catches it and counts the example as filtered (not failed).
 
-## `IGeneratorContext.Assume(bool)` (inside `Generate.Compose`)
+## `IGenerationContext.Assume(bool)` (inside `Generate.Compose`)
 
 Same semantics, but available inside an imperative strategy:
 

@@ -120,7 +120,7 @@ public static class DateTimeOffsetExtensions
         }
     }
 
-    private static TimeZoneInfo PickZoneWithRules(IGeneratorContext ctx)
+    private static TimeZoneInfo PickZoneWithRules(IGenerationContext ctx)
     {
         if (ZonesWithDst.Count == 0)
         {

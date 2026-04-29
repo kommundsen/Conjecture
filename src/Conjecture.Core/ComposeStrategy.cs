@@ -8,7 +8,7 @@ using Conjecture.Core.Internal;
 
 namespace Conjecture.Core;
 
-internal sealed class GeneratorContext(ConjectureData data) : IGeneratorContext
+internal sealed class GenerationContext(ConjectureData data) : IGenerationContext
 {
     public T Generate<T>(Strategy<T> strategy) => strategy.Generate(data);
 
@@ -25,7 +25,7 @@ internal sealed class GeneratorContext(ConjectureData data) : IGeneratorContext
         data.RecordObservation(label, observation);
 }
 
-internal sealed class ComposeStrategy<T>(Func<IGeneratorContext, T> factory) : Strategy<T>
+internal sealed class ComposeStrategy<T>(Func<IGenerationContext, T> factory) : Strategy<T>
 {
     private const int MaxAttempts = 200;
 
@@ -33,7 +33,7 @@ internal sealed class ComposeStrategy<T>(Func<IGeneratorContext, T> factory) : S
     {
         for (var i = 0; i < MaxAttempts; i++)
         {
-            try { return factory(new GeneratorContext(data)); }
+            try { return factory(new GenerationContext(data)); }
             catch (UnsatisfiedAssumptionException) { }
         }
         data.MarkInvalid();

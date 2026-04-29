@@ -47,12 +47,12 @@ internal static class RegexNodeGenerator
     }
 
     internal static void GenerateNode(
-        IGeneratorContext ctx,
+        IGenerationContext ctx,
         RegexNode node,
         StringBuilder sb,
         Dictionary<int, string> captures,
         Dictionary<string, string> namedCaptures,
-        Func<IGeneratorContext, Quantifier, int> selectCount)
+        Func<IGenerationContext, Quantifier, int> selectCount)
     {
         switch (node)
         {
@@ -144,7 +144,7 @@ internal static class RegexNodeGenerator
         }
     }
 
-    internal static void GenerateUnicodeCategory(IGeneratorContext ctx, UnicodeCategory uc, StringBuilder sb)
+    internal static void GenerateUnicodeCategory(IGenerationContext ctx, UnicodeCategory uc, StringBuilder sb)
     {
         if (!CandidateCache.TryGetValue((uc.Category, uc.Negated), out char[]? candidates) || candidates.Length == 0)
         {

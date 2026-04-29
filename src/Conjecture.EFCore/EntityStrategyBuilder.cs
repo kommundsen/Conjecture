@@ -67,7 +67,7 @@ public sealed class EntityStrategyBuilder
     }
 
     private void PopulateEntity(
-        IGeneratorContext ctx,
+        IGenerationContext ctx,
         object entity,
         IEntityType entityType,
         int currentDepth,
@@ -88,7 +88,7 @@ public sealed class EntityStrategyBuilder
     }
 
     private void PopulateNavigation(
-        IGeneratorContext ctx,
+        IGenerationContext ctx,
         object entity,
         INavigation nav,
         int currentDepth,
@@ -169,7 +169,7 @@ public sealed class EntityStrategyBuilder
     }
 
     private object? BuildEntityInstance(
-        IGeneratorContext ctx,
+        IGenerationContext ctx,
         IEntityType entityType,
         int currentDepth,
         HashSet<IEntityType> visitedPath)
