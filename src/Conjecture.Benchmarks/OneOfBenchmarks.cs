@@ -7,17 +7,17 @@ using Conjecture.Core;
 
 namespace Conjecture.Benchmarks;
 
-/// <summary>Compares params-array vs params-span call sites for Generate.OneOf.</summary>
+/// <summary>Compares params-array vs params-span call sites for Strategy.OneOf.</summary>
 [MemoryDiagnoser]
 [SimpleJob]
 public class OneOfBenchmarks
 {
-    private static readonly Strategy<int> S1 = Generate.Just(1);
-    private static readonly Strategy<int> S2 = Generate.Just(2);
-    private static readonly Strategy<int> S3 = Generate.Just(3);
-    private static readonly Strategy<int> S4 = Generate.Just(4);
-    private static readonly Strategy<int> S5 = Generate.Just(5);
-    private static readonly Strategy<int> S6 = Generate.Just(6);
+    private static readonly Strategy<int> S1 = Strategy.Just(1);
+    private static readonly Strategy<int> S2 = Strategy.Just(2);
+    private static readonly Strategy<int> S3 = Strategy.Just(3);
+    private static readonly Strategy<int> S4 = Strategy.Just(4);
+    private static readonly Strategy<int> S5 = Strategy.Just(5);
+    private static readonly Strategy<int> S6 = Strategy.Just(6);
     private static readonly Strategy<int>[] ArrayOf3 = [S1, S2, S3];
     private static readonly Strategy<int>[] ArrayOf6 = [S1, S2, S3, S4, S5, S6];
 
@@ -29,9 +29,9 @@ public class OneOfBenchmarks
     {
         return ArgCount switch
         {
-            2 => Generate.OneOf(ArrayOf3[..2]),
-            3 => Generate.OneOf(ArrayOf3),
-            _ => Generate.OneOf(ArrayOf6),
+            2 => Strategy.OneOf(ArrayOf3[..2]),
+            3 => Strategy.OneOf(ArrayOf3),
+            _ => Strategy.OneOf(ArrayOf6),
         };
     }
 
@@ -40,9 +40,9 @@ public class OneOfBenchmarks
     {
         return ArgCount switch
         {
-            2 => Generate.OneOf(S1, S2),
-            3 => Generate.OneOf(S1, S2, S3),
-            _ => Generate.OneOf(S1, S2, S3, S4, S5, S6),
+            2 => Strategy.OneOf(S1, S2),
+            3 => Strategy.OneOf(S1, S2, S3),
+            _ => Strategy.OneOf(S1, S2, S3, S4, S5, S6),
         };
     }
 }

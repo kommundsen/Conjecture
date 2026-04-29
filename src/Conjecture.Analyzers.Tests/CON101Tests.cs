@@ -16,7 +16,7 @@ public sealed class CON101Tests
     {
         await VerifyAsync("""
             using Conjecture.Core;
-            class Test { void M() { var s = {|CON101:Generate.Integers<int>().Where(x => x == 42)|}; } }
+            class Test { void M() { var s = {|CON101:Strategy.Integers<int>().Where(x => x == 42)|}; } }
             """);
     }
 
@@ -26,7 +26,7 @@ public sealed class CON101Tests
         await VerifyAsync(
             """
             using Conjecture.Core;
-            class Test { void M() { var s = {|#0:Generate.Integers<int>().Where(x => x == 42)|}; } }
+            class Test { void M() { var s = {|#0:Strategy.Integers<int>().Where(x => x == 42)|}; } }
             """,
             new DiagnosticResult("CON101", DiagnosticSeverity.Warning).WithLocation(0));
     }
@@ -38,7 +38,7 @@ public sealed class CON101Tests
     {
         await VerifyAsync("""
             using Conjecture.Core;
-            class Test { void M() { var s = {|CON101:Generate.Booleans().Where(b => b == true)|}; } }
+            class Test { void M() { var s = {|CON101:Strategy.Booleans().Where(b => b == true)|}; } }
             """);
     }
 
@@ -49,7 +49,7 @@ public sealed class CON101Tests
     {
         await VerifyAsync("""
             using Conjecture.Core;
-            class Test { void M() { var s = {|CON101:Generate.Integers<int>().Where(x => false)|}; } }
+            class Test { void M() { var s = {|CON101:Strategy.Integers<int>().Where(x => false)|}; } }
             """);
     }
 
@@ -60,7 +60,7 @@ public sealed class CON101Tests
     {
         await VerifyAsync("""
             using Conjecture.Core;
-            class Test { void M() { var s = Generate.Integers<int>().Where(x => x > 0 && x < 100); } }
+            class Test { void M() { var s = Strategy.Integers<int>().Where(x => x > 0 && x < 100); } }
             """);
     }
 

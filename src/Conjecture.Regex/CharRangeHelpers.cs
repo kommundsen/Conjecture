@@ -86,7 +86,7 @@ internal static class CharRangeHelpers
             return '\0';
         }
 
-        int pick = ctx.Generate(Conjecture.Core.Generate.Integers<int>(0, total - 1));
+        int pick = ctx.Generate(Conjecture.Core.Strategy.Integers<int>(0, total - 1));
         foreach (CharRange r in ranges)
         {
             int size = r.High - r.Low + 1;

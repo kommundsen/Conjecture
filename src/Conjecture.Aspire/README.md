@@ -34,7 +34,7 @@ public sealed class CartMachine : AspireStateMachine<CartState>
 
     public override IEnumerable<Strategy<Interaction>> Commands(CartState state)
     {
-        yield return Generate.Just(new Interaction("api", "POST", "/cart/items", new { sku = "A" }));
+        yield return Strategy.Just(new Interaction("api", "POST", "/cart/items", new { sku = "A" }));
     }
 
     public override CartState RunCommand(CartState state, Interaction cmd) =>

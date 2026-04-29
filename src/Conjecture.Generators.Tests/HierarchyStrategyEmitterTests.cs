@@ -52,7 +52,7 @@ public sealed class HierarchyStrategyEmitterTests
         Assert.Contains("global::Conjecture.Core.Strategy<global::Animal> Create()", emitted);
     }
 
-    // --- uses Generate.OneOf with .Select() projection, not array initialization ---
+    // --- uses Strategy.OneOf with .Select() projection, not array initialization ---
 
     [Fact]
     public void TwoCaseHierarchy_UsesGenerateOneOf()
@@ -60,7 +60,7 @@ public sealed class HierarchyStrategyEmitterTests
         HierarchyTypeModel model = BuildTwoCaseHierarchyModel();
         string emitted = HierarchyStrategyEmitter.Emit(model);
 
-        Assert.Contains("global::Conjecture.Core.Generate.OneOf(", emitted);
+        Assert.Contains("global::Conjecture.Core.Strategy.OneOf(", emitted);
     }
 
     [Fact]
@@ -368,7 +368,7 @@ public sealed class HierarchyStrategyEmitterTests
             [
                 MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
                 MetadataReference.CreateFromFile(Path.Combine(runtimeDir, "System.Runtime.dll")),
-                MetadataReference.CreateFromFile(typeof(Conjecture.Core.Generate).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(Conjecture.Core.Strategy).Assembly.Location),
             ],
             options: new CSharpCompilationOptions(
                 OutputKind.DynamicallyLinkedLibrary,

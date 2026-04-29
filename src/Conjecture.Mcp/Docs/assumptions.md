@@ -18,14 +18,14 @@ public void Division_IsExact(int numerator, int denominator)
 
 `Assume.That` throws `UnsatisfiedAssumptionException` internally — the test framework catches it and counts the example as filtered (not failed).
 
-## `IGenerationContext.Assume(bool)` (inside `Generate.Compose`)
+## `IGenerationContext.Assume(bool)` (inside `Strategy.Compose`)
 
 Same semantics, but available inside an imperative strategy:
 
 ```csharp
-Generate.Compose(ctx =>
+Strategy.Compose(ctx =>
 {
-    var n = ctx.Generate(Generate.Integers<int>());
+    var n = ctx.Generate(Strategy.Integers<int>());
     ctx.Assume(n > 0);   // discard non-positive draws
     return new PositiveWrapper(n);
 });
@@ -56,7 +56,7 @@ public void Test([From<BoundedStrategy>] int x)
 }
 
 // Or inline with Compose:
-// Generate.Integers<int>(1, 4)
+// Strategy.Integers<int>(1, 4)
 ```
 
 ## `UnsatisfiedAssumptionException`

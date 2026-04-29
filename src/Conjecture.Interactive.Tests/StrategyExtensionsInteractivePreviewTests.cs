@@ -12,7 +12,7 @@ public class StrategyExtensionsInteractivePreviewTests
     [Fact]
     public void Preview_DefaultCount_Returns20Values()
     {
-        Strategy<int> strategy = Generate.Integers<int>(1, 1000);
+        Strategy<int> strategy = Strategy.Integers<int>(1, 1000);
 
         string text = strategy.Preview();
 
@@ -24,7 +24,7 @@ public class StrategyExtensionsInteractivePreviewTests
     [Fact]
     public void Preview_CountAbove100_IsCappedAt100()
     {
-        Strategy<int> strategy = Generate.Integers<int>(1, 1000);
+        Strategy<int> strategy = Strategy.Integers<int>(1, 1000);
 
         string text = strategy.Preview(150);
 
@@ -37,7 +37,7 @@ public class StrategyExtensionsInteractivePreviewTests
     [Fact]
     public void Preview_CountAbove100_IncludesTruncationNotice()
     {
-        Strategy<int> strategy = Generate.Integers<int>(1, 1000);
+        Strategy<int> strategy = Strategy.Integers<int>(1, 1000);
 
         string text = strategy.Preview(150);
 
@@ -48,7 +48,7 @@ public class StrategyExtensionsInteractivePreviewTests
     [Fact]
     public void Preview_SameSeedTwice_ProducesIdenticalOutput()
     {
-        Strategy<int> strategy = Generate.Integers<int>(1, 1000);
+        Strategy<int> strategy = Strategy.Integers<int>(1, 1000);
 
         string first = strategy.Preview(seed: 42UL);
         string second = strategy.Preview(seed: 42UL);
@@ -59,7 +59,7 @@ public class StrategyExtensionsInteractivePreviewTests
     [Fact]
     public void Preview_ReturnsCommaSeparatedValues()
     {
-        Strategy<int> strategy = Generate.Just(7);
+        Strategy<int> strategy = Strategy.Just(7);
 
         string text = strategy.Preview();
 
@@ -72,7 +72,7 @@ public class StrategyExtensionsInteractivePreviewTests
     [Fact]
     public void SampleTable_DefaultCount_Returns10Values()
     {
-        Strategy<int> strategy = Generate.Integers<int>(1, 1000);
+        Strategy<int> strategy = Strategy.Integers<int>(1, 1000);
 
         string text = strategy.SampleTable();
 
@@ -84,7 +84,7 @@ public class StrategyExtensionsInteractivePreviewTests
     [Fact]
     public void SampleTable_CountAbove50_IsCappedAt50()
     {
-        Strategy<int> strategy = Generate.Integers<int>(1, 1000);
+        Strategy<int> strategy = Strategy.Integers<int>(1, 1000);
 
         string text = strategy.SampleTable(60);
 
@@ -96,7 +96,7 @@ public class StrategyExtensionsInteractivePreviewTests
     [Fact]
     public void SampleTable_ContainsTableHeaderAndSeparator()
     {
-        Strategy<int> strategy = Generate.Just(99);
+        Strategy<int> strategy = Strategy.Just(99);
 
         string text = strategy.SampleTable();
 

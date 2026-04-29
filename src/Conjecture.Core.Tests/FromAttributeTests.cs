@@ -11,7 +11,7 @@ public class FromAttributeTests
 {
     private sealed class PositiveIntsProvider : IStrategyProvider<int>
     {
-        public Strategy<int> Create() => Generate.Integers<int>(1, int.MaxValue);
+        public Strategy<int> Create() => Strategy.Integers<int>(1, int.MaxValue);
     }
 
     [Fact]

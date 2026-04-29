@@ -16,7 +16,7 @@ using System.Text.Json;
 using Conjecture.Core;
 using Conjecture.OpenApi;
 
-OpenApiDocument doc = await Generate.FromOpenApi("openapi.json");
+OpenApiDocument doc = await Strategy.FromOpenApi("openapi.json");
 
 Strategy<JsonElement> idParam = doc.PathParameter("get", "/orders/{id}", "id");
 Strategy<JsonElement> orderBody = doc.RequestBody("post", "/orders");
@@ -36,7 +36,7 @@ Pair with [`Conjecture.AspNetCore`](https://www.nuget.org/packages/Conjecture.As
 | `OpenApiDocument.QueryParameter(method, path, name)` | Strategy for a query parameter. |
 | `OpenApiDocument.RequestBody(method, path)` | Strategy for the request body. |
 | `OpenApiDocument.ResponseBody(method, path, statusCode)` | Strategy for the response body of a status code. |
-| `Generate.FromOpenApi(string \| FileInfo \| Uri)` | Loads the spec and returns an `OpenApiDocument`. |
+| `Strategy.FromOpenApi(string \| FileInfo \| Uri)` | Loads the spec and returns an `OpenApiDocument`. |
 
 ## Links
 

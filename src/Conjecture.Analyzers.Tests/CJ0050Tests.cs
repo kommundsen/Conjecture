@@ -18,7 +18,7 @@ public sealed class CJ0050Tests
             public Strategy<T> Where(Func<T, bool> predicate) => this;
             public Strategy<T> Positive => this;
         }
-        public static class Generate {
+        public static class StrategyFactory {
             public static Strategy<int> Integers() => new();
             public static Strategy<string> Strings() => new();
             public static Strategy<List<T>> Lists<T>() => new();
@@ -32,7 +32,7 @@ public sealed class CJ0050Tests
     {
         await VerifyAnalyzerAsync(Preamble + """
             class Tests {
-                void Foo() { Strategy<int> s = {|CJ0050:Generate.Integers().Where(x => x > 0)|}; }
+                void Foo() { Strategy<int> s = {|CJ0050:StrategyFactory.Integers().Where(x => x > 0)|}; }
             }
             """);
     }
@@ -44,7 +44,7 @@ public sealed class CJ0050Tests
     {
         await VerifyAnalyzerAsync(Preamble + """
             class Tests {
-                void Foo() { Strategy<int> s = {|CJ0050:Generate.Integers().Where(x => x < 0)|}; }
+                void Foo() { Strategy<int> s = {|CJ0050:StrategyFactory.Integers().Where(x => x < 0)|}; }
             }
             """);
     }
@@ -56,7 +56,7 @@ public sealed class CJ0050Tests
     {
         await VerifyAnalyzerAsync(Preamble + """
             class Tests {
-                void Foo() { Strategy<int> s = {|CJ0050:Generate.Integers().Where(x => x != 0)|}; }
+                void Foo() { Strategy<int> s = {|CJ0050:StrategyFactory.Integers().Where(x => x != 0)|}; }
             }
             """);
     }
@@ -68,7 +68,7 @@ public sealed class CJ0050Tests
     {
         await VerifyAnalyzerAsync(Preamble + """
             class Tests {
-                void Foo() { Strategy<string> s = {|CJ0050:Generate.Strings().Where(x => x.Length > 0)|}; }
+                void Foo() { Strategy<string> s = {|CJ0050:StrategyFactory.Strings().Where(x => x.Length > 0)|}; }
             }
             """);
     }
@@ -80,7 +80,7 @@ public sealed class CJ0050Tests
     {
         await VerifyAnalyzerAsync(Preamble + """
             class Tests {
-                void Foo() { Strategy<List<int>> s = {|CJ0050:Generate.Lists<int>().Where(x => x.Count > 0)|}; }
+                void Foo() { Strategy<List<int>> s = {|CJ0050:StrategyFactory.Lists<int>().Where(x => x.Count > 0)|}; }
             }
             """);
     }
@@ -92,7 +92,7 @@ public sealed class CJ0050Tests
     {
         await VerifyAnalyzerAsync(Preamble + """
             class Tests {
-                void Foo() { Strategy<int> s = Generate.Integers().Where(x => x > 1); }
+                void Foo() { Strategy<int> s = StrategyFactory.Integers().Where(x => x > 1); }
             }
             """);
     }
@@ -124,7 +124,7 @@ public sealed class CJ0050Tests
         await VerifyAnalyzerAsync(
             Preamble + """
             class Tests {
-                void Foo() { Strategy<int> s = {|#0:Generate.Integers().Where(x => x > 0)|}; }
+                void Foo() { Strategy<int> s = {|#0:StrategyFactory.Integers().Where(x => x > 0)|}; }
             }
             """,
             new DiagnosticResult("CJ0050", DiagnosticSeverity.Info).WithLocation(0));
@@ -138,12 +138,12 @@ public sealed class CJ0050Tests
         await VerifyCodeFixAsync(
             Preamble + """
             class Tests {
-                void Foo() { Strategy<int> s = {|CJ0050:Generate.Integers().Where(x => x > 0)|}; }
+                void Foo() { Strategy<int> s = {|CJ0050:StrategyFactory.Integers().Where(x => x > 0)|}; }
             }
             """,
             Preamble + """
             class Tests {
-                void Foo() { Strategy<int> s = Generate.Integers().Positive; }
+                void Foo() { Strategy<int> s = StrategyFactory.Integers().Positive; }
             }
             """);
     }

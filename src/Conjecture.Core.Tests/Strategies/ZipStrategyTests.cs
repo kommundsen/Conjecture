@@ -14,7 +14,7 @@ public class ZipStrategyTests
     [Fact]
     public void Zip_ProducesTuple()
     {
-        var strategy = Generate.Integers<int>(1, 5).Zip(Generate.Booleans());
+        var strategy = Strategy.Integers<int>(1, 5).Zip(Strategy.Booleans());
         var data = MakeData();
         for (var i = 0; i < 50; i++)
         {
@@ -27,7 +27,7 @@ public class ZipStrategyTests
     [Fact]
     public void Zip_WithResultSelector()
     {
-        var strategy = Generate.Integers<int>(1, 10).Zip(Generate.Integers<int>(1, 10), (a, b) => a + b);
+        var strategy = Strategy.Integers<int>(1, 10).Zip(Strategy.Integers<int>(1, 10), (a, b) => a + b);
         var data = MakeData();
         for (var i = 0; i < 100; i++)
         {
@@ -39,14 +39,14 @@ public class ZipStrategyTests
     public void Zip_DrawsBothStrategies()
     {
         var data = MakeData();
-        Generate.Integers<int>(1, 5).Zip(Generate.Booleans()).Generate(data);
+        Strategy.Integers<int>(1, 5).Zip(Strategy.Booleans()).Generate(data);
         Assert.Equal(2, data.IRNodes.Count);
     }
 
     [Fact]
     public void Zip_IndependentStrategies()
     {
-        var strategy = Generate.Integers<int>(0, 99).Zip(Generate.Integers<int>(0, 99));
+        var strategy = Strategy.Integers<int>(0, 99).Zip(Strategy.Integers<int>(0, 99));
         var data = MakeData();
         var (a, b) = strategy.Generate(data);
         // Both sides are drawn independently so they can differ

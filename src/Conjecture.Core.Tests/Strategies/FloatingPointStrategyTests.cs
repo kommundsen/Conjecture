@@ -14,7 +14,7 @@ public class FloatingPointStrategyTests
     [Fact]
     public void Doubles_GeneratesFiniteAndNonFiniteValues_WithinDoubleRange()
     {
-        var strategy = Generate.Doubles();
+        var strategy = Strategy.Doubles();
         var data = MakeData();
 
         for (var i = 0; i < 100; i++)
@@ -28,7 +28,7 @@ public class FloatingPointStrategyTests
     [Fact]
     public void Doubles_IncludesPositiveAndNegativeValues()
     {
-        var strategy = Generate.Doubles();
+        var strategy = Strategy.Doubles();
         var data = MakeData();
         var hasPositive = false;
         var hasNegative = false;
@@ -48,7 +48,7 @@ public class FloatingPointStrategyTests
     [Fact]
     public void Doubles_DeterministicWithSeed()
     {
-        var strategy = Generate.Doubles();
+        var strategy = Strategy.Doubles();
 
         var results1 = Enumerable.Range(0, 20)
             .Select(_ => strategy.Generate(MakeData(77UL)))
@@ -63,7 +63,7 @@ public class FloatingPointStrategyTests
     [Fact]
     public void Floats_GeneratesFloatValues()
     {
-        var strategy = Generate.Floats();
+        var strategy = Strategy.Floats();
         var data = MakeData();
 
         for (var i = 0; i < 100; i++)
@@ -76,7 +76,7 @@ public class FloatingPointStrategyTests
     [Fact]
     public void Floats_IncludesPositiveAndNegativeValues()
     {
-        var strategy = Generate.Floats();
+        var strategy = Strategy.Floats();
         var data = MakeData();
         var hasPositive = false;
         var hasNegative = false;
@@ -96,7 +96,7 @@ public class FloatingPointStrategyTests
     [Fact]
     public void Floats_DeterministicWithSeed()
     {
-        var strategy = Generate.Floats();
+        var strategy = Strategy.Floats();
 
         var results1 = Enumerable.Range(0, 20)
             .Select(_ => strategy.Generate(MakeData(77UL)))
@@ -111,7 +111,7 @@ public class FloatingPointStrategyTests
     [Fact]
     public void Doubles_ProducesDistinctValues()
     {
-        var strategy = Generate.Doubles();
+        var strategy = Strategy.Doubles();
         var data = MakeData();
         var values = Enumerable.Range(0, 50).Select(_ => strategy.Generate(data)).ToList();
         Assert.True(values.Distinct().Count() > 1, "Expected multiple distinct doubles");
@@ -120,7 +120,7 @@ public class FloatingPointStrategyTests
     [Fact]
     public void Floats_ProducesDistinctValues()
     {
-        var strategy = Generate.Floats();
+        var strategy = Strategy.Floats();
         var data = MakeData();
         var values = Enumerable.Range(0, 50).Select(_ => strategy.Generate(data)).ToList();
         Assert.True(values.Distinct().Count() > 1, "Expected multiple distinct floats");

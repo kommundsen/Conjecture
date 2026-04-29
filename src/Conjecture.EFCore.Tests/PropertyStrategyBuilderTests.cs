@@ -4,8 +4,10 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+
 using Conjecture.Core;
 using Conjecture.EFCore;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -34,10 +36,8 @@ public class PropertyStrategyBuilderTests
         public int Id { get; set; }
     }
 
-    private sealed class AllTypesContext : DbContext
+    private sealed class AllTypesContext(DbContextOptions<PropertyStrategyBuilderTests.AllTypesContext> options) : DbContext(options)
     {
-        public AllTypesContext(DbContextOptions<AllTypesContext> options) : base(options) { }
-
         public DbSet<AllTypesEntity> AllTypes { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -51,10 +51,8 @@ public class PropertyStrategyBuilderTests
         }
     }
 
-    private sealed class ValueGeneratedContext : DbContext
+    private sealed class ValueGeneratedContext(DbContextOptions<PropertyStrategyBuilderTests.ValueGeneratedContext> options) : DbContext(options)
     {
-        public ValueGeneratedContext(DbContextOptions<ValueGeneratedContext> options) : base(options) { }
-
         public DbSet<ValueGeneratedEntity> Entities { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

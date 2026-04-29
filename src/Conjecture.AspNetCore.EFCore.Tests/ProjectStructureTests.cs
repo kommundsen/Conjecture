@@ -4,6 +4,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
+
 using Conjecture.AspNetCore.EFCore;
 
 namespace Conjecture.AspNetCore.EFCore.Tests;

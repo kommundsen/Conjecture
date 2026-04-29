@@ -39,7 +39,7 @@ public class NumericAwareShrinkPassBenchmarks
     {
         await TestRunner.Run(settings, data =>
         {
-            string s = Generate.Strings(minLength: 10, maxLength: 10).Generate(data);
+            string s = Strategy.Strings(minLength: 10, maxLength: 10).Generate(data);
             if (s.Contains('z')) { throw new Exception("fail"); }
         });
     }
@@ -54,7 +54,7 @@ public class NumericAwareShrinkPassBenchmarks
     [Benchmark]
     public async Task ShrinkNumericString()
     {
-        Strategy<string> strategy = Generate.NumericStrings(minDigits: 1, maxDigits: 4);
+        Strategy<string> strategy = Strategy.NumericStrings(minDigits: 1, maxDigits: 4);
         await TestRunner.Run(settings, data =>
         {
             string s = strategy.Generate(data);

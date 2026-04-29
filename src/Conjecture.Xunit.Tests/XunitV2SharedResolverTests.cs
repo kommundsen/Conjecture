@@ -22,8 +22,8 @@ public class XunitV2SharedResolverTests
     {
         public Strategy<Point> Create()
         {
-            return Generate.Integers<int>(-100, 100).SelectMany(
-                x => Generate.Integers<int>(-100, 100).Select(y => new Point(x, y)));
+            return Strategy.Integers<int>(-100, 100).SelectMany(
+                x => Strategy.Integers<int>(-100, 100).Select(y => new Point(x, y)));
         }
     }
 #pragma warning restore CON201
@@ -34,7 +34,7 @@ public class XunitV2SharedResolverTests
     {
         public Strategy<int> Create()
         {
-            return Generate.Integers<int>(0, 50).Select(n => n * 2);
+            return Strategy.Integers<int>(0, 50).Select(n => n * 2);
         }
     }
 
@@ -67,7 +67,7 @@ public class XunitV2SharedResolverTests
 
     public static Strategy<int> DoubleFactory()
     {
-        return Generate.Integers<int>(0, 10).Select(n => n * 2);
+        return Strategy.Integers<int>(0, 10).Select(n => n * 2);
     }
 
     // ── Type inference ────────────────────────────────────────────────────────

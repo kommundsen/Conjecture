@@ -18,7 +18,7 @@ public class FormatterE2ETests
     [Fact]
     public async Task FailingProperty_ExampleCount_AppearsInFailureMessage()
     {
-        Strategy<int> strategy = Generate.Integers<int>(0, 100);
+        Strategy<int> strategy = Strategy.Integers<int>(0, 100);
         ConjectureSettings settings = new() { MaxExamples = 50, Seed = 1UL };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
@@ -42,7 +42,7 @@ public class FormatterE2ETests
     [Fact]
     public async Task FailingProperty_ShrinkCount_AppearsInFailureMessage()
     {
-        Strategy<int> strategy = Generate.Integers<int>(0, 100);
+        Strategy<int> strategy = Strategy.Integers<int>(0, 100);
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 2UL };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
@@ -65,7 +65,7 @@ public class FormatterE2ETests
     public async Task FailingProperty_WithLargeInitialValue_ShrinkCountIsPositive()
     {
         // min=50 forces values far above threshold; shrinker must make several passes to reach 50
-        Strategy<int> strategy = Generate.Integers<int>(50, 100);
+        Strategy<int> strategy = Strategy.Integers<int>(50, 100);
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 3UL };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
@@ -95,7 +95,7 @@ public class FormatterE2ETests
     [Fact]
     public async Task FailureMessage_WithRunnerResult_IntValuesUseBuiltInFormatter()
     {
-        Strategy<int> strategy = Generate.Integers<int>(0, 100);
+        Strategy<int> strategy = Strategy.Integers<int>(0, 100);
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 4UL };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
@@ -126,7 +126,7 @@ public class FormatterE2ETests
         FormatterRegistry.Register<CustomPoint>(new CustomPointFormatter());
         try
         {
-            Strategy<CustomPoint> strategy = Generate.Just(new CustomPoint(3, 7));
+            Strategy<CustomPoint> strategy = Strategy.Just(new CustomPoint(3, 7));
             ConjectureSettings settings = new() { MaxExamples = 10, Seed = 5UL };
 
             TestRunResult result = await TestRunner.Run(settings, data =>

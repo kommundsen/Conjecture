@@ -108,7 +108,7 @@ public sealed class GenerateForGeneratorTests
             public sealed class OrderArbitrary : global::Conjecture.Core.IStrategyProvider<Order>
             {
                 public global::Conjecture.Core.Strategy<Order> Create() =>
-                    global::Conjecture.Core.Generate.Compose<Order>(ctx => new Order(0, ""));
+                    global::Conjecture.Core.Strategy.Compose<Order>(ctx => new Order(0, ""));
             }
             """;
         (_, Compilation output, _) = RunGenerator(source);

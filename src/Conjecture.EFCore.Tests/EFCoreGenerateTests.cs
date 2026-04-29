@@ -34,10 +34,8 @@ public class EFCoreGenerateTests
 
     // ---- test DbContext ------------------------------------------------
 
-    private sealed class ShopContext : DbContext
+    private sealed class ShopContext(DbContextOptions<EFCoreGenerateTests.ShopContext> options) : DbContext(options)
     {
-        public ShopContext(DbContextOptions<ShopContext> options) : base(options) { }
-
         public DbSet<Customer> Customers { get; set; } = null!;
         public DbSet<Order> Orders { get; set; } = null!;
 
@@ -79,7 +77,7 @@ public class EFCoreGenerateTests
     {
         using ShopContext context = CreateShopContext();
 
-        Strategy<Customer> strategy = Generate.Entity<Customer>(context);
+        Strategy<Customer> strategy = Strategy.Entity<Customer>(context);
 
         Assert.NotNull(strategy);
     }
@@ -88,7 +86,7 @@ public class EFCoreGenerateTests
     public void Entity_FromDbContext_SampledInstance_IsNonNull()
     {
         using ShopContext context = CreateShopContext();
-        Strategy<Customer> strategy = Generate.Entity<Customer>(context);
+        Strategy<Customer> strategy = Strategy.Entity<Customer>(context);
 
         IReadOnlyList<Customer> samples = DataGen.Sample(strategy, count: 10, seed: 1UL);
 
@@ -99,7 +97,7 @@ public class EFCoreGenerateTests
     public void Entity_FromDbContext_RequiredStringProperty_IsNonNull()
     {
         using ShopContext context = CreateShopContext();
-        Strategy<Customer> strategy = Generate.Entity<Customer>(context);
+        Strategy<Customer> strategy = Strategy.Entity<Customer>(context);
 
         IReadOnlyList<Customer> samples = DataGen.Sample(strategy, count: 20, seed: 2UL);
 
@@ -113,7 +111,7 @@ public class EFCoreGenerateTests
             .UseInMemoryDatabase($"EFCoreGenerateTests_Factory_{Guid.NewGuid()}")
             .Options;
 
-        Strategy<Customer> strategy = Generate.Entity<Customer>(static () =>
+        Strategy<Customer> strategy = Strategy.Entity<Customer>(static () =>
             new ShopContext(
                 new DbContextOptionsBuilder<ShopContext>()
                     .UseInMemoryDatabase($"EFCoreGenerateTests_Factory_Inner_{Guid.NewGuid()}")
@@ -133,7 +131,7 @@ public class EFCoreGenerateTests
     public void Entity_MaxDepthZero_NavigationsAreEmpty()
     {
         using ShopContext context = CreateShopContext();
-        Strategy<Customer> strategy = Generate.Entity<Customer>(context, maxDepth: 0);
+        Strategy<Customer> strategy = Strategy.Entity<Customer>(context, maxDepth: 0);
 
         IReadOnlyList<Customer> samples = DataGen.Sample(strategy, count: 20, seed: 4UL);
 
@@ -145,6 +143,6 @@ public class EFCoreGenerateTests
     {
         using ShopContext context = CreateShopContext();
 
-        Assert.Throws<InvalidOperationException>(() => Generate.Entity<NotInModel>(context));
+        Assert.Throws<InvalidOperationException>(() => Strategy.Entity<NotInModel>(context));
     }
 }

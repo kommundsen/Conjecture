@@ -10,10 +10,10 @@ In LINQPad: <kbd>F4</kbd> → **Add NuGet…** → `Conjecture.LinqPad` (it tran
 
 ```csharp
 // Dump a few samples directly
-new StrategyCustomMemberProvider<int>(Generate.Integers<int>(0, 100)).Dump();
+new StrategyCustomMemberProvider<int>(Strategy.Integers<int>(0, 100)).Dump();
 
 // Visualise a shrink trace as an HTML table
-Generate.Integers<int>(0, 1_000_000)
+Strategy.Integers<int>(0, 1_000_000)
     .ShrinkTraceHtml(seed: 42, x => x < 1_000)
     .Dump("Shrink trace");
 ```

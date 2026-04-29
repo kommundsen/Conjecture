@@ -49,8 +49,8 @@ public class StackStateMachineTests
 
         public IEnumerable<Strategy<StackCommand>> Commands(StackState state)
         {
-            yield return Generate.Integers<int>(0, 9).Select(n => (StackCommand)new StackCommand.Push(n));
-            yield return Generate.Just((StackCommand)new StackCommand.Pop());
+            yield return Strategy.Integers<int>(0, 9).Select(n => (StackCommand)new StackCommand.Push(n));
+            yield return Strategy.Just((StackCommand)new StackCommand.Pop());
         }
 
         public StackState RunCommand(StackState state, StackCommand cmd)
@@ -87,8 +87,8 @@ public class StackStateMachineTests
 
         public IEnumerable<Strategy<StackCommand>> Commands(StackState state)
         {
-            yield return Generate.Integers<int>(0, 9).Select(n => (StackCommand)new StackCommand.Push(n));
-            yield return Generate.Just((StackCommand)new StackCommand.Pop());
+            yield return Strategy.Integers<int>(0, 9).Select(n => (StackCommand)new StackCommand.Push(n));
+            yield return Strategy.Just((StackCommand)new StackCommand.Pop());
         }
 
         public StackState RunCommand(StackState state, StackCommand cmd)
@@ -126,10 +126,10 @@ public class StackStateMachineTests
 
         public IEnumerable<Strategy<StackCommand>> Commands(StackState state)
         {
-            yield return Generate.Integers<int>(0, 9).Select(n => (StackCommand)new StackCommand.Push(n));
+            yield return Strategy.Integers<int>(0, 9).Select(n => (StackCommand)new StackCommand.Push(n));
             if (state.Stack.Count > 0)
             {
-                yield return Generate.Just((StackCommand)new StackCommand.Pop());
+                yield return Strategy.Just((StackCommand)new StackCommand.Pop());
             }
         }
 
@@ -164,7 +164,7 @@ public class StackStateMachineTests
     {
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 1UL, UseDatabase = false };
         TestRunResult result = await TestRunner.Run(settings,
-            data => _ = Generate.StateMachine<BuggyStackMachine, StackState, StackCommand>().Generate(data));
+            data => _ = Strategy.StateMachine<BuggyStackMachine, StackState, StackCommand>().Generate(data));
         Assert.False(result.Passed);
     }
 
@@ -173,7 +173,7 @@ public class StackStateMachineTests
     {
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 1UL, UseDatabase = false };
         TestRunResult result = await TestRunner.Run(settings,
-            data => _ = Generate.StateMachine<BuggyStackMachine, StackState, StackCommand>().Generate(data));
+            data => _ = Strategy.StateMachine<BuggyStackMachine, StackState, StackCommand>().Generate(data));
         Assert.False(result.Passed);
         Assert.NotNull(result.Counterexample);
         Assert.True(result.ShrinkCount > 0, $"Expected shrinks but got ShrinkCount={result.ShrinkCount}");
@@ -186,7 +186,7 @@ public class StackStateMachineTests
         // then the buggy Pop decrements ModelCount by 2, violating the invariant.
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 1UL, UseDatabase = false };
         TestRunResult result = await TestRunner.Run(settings,
-            data => _ = Generate.StateMachine<BuggyStackMachine, StackState, StackCommand>().Generate(data));
+            data => _ = Strategy.StateMachine<BuggyStackMachine, StackState, StackCommand>().Generate(data));
         Assert.False(result.Passed);
         Assert.NotNull(result.Counterexample);
         Assert.Equal(2, CountCommandStarts(result.Counterexample!));
@@ -197,7 +197,7 @@ public class StackStateMachineTests
     {
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 3UL, UseDatabase = false };
         TestRunResult result = await TestRunner.Run(settings,
-            data => _ = Generate.StateMachine<CorrectStackMachine, StackState, StackCommand>().Generate(data));
+            data => _ = Strategy.StateMachine<CorrectStackMachine, StackState, StackCommand>().Generate(data));
         Assert.True(result.Passed);
         Assert.Null(result.Counterexample);
     }
@@ -210,7 +210,7 @@ public class StackStateMachineTests
         // result confirms state-dependent command availability is respected.
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 2UL, UseDatabase = false };
         TestRunResult result = await TestRunner.Run(settings,
-            data => _ = Generate.StateMachine<StateAwareStackMachine, StackState, StackCommand>().Generate(data));
+            data => _ = Strategy.StateMachine<StateAwareStackMachine, StackState, StackCommand>().Generate(data));
         Assert.True(result.Passed);
     }
 }

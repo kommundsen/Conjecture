@@ -17,7 +17,7 @@ public class VersionStringStrategyTests
     [Fact]
     public void VersionStrings_MatchesDotSeparatedThreeComponentPattern()
     {
-        Strategy<string> strategy = Generate.VersionStrings();
+        Strategy<string> strategy = Strategy.VersionStrings();
         _ = MakeData();
 
         for (int i = 0; i < 50; i++)
@@ -32,7 +32,7 @@ public class VersionStringStrategyTests
     [Fact]
     public void VersionStrings_MajorComponentDoesNotExceedMaxMajor()
     {
-        Strategy<string> strategy = Generate.VersionStrings(maxMajor: 3);
+        Strategy<string> strategy = Strategy.VersionStrings(maxMajor: 3);
 
         for (int i = 0; i < 100; i++)
         {
@@ -45,7 +45,7 @@ public class VersionStringStrategyTests
     [Fact]
     public void VersionStrings_MinorComponentDoesNotExceedMaxMinor()
     {
-        Strategy<string> strategy = Generate.VersionStrings(maxMinor: 5);
+        Strategy<string> strategy = Strategy.VersionStrings(maxMinor: 5);
 
         for (int i = 0; i < 100; i++)
         {
@@ -58,7 +58,7 @@ public class VersionStringStrategyTests
     [Fact]
     public void VersionStrings_PatchComponentDoesNotExceedMaxPatch()
     {
-        Strategy<string> strategy = Generate.VersionStrings(maxPatch: 2);
+        Strategy<string> strategy = Strategy.VersionStrings(maxPatch: 2);
 
         for (int i = 0; i < 100; i++)
         {
@@ -87,7 +87,7 @@ public class VersionStringStrategyTests
             nodes.Add(IRNode.ForStringChar((ulong)'0', (ulong)'0', (ulong)'9'));
         }
 
-        Strategy<string> strategy = Generate.VersionStrings();
+        Strategy<string> strategy = Strategy.VersionStrings();
         ConjectureData data = ConjectureData.ForRecord(nodes);
         string result = strategy.Generate(data);
 

@@ -274,7 +274,7 @@ public sealed class RequestSynthesizerTests
 }
 
 // ---------------------------------------------------------------------------
-// Marker type: has no [Arbitrary] / Generate.For<T>() registration — used to test
+// Marker type: has no [Arbitrary] / Strategy.For<T>() registration — used to test
 // that unknown types throw at strategy-build time.
 // ---------------------------------------------------------------------------
 internal sealed record UnregisteredBodyType(string Value);

@@ -14,7 +14,7 @@ public class NullableStrategyTests
     [Fact]
     public void GenNullable_ProducesBothNullAndNonNull()
     {
-        var strategy = Generate.Nullable(Generate.Integers<int>());
+        var strategy = Strategy.Nullable(Strategy.Integers<int>());
         var data = MakeData();
         var seenNull = false;
         var seenNonNull = false;
@@ -34,7 +34,7 @@ public class NullableStrategyTests
     [Fact]
     public void OrNull_ProducesBothNullAndNonNull()
     {
-        var strategy = Generate.Integers<int>().OrNull();
+        var strategy = Strategy.Integers<int>().OrNull();
         var data = MakeData();
         var seenNull = false;
         var seenNonNull = false;
@@ -54,8 +54,8 @@ public class NullableStrategyTests
     [Fact]
     public void GenNullable_NonNullValuesComefromInnerStrategy()
     {
-        var inner = Generate.Integers<int>(min: 100, max: 100);
-        var strategy = Generate.Nullable(inner);
+        var inner = Strategy.Integers<int>(min: 100, max: 100);
+        var strategy = Strategy.Nullable(inner);
         var data = MakeData();
 
         for (var i = 0; i < 200; i++)
@@ -71,7 +71,7 @@ public class NullableStrategyTests
     [Fact]
     public void OrNull_NonNullValuesComefromInnerStrategy()
     {
-        var strategy = Generate.Integers<int>(min: 100, max: 100).OrNull();
+        var strategy = Strategy.Integers<int>(min: 100, max: 100).OrNull();
         var data = MakeData();
 
         for (var i = 0; i < 200; i++)
@@ -87,7 +87,7 @@ public class NullableStrategyTests
     [Fact]
     public void GenNullable_NullProbabilityIsApproximately10Percent()
     {
-        var strategy = Generate.Nullable(Generate.Integers<int>());
+        var strategy = Strategy.Nullable(Strategy.Integers<int>());
         var data = MakeData(seed: 12345UL);
         var nullCount = 0;
         const int trials = 1000;

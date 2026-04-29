@@ -13,12 +13,12 @@ public class FromAttributeResolverTests
 {
     private sealed class PositiveIntsProvider : IStrategyProvider<int>
     {
-        public Strategy<int> Create() => Generate.Integers<int>(1, int.MaxValue);
+        public Strategy<int> Create() => Strategy.Integers<int>(1, int.MaxValue);
     }
 
     private sealed class StringProvider : IStrategyProvider<string>
     {
-        public Strategy<string> Create() => Generate.Strings();
+        public Strategy<string> Create() => Strategy.Strings();
     }
 
     private static ConjectureData MakeData(ulong seed = 42UL) =>

@@ -28,7 +28,7 @@ await using AspireDbTarget<MyDbContext> orders = await AspireDbTarget<MyDbContex
 
 // Run an HTTP + DbSnapshot interleaved sequence
 Strategy<IReadOnlyList<IAddressedInteraction>> sequence = new AspireInteractionSequenceBuilder()
-    .Http("api", Generate.Http("api").Post("/orders", new { sku = "A" }).Build())
+    .Http("api", Strategy.Http("api").Post("/orders", new { sku = "A" }).Build())
     .DbSnapshot("orders-db", "after-post", async ctx => await ctx.Set<Order>().CountAsync())
     .Build(minSize: 1, maxSize: 5);
 ```

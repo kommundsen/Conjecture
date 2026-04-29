@@ -12,7 +12,7 @@ namespace Conjecture.Generators.Tests;
 
 public sealed class GenerateForDiagnosticTests
 {
-    // --- CON310: Generate.For<T>() where T is an interface ---
+    // --- CON310: Strategy.For<T>() where T is an interface ---
 
     [Fact]
     public void InterfaceTypeArgument_EmitsCon310()
@@ -23,7 +23,7 @@ public sealed class GenerateForDiagnosticTests
             public interface IShape { }
             public class Usage
             {
-                public void Run() { Generate.For<IShape>(); }
+                public void Run() { Strategy.For<IShape>(); }
             }
             """;
 
@@ -41,7 +41,7 @@ public sealed class GenerateForDiagnosticTests
             public interface IShape { }
             public class Usage
             {
-                public void Run() { Generate.For<IShape>(); }
+                public void Run() { Strategy.For<IShape>(); }
             }
             """;
 
@@ -61,7 +61,7 @@ public sealed class GenerateForDiagnosticTests
             public interface IShape { }
             public class Usage
             {
-                public void Run() { Generate.For<IShape>(); }
+                public void Run() { Strategy.For<IShape>(); }
             }
             """;
 
@@ -81,7 +81,7 @@ public sealed class GenerateForDiagnosticTests
             public interface IShape { }
             public class Usage
             {
-                public void Run() { Generate.For<IShape>(); }
+                public void Run() { Strategy.For<IShape>(); }
             }
             """;
 
@@ -92,7 +92,7 @@ public sealed class GenerateForDiagnosticTests
         Assert.NotEqual(Location.None, con310.Location);
     }
 
-    // --- CON311: Generate.For<T>() where T is abstract with no [Arbitrary] concrete subtypes ---
+    // --- CON311: Strategy.For<T>() where T is abstract with no [Arbitrary] concrete subtypes ---
 
     [Fact]
     public void AbstractTypeWithNoArbitrarySubtypes_EmitsCon311()
@@ -104,7 +104,7 @@ public sealed class GenerateForDiagnosticTests
             public class ConcreteChild : AbstractBase { }
             public class Usage
             {
-                public void Run() { Generate.For<AbstractBase>(); }
+                public void Run() { Strategy.For<AbstractBase>(); }
             }
             """;
 
@@ -123,7 +123,7 @@ public sealed class GenerateForDiagnosticTests
             public class ConcreteChild : AbstractBase { }
             public class Usage
             {
-                public void Run() { Generate.For<AbstractBase>(); }
+                public void Run() { Strategy.For<AbstractBase>(); }
             }
             """;
 
@@ -144,7 +144,7 @@ public sealed class GenerateForDiagnosticTests
             public class ConcreteChild : AbstractBase { }
             public class Usage
             {
-                public void Run() { Generate.For<AbstractBase>(); }
+                public void Run() { Strategy.For<AbstractBase>(); }
             }
             """;
 
@@ -155,7 +155,7 @@ public sealed class GenerateForDiagnosticTests
         Assert.NotEqual(Location.None, con311.Location);
     }
 
-    // --- CON312: Generate.For<T>() where T has no registered IStrategyProvider<T> ---
+    // --- CON312: Strategy.For<T>() where T has no registered IStrategyProvider<T> ---
 
     [Fact]
     public void ConcreteTypeWithNoArbitraryAndNoProvider_EmitsCon312()
@@ -166,7 +166,7 @@ public sealed class GenerateForDiagnosticTests
             public class Order { public int Id { get; set; } }
             public class Usage
             {
-                public void Run() { Generate.For<Order>(); }
+                public void Run() { Strategy.For<Order>(); }
             }
             """;
 
@@ -184,7 +184,7 @@ public sealed class GenerateForDiagnosticTests
             public class Order { public int Id { get; set; } }
             public class Usage
             {
-                public void Run() { Generate.For<Order>(); }
+                public void Run() { Strategy.For<Order>(); }
             }
             """;
 
@@ -204,7 +204,7 @@ public sealed class GenerateForDiagnosticTests
             public class Order { public int Id { get; set; } }
             public class Usage
             {
-                public void Run() { Generate.For<Order>(); }
+                public void Run() { Strategy.For<Order>(); }
             }
             """;
 
@@ -215,7 +215,7 @@ public sealed class GenerateForDiagnosticTests
         Assert.NotEqual(Location.None, con312.Location);
     }
 
-    // --- No diagnostic: Generate.For<T>() where T has [Arbitrary] ---
+    // --- No diagnostic: Strategy.For<T>() where T has [Arbitrary] ---
 
     [Fact]
     public void ArbitraryDecoratedType_ProducesNoCon310Con311Con312()
@@ -226,7 +226,7 @@ public sealed class GenerateForDiagnosticTests
             [Arbitrary] public partial record Order(int Id, string Name);
             public class Usage
             {
-                public void Run() { Generate.For<Order>(); }
+                public void Run() { Strategy.For<Order>(); }
             }
             """;
 
@@ -246,7 +246,7 @@ public sealed class GenerateForDiagnosticTests
             [Arbitrary] public partial record Order(int Id, string Name);
             public class Usage
             {
-                public void Run() { Generate.For<Order>(); }
+                public void Run() { Strategy.For<Order>(); }
             }
             """;
 
@@ -281,7 +281,7 @@ public sealed class GenerateForDiagnosticTests
 
             public class Usage
             {
-                public void Use() => _ = Generate.For<Shape>();
+                public void Use() => _ = Strategy.For<Shape>();
             }
             """;
 

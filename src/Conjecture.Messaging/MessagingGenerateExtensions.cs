@@ -5,10 +5,10 @@ using Conjecture.Core;
 
 namespace Conjecture.Messaging;
 
-/// <summary>Extension methods on <see cref="Generate"/> for messaging interaction generation.</summary>
+/// <summary>Extension methods on <see cref="Strategy"/> for messaging interaction generation.</summary>
 public static class MessagingGenerateExtensions
 {
-    extension(Generate)
+    extension(Strategy)
     {
         /// <summary>Returns a <see cref="MessagingGenerateBuilder"/> for composing message interaction strategies.</summary>
         public static MessagingGenerateBuilder Messaging => new();

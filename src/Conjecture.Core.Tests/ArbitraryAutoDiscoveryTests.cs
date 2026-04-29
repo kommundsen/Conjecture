@@ -20,7 +20,7 @@ public class ArbitraryAutoDiscoveryTests
     public sealed class PersonArbitrary : IStrategyProvider<Person>
     {
         public Strategy<Person> Create() =>
-            Generate.Strings().Zip(Generate.Integers<int>(0, 120), (name, age) => new Person(name, age));
+            Strategy.Strings().Zip(Strategy.Integers<int>(0, 120), (name, age) => new Person(name, age));
     }
 
     // ─── Sentinel provider (no [Arbitrary]) used in precedence test ───────────
@@ -28,7 +28,7 @@ public class ArbitraryAutoDiscoveryTests
     public sealed class SentinelPersonArbitrary : IStrategyProvider<Person>
     {
         public Strategy<Person> Create() =>
-            Generate.Integers<int>().Select(_ => new Person("SENTINEL", -999));
+            Strategy.Integers<int>().Select(_ => new Person("SENTINEL", -999));
     }
 
     // ─── Helper stubs ─────────────────────────────────────────────────────────

@@ -14,7 +14,7 @@ public class ExtensionPropertyTests
     [Fact]
     public void Positive_ReturnsOnlyPositiveIntegers()
     {
-        Strategy<int> strategy = Generate.Integers<int>().Positive;
+        Strategy<int> strategy = Strategy.Integers<int>().Positive;
         ConjectureData data = MakeData();
         for (int i = 0; i < 100; i++)
         {
@@ -25,7 +25,7 @@ public class ExtensionPropertyTests
     [Fact]
     public void Negative_ReturnsOnlyNegativeIntegers()
     {
-        Strategy<int> strategy = Generate.Integers<int>().Negative;
+        Strategy<int> strategy = Strategy.Integers<int>().Negative;
         ConjectureData data = MakeData();
         for (int i = 0; i < 100; i++)
         {
@@ -36,7 +36,7 @@ public class ExtensionPropertyTests
     [Fact]
     public void NonZero_NeverReturnsZero()
     {
-        Strategy<int> strategy = Generate.Integers<int>().NonZero;
+        Strategy<int> strategy = Strategy.Integers<int>().NonZero;
         ConjectureData data = MakeData();
         for (int i = 0; i < 100; i++)
         {
@@ -47,7 +47,7 @@ public class ExtensionPropertyTests
     [Fact]
     public void String_NonEmpty_NeverReturnsEmptyString()
     {
-        Strategy<string> strategy = Generate.Strings().NonEmpty;
+        Strategy<string> strategy = Strategy.Strings().NonEmpty;
         ConjectureData data = MakeData();
         for (int i = 0; i < 100; i++)
         {
@@ -58,7 +58,7 @@ public class ExtensionPropertyTests
     [Fact]
     public void List_NonEmpty_NeverReturnsEmptyList()
     {
-        Strategy<List<int>> strategy = Generate.Lists<int>(Generate.Integers<int>()).NonEmpty;
+        Strategy<List<int>> strategy = Strategy.Lists<int>(Strategy.Integers<int>()).NonEmpty;
         ConjectureData data = MakeData();
         for (int i = 0; i < 100; i++)
         {
@@ -69,7 +69,7 @@ public class ExtensionPropertyTests
     [Fact]
     public void ExtensionProperties_ComposeWithSelectAndZip()
     {
-        Strategy<int> doubled = Generate.Integers<int>().Positive.Select(x => x % (int.MaxValue / 2) + 1);
+        Strategy<int> doubled = Strategy.Integers<int>().Positive.Select(x => x % (int.MaxValue / 2) + 1);
         ConjectureData data = MakeData();
         for (int i = 0; i < 100; i++)
         {
@@ -95,8 +95,8 @@ public class PipeOperatorTests
     [Fact]
     public void PipeOperator_ProducesValuesFromBothStrategies()
     {
-        Strategy<int> a = Generate.Integers<int>().Positive;
-        Strategy<int> b = Generate.Integers<int>().Negative;
+        Strategy<int> a = Strategy.Integers<int>().Positive;
+        Strategy<int> b = Strategy.Integers<int>().Negative;
         Strategy<int> combined = a | b;
 
         List<int> values = Collect(combined, 200);
@@ -108,9 +108,9 @@ public class PipeOperatorTests
     [Fact]
     public void PipeOperator_IsLeftAssociative()
     {
-        Strategy<int> a = Generate.Just(-1);
-        Strategy<int> b = Generate.Just(0);
-        Strategy<int> c = Generate.Just(1);
+        Strategy<int> a = Strategy.Just(-1);
+        Strategy<int> b = Strategy.Just(0);
+        Strategy<int> c = Strategy.Just(1);
         Strategy<int> combined = a | b | c;
 
         List<int> values = Collect(combined, 300);
@@ -123,11 +123,11 @@ public class PipeOperatorTests
     [Fact]
     public void PipeOperator_WorksWithExtensionProperties()
     {
-        Strategy<int> combined = Generate.Integers<int>().Positive | Generate.Just(0);
+        Strategy<int> combined = Strategy.Integers<int>().Positive | Strategy.Just(0);
 
         List<int> values = Collect(combined, 200);
 
         Assert.True(values.Exists(static x => x > 0), "| operator with .Positive never produced a positive integer");
-        Assert.True(values.Exists(static x => x == 0), "| operator with Generate.Just(0) never produced zero");
+        Assert.True(values.Exists(static x => x == 0), "| operator with Strategy.Just(0) never produced zero");
     }
 }

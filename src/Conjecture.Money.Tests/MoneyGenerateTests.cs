@@ -11,7 +11,7 @@ public class MoneyGenerateTests
     [Fact]
     public void Iso4217Codes_NeverProducesUnknownCode()
     {
-        Strategy<string> strategy = Generate.Iso4217Codes();
+        Strategy<string> strategy = Strategy.Iso4217Codes();
         IReadOnlyList<string> samples = DataGen.Sample(strategy, count: 500, seed: 10UL);
 
         Assert.All(samples, code =>
@@ -22,7 +22,7 @@ public class MoneyGenerateTests
     [Fact]
     public void Amounts_Jpy_AlwaysProducesWholeNumbers()
     {
-        Strategy<decimal> strategy = Generate.Amounts("JPY");
+        Strategy<decimal> strategy = Strategy.Amounts("JPY");
         IReadOnlyList<decimal> samples = DataGen.Sample(strategy, count: 200, seed: 20UL);
 
         Assert.All(samples, v =>
@@ -32,7 +32,7 @@ public class MoneyGenerateTests
     [Fact]
     public void Amounts_Usd_AlwaysProducesAtMostTwoDecimalPlaces()
     {
-        Strategy<decimal> strategy = Generate.Amounts("USD");
+        Strategy<decimal> strategy = Strategy.Amounts("USD");
         IReadOnlyList<decimal> samples = DataGen.Sample(strategy, count: 200, seed: 30UL);
 
         Assert.All(samples, v =>
@@ -43,7 +43,7 @@ public class MoneyGenerateTests
     [Fact]
     public void Amounts_Bhd_AlwaysProducesAtMostThreeDecimalPlaces()
     {
-        Strategy<decimal> strategy = Generate.Amounts("BHD");
+        Strategy<decimal> strategy = Strategy.Amounts("BHD");
         IReadOnlyList<decimal> samples = DataGen.Sample(strategy, count: 200, seed: 40UL);
 
         Assert.All(samples, v =>
@@ -56,7 +56,7 @@ public class MoneyGenerateTests
     {
         decimal min = 1m;
         decimal max = 5m;
-        Strategy<decimal> strategy = Generate.Amounts("USD", min: min, max: max);
+        Strategy<decimal> strategy = Strategy.Amounts("USD", min: min, max: max);
         IReadOnlyList<decimal> samples = DataGen.Sample(strategy, count: 200, seed: 50UL);
 
         Assert.All(samples, v => Assert.InRange(v, min, max));
@@ -65,7 +65,7 @@ public class MoneyGenerateTests
     [Fact]
     public void RoundingModes_ProducesEveryMidpointRoundingValueEventually()
     {
-        Strategy<MidpointRounding> strategy = Generate.RoundingModes();
+        Strategy<MidpointRounding> strategy = Strategy.RoundingModes();
         IReadOnlyList<MidpointRounding> samples = DataGen.Sample(strategy, count: 500, seed: 60UL);
 
         HashSet<MidpointRounding> seen = [.. samples];
@@ -78,6 +78,6 @@ public class MoneyGenerateTests
     [Fact]
     public void Amounts_UnknownCurrencyCode_ThrowsArgumentException()
     {
-        Assert.Throws<ArgumentException>(() => Generate.Amounts("XYZ"));
+        Assert.Throws<ArgumentException>(() => Strategy.Amounts("XYZ"));
     }
 }

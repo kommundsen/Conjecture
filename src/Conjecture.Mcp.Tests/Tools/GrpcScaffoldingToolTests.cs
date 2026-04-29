@@ -26,7 +26,7 @@ public class GrpcScaffoldingToolTests
             serviceName: "Greeter",
             methodName: "SayHello");
 
-        Assert.Contains("Generate.Grpc.Unary", result);
+        Assert.Contains("Strategy.Grpc.Unary", result);
     }
 
     [Fact]
@@ -62,10 +62,10 @@ public class GrpcScaffoldingToolTests
     // --- methodType: strategy call ---
 
     [Theory]
-    [InlineData("unary", "Generate.Grpc.Unary")]
-    [InlineData("server-stream", "Generate.Grpc.ServerStream")]
-    [InlineData("client-stream", "Generate.Grpc.ClientStream")]
-    [InlineData("bidi", "Generate.Grpc.BidiStream")]
+    [InlineData("unary", "Strategy.Grpc.Unary")]
+    [InlineData("server-stream", "Strategy.Grpc.ServerStream")]
+    [InlineData("client-stream", "Strategy.Grpc.ClientStream")]
+    [InlineData("bidi", "Strategy.Grpc.BidiStream")]
     public void ScaffoldGrpcPropertyTest_MethodType_EmitsCorrectStrategyCall(string methodType, string expectedStrategy)
     {
         string result = GrpcScaffoldingTool.ScaffoldGrpcPropertyTest(
@@ -192,10 +192,10 @@ public class GrpcScaffoldingToolTests
     // --- representative cross-product: methodType × framework × target ---
 
     [Theory]
-    [InlineData("unary", "xunit", "host", "Generate.Grpc.Unary", "using Conjecture.Xunit;", "HostGrpcTarget")]
-    [InlineData("server-stream", "xunit-v3", "channel", "Generate.Grpc.ServerStream", "using Conjecture.Xunit.V3;", "GrpcChannelTarget")]
-    [InlineData("client-stream", "nunit", "host", "Generate.Grpc.ClientStream", "using Conjecture.NUnit;", "HostGrpcTarget")]
-    [InlineData("bidi", "mstest", "channel", "Generate.Grpc.BidiStream", "using Conjecture.MSTest;", "GrpcChannelTarget")]
+    [InlineData("unary", "xunit", "host", "Strategy.Grpc.Unary", "using Conjecture.Xunit;", "HostGrpcTarget")]
+    [InlineData("server-stream", "xunit-v3", "channel", "Strategy.Grpc.ServerStream", "using Conjecture.Xunit.V3;", "GrpcChannelTarget")]
+    [InlineData("client-stream", "nunit", "host", "Strategy.Grpc.ClientStream", "using Conjecture.NUnit;", "HostGrpcTarget")]
+    [InlineData("bidi", "mstest", "channel", "Strategy.Grpc.BidiStream", "using Conjecture.MSTest;", "GrpcChannelTarget")]
     public void ScaffoldGrpcPropertyTest_RepresentativeCombinations_ContainsExpectedTokens(
         string methodType,
         string framework,

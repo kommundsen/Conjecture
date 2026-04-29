@@ -83,7 +83,7 @@ internal static class RegexNodeGenerator
 
             case Alternation alt:
                 {
-                    int idx = ctx.Generate(Conjecture.Core.Generate.Integers<int>(0, alt.Arms.Count - 1));
+                    int idx = ctx.Generate(Conjecture.Core.Strategy.Integers<int>(0, alt.Arms.Count - 1));
                     GenerateNode(ctx, alt.Arms[idx], sb, captures, namedCaptures, selectCount);
                     break;
                 }
@@ -119,7 +119,7 @@ internal static class RegexNodeGenerator
 
             case Dot:
                 {
-                    int cp = ctx.Generate(Conjecture.Core.Generate.Integers<int>(0x00, 0xFF));
+                    int cp = ctx.Generate(Conjecture.Core.Strategy.Integers<int>(0x00, 0xFF));
                     sb.Append((char)cp);
                     break;
                 }
@@ -152,7 +152,7 @@ internal static class RegexNodeGenerator
             return;
         }
 
-        char picked = ctx.Generate(Conjecture.Core.Generate.SampledFrom(candidates));
+        char picked = ctx.Generate(Conjecture.Core.Strategy.SampledFrom(candidates));
         sb.Append(picked);
     }
 

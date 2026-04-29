@@ -40,7 +40,7 @@ internal static class SuggestStrategyFromSchemaTool
         return $$"""
             // In test setup:
             private static readonly Task<OpenApiDocument> Schema =
-                Generate.FromOpenApi("{{path}}");
+                Strategy.FromOpenApi("{{path}}");
 
             [Property]
             public async Task<bool> {{methodName}}_IsIdempotent(JsonElement request)
@@ -59,7 +59,7 @@ internal static class SuggestStrategyFromSchemaTool
         return $$"""
             // In test setup:
             private static readonly Task<JsonSchema> Schema =
-                Generate.FromJsonSchema("{{path}}");
+                Strategy.FromJsonSchema("{{path}}");
 
             [Property]
             public async Task<bool> Schema_IsValid(JsonElement request)
@@ -79,7 +79,7 @@ internal static class SuggestStrategyFromSchemaTool
             [Property]
             public bool {{messageType}}_RoundTripsCorrectly({{messageType}} message)
             {
-                Strategy<{{messageType}}> strategy = Generate.FromProtobuf<{{messageType}}>();
+                Strategy<{{messageType}}> strategy = Strategy.FromProtobuf<{{messageType}}>();
                 // TODO: replace with your serialization roundtrip assertion
                 return true;
             }

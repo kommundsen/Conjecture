@@ -58,9 +58,9 @@ public sealed class TrimSafeGeneratorTests
             "using Conjecture.Core; namespace MyApp; [Arbitrary] public partial record Point(int X, int Y);",
             "Point.g.cs");
 
-        Assert.Contains("Generate.Compose<", text);
+        Assert.Contains("Strategy.Compose<", text);
         Assert.Contains("ctx.Generate(", text);
-        Assert.Contains("Generate.", text);
+        Assert.Contains("Strategy.", text);
     }
 
     [Fact]

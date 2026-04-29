@@ -26,7 +26,7 @@ public class SuggestStrategyFromSchemaToolTests
             schemaPath: "swagger.json",
             endpoint: "POST /api/orders");
 
-        Assert.Contains("Generate.FromOpenApi", result);
+        Assert.Contains("Strategy.FromOpenApi", result);
     }
 
     [Fact]
@@ -36,7 +36,7 @@ public class SuggestStrategyFromSchemaToolTests
             schemaType: "json-schema",
             schemaPath: "schema.json");
 
-        Assert.Contains("Generate.FromJsonSchema", result);
+        Assert.Contains("Strategy.FromJsonSchema", result);
     }
 
     [Fact]
@@ -46,7 +46,7 @@ public class SuggestStrategyFromSchemaToolTests
             schemaType: "protobuf",
             messageType: "MyMessage");
 
-        Assert.Contains("Generate.FromProtobuf<MyMessage>", result);
+        Assert.Contains("Strategy.FromProtobuf<MyMessage>", result);
     }
 
     [Fact]

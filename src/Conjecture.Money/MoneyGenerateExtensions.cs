@@ -5,10 +5,10 @@ using Conjecture.Money.Internal;
 
 namespace Conjecture.Core;
 
-/// <summary>Extension methods on <see cref="Generate"/> for monetary value generation.</summary>
+/// <summary>Extension methods on <see cref="Strategy"/> for monetary value generation.</summary>
 public static class MoneyGenerateExtensions
 {
-    extension(Generate)
+    extension(Strategy)
     {
         /// <summary>Returns a strategy that generates <see cref="decimal"/> values within [<paramref name="min"/>, <paramref name="max"/>], optionally rounded to <paramref name="scale"/> decimal places.</summary>
         public static Strategy<decimal> Decimal(
@@ -26,7 +26,7 @@ public static class MoneyGenerateExtensions
         /// <summary>Returns a strategy that samples uniformly from all active ISO 4217 currency codes.</summary>
         public static Strategy<string> Iso4217Codes()
         {
-            return Generate.SampledFrom(Iso4217Data.DecimalPlacesByCurrency.Keys.ToArray());
+            return Strategy.SampledFrom(Iso4217Data.DecimalPlacesByCurrency.Keys.ToArray());
         }
 
         /// <summary>Returns a strategy that generates a decimal amount for <paramref name="currencyCode"/> within [<paramref name="min"/>, <paramref name="max"/>].</summary>
@@ -40,7 +40,7 @@ public static class MoneyGenerateExtensions
         /// <summary>Returns a strategy that samples uniformly from all <see cref="MidpointRounding"/> values.</summary>
         public static Strategy<MidpointRounding> RoundingModes()
         {
-            return Generate.Enums<MidpointRounding>();
+            return Strategy.Enums<MidpointRounding>();
         }
     }
 }

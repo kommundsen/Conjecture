@@ -90,7 +90,7 @@ public class FloatingPointPropertyE2ETests
             });
         }
 
-        Assert.True(foundNaN, "Expected Generate.Doubles() to produce NaN over 10,000 seeds through ParameterStrategyResolver");
+        Assert.True(foundNaN, "Expected Strategy.Doubles() to produce NaN over 10,000 seeds through ParameterStrategyResolver");
     }
 
     [Fact]
@@ -109,7 +109,7 @@ public class FloatingPointPropertyE2ETests
             });
         }
 
-        Assert.True(foundNaN, "Expected Generate.Floats() to produce NaN over 10,000 seeds through ParameterStrategyResolver");
+        Assert.True(foundNaN, "Expected Strategy.Floats() to produce NaN over 10,000 seeds through ParameterStrategyResolver");
     }
 
     // --- Failing double property produces counterexample ---

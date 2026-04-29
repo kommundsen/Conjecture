@@ -18,7 +18,7 @@ using Conjecture.Time;
 [Property]
 public bool DstSafe([From<DateTimeOffsetArbitrary>] DateTimeOffset dt)
 {
-    DateTimeOffset nearDst = Generate.DateTimeOffsets().NearDstTransition();
+    DateTimeOffset nearDst = Strategy.DateTimeOffsets().NearDstTransition();
     // ...
 }
 
@@ -27,7 +27,7 @@ public bool DstSafe([From<DateTimeOffsetArbitrary>] DateTimeOffset dt)
 public bool ClockSkewTolerant(int x)
 {
     FakeTimeProvider[] clocks = DataGen.SampleOne(
-        Generate.ClockSet(nodeCount: 3, maxSkew: TimeSpan.FromSeconds(5)));
+        Strategy.ClockSet(nodeCount: 3, maxSkew: TimeSpan.FromSeconds(5)));
     // ...
 }
 ```
@@ -36,8 +36,8 @@ public bool ClockSkewTolerant(int x)
 
 | Method | Returns | Description |
 |---|---|---|
-| `Generate.TimeZones()` | `Strategy<TimeZoneInfo>` | System time zones, shrinks toward UTC |
-| `Generate.ClockSet(nodeCount, maxSkew)` | `Strategy<FakeTimeProvider[]>` | Array of clocks with bounded skew |
+| `Strategy.TimeZones()` | `Strategy<TimeZoneInfo>` | System time zones, shrinks toward UTC |
+| `Strategy.ClockSet(nodeCount, maxSkew)` | `Strategy<FakeTimeProvider[]>` | Array of clocks with bounded skew |
 | `.NearMidnight()` | `Strategy<DateTimeOffset>` | Values within ~30 min of midnight |
 | `.NearLeapYear()` | `Strategy<DateTimeOffset>` | Values within ~1 day of Feb 29 |
 | `.NearEpoch()` | `Strategy<DateTimeOffset>` | Values near Unix epoch, Y2K38, min/max |

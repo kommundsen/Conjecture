@@ -14,7 +14,7 @@ public class StringStrategyTests
     [Fact]
     public void Strings_ProducesString()
     {
-        var strategy = Generate.Strings();
+        var strategy = Strategy.Strings();
         var value = strategy.Generate(MakeData());
         Assert.IsType<string>(value);
     }
@@ -22,7 +22,7 @@ public class StringStrategyTests
     [Fact]
     public void Strings_DefaultCharset_IsPrintableAscii()
     {
-        var strategy = Generate.Strings();
+        var strategy = Strategy.Strings();
         var data = MakeData();
 
         for (var i = 0; i < 200; i++)
@@ -38,7 +38,7 @@ public class StringStrategyTests
     [Fact]
     public void Strings_DeterministicWithSeed()
     {
-        var strategy = Generate.Strings();
+        var strategy = Strategy.Strings();
 
         var results1 = Enumerable.Range(0, 20).Select(_ => strategy.Generate(MakeData(99UL))).ToList();
         var results2 = Enumerable.Range(0, 20).Select(_ => strategy.Generate(MakeData(99UL))).ToList();
@@ -49,7 +49,7 @@ public class StringStrategyTests
     [Fact]
     public void Strings_RespectsBoundsWhenMinAndMaxLengthSet()
     {
-        var strategy = Generate.Strings(minLength: 5, maxLength: 10);
+        var strategy = Strategy.Strings(minLength: 5, maxLength: 10);
         var data = MakeData();
 
         for (var i = 0; i < 100; i++)
@@ -62,7 +62,7 @@ public class StringStrategyTests
     [Fact]
     public void Strings_MinLengthZero_CanProduceEmptyString()
     {
-        var strategy = Generate.Strings(minLength: 0, maxLength: 5);
+        var strategy = Strategy.Strings(minLength: 0, maxLength: 5);
         var sawEmpty = false;
 
         for (var seed = 0UL; seed < 1000UL && !sawEmpty; seed++)
@@ -80,7 +80,7 @@ public class StringStrategyTests
     [Fact]
     public void Text_IsAliasForStrings()
     {
-        var textStrategy = Generate.Text();
+        var textStrategy = Strategy.Text();
         var data = MakeData(77UL);
         var s = textStrategy.Generate(data);
         Assert.IsType<string>(s);

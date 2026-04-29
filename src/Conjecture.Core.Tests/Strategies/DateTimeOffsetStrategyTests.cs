@@ -16,7 +16,7 @@ public class DateTimeOffsetStrategyTests
     {
         DateTimeOffset min = new(2000, 1, 1, 0, 0, 0, TimeSpan.Zero);
         DateTimeOffset max = new(2030, 12, 31, 23, 59, 59, TimeSpan.Zero);
-        Strategy<DateTimeOffset> strategy = Generate.DateTimeOffsets(min, max);
+        Strategy<DateTimeOffset> strategy = Strategy.DateTimeOffsets(min, max);
         ConjectureData data = MakeData();
 
         for (int i = 0; i < 1000; i++)
@@ -29,7 +29,7 @@ public class DateTimeOffsetStrategyTests
     [Fact]
     public void DateTimeOffsets_DefaultRange_DoesNotThrow()
     {
-        Strategy<DateTimeOffset> strategy = Generate.DateTimeOffsets();
+        Strategy<DateTimeOffset> strategy = Strategy.DateTimeOffsets();
         ConjectureData data = MakeData();
 
         for (int i = 0; i < 100; i++)
@@ -42,7 +42,7 @@ public class DateTimeOffsetStrategyTests
     public void DateTimeOffsets_MinEqualsMax_ReturnsConstant()
     {
         DateTimeOffset t = new(2025, 6, 15, 12, 0, 0, TimeSpan.Zero);
-        Strategy<DateTimeOffset> strategy = Generate.DateTimeOffsets(t, t);
+        Strategy<DateTimeOffset> strategy = Strategy.DateTimeOffsets(t, t);
         ConjectureData data = MakeData();
 
         for (int i = 0; i < 20; i++)
@@ -57,13 +57,13 @@ public class DateTimeOffsetStrategyTests
         DateTimeOffset max = new(2030, 1, 1, 0, 0, 0, TimeSpan.Zero);
         DateTimeOffset min = new(2020, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
-        Assert.Throws<ArgumentOutOfRangeException>(() => Generate.DateTimeOffsets(max, min));
+        Assert.Throws<ArgumentOutOfRangeException>(() => Strategy.DateTimeOffsets(max, min));
     }
 
     [Fact]
     public void DateTimeOffsets_AlwaysReturnsUtcOffset()
     {
-        Strategy<DateTimeOffset> strategy = Generate.DateTimeOffsets();
+        Strategy<DateTimeOffset> strategy = Strategy.DateTimeOffsets();
         ConjectureData data = MakeData();
 
         for (int i = 0; i < 100; i++)
@@ -79,7 +79,7 @@ public class DateTimeOffsetStrategyTests
         TimeSpan offset = TimeSpan.FromHours(5);
         DateTimeOffset min = new(2000, 1, 1, 0, 0, 0, offset);
         DateTimeOffset max = new(2030, 12, 31, 23, 59, 59, offset);
-        Strategy<DateTimeOffset> strategy = Generate.DateTimeOffsets(min, max);
+        Strategy<DateTimeOffset> strategy = Strategy.DateTimeOffsets(min, max);
         ConjectureData data = MakeData();
 
         for (int i = 0; i < 100; i++)

@@ -85,12 +85,10 @@ public class RoundtripAsserterTests
         seed.Database.EnsureCreated();
 
         return (connection, static () =>
-        {
             // Each factory call creates a fresh context on a NEW connection that shares the same file.
             // We close over the options string but need a shared in-memory DB per test.
             // Re-use captured options via local helper.
-            throw new InvalidOperationException("Use CreateSqliteFactoryWithOptions instead.");
-        });
+            throw new InvalidOperationException("Use CreateSqliteFactoryWithOptions instead."));
     }
 
     private static (SqliteConnection connection, Func<DbContext> factory) CreateSqliteFactoryWithOptions()
@@ -270,17 +268,7 @@ public class RoundtripAsserterTests
     {
         public bool Equals(Customer? x, Customer? y)
         {
-            if (x is null && y is null)
-            {
-                return true;
-            }
-
-            if (x is null || y is null)
-            {
-                return false;
-            }
-
-            return x.JoinedAt.Equals(y.JoinedAt);
+            return x is null && y is null || x is not null && y is not null && x.JoinedAt.Equals(y.JoinedAt);
         }
 
         public int GetHashCode(Customer obj) => obj.JoinedAt.GetHashCode();
@@ -300,17 +288,7 @@ public class RoundtripAsserterTests
                 return false;
             }
 
-            if (x.Address is null && y.Address is null)
-            {
-                return true;
-            }
-
-            if (x.Address is null || y.Address is null)
-            {
-                return false;
-            }
-
-            return x.Address.Street == y.Address.Street
+            return x.Address is null && y.Address is null || x.Address is not null && y.Address is not null && x.Address.Street == y.Address.Street
                 && x.Address.City == y.Address.City;
         }
 

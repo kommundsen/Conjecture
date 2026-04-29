@@ -1,45 +1,45 @@
 # Conjecture Strategies API Reference
 
-## Factory Methods (`Generate.*`)
+## Factory Methods (`Strategy.*`)
 
 | Method | Returns | Notes |
 |--------|---------|-------|
-| `Generate.Booleans()` | `Strategy<bool>` | Uniform true/false |
-| `Generate.Integers<T>()` | `Strategy<T>` | Full range; T : IBinaryInteger<T>, IMinMaxValue<T> |
-| `Generate.Integers<T>(min, max)` | `Strategy<T>` | Bounded; T : IBinaryInteger<T> |
-| `Generate.Floats()` | `Strategy<float>` | Includes NaN, ±Infinity |
-| `Generate.Floats(min, max)` | `Strategy<float>` | Bounded range |
-| `Generate.Doubles()` | `Strategy<double>` | Includes NaN, ±Infinity |
-| `Generate.Doubles(min, max)` | `Strategy<double>` | Bounded range |
-| `Generate.Strings(minLength, maxLength, minCodepoint, maxCodepoint, alphabet)` | `Strategy<string>` | All params optional; default: printable ASCII, length 0–20 |
-| `Generate.Text(minLength, maxLength)` | `Strategy<string>` | Alias for Strings() |
-| `Generate.Bytes(size)` | `Strategy<byte[]>` | Fixed-length byte array |
-| `Generate.Just<T>(value)` | `Strategy<T>` | Always returns the given value |
-| `Generate.OneOf<T>(strategies[])` | `Strategy<T>` | Picks uniformly from strategies |
-| `Generate.SampledFrom<T>(values)` | `Strategy<T>` | Picks uniformly from a fixed list |
-| `Generate.Enums<T>()` | `Strategy<T>` | T : struct, Enum |
-| `Generate.Nullable<T>(inner)` | `Strategy<T?>` | T : struct; ~10% null probability |
-| `Generate.Tuples(s1, s2)` | `Strategy<(T1,T2)>` | 2-element tuple |
-| `Generate.Tuples(s1, s2, s3)` | `Strategy<(T1,T2,T3)>` | 3-element tuple |
-| `Generate.Tuples(s1, s2, s3, s4)` | `Strategy<(T1,T2,T3,T4)>` | 4-element tuple |
-| `Generate.Lists<T>(inner, minSize, maxSize)` | `Strategy<List<T>>` | Default: 0–100 elements |
-| `Generate.Sets<T>(inner, minSize, maxSize)` | `Strategy<IReadOnlySet<T>>` | Unique elements; default: 0–100 |
-| `Generate.Dictionaries<K,V>(keyStrategy, valueStrategy, minSize, maxSize)` | `Strategy<IReadOnlyDictionary<K,V>>` | Unique keys |
-| `Generate.DateTimeOffsets()` | `Strategy<DateTimeOffset>` | Full range |
-| `Generate.DateTimeOffsets(min, max)` | `Strategy<DateTimeOffset>` | Bounded range |
-| `Generate.TimeSpans()` | `Strategy<TimeSpan>` | Full range |
-| `Generate.TimeSpans(min, max)` | `Strategy<TimeSpan>` | Bounded range |
-| `Generate.DateOnlyValues()` | `Strategy<DateOnly>` | Full range |
-| `Generate.DateOnlyValues(min, max)` | `Strategy<DateOnly>` | Bounded range |
-| `Generate.TimeOnlyValues()` | `Strategy<TimeOnly>` | Full range |
-| `Generate.TimeOnlyValues(min, max)` | `Strategy<TimeOnly>` | Bounded range |
-| `Generate.Identifiers(minPrefixLength, maxPrefixLength, minDigits, maxDigits)` | `Strategy<string>` | Identifier strings (`[a-z]+\d+`); all params optional |
-| `Generate.NumericStrings(minDigits, maxDigits, prefix, suffix)` | `Strategy<string>` | Numeric strings with optional prefix/suffix |
-| `Generate.VersionStrings(maxMajor, maxMinor, maxPatch)` | `Strategy<string>` | Version strings (`MAJOR.MINOR.PATCH`) |
-| `Generate.FromBytes<T>(buffer)` | `Strategy<T>` | Replay values from a fixed byte buffer |
-| `Generate.Recursive<T>(baseCase, recursive, maxDepth)` | `Strategy<T>` | Tree-shaped / self-referential types; default maxDepth 5 |
-| `Generate.Compose<T>(factory)` | `Strategy<T>` | Imperative composition via `IGenerationContext` |
-| `Generate.StateMachine<TMachine, TState, TCommand>(maxSteps)` | `Strategy<StateMachineRun<TState>>` | Stateful testing |
+| `Strategy.Booleans()` | `Strategy<bool>` | Uniform true/false |
+| `Strategy.Integers<T>()` | `Strategy<T>` | Full range; T : IBinaryInteger<T>, IMinMaxValue<T> |
+| `Strategy.Integers<T>(min, max)` | `Strategy<T>` | Bounded; T : IBinaryInteger<T> |
+| `Strategy.Floats()` | `Strategy<float>` | Includes NaN, ±Infinity |
+| `Strategy.Floats(min, max)` | `Strategy<float>` | Bounded range |
+| `Strategy.Doubles()` | `Strategy<double>` | Includes NaN, ±Infinity |
+| `Strategy.Doubles(min, max)` | `Strategy<double>` | Bounded range |
+| `Strategy.Strings(minLength, maxLength, minCodepoint, maxCodepoint, alphabet)` | `Strategy<string>` | All params optional; default: printable ASCII, length 0–20 |
+| `Strategy.Text(minLength, maxLength)` | `Strategy<string>` | Alias for Strings() |
+| `Strategy.Bytes(size)` | `Strategy<byte[]>` | Fixed-length byte array |
+| `Strategy.Just<T>(value)` | `Strategy<T>` | Always returns the given value |
+| `Strategy.OneOf<T>(strategies[])` | `Strategy<T>` | Picks uniformly from strategies |
+| `Strategy.SampledFrom<T>(values)` | `Strategy<T>` | Picks uniformly from a fixed list |
+| `Strategy.Enums<T>()` | `Strategy<T>` | T : struct, Enum |
+| `Strategy.Nullable<T>(inner)` | `Strategy<T?>` | T : struct; ~10% null probability |
+| `Strategy.Tuples(s1, s2)` | `Strategy<(T1,T2)>` | 2-element tuple |
+| `Strategy.Tuples(s1, s2, s3)` | `Strategy<(T1,T2,T3)>` | 3-element tuple |
+| `Strategy.Tuples(s1, s2, s3, s4)` | `Strategy<(T1,T2,T3,T4)>` | 4-element tuple |
+| `Strategy.Lists<T>(inner, minSize, maxSize)` | `Strategy<List<T>>` | Default: 0–100 elements |
+| `Strategy.Sets<T>(inner, minSize, maxSize)` | `Strategy<IReadOnlySet<T>>` | Unique elements; default: 0–100 |
+| `Strategy.Dictionaries<K,V>(keyStrategy, valueStrategy, minSize, maxSize)` | `Strategy<IReadOnlyDictionary<K,V>>` | Unique keys |
+| `Strategy.DateTimeOffsets()` | `Strategy<DateTimeOffset>` | Full range |
+| `Strategy.DateTimeOffsets(min, max)` | `Strategy<DateTimeOffset>` | Bounded range |
+| `Strategy.TimeSpans()` | `Strategy<TimeSpan>` | Full range |
+| `Strategy.TimeSpans(min, max)` | `Strategy<TimeSpan>` | Bounded range |
+| `Strategy.DateOnlyValues()` | `Strategy<DateOnly>` | Full range |
+| `Strategy.DateOnlyValues(min, max)` | `Strategy<DateOnly>` | Bounded range |
+| `Strategy.TimeOnlyValues()` | `Strategy<TimeOnly>` | Full range |
+| `Strategy.TimeOnlyValues(min, max)` | `Strategy<TimeOnly>` | Bounded range |
+| `Strategy.Identifiers(minPrefixLength, maxPrefixLength, minDigits, maxDigits)` | `Strategy<string>` | Identifier strings (`[a-z]+\d+`); all params optional |
+| `Strategy.NumericStrings(minDigits, maxDigits, prefix, suffix)` | `Strategy<string>` | Numeric strings with optional prefix/suffix |
+| `Strategy.VersionStrings(maxMajor, maxMinor, maxPatch)` | `Strategy<string>` | Version strings (`MAJOR.MINOR.PATCH`) |
+| `Strategy.FromBytes<T>(buffer)` | `Strategy<T>` | Replay values from a fixed byte buffer |
+| `Strategy.Recursive<T>(baseCase, recursive, maxDepth)` | `Strategy<T>` | Tree-shaped / self-referential types; default maxDepth 5 |
+| `Strategy.Compose<T>(factory)` | `Strategy<T>` | Imperative composition via `IGenerationContext` |
+| `Strategy.StateMachine<TMachine, TState, TCommand>(maxSteps)` | `Strategy<StateMachineRun<TState>>` | Stateful testing |
 
 ## LINQ Combinators (extension methods on `Strategy<T>`)
 
@@ -74,13 +74,13 @@ Use `DataGen` to generate values outside property tests:
 | `DataGen.SampleOne<T>(strategy, seed?)` | `T` | Single value |
 | `DataGen.Stream<T>(strategy, count, seed?)` | `IEnumerable<T>` | Lazy enumeration of `count` values |
 
-## `IGenerationContext` (inside `Generate.Compose`)
+## `IGenerationContext` (inside `Strategy.Compose`)
 
 ```csharp
-Generate.Compose(ctx =>
+Strategy.Compose(ctx =>
 {
-    int n = ctx.Generate(Generate.Integers<int>(1, 100));
-    string s = ctx.Generate(Generate.Strings());
+    int n = ctx.Generate(Strategy.Integers<int>(1, 100));
+    string s = ctx.Generate(Strategy.Strings());
     ctx.Assume(n > 0); // equivalent to Assume.That
     return new MyType(n, s);
 })
@@ -93,9 +93,9 @@ Generate.Compose(ctx =>
 public partial class MyTypeStrategies : IStrategyProvider<MyType>
 {
     public static Strategy<MyType> GetStrategy() =>
-        Generate.Compose(ctx => new MyType(
-            ctx.Generate(Generate.Integers<int>()),
-            ctx.Generate(Generate.Strings())));
+        Strategy.Compose(ctx => new MyType(
+            ctx.Generate(Strategy.Integers<int>()),
+            ctx.Generate(Strategy.Strings())));
 }
 ```
 

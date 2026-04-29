@@ -22,12 +22,12 @@ public void Sorting_preserves_length(List<int> xs)
 
 `Target.Minimize(x)` is sugar for `Target.Maximize(-x)`.
 
-## Inside `Generate.Compose`
+## Inside `Strategy.Compose`
 
 ```csharp
-Generate.Compose(ctx =>
+Strategy.Compose(ctx =>
 {
-    var xs = ctx.Generate(Generate.Lists(Generate.Integers<int>(), 0, 1000));
+    var xs = ctx.Generate(Strategy.Lists(Strategy.Integers<int>(), 0, 1000));
     ctx.Target(xs.Count, "size"); // equivalent to Target.Maximize
     return xs;
 });

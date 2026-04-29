@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 
 namespace Conjecture.Core;
 
-/// <summary>Configures property overrides for <see cref="Generate.For{T}(System.Action{ForConfiguration{T}})"/>.</summary>
+/// <summary>Configures property overrides for <see cref="Strategy.For{T}(System.Action{ForConfiguration{T}})"/>.</summary>
 public sealed class ForConfiguration<T>
 {
     private readonly Dictionary<string, object> overrides = [];

@@ -119,7 +119,7 @@ public sealed class ExpectoWiringSampleTests
         public override string InitialState() => string.Empty;
 
         public override IEnumerable<Strategy<Interaction>> Commands(string state)
-            => [Generate.Just(new Interaction("svc", "GET", "/health", null))];
+            => [Strategy.Just(new Interaction("svc", "GET", "/health", null))];
 
         public override string RunCommand(string state, Interaction cmd) => state;
 

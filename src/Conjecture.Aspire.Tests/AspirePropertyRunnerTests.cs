@@ -249,7 +249,7 @@ public class AspirePropertyRunnerTests
         public override string InitialState() => string.Empty;
 
         public override IEnumerable<Strategy<Interaction>> Commands(string state)
-            => [Generate.Just(new Interaction("svc", "GET", "/", null))];
+            => [Strategy.Just(new Interaction("svc", "GET", "/", null))];
 
         public override string RunCommand(string state, Interaction cmd)
         {
@@ -311,7 +311,7 @@ public class AspirePropertyRunnerTests
         public override string InitialState() => string.Empty;
 
         public override IEnumerable<Strategy<Interaction>> Commands(string state)
-            => [Generate.Just(new Interaction("svc", "GET", "/", null))];
+            => [Strategy.Just(new Interaction("svc", "GET", "/", null))];
 
         public override string RunCommand(string state, Interaction cmd)
             => throw new InvalidOperationException("example failure");
@@ -326,7 +326,7 @@ public class AspirePropertyRunnerTests
         public override string InitialState() => string.Empty;
 
         public override IEnumerable<Strategy<Interaction>> Commands(string state)
-            => [Generate.Just(new Interaction("svc", "GET", "/", null))];
+            => [Strategy.Just(new Interaction("svc", "GET", "/", null))];
 
         public override string RunCommand(string state, Interaction cmd)
         {
@@ -346,7 +346,7 @@ public class AspirePropertyRunnerTests
         public override string InitialState() => string.Empty;
 
         public override IEnumerable<Strategy<Interaction>> Commands(string state)
-            => [Generate.Just(new Interaction("svc", "GET", "/", null))];
+            => [Strategy.Just(new Interaction("svc", "GET", "/", null))];
 
         public override string RunCommand(string state, Interaction cmd) => state;
 

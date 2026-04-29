@@ -15,10 +15,10 @@ public class IStateMachineTests
 
         public IEnumerable<Strategy<string>> Commands(int state)
         {
-            yield return Generate.Just("increment");
+            yield return Strategy.Just("increment");
             if (state > 0)
             {
-                yield return Generate.Just("decrement");
+                yield return Strategy.Just("decrement");
             }
         }
 
@@ -43,7 +43,7 @@ public class IStateMachineTests
         public List<int> InitialState() => [];
 
         public IEnumerable<Strategy<int>> Commands(List<int> state) =>
-            [Generate.Integers(1, 100)];
+            [Strategy.Integers(1, 100)];
 
         public List<int> RunCommand(List<int> state, int command) { return [.. state, command]; }
 

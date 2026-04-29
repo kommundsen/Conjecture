@@ -30,10 +30,7 @@ public sealed class MigrationHarnessTests
                     Id = t.Column<int>(nullable: false),
                     Name = t.Column<string>(nullable: false),
                 },
-                constraints: static t =>
-                {
-                    t.PrimaryKey("PK_Items", static x => x.Id);
-                });
+                constraints: static t => t.PrimaryKey("PK_Items", static x => x.Id));
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -55,10 +52,7 @@ public sealed class MigrationHarnessTests
                     Id = t.Column<int>(nullable: false),
                     Amount = t.Column<decimal>(nullable: false),
                 },
-                constraints: static t =>
-                {
-                    t.PrimaryKey("PK_Prices", static x => x.Id);
-                });
+                constraints: static t => t.PrimaryKey("PK_Prices", static x => x.Id));
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -93,13 +87,8 @@ public sealed class MigrationHarnessTests
         }
     }
 
-    private sealed class SymmetricMigrationContext : DbContext
+    private sealed class SymmetricMigrationContext(DbContextOptions<MigrationHarnessTests.SymmetricMigrationContext> options) : DbContext(options)
     {
-        public SymmetricMigrationContext(DbContextOptions<SymmetricMigrationContext> options)
-            : base(options)
-        {
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity(
@@ -138,10 +127,7 @@ public sealed class MigrationHarnessTests
                     Id = t.Column<int>(nullable: false),
                     Title = t.Column<string>(nullable: false),
                 },
-                constraints: static t =>
-                {
-                    t.PrimaryKey("PK_Products", static x => x.Id);
-                });
+                constraints: static t => t.PrimaryKey("PK_Products", static x => x.Id));
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -163,10 +149,7 @@ public sealed class MigrationHarnessTests
                     Id = t.Column<int>(nullable: false),
                     Score = t.Column<int>(nullable: false),
                 },
-                constraints: static t =>
-                {
-                    t.PrimaryKey("PK_Ratings", static x => x.Id);
-                });
+                constraints: static t => t.PrimaryKey("PK_Ratings", static x => x.Id));
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -203,13 +186,8 @@ public sealed class MigrationHarnessTests
         }
     }
 
-    private sealed class AsymmetricMigrationContext : DbContext
+    private sealed class AsymmetricMigrationContext(DbContextOptions<MigrationHarnessTests.AsymmetricMigrationContext> options) : DbContext(options)
     {
-        public AsymmetricMigrationContext(DbContextOptions<AsymmetricMigrationContext> options)
-            : base(options)
-        {
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity(
@@ -235,13 +213,8 @@ public sealed class MigrationHarnessTests
 
     // ---- no-migrations fixture -------------------------------------------
 
-    private sealed class NoMigrationsContext : DbContext
+    private sealed class NoMigrationsContext(DbContextOptions<MigrationHarnessTests.NoMigrationsContext> options) : DbContext(options)
     {
-        public NoMigrationsContext(DbContextOptions<NoMigrationsContext> options)
-            : base(options)
-        {
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity(

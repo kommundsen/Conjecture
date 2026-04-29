@@ -3,6 +3,51 @@ Conjecture.Core.IGenerationContext
 Conjecture.Core.IGenerationContext.Assume(bool condition) -> void
 Conjecture.Core.IGenerationContext.Generate<T>(Conjecture.Core.Strategy<T>! strategy) -> T
 Conjecture.Core.IGenerationContext.Target(double observation, string! label = "default") -> void
-static Conjecture.Core.Generate.Compose<T>(System.Func<Conjecture.Core.IGenerationContext!, T>! factory) -> Conjecture.Core.Strategy<T>!
+static Conjecture.Core.Strategy.Compose<T>(System.Func<Conjecture.Core.IGenerationContext!, T>! factory) -> Conjecture.Core.Strategy<T>!
 static Conjecture.Core.PartialConstructorContext.Current.get -> Conjecture.Core.IGenerationContext!
 static Conjecture.Core.PartialConstructorContext.Use(Conjecture.Core.IGenerationContext! ctx) -> System.IDisposable!
+Conjecture.Core.Strategy
+static Conjecture.Core.Strategy.Booleans() -> Conjecture.Core.Strategy<bool>!
+static Conjecture.Core.Strategy.Bytes(int size) -> Conjecture.Core.Strategy<byte[]!>!
+static Conjecture.Core.Strategy.Just<T>(T value) -> Conjecture.Core.Strategy<T>!
+static Conjecture.Core.Strategy.OneOf<T>(params Conjecture.Core.Strategy<T>![]! strategies) -> Conjecture.Core.Strategy<T>!
+static Conjecture.Core.Strategy.SampledFrom<T>(System.Collections.Generic.IReadOnlyList<T>! values) -> Conjecture.Core.Strategy<T>!
+static Conjecture.Core.Strategy.Integers<T>() -> Conjecture.Core.Strategy<T>!
+static Conjecture.Core.Strategy.Integers<T>(T min, T max) -> Conjecture.Core.Strategy<T>!
+static Conjecture.Core.Strategy.Enums<T>() -> Conjecture.Core.Strategy<T>!
+static Conjecture.Core.Strategy.Doubles() -> Conjecture.Core.Strategy<double>!
+static Conjecture.Core.Strategy.Doubles(double min, double max) -> Conjecture.Core.Strategy<double>!
+static Conjecture.Core.Strategy.Floats() -> Conjecture.Core.Strategy<float>!
+static Conjecture.Core.Strategy.Floats(float min, float max) -> Conjecture.Core.Strategy<float>!
+static Conjecture.Core.Strategy.Strings(int minLength = 0, int maxLength = 20, int minCodepoint = 32, int maxCodepoint = 126, string? alphabet = null) -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Core.Strategy.Text(int minLength = 0, int maxLength = 20) -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Core.Strategy.Nullable<T>(Conjecture.Core.Strategy<T>! inner) -> Conjecture.Core.Strategy<T?>!
+static Conjecture.Core.Strategy.Tuples<T1, T2>(Conjecture.Core.Strategy<T1>! first, Conjecture.Core.Strategy<T2>! second) -> Conjecture.Core.Strategy<(T1, T2)>!
+static Conjecture.Core.Strategy.Tuples<T1, T2, T3>(Conjecture.Core.Strategy<T1>! first, Conjecture.Core.Strategy<T2>! second, Conjecture.Core.Strategy<T3>! third) -> Conjecture.Core.Strategy<(T1, T2, T3)>!
+static Conjecture.Core.Strategy.Tuples<T1, T2, T3, T4>(Conjecture.Core.Strategy<T1>! first, Conjecture.Core.Strategy<T2>! second, Conjecture.Core.Strategy<T3>! third, Conjecture.Core.Strategy<T4>! fourth) -> Conjecture.Core.Strategy<(T1, T2, T3, T4)>!
+static Conjecture.Core.Strategy.Lists<T>(Conjecture.Core.Strategy<T>! inner, int minSize = 0, int maxSize = 100) -> Conjecture.Core.Strategy<System.Collections.Generic.List<T>!>!
+static Conjecture.Core.Strategy.Sets<T>(Conjecture.Core.Strategy<T>! inner, int minSize = 0, int maxSize = 100) -> Conjecture.Core.Strategy<System.Collections.Generic.IReadOnlySet<T>!>!
+static Conjecture.Core.Strategy.Dictionaries<TKey, TValue>(Conjecture.Core.Strategy<TKey>! keyStrategy, Conjecture.Core.Strategy<TValue>! valueStrategy, int minSize = 0, int maxSize = 100) -> Conjecture.Core.Strategy<System.Collections.Generic.IReadOnlyDictionary<TKey, TValue>!>!
+static Conjecture.Core.Strategy.Recursive<T>(Conjecture.Core.Strategy<T>! baseCase, System.Func<Conjecture.Core.Strategy<T>!, Conjecture.Core.Strategy<T>!>! recursive, int maxDepth = 5) -> Conjecture.Core.Strategy<T>!
+static Conjecture.Core.Strategy.StateMachine<TMachine, TState, TCommand>(int maxSteps = 50) -> Conjecture.Core.Strategy<Conjecture.Core.StateMachineRun<TState>!>!
+static Conjecture.Core.Strategy.Identifiers(int minPrefixLength = 1, int maxPrefixLength = 6, int minDigits = 1, int maxDigits = 4) -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Core.Strategy.NumericStrings(int minDigits = 1, int maxDigits = 6, string? prefix = null, string? suffix = null) -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Core.Strategy.VersionStrings(int maxMajor = 9, int maxMinor = 9, int maxPatch = 9) -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Core.Strategy.DateOnlyValues() -> Conjecture.Core.Strategy<System.DateOnly>!
+static Conjecture.Core.Strategy.DateOnlyValues(System.DateOnly min, System.DateOnly max) -> Conjecture.Core.Strategy<System.DateOnly>!
+static Conjecture.Core.Strategy.DateTimeOffsets() -> Conjecture.Core.Strategy<System.DateTimeOffset>!
+static Conjecture.Core.Strategy.DateTimeOffsets(System.DateTimeOffset min, System.DateTimeOffset max) -> Conjecture.Core.Strategy<System.DateTimeOffset>!
+static Conjecture.Core.Strategy.FromBytes<T>(System.ReadOnlySpan<byte> buffer) -> Conjecture.Core.Strategy<T>!
+static Conjecture.Core.Strategy.TimeOnlyValues() -> Conjecture.Core.Strategy<System.TimeOnly>!
+static Conjecture.Core.Strategy.TimeOnlyValues(System.TimeOnly min, System.TimeOnly max) -> Conjecture.Core.Strategy<System.TimeOnly>!
+static Conjecture.Core.Strategy.TimeSpans() -> Conjecture.Core.Strategy<System.TimeSpan>!
+static Conjecture.Core.Strategy.TimeSpans(System.TimeSpan min, System.TimeSpan max) -> Conjecture.Core.Strategy<System.TimeSpan>!
+static Conjecture.Core.Strategy.For<T>(System.Action<Conjecture.Core.ForConfiguration<T>!>! configure) -> Conjecture.Core.Strategy<T>!
+static Conjecture.Core.Strategy.For<T>() -> Conjecture.Core.Strategy<T>!
+static Conjecture.Core.Strategy.Guids() -> Conjecture.Core.Strategy<System.Guid>!
+static Conjecture.Core.Strategy.Decimals() -> Conjecture.Core.Strategy<decimal>!
+static Conjecture.Core.Strategy.Decimals(decimal min, decimal max) -> Conjecture.Core.Strategy<decimal>!
+static Conjecture.Core.Strategy.DateTimes() -> Conjecture.Core.Strategy<System.DateTime>!
+static Conjecture.Core.Strategy.DateTimes(System.DateTime min, System.DateTime max) -> Conjecture.Core.Strategy<System.DateTime>!
+static Conjecture.Core.Strategy.Chars() -> Conjecture.Core.Strategy<char>!
+static Conjecture.Core.Strategy.OneOf<T>(params System.ReadOnlySpan<Conjecture.Core.Strategy<T>!> strategies) -> Conjecture.Core.Strategy<T>!

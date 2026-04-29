@@ -11,7 +11,7 @@ namespace Conjecture.Benchmarks;
 /// <summary>
 /// Allocation micro-benchmarks for strategy composition wrappers
 /// (<see cref="StrategyExtensions.Select"/>, <see cref="StrategyExtensions.Where"/>,
-/// <see cref="StrategyExtensions.SelectMany"/>, <see cref="Generate.Recursive"/>).
+/// <see cref="StrategyExtensions.SelectMany"/>, <see cref="Strategy.Recursive"/>).
 /// Establishes the per-wrapper allocation floor so regressions are visible.
 /// </summary>
 [MemoryDiagnoser]
@@ -30,12 +30,12 @@ public class StrategyCompositionBenchmarks
     public void Setup()
     {
         rng = new SplittableRandom(42UL);
-        integersBaseline = Generate.Integers<int>();
-        selectSingle = Generate.Integers<int>().Select(x => x + 1);
-        whereSingle = Generate.Integers<int>(0, 100).Where(x => x > 50);
-        selectManySingle = Generate.Integers<int>(0, 100).SelectMany(static (x, d) => (int)d.NextInteger(0UL, (ulong)x));
-        chainThreeOps = Generate.Integers<int>().Select(x => x * 2).Where(x => x > 10).Select(x => x.ToString());
-        recursiveDepth5 = Generate.Recursive(Generate.Integers<int>(), s => s.Select(x => x + 1), maxDepth: 5);
+        integersBaseline = Strategy.Integers<int>();
+        selectSingle = Strategy.Integers<int>().Select(x => x + 1);
+        whereSingle = Strategy.Integers<int>(0, 100).Where(x => x > 50);
+        selectManySingle = Strategy.Integers<int>(0, 100).SelectMany(static (x, d) => (int)d.NextInteger(0UL, (ulong)x));
+        chainThreeOps = Strategy.Integers<int>().Select(x => x * 2).Where(x => x > 10).Select(x => x.ToString());
+        recursiveDepth5 = Strategy.Recursive(Strategy.Integers<int>(), s => s.Select(x => x + 1), maxDepth: 5);
     }
 
     [Benchmark(Baseline = true)]

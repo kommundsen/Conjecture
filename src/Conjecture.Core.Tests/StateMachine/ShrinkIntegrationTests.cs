@@ -10,7 +10,7 @@ namespace Conjecture.Core.Tests.StateMachine;
 internal sealed class FailsAtThreeMachine : IStateMachine<int, string>
 {
     public int InitialState() => 0;
-    public IEnumerable<Strategy<string>> Commands(int state) => [Generate.Just("step")];
+    public IEnumerable<Strategy<string>> Commands(int state) => [Strategy.Just("step")];
     public int RunCommand(int state, string _) => state + 1;
     public void Invariant(int state)
     {

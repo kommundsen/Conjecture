@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Conjecture.EFCore;
 
-/// <summary>Fluent builder returned by <c>Generate.Db</c> for composing DB interaction strategies.</summary>
+/// <summary>Fluent builder returned by <c>Strategy.Db</c> for composing DB interaction strategies.</summary>
 public sealed class GenerateDbBlock
 {
     internal GenerateDbBlock()
@@ -54,7 +54,7 @@ public sealed class GenerateDbBlock
     {
         ArgumentException.ThrowIfNullOrEmpty(resourceName);
 
-        return Generate.Just(new DbInteraction(resourceName, DbOpKind.SaveChanges, null));
+        return Strategy.Just(new DbInteraction(resourceName, DbOpKind.SaveChanges, null));
     }
 
     /// <summary>
@@ -80,10 +80,10 @@ public sealed class GenerateDbBlock
             candidates.Add(entityStrategy.Select(entity => new DbInteraction(resourceName, DbOpKind.Update, entity)));
             candidates.Add(entityStrategy.Select(entity => new DbInteraction(resourceName, DbOpKind.Remove, entity)));
         }
-        candidates.Add(Generate.Just(new DbInteraction(resourceName, DbOpKind.SaveChanges, null)));
+        candidates.Add(Strategy.Just(new DbInteraction(resourceName, DbOpKind.SaveChanges, null)));
 
-        Strategy<DbInteraction> elementStrategy = Generate.OneOf([.. candidates]);
-        return Generate.Lists(elementStrategy, min, max)
+        Strategy<DbInteraction> elementStrategy = Strategy.OneOf([.. candidates]);
+        return Strategy.Lists(elementStrategy, min, max)
             .Select(static list => (IReadOnlyList<DbInteraction>)list);
     }
 
@@ -106,10 +106,10 @@ public sealed class GenerateDbBlock
     }
 }
 
-/// <summary>Extension methods on <see cref="Generate"/> for database interaction generation.</summary>
+/// <summary>Extension methods on <see cref="Strategy"/> for database interaction generation.</summary>
 public static class DbGenerateExtensions
 {
-    extension(Generate)
+    extension(Strategy)
     {
         /// <summary>Returns a <see cref="GenerateDbBlock"/> for composing database interaction strategies.</summary>
         public static GenerateDbBlock Db => new();

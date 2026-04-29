@@ -12,12 +12,12 @@ using Microsoft.OpenApi.Readers;
 
 namespace Conjecture.OpenApi;
 
-/// <summary>Extension methods on <see cref="Generate"/> for OpenAPI-driven generation.</summary>
+/// <summary>Extension methods on <see cref="Strategy"/> for OpenAPI-driven generation.</summary>
 public static class OpenApiGenerate
 {
     private static readonly HttpClient SharedHttpClient = new();
 
-    extension(Generate)
+    extension(Strategy)
     {
         /// <summary>Loads an OpenAPI document from <paramref name="filePath"/> and returns a <see cref="OpenApiDocument"/> for building strategies.</summary>
         public static async Task<OpenApiDocument> FromOpenApi(string filePath)

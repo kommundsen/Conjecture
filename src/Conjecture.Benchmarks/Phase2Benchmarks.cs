@@ -59,7 +59,7 @@ public class ShrinkingBenchmarks
     [Benchmark]
     public async Task ShrinkString_ContainsSubstring()
     {
-        Strategy<string> strategy = Generate.Strings(alphabet: "er");
+        Strategy<string> strategy = Strategy.Strings(alphabet: "er");
         await TestRunner.Run(settings, data =>
         {
             string s = strategy.Generate(data);
@@ -71,7 +71,7 @@ public class ShrinkingBenchmarks
     [Benchmark]
     public async Task ShrinkList_SumGreaterThanThreshold()
     {
-        Strategy<List<int>> strategy = Generate.Lists(Generate.Integers<int>(0, 200));
+        Strategy<List<int>> strategy = Strategy.Lists(Strategy.Integers<int>(0, 200));
         await TestRunner.Run(settings, data =>
         {
             List<int> xs = strategy.Generate(data);
@@ -118,7 +118,7 @@ public class AsyncPropertyOverheadBenchmarks
     {
         await TestRunner.Run(settings, data =>
         {
-            int v = Generate.Integers<int>(0, 100).Generate(data);
+            int v = Strategy.Integers<int>(0, 100).Generate(data);
             _ = v;
         });
     }
@@ -128,7 +128,7 @@ public class AsyncPropertyOverheadBenchmarks
     {
         await TestRunner.RunAsync(settings, async data =>
         {
-            int v = Generate.Integers<int>(0, 100).Generate(data);
+            int v = Strategy.Integers<int>(0, 100).Generate(data);
             await Task.Yield();
             _ = v;
         });

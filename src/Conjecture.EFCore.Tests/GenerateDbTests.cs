@@ -25,10 +25,8 @@ public class GenerateDbTests
 
     // ---- test DbContext ------------------------------------------------
 
-    private sealed class OrderDbContext : DbContext
+    private sealed class OrderDbContext(DbContextOptions<GenerateDbTests.OrderDbContext> options) : DbContext(options)
     {
-        public OrderDbContext(DbContextOptions<OrderDbContext> options) : base(options) { }
-
         public DbSet<Order> Orders { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -59,7 +57,7 @@ public class GenerateDbTests
     public void Generate_Db_Add_ProducesAddInteraction()
     {
         IModel model = CreateOrderModel();
-        Strategy<DbInteraction> strategy = Generate.Db.Add<Order>("orders-db", model);
+        Strategy<DbInteraction> strategy = Strategy.Db.Add<Order>("orders-db", model);
 
         IReadOnlyList<DbInteraction> samples = DataGen.Sample(strategy, count: 20, seed: 1UL);
 
@@ -75,7 +73,7 @@ public class GenerateDbTests
     public void Generate_Db_Update_ProducesUpdateInteraction()
     {
         IModel model = CreateOrderModel();
-        Strategy<DbInteraction> strategy = Generate.Db.Update<Order>("orders-db", model);
+        Strategy<DbInteraction> strategy = Strategy.Db.Update<Order>("orders-db", model);
 
         IReadOnlyList<DbInteraction> samples = DataGen.Sample(strategy, count: 20, seed: 2UL);
 
@@ -91,7 +89,7 @@ public class GenerateDbTests
     public void Generate_Db_Remove_ProducesRemoveInteraction()
     {
         IModel model = CreateOrderModel();
-        Strategy<DbInteraction> strategy = Generate.Db.Remove<Order>("orders-db", model);
+        Strategy<DbInteraction> strategy = Strategy.Db.Remove<Order>("orders-db", model);
 
         IReadOnlyList<DbInteraction> samples = DataGen.Sample(strategy, count: 20, seed: 3UL);
 
@@ -106,7 +104,7 @@ public class GenerateDbTests
     [Fact]
     public void Generate_Db_SaveChanges_ProducesSaveChangesInteraction()
     {
-        Strategy<DbInteraction> strategy = Generate.Db.SaveChanges("orders-db");
+        Strategy<DbInteraction> strategy = Strategy.Db.SaveChanges("orders-db");
 
         IReadOnlyList<DbInteraction> samples = DataGen.Sample(strategy, count: 10, seed: 4UL);
 
@@ -122,39 +120,33 @@ public class GenerateDbTests
     public void Generate_Db_Sequence_ProducesListInRange()
     {
         IModel model = CreateOrderModel();
-        Strategy<IReadOnlyList<DbInteraction>> strategy = Generate.Db.Sequence("orders-db", model, min: 2, max: 4);
+        Strategy<IReadOnlyList<DbInteraction>> strategy = Strategy.Db.Sequence("orders-db", model, min: 2, max: 4);
 
         IReadOnlyList<IReadOnlyList<DbInteraction>> samples = DataGen.Sample(strategy, count: 30, seed: 5UL);
 
-        Assert.All(samples, static list =>
-        {
-            Assert.True(list.Count >= 2 && list.Count <= 4,
-                $"Expected Count in [2,4] but got {list.Count}");
-        });
+        Assert.All(samples, static list => Assert.True(list.Count >= 2 && list.Count <= 4,
+                $"Expected Count in [2,4] but got {list.Count}"));
     }
 
     [Fact]
     public void Generate_Db_Sequence_ListContainsValidInteractions()
     {
         IModel model = CreateOrderModel();
-        Strategy<IReadOnlyList<DbInteraction>> strategy = Generate.Db.Sequence("orders-db", model, min: 1, max: 5);
+        Strategy<IReadOnlyList<DbInteraction>> strategy = Strategy.Db.Sequence("orders-db", model, min: 1, max: 5);
 
         IReadOnlyList<IReadOnlyList<DbInteraction>> samples = DataGen.Sample(strategy, count: 30, seed: 6UL);
 
-        Assert.All(samples, static list =>
-        {
-            Assert.All(list, static interaction =>
+        Assert.All(samples, static list => Assert.All(list, static interaction =>
             {
                 Assert.NotNull(interaction);
                 Assert.Equal("orders-db", interaction.ResourceName);
-            });
-        });
+            }));
     }
 
     [Fact]
     public void Generate_Db_Add_NullModel_Throws()
     {
-        Assert.Throws<ArgumentNullException>(() => Generate.Db.Add<Order>("orders-db", null!));
+        Assert.Throws<ArgumentNullException>(() => Strategy.Db.Add<Order>("orders-db", null!));
     }
 
     [Fact]
@@ -162,6 +154,6 @@ public class GenerateDbTests
     {
         IModel model = CreateOrderModel();
 
-        Assert.Throws<ArgumentNullException>(() => Generate.Db.Add<Order>(null!, model));
+        Assert.Throws<ArgumentNullException>(() => Strategy.Db.Add<Order>(null!, model));
     }
 }

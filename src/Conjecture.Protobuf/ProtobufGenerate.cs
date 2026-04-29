@@ -10,11 +10,11 @@ using Google.Protobuf.Reflection;
 
 namespace Conjecture.Protobuf;
 
-/// <summary>Extension methods on <see cref="Generate"/> for Protobuf-driven generation.</summary>
+/// <summary>Extension methods on <see cref="Strategy"/> for Protobuf-driven generation.</summary>
 #pragma warning disable RS0026 // multiple overloads with optional parameters — established project pattern
 public static class ProtobufGenerate
 {
-    extension(Generate)
+    extension(Strategy)
     {
         /// <summary>Returns a strategy that generates <see cref="JsonElement"/> objects shaped by the Protobuf message <typeparamref name="T"/>.</summary>
         public static Strategy<JsonElement> FromProtobuf<T>(int maxDepth = 5)

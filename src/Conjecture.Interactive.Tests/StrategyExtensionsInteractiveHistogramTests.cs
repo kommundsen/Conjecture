@@ -10,7 +10,7 @@ public class StrategyExtensionsInteractiveHistogramTests
     [Fact]
     public void Histogram_DoubleStrategy_ReturnsTextHistogram()
     {
-        Strategy<double> strategy = Generate.Doubles(0.0, 100.0);
+        Strategy<double> strategy = Strategy.Doubles(0.0, 100.0);
 
         string text = strategy.Histogram(sampleSize: 200, seed: 1UL);
 
@@ -21,7 +21,7 @@ public class StrategyExtensionsInteractiveHistogramTests
     [Fact]
     public void Histogram_IntStrategy_ReturnsTextHistogram()
     {
-        Strategy<int> strategy = Generate.Integers<int>(1, 100);
+        Strategy<int> strategy = Strategy.Integers<int>(1, 100);
 
         string text = strategy.Histogram(sampleSize: 200, seed: 1UL);
 
@@ -32,7 +32,7 @@ public class StrategyExtensionsInteractiveHistogramTests
     [Fact]
     public void Histogram_SelectorOverload_ReturnsTextHistogram()
     {
-        Strategy<string> strategy = Generate.Strings(minLength: 1, maxLength: 20);
+        Strategy<string> strategy = Strategy.Strings(minLength: 1, maxLength: 20);
 
         string text = strategy.Histogram(static x => (double)x.Length, sampleSize: 200, seed: 1UL);
 

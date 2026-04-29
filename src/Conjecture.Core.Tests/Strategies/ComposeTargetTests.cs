@@ -11,9 +11,9 @@ public class ComposeTargetTests
     [Fact]
     public async Task Compose_Target_RecordsObservation()
     {
-        var strategy = Generate.Compose(ctx =>
+        var strategy = Strategy.Compose(ctx =>
         {
-            var n = ctx.Generate(Generate.Integers<int>(0, 100));
+            var n = ctx.Generate(Strategy.Integers<int>(0, 100));
             ctx.Target(n, "size");
             return n;
         });
@@ -32,9 +32,9 @@ public class ComposeTargetTests
     [Fact]
     public async Task Compose_Target_DefaultLabel()
     {
-        var strategy = Generate.Compose(ctx =>
+        var strategy = Strategy.Compose(ctx =>
         {
-            var n = ctx.Generate(Generate.Integers<int>(0, 100));
+            var n = ctx.Generate(Strategy.Integers<int>(0, 100));
             ctx.Target(n);
             return n;
         });
@@ -52,7 +52,7 @@ public class ComposeTargetTests
     [Fact]
     public async Task Compose_Target_NaN_Throws()
     {
-        var strategy = Generate.Compose(ctx =>
+        var strategy = Strategy.Compose(ctx =>
         {
             Assert.Throws<ArgumentException>(() => ctx.Target(double.NaN));
             return 0;

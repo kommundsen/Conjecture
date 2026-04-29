@@ -7,9 +7,9 @@ Conjecture.EFCore.EntityStrategyBuilder.Build<TEntity>() -> Conjecture.Core.Stra
 Conjecture.EFCore.PropertyStrategyBuilder
 static Conjecture.EFCore.PropertyStrategyBuilder.Build(Microsoft.EntityFrameworkCore.Metadata.IProperty! property) -> Conjecture.Core.Strategy<object?>!
 Conjecture.EFCore.EFCoreGenerateExtensions
-Conjecture.EFCore.EFCoreGenerateExtensions.extension(Conjecture.Core.Generate!)
-static Conjecture.EFCore.EFCoreGenerateExtensions.extension(Conjecture.Core.Generate!).Entity<T>(Microsoft.EntityFrameworkCore.DbContext! context, int maxDepth = 2) -> Conjecture.Core.Strategy<T!>!
-static Conjecture.EFCore.EFCoreGenerateExtensions.extension(Conjecture.Core.Generate!).Entity<T>(System.Func<Microsoft.EntityFrameworkCore.DbContext!>! contextFactory, int maxDepth = 2) -> Conjecture.Core.Strategy<T!>!
+Conjecture.EFCore.EFCoreGenerateExtensions.extension(Conjecture.Core.Strategy!)
+static Conjecture.EFCore.EFCoreGenerateExtensions.extension(Conjecture.Core.Strategy!).Entity<T>(Microsoft.EntityFrameworkCore.DbContext! context, int maxDepth = 2) -> Conjecture.Core.Strategy<T!>!
+static Conjecture.EFCore.EFCoreGenerateExtensions.extension(Conjecture.Core.Strategy!).Entity<T>(System.Func<Microsoft.EntityFrameworkCore.DbContext!>! contextFactory, int maxDepth = 2) -> Conjecture.Core.Strategy<T!>!
 Conjecture.EFCore.RoundtripAssertionException
 Conjecture.EFCore.RoundtripAssertionException.RoundtripAssertionException(string! message) -> void
 Conjecture.EFCore.RoundtripAsserter
@@ -63,8 +63,8 @@ Conjecture.EFCore.GenerateDbBlock.Remove<T>(string! resourceName, Microsoft.Enti
 Conjecture.EFCore.GenerateDbBlock.SaveChanges(string! resourceName) -> Conjecture.Core.Strategy<Conjecture.EFCore.DbInteraction!>!
 Conjecture.EFCore.GenerateDbBlock.Sequence(string! resourceName, Microsoft.EntityFrameworkCore.Metadata.IModel! model, int min = 1, int max = 5) -> Conjecture.Core.Strategy<System.Collections.Generic.IReadOnlyList<Conjecture.EFCore.DbInteraction!>!>!
 Conjecture.EFCore.DbGenerateExtensions
-Conjecture.EFCore.DbGenerateExtensions.extension(Conjecture.Core.Generate!)
-static Conjecture.EFCore.DbGenerateExtensions.extension(Conjecture.Core.Generate!).Db.get -> Conjecture.EFCore.GenerateDbBlock!
+Conjecture.EFCore.DbGenerateExtensions.extension(Conjecture.Core.Strategy!)
+static Conjecture.EFCore.DbGenerateExtensions.extension(Conjecture.Core.Strategy!).Db.get -> Conjecture.EFCore.GenerateDbBlock!
 Conjecture.EFCore.DbInvariantException
 Conjecture.EFCore.DbInvariantException.DbInvariantException(string! message) -> void
 Conjecture.EFCore.DbInvariantException.DbInvariantException(string! message, System.Exception! innerException) -> void

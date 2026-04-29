@@ -42,8 +42,8 @@ public class EFCoreSetupResourceTests
     }
 
     [Theory]
-    [InlineData("Generate.Entity")]
-    [InlineData("Generate.EntitySet")]
+    [InlineData("Strategy.Entity")]
+    [InlineData("Strategy.EntitySet")]
     [InlineData("RoundtripAsserter")]
     [InlineData("MigrationHarness")]
     public async Task EFCoreSetupResource_ExistsAndContainsExpectedSnippets(string expectedTerm)

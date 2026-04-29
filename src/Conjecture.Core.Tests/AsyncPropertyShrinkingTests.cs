@@ -33,7 +33,7 @@ public sealed class AsyncPropertyShrinkingTests : IDisposable
             new ConjectureSettings { MaxExamples = 200, Seed = 1UL },
             async data =>
             {
-                int x = Generate.Integers<int>(0, 100).Generate(data);
+                int x = Strategy.Integers<int>(0, 100).Generate(data);
                 await Task.Yield();
                 if (x > 5)
                 {
@@ -44,7 +44,7 @@ public sealed class AsyncPropertyShrinkingTests : IDisposable
         Assert.False(result.Passed);
         Assert.True(result.ShrinkCount > 0);
         ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
-        int shrunkValue = Generate.Integers<int>(0, 100).Generate(replay);
+        int shrunkValue = Strategy.Integers<int>(0, 100).Generate(replay);
         Assert.Equal(6, shrunkValue);
     }
 
@@ -74,7 +74,7 @@ public sealed class AsyncPropertyShrinkingTests : IDisposable
             new ConjectureSettings { MaxExamples = 200, Seed = 7UL },
             async data =>
             {
-                int x = Generate.Integers<int>(0, 500).Generate(data);
+                int x = Strategy.Integers<int>(0, 500).Generate(data);
                 await Task.Delay(0); // forces a real thread-pool continuation
                 if (x > 10)
                 {
@@ -85,7 +85,7 @@ public sealed class AsyncPropertyShrinkingTests : IDisposable
         Assert.False(result.Passed);
         Assert.True(result.ShrinkCount > 0);
         ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
-        int shrunkValue = Generate.Integers<int>(0, 500).Generate(replay);
+        int shrunkValue = Strategy.Integers<int>(0, 500).Generate(replay);
         Assert.Equal(11, shrunkValue);
     }
 

@@ -18,7 +18,7 @@ module Gen =
         s
 
     let constant (value: 'a) : Gen<'a> =
-        Gen(Generate.Just(value))
+        Gen(Strategy.Just(value))
 
     let map (f: 'a -> 'b) (gen: Gen<'a>) : Gen<'b> =
         let strategy = unwrap gen
@@ -35,39 +35,39 @@ module Gen =
 
     let oneOf (gens: Gen<'a> list) : Gen<'a> =
         let strategies = List.toArray (List.map unwrap gens)
-        Gen(Generate.OneOf(strategies))
+        Gen(Strategy.OneOf(strategies))
 
     let int (range: int * int) : Gen<int> =
         let (min, max) = range
-        Gen(Generate.Integers<int>(min, max))
+        Gen(Strategy.Integers<int>(min, max))
 
     let float (range: float * float) : Gen<float> =
         let (min, max) = range
-        Gen(Generate.Doubles(min, max))
+        Gen(Strategy.Doubles(min, max))
 
     let string (range: int * int) : Gen<string> =
         let (minLen, maxLen) = range
-        Gen(Generate.Strings(minLen, maxLen))
+        Gen(Strategy.Strings(minLen, maxLen))
 
     let bool : Gen<bool> =
-        Gen(Generate.Booleans())
+        Gen(Strategy.Booleans())
 
     let list (gen: Gen<'a>) : Gen<'a list> =
         let inner = unwrap gen
-        Gen(StrategyExtensions.Select(Generate.Lists(inner), System.Func<_, _>(fun (lst: System.Collections.Generic.List<'a>) -> lst |> Seq.toList)))
+        Gen(StrategyExtensions.Select(Strategy.Lists(inner), System.Func<_, _>(fun (lst: System.Collections.Generic.List<'a>) -> lst |> Seq.toList)))
 
     let option (gen: Gen<'a>) : Gen<'a option> =
         Gen(StrategyExtensions.SelectMany(
-            Generate.Booleans(),
+            Strategy.Booleans(),
             System.Func<_, _>(fun flag ->
                 if flag then
                     StrategyExtensions.Select(unwrap gen, System.Func<_, _>(Some))
                 else
-                    Generate.Just(None))))
+                    Strategy.Just(None))))
 
     let result (okGen: Gen<'ok>) (errGen: Gen<'err>) : Gen<Result<'ok, 'err>> =
         Gen(StrategyExtensions.SelectMany(
-            Generate.Booleans(),
+            Strategy.Booleans(),
             System.Func<_, _>(fun flag ->
                 if flag then
                     StrategyExtensions.Select(unwrap okGen, System.Func<_, _>(Ok))
@@ -76,11 +76,11 @@ module Gen =
 
     let set (gen: Gen<'a>) : Gen<Set<'a>> =
         let inner = unwrap gen
-        Gen(StrategyExtensions.Select(Generate.Lists(inner), System.Func<_, _>(fun (lst: System.Collections.Generic.List<'a>) -> lst |> Set.ofSeq)))
+        Gen(StrategyExtensions.Select(Strategy.Lists(inner), System.Func<_, _>(fun (lst: System.Collections.Generic.List<'a>) -> lst |> Set.ofSeq)))
 
     let seq (gen: Gen<'a>) : Gen<seq<'a>> =
         let inner = unwrap gen
-        Gen(StrategyExtensions.Select(Generate.Lists(inner), System.Func<_, _>(fun (lst: System.Collections.Generic.List<'a>) -> lst :> seq<'a>)))
+        Gen(StrategyExtensions.Select(Strategy.Lists(inner), System.Func<_, _>(fun (lst: System.Collections.Generic.List<'a>) -> lst :> seq<'a>)))
 
     let tuple2 (genA: Gen<'a>) (genB: Gen<'b>) : Gen<'a * 'b> =
         Gen(StrategyExtensions.SelectMany(
@@ -158,4 +158,3 @@ module Gen =
     let auto<'a> () : Gen<'a> =
         let cache = Dictionary<struct (int * Type), Gen<obj>>()
         autoWithDepth cache 3 typeof<'a> |> map (fun o -> o :?> 'a)
-

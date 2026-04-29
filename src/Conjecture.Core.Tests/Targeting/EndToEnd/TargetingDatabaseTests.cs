@@ -8,9 +8,9 @@ namespace Conjecture.Core.Tests.Targeting.EndToEnd;
 
 public sealed class TargetingDatabaseTests : IDisposable
 {
-    // Generate.Just(0) draws no IR nodes per element, so HillClimber optimises only the size node.
+    // Strategy.Just(0) draws no IR nodes per element, so HillClimber optimises only the size node.
     private static readonly Strategy<List<int>> ListStrategy =
-        Generate.Lists(Generate.Just(0), 0, 100);
+        Strategy.Lists(Strategy.Just(0), 0, 100);
 
     private readonly string tempDir;
     private readonly string dbPath;

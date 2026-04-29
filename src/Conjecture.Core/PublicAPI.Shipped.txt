@@ -8,19 +8,6 @@ Conjecture.Core.ConjectureSettings.MaxExamples.get -> int
 Conjecture.Core.ConjectureSettings.MaxExamples.init -> void
 Conjecture.Core.ConjectureSettings.Seed.get -> ulong?
 Conjecture.Core.ConjectureSettings.Seed.init -> void
-Conjecture.Core.Generate
-static Conjecture.Core.Generate.Booleans() -> Conjecture.Core.Strategy<bool>!
-static Conjecture.Core.Generate.Bytes(int size) -> Conjecture.Core.Strategy<byte[]!>!
-static Conjecture.Core.Generate.Just<T>(T value) -> Conjecture.Core.Strategy<T>!
-static Conjecture.Core.Generate.OneOf<T>(params Conjecture.Core.Strategy<T>![]! strategies) -> Conjecture.Core.Strategy<T>!
-static Conjecture.Core.Generate.SampledFrom<T>(System.Collections.Generic.IReadOnlyList<T>! values) -> Conjecture.Core.Strategy<T>!
-static Conjecture.Core.Generate.Integers<T>() -> Conjecture.Core.Strategy<T>!
-static Conjecture.Core.Generate.Integers<T>(T min, T max) -> Conjecture.Core.Strategy<T>!
-static Conjecture.Core.Generate.Enums<T>() -> Conjecture.Core.Strategy<T>!
-static Conjecture.Core.Generate.Doubles() -> Conjecture.Core.Strategy<double>!
-static Conjecture.Core.Generate.Doubles(double min, double max) -> Conjecture.Core.Strategy<double>!
-static Conjecture.Core.Generate.Floats() -> Conjecture.Core.Strategy<float>!
-static Conjecture.Core.Generate.Floats(float min, float max) -> Conjecture.Core.Strategy<float>!
 Conjecture.Core.UnsatisfiedAssumptionException
 Conjecture.Core.UnsatisfiedAssumptionException.UnsatisfiedAssumptionException() -> void
 Conjecture.Core.IStrategyFormatter<T>
@@ -37,16 +24,7 @@ Conjecture.Core.StrategyExtensions.extension<T>(Conjecture.Core.Strategy<T>!).Se
 Conjecture.Core.StrategyExtensions.extension<T>(Conjecture.Core.Strategy<T>!).Zip<TSecond>(Conjecture.Core.Strategy<TSecond>! second) -> Conjecture.Core.Strategy<(T, TSecond)>!
 Conjecture.Core.StrategyExtensions.extension<T>(Conjecture.Core.Strategy<T>!).Zip<TSecond, TResult>(Conjecture.Core.Strategy<TSecond>! second, System.Func<T, TSecond, TResult>! resultSelector) -> Conjecture.Core.Strategy<TResult>!
 Conjecture.Core.StrategyExtensions.extension<T>(Conjecture.Core.Strategy<T>!).WithLabel(string! label) -> Conjecture.Core.Strategy<T>!
-static Conjecture.Core.Generate.Strings(int minLength = 0, int maxLength = 20, int minCodepoint = 32, int maxCodepoint = 126, string? alphabet = null) -> Conjecture.Core.Strategy<string!>!
-static Conjecture.Core.Generate.Text(int minLength = 0, int maxLength = 20) -> Conjecture.Core.Strategy<string!>!
-static Conjecture.Core.Generate.Nullable<T>(Conjecture.Core.Strategy<T>! inner) -> Conjecture.Core.Strategy<T?>!
 Conjecture.Core.StrategyExtensions.extension<T>(Conjecture.Core.Strategy<T>!).OrNull() -> Conjecture.Core.Strategy<T?>!
-static Conjecture.Core.Generate.Tuples<T1, T2>(Conjecture.Core.Strategy<T1>! first, Conjecture.Core.Strategy<T2>! second) -> Conjecture.Core.Strategy<(T1, T2)>!
-static Conjecture.Core.Generate.Tuples<T1, T2, T3>(Conjecture.Core.Strategy<T1>! first, Conjecture.Core.Strategy<T2>! second, Conjecture.Core.Strategy<T3>! third) -> Conjecture.Core.Strategy<(T1, T2, T3)>!
-static Conjecture.Core.Generate.Tuples<T1, T2, T3, T4>(Conjecture.Core.Strategy<T1>! first, Conjecture.Core.Strategy<T2>! second, Conjecture.Core.Strategy<T3>! third, Conjecture.Core.Strategy<T4>! fourth) -> Conjecture.Core.Strategy<(T1, T2, T3, T4)>!
-static Conjecture.Core.Generate.Lists<T>(Conjecture.Core.Strategy<T>! inner, int minSize = 0, int maxSize = 100) -> Conjecture.Core.Strategy<System.Collections.Generic.List<T>!>!
-static Conjecture.Core.Generate.Sets<T>(Conjecture.Core.Strategy<T>! inner, int minSize = 0, int maxSize = 100) -> Conjecture.Core.Strategy<System.Collections.Generic.IReadOnlySet<T>!>!
-static Conjecture.Core.Generate.Dictionaries<TKey, TValue>(Conjecture.Core.Strategy<TKey>! keyStrategy, Conjecture.Core.Strategy<TValue>! valueStrategy, int minSize = 0, int maxSize = 100) -> Conjecture.Core.Strategy<System.Collections.Generic.IReadOnlyDictionary<TKey, TValue>!>!
 Conjecture.Core.FormatterRegistry
 static Conjecture.Core.FormatterRegistry.Get<T>() -> Conjecture.Core.IStrategyFormatter<T>?
 static Conjecture.Core.FormatterRegistry.Register<T>(Conjecture.Core.IStrategyFormatter<T>? formatter) -> void
@@ -116,8 +94,6 @@ Conjecture.Core.StateMachineRun<TState>.Steps.get -> System.Collections.Generic.
 Conjecture.Core.StateMachineRun<TState>.FailureStepIndex.get -> int?
 Conjecture.Core.StateMachineRun<TState>.FinalState.get -> TState
 Conjecture.Core.StateMachineRun<TState>.Passed.get -> bool
-static Conjecture.Core.Generate.Recursive<T>(Conjecture.Core.Strategy<T>! baseCase, System.Func<Conjecture.Core.Strategy<T>!, Conjecture.Core.Strategy<T>!>! recursive, int maxDepth = 5) -> Conjecture.Core.Strategy<T>!
-static Conjecture.Core.Generate.StateMachine<TMachine, TState, TCommand>(int maxSteps = 50) -> Conjecture.Core.Strategy<Conjecture.Core.StateMachineRun<TState>!>!
 Conjecture.Core.StateMachineFormatter<TState>
 Conjecture.Core.StateMachineFormatter<TState>.StateMachineFormatter() -> void
 Conjecture.Core.StateMachineFormatter<TState>.Format(Conjecture.Core.StateMachineRun<TState>! value) -> string!
@@ -152,9 +128,6 @@ Conjecture.Core.StrategyExtensionProperties.extension<T>(Conjecture.Core.Strateg
 Conjecture.Core.StrategyExtensionProperties.extension<T>(Conjecture.Core.Strategy<System.Collections.Generic.List<T>!>!).NonEmpty.get -> Conjecture.Core.Strategy<System.Collections.Generic.List<T>!>!
 Conjecture.Core.StrategyExtensionProperties.extension<T>(Conjecture.Core.Strategy<T>!)
 static Conjecture.Core.StrategyExtensionProperties.extension<T>(Conjecture.Core.Strategy<T>!).operator |(Conjecture.Core.Strategy<T>! left, Conjecture.Core.Strategy<T>! right) -> Conjecture.Core.Strategy<T>!
-static Conjecture.Core.Generate.Identifiers(int minPrefixLength = 1, int maxPrefixLength = 6, int minDigits = 1, int maxDigits = 4) -> Conjecture.Core.Strategy<string!>!
-static Conjecture.Core.Generate.NumericStrings(int minDigits = 1, int maxDigits = 6, string? prefix = null, string? suffix = null) -> Conjecture.Core.Strategy<string!>!
-static Conjecture.Core.Generate.VersionStrings(int maxMajor = 9, int maxMinor = 9, int maxPatch = 9) -> Conjecture.Core.Strategy<string!>!
 Conjecture.Core.ConjectureStrategyRegistrar
 Conjecture.Core.IPropertyTest
 Conjecture.Core.IPropertyTest.DeadlineMs.get -> int
@@ -169,15 +142,6 @@ Conjecture.Core.IReproductionExport.ExportReproOnFailure.get -> bool
 Conjecture.Core.IReproductionExport.ReproOutputPath.get -> string!
 static Conjecture.Core.ConjectureSettings.From(Conjecture.Core.IPropertyTest! attr, Microsoft.Extensions.Logging.ILogger? logger = null) -> Conjecture.Core.ConjectureSettings!
 static Conjecture.Core.ConjectureStrategyRegistrar.Register(System.Func<System.Type!, object?>! strategyFactory) -> void
-static Conjecture.Core.Generate.DateOnlyValues() -> Conjecture.Core.Strategy<System.DateOnly>!
-static Conjecture.Core.Generate.DateOnlyValues(System.DateOnly min, System.DateOnly max) -> Conjecture.Core.Strategy<System.DateOnly>!
-static Conjecture.Core.Generate.DateTimeOffsets() -> Conjecture.Core.Strategy<System.DateTimeOffset>!
-static Conjecture.Core.Generate.DateTimeOffsets(System.DateTimeOffset min, System.DateTimeOffset max) -> Conjecture.Core.Strategy<System.DateTimeOffset>!
-static Conjecture.Core.Generate.FromBytes<T>(System.ReadOnlySpan<byte> buffer) -> Conjecture.Core.Strategy<T>!
-static Conjecture.Core.Generate.TimeOnlyValues() -> Conjecture.Core.Strategy<System.TimeOnly>!
-static Conjecture.Core.Generate.TimeOnlyValues(System.TimeOnly min, System.TimeOnly max) -> Conjecture.Core.Strategy<System.TimeOnly>!
-static Conjecture.Core.Generate.TimeSpans() -> Conjecture.Core.Strategy<System.TimeSpan>!
-static Conjecture.Core.Generate.TimeSpans(System.TimeSpan min, System.TimeSpan max) -> Conjecture.Core.Strategy<System.TimeSpan>!
 Conjecture.Core.ConjectureObservability
 Conjecture.Core.PartialConstructorContext
 Conjecture.Core.ConjectureSettings.TestClassName.get -> string?
@@ -190,11 +154,6 @@ Conjecture.Core.ForConfiguration<T>
 Conjecture.Core.ForConfiguration<T>.ForConfiguration() -> void
 Conjecture.Core.ForConfiguration<T>.Override<TProp>(System.Linq.Expressions.Expression<System.Func<T, TProp>!>! selector, Conjecture.Core.Strategy<TProp>! strategy) -> Conjecture.Core.ForConfiguration<T>!
 Conjecture.Core.ForConfiguration<T>.TryGet<TProp>(string! propertyName) -> Conjecture.Core.Strategy<TProp>?
-static Conjecture.Core.Generate.For<T>(System.Action<Conjecture.Core.ForConfiguration<T>!>! configure) -> Conjecture.Core.Strategy<T>!
-static Conjecture.Core.Generate.For<T>() -> Conjecture.Core.Strategy<T>!
-static Conjecture.Core.Generate.Guids() -> Conjecture.Core.Strategy<System.Guid>!
-static Conjecture.Core.Generate.Decimals() -> Conjecture.Core.Strategy<decimal>!
-static Conjecture.Core.Generate.Decimals(decimal min, decimal max) -> Conjecture.Core.Strategy<decimal>!
 Conjecture.Core.GenRangeAttribute
 Conjecture.Core.GenRangeAttribute.GenRangeAttribute(double min, double max) -> void
 Conjecture.Core.GenRangeAttribute.Max.get -> double
@@ -206,13 +165,9 @@ Conjecture.Core.GenStringLengthAttribute.MinLength.get -> int
 Conjecture.Core.GenRegexAttribute
 Conjecture.Core.GenRegexAttribute.GenRegexAttribute(string! pattern) -> void
 Conjecture.Core.GenRegexAttribute.Pattern.get -> string!
-static Conjecture.Core.Generate.DateTimes() -> Conjecture.Core.Strategy<System.DateTime>!
-static Conjecture.Core.Generate.DateTimes(System.DateTime min, System.DateTime max) -> Conjecture.Core.Strategy<System.DateTime>!
-static Conjecture.Core.Generate.Chars() -> Conjecture.Core.Strategy<char>!
 Conjecture.Core.GenMaxDepthAttribute
 Conjecture.Core.GenMaxDepthAttribute.GenMaxDepthAttribute(int maxDepth) -> void
 Conjecture.Core.GenMaxDepthAttribute.MaxDepth.get -> int
-static Conjecture.Core.Generate.OneOf<T>(params System.ReadOnlySpan<Conjecture.Core.Strategy<T>!> strategies) -> Conjecture.Core.Strategy<T>!
 Conjecture.Core.GenerateForRegistry
 static Conjecture.Core.GenerateForRegistry.IsRegistered(System.Type! type) -> bool
 static Conjecture.Core.GenerateForRegistry.Register(System.Type! type, System.Func<Conjecture.Core.IStrategyProvider!>! factory) -> void

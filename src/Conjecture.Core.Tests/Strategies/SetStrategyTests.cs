@@ -14,7 +14,7 @@ public class SetStrategyTests
     [Fact]
     public void Sets_ProducesIReadOnlySet()
     {
-        var strategy = Generate.Sets(Generate.Integers<int>(0, 100));
+        var strategy = Strategy.Sets(Strategy.Integers<int>(0, 100));
         var result = strategy.Generate(MakeData());
         Assert.IsAssignableFrom<IReadOnlySet<int>>(result);
     }
@@ -22,7 +22,7 @@ public class SetStrategyTests
     [Fact]
     public void Sets_AllElementsAreUnique()
     {
-        var strategy = Generate.Sets(Generate.Integers<int>(0, 100));
+        var strategy = Strategy.Sets(Strategy.Integers<int>(0, 100));
         for (var i = 0; i < 200; i++)
         {
             var result = strategy.Generate(MakeData((ulong)i));
@@ -33,7 +33,7 @@ public class SetStrategyTests
     [Fact]
     public void Sets_DefaultSizeVariesAcrossSeeds()
     {
-        var strategy = Generate.Sets(Generate.Integers<int>(0, 100));
+        var strategy = Strategy.Sets(Strategy.Integers<int>(0, 100));
         var sizes = new HashSet<int>();
         for (var i = 0; i < 200; i++)
         {
@@ -45,7 +45,7 @@ public class SetStrategyTests
     [Fact]
     public void Sets_RespectsMinSizeAndMaxSize()
     {
-        var strategy = Generate.Sets(Generate.Integers<int>(0, 100), minSize: 3, maxSize: 5);
+        var strategy = Strategy.Sets(Strategy.Integers<int>(0, 100), minSize: 3, maxSize: 5);
         for (var i = 0; i < 100; i++)
         {
             var count = strategy.Generate(MakeData((ulong)i)).Count;
@@ -56,7 +56,7 @@ public class SetStrategyTests
     [Fact]
     public void Sets_DeterministicWithSameSeed()
     {
-        var strategy = Generate.Sets(Generate.Integers<int>(0, 100));
+        var strategy = Strategy.Sets(Strategy.Integers<int>(0, 100));
         var set1 = strategy.Generate(MakeData(99UL));
         var set2 = strategy.Generate(MakeData(99UL));
         Assert.Equal(set1.OrderBy(x => x), set2.OrderBy(x => x));
@@ -67,7 +67,7 @@ public class SetStrategyTests
     {
         // Inner strategy can only produce 3 distinct values (0, 1, 2); minSize=5 is impossible
         var data = MakeData();
-        var strategy = Generate.Sets(Generate.Integers<int>(0, 2), minSize: 5, maxSize: 10);
+        var strategy = Strategy.Sets(Strategy.Integers<int>(0, 2), minSize: 5, maxSize: 10);
         Assert.ThrowsAny<Exception>((Action)(() => strategy.Generate(data)));
         Assert.Equal(Status.Invalid, data.Status);
     }

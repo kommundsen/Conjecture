@@ -24,7 +24,7 @@ public sealed class ConstraintAttributeTests
             """,
             "R.g.cs");
 
-        Assert.Contains("Generate.Integers<int>(0, 100)", text);
+        Assert.Contains("Strategy.Integers<int>(0, 100)", text);
     }
 
     [Fact]
@@ -39,7 +39,7 @@ public sealed class ConstraintAttributeTests
             """,
             "R.g.cs");
 
-        Assert.Contains("Generate.Decimals(0.01m, 999.99m)", text);
+        Assert.Contains("Strategy.Decimals(0.01m, 999.99m)", text);
     }
 
     [Fact]
@@ -54,7 +54,7 @@ public sealed class ConstraintAttributeTests
             """,
             "R.g.cs");
 
-        Assert.Contains("Generate.Strings(minLength: 1, maxLength: 50)", text);
+        Assert.Contains("Strategy.Strings(minLength: 1, maxLength: 50)", text);
     }
 
     [Fact]
@@ -71,7 +71,7 @@ public sealed class ConstraintAttributeTests
 
         Assert.Contains("Strategy<string>", text);
         Assert.DoesNotContain("Strategy<string?>", text);
-        Assert.DoesNotContain("Generate.Nullable(", text);
+        Assert.DoesNotContain("Strategy.Nullable(", text);
     }
 
     [Fact]
@@ -86,7 +86,7 @@ public sealed class ConstraintAttributeTests
             """,
             "R.g.cs");
 
-        Assert.Contains("Generate.Integers<int>(0, 10)", text);
+        Assert.Contains("Strategy.Integers<int>(0, 10)", text);
     }
 
     [Fact]
@@ -100,7 +100,7 @@ public sealed class ConstraintAttributeTests
             """,
             "R.g.cs");
 
-        Assert.Contains("Generate.Integers<int>()", text);
+        Assert.Contains("Strategy.Integers<int>()", text);
     }
 
     private static string GetGeneratedText(string source, string fileName)

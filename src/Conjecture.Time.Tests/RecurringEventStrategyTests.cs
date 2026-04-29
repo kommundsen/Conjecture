@@ -12,7 +12,7 @@ public class RecurringEventStrategyTests
     public void RecurringEvents_OccurrencesAreWithinWindow()
     {
         TimeZoneInfo zone = TimeZoneInfo.FindSystemTimeZoneById("America/New_York");
-        Strategy<RecurringEventSample> strategy = Generate.RecurringEvents(
+        Strategy<RecurringEventSample> strategy = Strategy.RecurringEvents(
             static current => current + TimeSpan.FromHours(1),
             zone,
             TimeSpan.FromHours(24));
@@ -28,7 +28,7 @@ public class RecurringEventStrategyTests
     public void RecurringEvents_OccurrencesAreMonotonicallyIncreasing()
     {
         TimeZoneInfo zone = TimeZoneInfo.FindSystemTimeZoneById("America/New_York");
-        Strategy<RecurringEventSample> strategy = Generate.RecurringEvents(
+        Strategy<RecurringEventSample> strategy = Strategy.RecurringEvents(
             static current => current + TimeSpan.FromHours(1),
             zone,
             TimeSpan.FromHours(24));
@@ -50,7 +50,7 @@ public class RecurringEventStrategyTests
     public void RecurringEvents_WithHourlySchedule_OccurrencesAreOneHourApart()
     {
         TimeZoneInfo zone = TimeZoneInfo.FindSystemTimeZoneById("America/New_York");
-        Strategy<RecurringEventSample> strategy = Generate.RecurringEvents(
+        Strategy<RecurringEventSample> strategy = Strategy.RecurringEvents(
             static current => current + TimeSpan.FromHours(1),
             zone,
             TimeSpan.FromHours(24));
@@ -73,7 +73,7 @@ public class RecurringEventStrategyTests
     public void NearDstTransition_WindowOverlapsDstChange()
     {
         TimeZoneInfo zone = TimeZoneInfo.FindSystemTimeZoneById("America/New_York");
-        Strategy<RecurringEventSample> strategy = Generate.RecurringEvents(
+        Strategy<RecurringEventSample> strategy = Strategy.RecurringEvents(
                 static current => current + TimeSpan.FromHours(1),
                 zone,
                 TimeSpan.FromHours(24))
@@ -112,7 +112,7 @@ public class RecurringEventStrategyTests
     public void RecurringEvents_EmptyOccurrences_WhenNextOccurrenceAlwaysReturnsNull()
     {
         TimeZoneInfo zone = TimeZoneInfo.FindSystemTimeZoneById("America/New_York");
-        Strategy<RecurringEventSample> strategy = Generate.RecurringEvents(
+        Strategy<RecurringEventSample> strategy = Strategy.RecurringEvents(
             static _ => (DateTimeOffset?)null,
             zone,
             TimeSpan.FromHours(24));

@@ -30,7 +30,7 @@ internal sealed class NotMatchingStrategy : Strategy<string>
 
     internal override string Generate(ConjectureData data)
     {
-        return Conjecture.Core.Generate.Compose<string>(ctx =>
+        return Conjecture.Core.Strategy.Compose<string>(ctx =>
         {
             string candidate = ctx.Generate(matchingStrategy);
 
@@ -43,7 +43,7 @@ internal sealed class NotMatchingStrategy : Strategy<string>
                 }
             }
 
-            Strategy<string> fallback = Conjecture.Core.Generate.Strings(minLength: 0, maxLength: 32);
+            Strategy<string> fallback = Conjecture.Core.Strategy.Strings(minLength: 0, maxLength: 32);
             for (int i = 0; i < FallbackAttempts; i++)
             {
                 string s = ctx.Generate(fallback);
@@ -61,7 +61,7 @@ internal sealed class NotMatchingStrategy : Strategy<string>
     private string Mutate(IGenerationContext ctx, string s)
     {
         Op[] ops = [Op.Insert, Op.Delete, Op.Replace];
-        Op op = ctx.Generate(Conjecture.Core.Generate.SampledFrom(ops));
+        Op op = ctx.Generate(Conjecture.Core.Strategy.SampledFrom(ops));
 
         if (op == Op.Delete && s.Length == 0)
         {
@@ -84,21 +84,21 @@ internal sealed class NotMatchingStrategy : Strategy<string>
 
     private static string DoInsert(IGenerationContext ctx, string s)
     {
-        int index = ctx.Generate(Conjecture.Core.Generate.Integers<int>(0, s.Length));
-        char ch = (char)ctx.Generate(Conjecture.Core.Generate.Integers<int>(0x20, 0x7E));
+        int index = ctx.Generate(Conjecture.Core.Strategy.Integers<int>(0, s.Length));
+        char ch = (char)ctx.Generate(Conjecture.Core.Strategy.Integers<int>(0x20, 0x7E));
         return s.Insert(index, new string(ch, 1));
     }
 
     private static string DoDelete(IGenerationContext ctx, string s)
     {
-        int index = ctx.Generate(Conjecture.Core.Generate.Integers<int>(0, s.Length - 1));
+        int index = ctx.Generate(Conjecture.Core.Strategy.Integers<int>(0, s.Length - 1));
         return s.Remove(index, 1);
     }
 
     private static string DoReplace(IGenerationContext ctx, string s)
     {
-        int index = ctx.Generate(Conjecture.Core.Generate.Integers<int>(0, s.Length - 1));
-        int charCode = ctx.Generate(Conjecture.Core.Generate.Integers<int>(0x20, 0x7E));
+        int index = ctx.Generate(Conjecture.Core.Strategy.Integers<int>(0, s.Length - 1));
+        int charCode = ctx.Generate(Conjecture.Core.Strategy.Integers<int>(0x20, 0x7E));
         if (charCode == s[index])
         {
             charCode ^= 1;

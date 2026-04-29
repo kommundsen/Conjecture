@@ -26,5 +26,5 @@ Conjecture.Messaging.MessagingGenerateBuilder.Consume(string! destination) -> Co
 Conjecture.Messaging.MessagingGenerateBuilder.Publish(string! destination, Conjecture.Core.Strategy<System.ReadOnlyMemory<byte>>! bodyStrategy) -> Conjecture.Core.Strategy<Conjecture.Messaging.MessageInteraction!>!
 Conjecture.Messaging.MessagingGenerateBuilder.Publish(string! destination, Conjecture.Core.Strategy<System.ReadOnlyMemory<byte>>! bodyStrategy, Conjecture.Core.Strategy<System.Collections.Generic.IReadOnlyDictionary<string!, string!>!>! headersStrategy, Conjecture.Core.Strategy<string?>? correlationIdStrategy = null) -> Conjecture.Core.Strategy<Conjecture.Messaging.MessageInteraction!>!
 Conjecture.Messaging.MessagingGenerateExtensions
-Conjecture.Messaging.MessagingGenerateExtensions.extension(Conjecture.Core.Generate!)
-static Conjecture.Messaging.MessagingGenerateExtensions.extension(Conjecture.Core.Generate!).Messaging.get -> Conjecture.Messaging.MessagingGenerateBuilder!
+Conjecture.Messaging.MessagingGenerateExtensions.extension(Conjecture.Core.Strategy!)
+static Conjecture.Messaging.MessagingGenerateExtensions.extension(Conjecture.Core.Strategy!).Messaging.get -> Conjecture.Messaging.MessagingGenerateBuilder!

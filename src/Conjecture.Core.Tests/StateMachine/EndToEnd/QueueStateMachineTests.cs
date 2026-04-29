@@ -60,9 +60,9 @@ public class QueueStateMachineTests
 
         public IEnumerable<Strategy<QueueCommand>> Commands(QueueState state)
         {
-            yield return Generate.Integers<int>(0, 9).Select(n => (QueueCommand)new QueueCommand.Enqueue(n));
-            yield return Generate.Just((QueueCommand)new QueueCommand.Dequeue());
-            yield return Generate.Just((QueueCommand)new QueueCommand.Peek());
+            yield return Strategy.Integers<int>(0, 9).Select(n => (QueueCommand)new QueueCommand.Enqueue(n));
+            yield return Strategy.Just((QueueCommand)new QueueCommand.Dequeue());
+            yield return Strategy.Just((QueueCommand)new QueueCommand.Peek());
         }
 
         public QueueState RunCommand(QueueState state, QueueCommand cmd)
@@ -115,9 +115,9 @@ public class QueueStateMachineTests
 
         public IEnumerable<Strategy<QueueCommand>> Commands(QueueState state)
         {
-            yield return Generate.Integers<int>(0, 9).Select(n => (QueueCommand)new QueueCommand.Enqueue(n));
-            yield return Generate.Just((QueueCommand)new QueueCommand.Dequeue());
-            yield return Generate.Just((QueueCommand)new QueueCommand.Peek());
+            yield return Strategy.Integers<int>(0, 9).Select(n => (QueueCommand)new QueueCommand.Enqueue(n));
+            yield return Strategy.Just((QueueCommand)new QueueCommand.Dequeue());
+            yield return Strategy.Just((QueueCommand)new QueueCommand.Peek());
         }
 
         public QueueState RunCommand(QueueState state, QueueCommand cmd)
@@ -165,11 +165,11 @@ public class QueueStateMachineTests
 
         public IEnumerable<Strategy<QueueCommand>> Commands(QueueState state)
         {
-            yield return Generate.Integers<int>(0, 9).Select(n => (QueueCommand)new QueueCommand.Enqueue(n));
+            yield return Strategy.Integers<int>(0, 9).Select(n => (QueueCommand)new QueueCommand.Enqueue(n));
             if (state.Queue.Count > 0)
             {
-                yield return Generate.Just((QueueCommand)new QueueCommand.Dequeue());
-                yield return Generate.Just((QueueCommand)new QueueCommand.Peek());
+                yield return Strategy.Just((QueueCommand)new QueueCommand.Dequeue());
+                yield return Strategy.Just((QueueCommand)new QueueCommand.Peek());
             }
         }
 
@@ -211,7 +211,7 @@ public class QueueStateMachineTests
     {
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 1UL, UseDatabase = false };
         TestRunResult result = await TestRunner.Run(settings,
-            data => _ = Generate.StateMachine<BuggyQueueMachine, QueueState, QueueCommand>().Generate(data));
+            data => _ = Strategy.StateMachine<BuggyQueueMachine, QueueState, QueueCommand>().Generate(data));
         Assert.False(result.Passed);
     }
 
@@ -220,7 +220,7 @@ public class QueueStateMachineTests
     {
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 1UL, UseDatabase = false };
         TestRunResult result = await TestRunner.Run(settings,
-            data => _ = Generate.StateMachine<BuggyQueueMachine, QueueState, QueueCommand>().Generate(data));
+            data => _ = Strategy.StateMachine<BuggyQueueMachine, QueueState, QueueCommand>().Generate(data));
         Assert.False(result.Passed);
         Assert.NotNull(result.Counterexample);
         Assert.True(result.ShrinkCount > 0, $"Expected shrinks but got ShrinkCount={result.ShrinkCount}");
@@ -237,7 +237,7 @@ public class QueueStateMachineTests
         // so no 2-step sequence can trigger the invariant.
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 1UL, UseDatabase = false };
         TestRunResult result = await TestRunner.Run(settings,
-            data => _ = Generate.StateMachine<BuggyQueueMachine, QueueState, QueueCommand>().Generate(data));
+            data => _ = Strategy.StateMachine<BuggyQueueMachine, QueueState, QueueCommand>().Generate(data));
         Assert.False(result.Passed);
         Assert.NotNull(result.Counterexample);
         Assert.Equal(3, CountCommandStarts(result.Counterexample!));
@@ -248,7 +248,7 @@ public class QueueStateMachineTests
     {
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 3UL, UseDatabase = false };
         TestRunResult result = await TestRunner.Run(settings,
-            data => _ = Generate.StateMachine<CorrectQueueMachine, QueueState, QueueCommand>().Generate(data));
+            data => _ = Strategy.StateMachine<CorrectQueueMachine, QueueState, QueueCommand>().Generate(data));
         Assert.True(result.Passed);
         Assert.Null(result.Counterexample);
     }
@@ -260,7 +260,7 @@ public class QueueStateMachineTests
         // result confirms the engine respects state-dependent command availability.
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 2UL, UseDatabase = false };
         TestRunResult result = await TestRunner.Run(settings,
-            data => _ = Generate.StateMachine<StateAwareQueueMachine, QueueState, QueueCommand>().Generate(data));
+            data => _ = Strategy.StateMachine<StateAwareQueueMachine, QueueState, QueueCommand>().Generate(data));
         Assert.True(result.Passed);
     }
 }
