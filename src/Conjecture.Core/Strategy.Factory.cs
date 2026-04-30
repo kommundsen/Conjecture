@@ -11,11 +11,11 @@ namespace Conjecture.Core;
 /// <summary>Static methods for creating and composing Conjecture strategies.</summary>
 public static class Strategy
 {
-    /// <summary>Creates a strategy from an imperative factory function using <see cref="IGenerationContext"/>.</summary>
-    public static Strategy<T> Compose<T>(Func<IGenerationContext, T> factory)
+    /// <summary>Creates a strategy from an imperative body using <see cref="IGenerationContext"/>.</summary>
+    public static Strategy<T> Compose<T>(Func<IGenerationContext, T> body)
     {
-        ArgumentNullException.ThrowIfNull(factory);
-        return new ComposeStrategy<T>(factory);
+        ArgumentNullException.ThrowIfNull(body);
+        return new ComposeStrategy<T>(body);
     }
 
     /// <summary>Returns a strategy that generates random <see cref="bool"/> values.</summary>
