@@ -63,13 +63,44 @@ public sealed class ExampleDatabaseSchemaTests : IDisposable
     }
 
     [Fact]
-    public void Schema_HasExamplesTableWithBufferColumn()
+    public void Schema_HasExamplesTableWithIrColumn()
     {
         using ExampleDatabase db = new(dbPath);
 
-        string columnType = GetColumnType("buffer");
+        string columnType = GetColumnType("ir");
 
         Assert.Equal("BLOB", columnType);
+    }
+
+    [Fact]
+    public void Migration_RenamesLegacyBufferColumnToIr()
+    {
+        // Pre-create a database with the legacy 'buffer' schema.
+        Directory.CreateDirectory(Path.GetDirectoryName(dbPath)!);
+        using (SqliteConnection seed = new($"Data Source={dbPath}"))
+        {
+            seed.Open();
+            using SqliteCommand cmd = seed.CreateCommand();
+            cmd.CommandText = """
+                CREATE TABLE examples (
+                    test_id_hash TEXT NOT NULL,
+                    buffer BLOB NOT NULL,
+                    created_at TEXT NOT NULL,
+                    UNIQUE (test_id_hash, buffer)
+                );
+                INSERT INTO examples (test_id_hash, buffer, created_at) VALUES ('legacy', x'01', '2026-01-01T00:00:00Z');
+                """;
+            cmd.ExecuteNonQuery();
+        }
+
+        using ExampleDatabase db = new(dbPath);
+
+        Assert.Equal("BLOB", GetColumnType("ir"));
+        Assert.Throws<InvalidOperationException>(() => GetColumnType("buffer"));
+
+        IReadOnlyList<byte[]> loaded = db.Load("legacy");
+        Assert.Single(loaded);
+        Assert.Equal(new byte[] { 0x01 }, loaded[0]);
     }
 
     [Fact]

@@ -52,16 +52,48 @@ internal sealed class ExampleDatabase : IDisposable
         Execute("""
             CREATE TABLE IF NOT EXISTS examples (
                 test_id_hash TEXT NOT NULL,
-                buffer BLOB NOT NULL,
+                ir BLOB NOT NULL,
                 created_at TEXT NOT NULL,
-                UNIQUE (test_id_hash, buffer)
+                UNIQUE (test_id_hash, ir)
             )
             """, tx);
+        MigrateBufferToIr(tx);
         Execute("CREATE INDEX IF NOT EXISTS idx_examples_hash ON examples (test_id_hash)", tx);
         tx.Commit();
     }
 
-    internal void Save(string testIdHash, byte[] buffer)
+    // Renames the legacy 'buffer' column to 'ir' on databases created before the rename.
+    // Idempotent: no-op when the column has already been renamed or the table was just created.
+    private void MigrateBufferToIr(SqliteTransaction tx)
+    {
+        bool hasBuffer = false;
+        bool hasIr = false;
+        using (SqliteCommand cmd = connection!.CreateCommand())
+        {
+            cmd.CommandText = "PRAGMA table_info(examples)";
+            cmd.Transaction = tx;
+            using SqliteDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                string name = reader.GetString(1);
+                if (name == "buffer")
+                {
+                    hasBuffer = true;
+                }
+                else if (name == "ir")
+                {
+                    hasIr = true;
+                }
+            }
+        }
+
+        if (hasBuffer && !hasIr)
+        {
+            Execute("ALTER TABLE examples RENAME COLUMN buffer TO ir", tx);
+        }
+    }
+
+    internal void Save(string testIdHash, byte[] ir)
     {
         if (connection is null)
         {
@@ -71,9 +103,9 @@ internal sealed class ExampleDatabase : IDisposable
         try
         {
             using SqliteCommand cmd = connection.CreateCommand();
-            cmd.CommandText = "INSERT OR IGNORE INTO examples (test_id_hash, buffer, created_at) VALUES (@hash, @buffer, @created_at)";
+            cmd.CommandText = "INSERT OR IGNORE INTO examples (test_id_hash, ir, created_at) VALUES (@hash, @ir, @created_at)";
             cmd.Parameters.AddWithValue("@hash", testIdHash);
-            cmd.Parameters.AddWithValue("@buffer", buffer);
+            cmd.Parameters.AddWithValue("@ir", ir);
             cmd.Parameters.AddWithValue("@created_at", DateTime.UtcNow.ToString("O"));
             cmd.ExecuteNonQuery();
             Log.DatabaseSaved(logger, testIdHash);
@@ -114,7 +146,7 @@ internal sealed class ExampleDatabase : IDisposable
         try
         {
             using SqliteCommand cmd = connection.CreateCommand();
-            cmd.CommandText = "SELECT buffer FROM examples WHERE test_id_hash = @hash";
+            cmd.CommandText = "SELECT ir FROM examples WHERE test_id_hash = @hash";
             cmd.Parameters.AddWithValue("@hash", testIdHash);
             using SqliteDataReader reader = cmd.ExecuteReader();
             List<byte[]> results = [];
