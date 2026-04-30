@@ -23,7 +23,7 @@ public class SharedParameterStrategyResolverTests
     private static ConjectureData MakeData(ulong seed = 42UL) =>
         ConjectureData.ForGeneration(new SplittableRandom(seed));
 
-    // ─── Factory methods used as [FromFactory] targets ───────────────────────
+    // ─── Factory methods used as [FromMethod] targets ───────────────────────
 
     public static Strategy<int> EvenInts() =>
         Strategy.Integers<int>(0, 25).Select(n => n * 2);
@@ -49,10 +49,10 @@ public class SharedParameterStrategyResolverTests
     private static void WrongProviderType([From<StringProvider>] int n) { }
     private static void MixedParams([From<PositiveIntsProvider>] int n, string s) { }
 
-    private static void WithEvenInts([FromFactory(nameof(EvenInts))] int n) { }
-    private static void WithMissingMethod([FromFactory("NoSuchMethod")] int n) { }
-    private static void WithNonStaticFactory([FromFactory(nameof(NonStaticFactory))] int n) { }
-    private static void WithWrongReturnType([FromFactory(nameof(WrongReturnTypeFactory))] int n) { }
+    private static void WithEvenInts([FromMethod(nameof(EvenInts))] int n) { }
+    private static void WithMissingMethod([FromMethod("NoSuchMethod")] int n) { }
+    private static void WithNonStaticFactory([FromMethod(nameof(NonStaticFactory))] int n) { }
+    private static void WithWrongReturnType([FromMethod(nameof(WrongReturnTypeFactory))] int n) { }
 #pragma warning restore IDE0060
 
     private static ParameterInfo[] ParamsOf(string methodName) =>
@@ -193,10 +193,10 @@ public class SharedParameterStrategyResolverTests
         Assert.True(n >= 1, $"Expected positive int from [From<>], got {n}");
     }
 
-    // ─── [FromFactory] resolution ─────────────────────────────────────────────
+    // ─── [FromMethod] resolution ─────────────────────────────────────────────
 
     [Fact]
-    public void Resolve_FromFactory_DrawsFromNamedStaticMethod()
+    public void Resolve_FromMethod_DrawsFromNamedStaticMethod()
     {
         ParameterInfo[] parameters = ParamsOf(nameof(WithEvenInts));
 
@@ -210,7 +210,7 @@ public class SharedParameterStrategyResolverTests
     }
 
     [Fact]
-    public void Resolve_FromFactory_MissingMethod_ThrowsWithMethodNameInMessage()
+    public void Resolve_FromMethod_MissingMethod_ThrowsWithMethodNameInMessage()
     {
         ParameterInfo[] parameters = ParamsOf(nameof(WithMissingMethod));
 
@@ -221,7 +221,7 @@ public class SharedParameterStrategyResolverTests
     }
 
     [Fact]
-    public void Resolve_FromFactory_NonStaticMethod_ThrowsClearError()
+    public void Resolve_FromMethod_NonStaticMethod_ThrowsClearError()
     {
         ParameterInfo[] parameters = ParamsOf(nameof(WithNonStaticFactory));
 
@@ -232,7 +232,7 @@ public class SharedParameterStrategyResolverTests
     }
 
     [Fact]
-    public void Resolve_FromFactory_WrongReturnType_ThrowsClearError()
+    public void Resolve_FromMethod_WrongReturnType_ThrowsClearError()
     {
         ParameterInfo[] parameters = ParamsOf(nameof(WithWrongReturnType));
 

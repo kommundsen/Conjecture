@@ -151,6 +151,6 @@ Eight read-only resources are available at `conjecture://api/*`:
 | `conjecture://api/state-machines` | `IStateMachine<TState,TCommand>`, `StateMachineRun`, and `Generate.StateMachine` |
 | `conjecture://api/shrinking` | How Conjecture finds minimal counterexamples |
 | `conjecture://api/assumptions` | `Assume.That()`, `IGeneratorContext.Assume()`, and `UnsatisfiedAssumptionException` |
-| `conjecture://api/attributes` | `[Property]`, `[Example]`, `[From<T>]`, `[FromFactory]`, `[ConjectureSettings]` |
+| `conjecture://api/attributes` | `[Property]`, `[Example]`, `[From<T>]`, `[FromMethod]`, `[ConjectureSettings]` |
 | `conjecture://api/targeted-testing` | `Target.Maximize`, `Target.Minimize`, `IGeneratorContext.Target`, and targeting settings |
 | `conjecture://api/recursive-strategies` | `Generate.Recursive<T>` for tree-shaped and self-referential types |

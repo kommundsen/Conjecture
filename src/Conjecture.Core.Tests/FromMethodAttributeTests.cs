@@ -7,24 +7,24 @@ using Conjecture.Core;
 
 namespace Conjecture.Core.Tests;
 
-public class FromFactoryAttributeTests
+public class FromMethodAttributeTests
 {
     [Fact]
-    public void FromFactoryAttribute_IsSealed()
+    public void FromMethodAttribute_IsSealed()
     {
-        Assert.True(typeof(FromFactoryAttribute).IsSealed);
+        Assert.True(typeof(FromMethodAttribute).IsSealed);
     }
 
     [Fact]
-    public void FromFactoryAttribute_IsAttribute()
+    public void FromMethodAttribute_IsAttribute()
     {
-        Assert.True(typeof(FromFactoryAttribute).IsSubclassOf(typeof(Attribute)));
+        Assert.True(typeof(FromMethodAttribute).IsSubclassOf(typeof(Attribute)));
     }
 
     [Fact]
-    public void FromFactoryAttribute_TargetsParameterOnly()
+    public void FromMethodAttribute_TargetsParameterOnly()
     {
-        AttributeUsageAttribute usage = typeof(FromFactoryAttribute)
+        AttributeUsageAttribute usage = typeof(FromMethodAttribute)
             .GetCustomAttributes(typeof(AttributeUsageAttribute), inherit: false)
             .Cast<AttributeUsageAttribute>()
             .Single();
@@ -35,9 +35,9 @@ public class FromFactoryAttributeTests
     }
 
     [Fact]
-    public void FromFactoryAttribute_DoesNotAllowMultiple()
+    public void FromMethodAttribute_DoesNotAllowMultiple()
     {
-        AttributeUsageAttribute usage = typeof(FromFactoryAttribute)
+        AttributeUsageAttribute usage = typeof(FromMethodAttribute)
             .GetCustomAttributes(typeof(AttributeUsageAttribute), inherit: false)
             .Cast<AttributeUsageAttribute>()
             .Single();
@@ -46,9 +46,9 @@ public class FromFactoryAttributeTests
     }
 
     [Fact]
-    public void FromFactoryAttribute_StoresMethodName()
+    public void FromMethodAttribute_StoresMethodName()
     {
-        FromFactoryAttribute attr = new("MyFactory");
+        FromMethodAttribute attr = new("MyFactory");
 
         Assert.Equal("MyFactory", attr.MethodName);
     }

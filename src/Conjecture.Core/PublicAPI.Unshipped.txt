@@ -1,4 +1,10 @@
 #nullable enable
+*REMOVED*Conjecture.Core.FromFactoryAttribute
+*REMOVED*Conjecture.Core.FromFactoryAttribute.FromFactoryAttribute(string! methodName) -> void
+*REMOVED*Conjecture.Core.FromFactoryAttribute.MethodName.get -> string!
+Conjecture.Core.FromMethodAttribute
+Conjecture.Core.FromMethodAttribute.FromMethodAttribute(string! methodName) -> void
+Conjecture.Core.FromMethodAttribute.MethodName.get -> string!
 Conjecture.Core.IGenerationContext
 Conjecture.Core.IGenerationContext.Assume(bool condition) -> void
 Conjecture.Core.IGenerationContext.Generate<T>(Conjecture.Core.Strategy<T>! strategy) -> T

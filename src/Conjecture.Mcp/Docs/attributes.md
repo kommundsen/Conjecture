@@ -88,13 +88,13 @@ public class PositiveIntStrategy : IStrategyProvider<int>
 }
 ```
 
-## `[FromFactory]`
+## `[FromMethod]`
 
 Overrides the strategy for a parameter by referencing a factory method name on the test class (or a named type).
 
 ```csharp
 [Property]
-public void Test([FromFactory(nameof(MakePositive))] int x) { ... }
+public void Test([FromMethod(nameof(MakePositive))] int x) { ... }
 
 private static Strategy<int> MakePositive() => Strategy.Integers<int>(1, 100);
 ```
@@ -104,7 +104,7 @@ private static Strategy<int> MakePositive() => Strategy.Integers<int>(1, 100);
 When Conjecture resolves a strategy for a `[Property]` parameter, it checks in this order:
 
 1. `[From<T>]` attribute on the parameter
-2. `[FromFactory]` attribute on the parameter
+2. `[FromMethod]` attribute on the parameter
 3. `[Sample]` attribute (for explicit examples)
 4. `IStrategyProvider<T>` registered via the source generator (`[Arbitrary]`)
 5. Built-in strategies (primitives, collections)

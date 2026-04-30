@@ -20,7 +20,7 @@ public sealed class AttributeE2ETests
         public Strategy<int> Create() => Strategy.Integers<int>(1, 100);
     }
 
-    // ── Factory method (mirrors [FromFactory(nameof(EvenInts))]) ──────────────
+    // ── Factory method (mirrors [FromMethod(nameof(EvenInts))]) ──────────────
 
     private static Strategy<int> EvenInts() =>
         Strategy.Integers<int>(0, 50).Where(n => n % 2 == 0);
@@ -81,10 +81,10 @@ public sealed class AttributeE2ETests
         Assert.True(result.Passed);
     }
 
-    // ── [FromFactory(nameof(EvenInts))]: generates only even ints in [0, 50] ───
+    // ── [FromMethod(nameof(EvenInts))]: generates only even ints in [0, 50] ───
 
     [Fact]
-    public async Task FromFactory_EvenInts_AllValuesAreEvenAndInRange()
+    public async Task FromMethod_EvenInts_AllValuesAreEvenAndInRange()
     {
         Strategy<int> strategy = EvenInts();
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = 30UL };

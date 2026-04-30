@@ -9,7 +9,7 @@ using Conjecture.Core.Internal;
 
 namespace Conjecture.Xunit.Tests;
 
-public class FromFactoryAttributeResolverTests
+public class FromMethodAttributeResolverTests
 {
     private static ConjectureData MakeData(ulong seed = 42UL) =>
         ConjectureData.ForGeneration(new SplittableRandom(seed));
@@ -23,27 +23,27 @@ public class FromFactoryAttributeResolverTests
 
     public static string WrongReturnType() => "not a strategy";
 
-    // ─── Helper stubs with [FromFactory] on parameters ────────────────────────
+    // ─── Helper stubs with [FromMethod] on parameters ────────────────────────
 
 #pragma warning disable IDE0060
-    private static void WithEvenInts([FromFactory(nameof(EvenInts))] int n) { }
+    private static void WithEvenInts([FromMethod(nameof(EvenInts))] int n) { }
 
-    private static void WithMissingMethod([FromFactory("NoSuchMethod")] int n) { }
+    private static void WithMissingMethod([FromMethod("NoSuchMethod")] int n) { }
 
-    private static void WithNonStaticFactory([FromFactory(nameof(NonStaticFactory))] int n) { }
+    private static void WithNonStaticFactory([FromMethod(nameof(NonStaticFactory))] int n) { }
 
-    private static void WithWrongReturnType([FromFactory(nameof(WrongReturnType))] int n) { }
+    private static void WithWrongReturnType([FromMethod(nameof(WrongReturnType))] int n) { }
 #pragma warning restore IDE0060
 
     private static ParameterInfo[] ParamsOf(string methodName) =>
-        typeof(FromFactoryAttributeResolverTests)
+        typeof(FromMethodAttributeResolverTests)
             .GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static)!
             .GetParameters();
 
     // ─── Happy path ───────────────────────────────────────────────────────────
 
     [Fact]
-    public void Resolve_StaticFactoryMethod_DrawsFromFactory()
+    public void Resolve_StaticFactoryMethod_DrawsFromMethod()
     {
         ParameterInfo[] parameters = ParamsOf(nameof(WithEvenInts));
 

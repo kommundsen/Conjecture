@@ -106,7 +106,7 @@ Python Hypothesis uses `settings.register_profile()`. In Conjecture, use the ass
 |---|---|---|
 | `@given(st.integers())` | Automatic from type | Default — just declare parameter type |
 | `@given(custom_strategy)` | `[From<MyProvider>]` | Custom `IStrategyProvider<T>` |
-| — | `[FromFactory("MethodName")]` | Static factory on test class returns `Strategy<T>` |
+| — | `[FromMethod("MethodName")]` | Static factory on test class returns `Strategy<T>` |
 
 ## Key Differences
 
