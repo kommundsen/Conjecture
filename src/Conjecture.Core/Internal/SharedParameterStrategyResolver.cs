@@ -25,7 +25,7 @@ internal static class SharedParameterStrategyResolver
         for (int i = 0; i < parameters.Length; i++)
         {
             args[i] = TryGenerateFromAttribute(parameters[i], data)
-                ?? TryGenerateFromFactory(parameters[i], data)
+                ?? TryGenerateFromMethod(parameters[i], data)
                 ?? TryGenerateFromArbitraryProvider(parameters[i], data)
                 ?? GenerateValue(parameters[i].ParameterType, data);
         }
@@ -71,9 +71,9 @@ internal static class SharedParameterStrategyResolver
 
     [RequiresUnreferencedCode("Accesses declaring type methods via reflection.")]
     [RequiresDynamicCode("Calls MakeGenericMethod to construct typed generate helper.")]
-    private static object? TryGenerateFromFactory(ParameterInfo parameter, ConjectureData data)
+    private static object? TryGenerateFromMethod(ParameterInfo parameter, ConjectureData data)
     {
-        FromFactoryAttribute? attr = parameter.GetCustomAttribute<FromFactoryAttribute>();
+        FromMethodAttribute? attr = parameter.GetCustomAttribute<FromMethodAttribute>();
         if (attr is null)
         {
             return null;
@@ -81,7 +81,7 @@ internal static class SharedParameterStrategyResolver
 
         Type declaringType = parameter.Member.DeclaringType
             ?? throw new InvalidOperationException(
-                $"[FromFactory] on parameter '{parameter.Name}' could not resolve its declaring type.");
+                $"[FromMethod] on parameter '{parameter.Name}' could not resolve its declaring type.");
 
         MethodInfo? method = declaringType.GetMethod(
             attr.MethodName,
@@ -108,7 +108,7 @@ internal static class SharedParameterStrategyResolver
         }
 
         MethodInfo drawMethod = typeof(SharedParameterStrategyResolver)
-            .GetMethod(nameof(GenerateFromFactory), BindingFlags.NonPublic | BindingFlags.Static)!
+            .GetMethod(nameof(GenerateFromMethod), BindingFlags.NonPublic | BindingFlags.Static)!
             .MakeGenericMethod(parameter.ParameterType);
 
         return drawMethod.Invoke(null, [method, data])!;
@@ -148,9 +148,9 @@ internal static class SharedParameterStrategyResolver
     private static MethodInfo? FindArbitraryGenerateMethod(Type paramType) =>
         ArbitraryProviderScanner.FindGenerateMethod(paramType, GenerateFromProviderOpenMethod);
 
-    private static object GenerateFromFactory<T>(MethodInfo factory, ConjectureData data)
+    private static object GenerateFromMethod<T>(MethodInfo method, ConjectureData data)
     {
-        Strategy<T> strategy = (Strategy<T>)factory.Invoke(null, [])!;
+        Strategy<T> strategy = (Strategy<T>)method.Invoke(null, [])!;
         return strategy.Generate(data)!;
     }
 

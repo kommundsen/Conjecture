@@ -234,4 +234,4 @@ public partial record Parent(Child? Child);
 - [How to use Generate.For&lt;T&gt;()](../how-to/use-generate-for.md) — step-by-step recipes
 - [Understanding Generate.For&lt;T&gt;() source generation](../explanation/generate-for-source-generator.md) — design rationale and registry mechanics
 - [Reference: Analyzers](analyzers.md) — CON200–CON202, CON205, CON300–CON302 (type-declaration diagnostics)
-- [Reference: Attributes](attributes.md) — `[Arbitrary]`, `[From<T>]`, `[FromFactory]`
+- [Reference: Attributes](attributes.md) — `[Arbitrary]`, `[From<T>]`, `[FromMethod]`

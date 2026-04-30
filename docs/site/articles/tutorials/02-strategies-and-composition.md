@@ -161,4 +161,4 @@ public bool Orders_have_items([From<OrderStrategy>] Order order)
 
 ## Next
 
-[Tutorial 3: Custom Strategies](03-custom-strategies.md) — deep dive into `IStrategyProvider<T>`, `[From<T>]`, and `[FromFactory]`.
+[Tutorial 3: Custom Strategies](03-custom-strategies.md) — deep dive into `IStrategyProvider<T>`, `[From<T>]`, and `[FromMethod]`.

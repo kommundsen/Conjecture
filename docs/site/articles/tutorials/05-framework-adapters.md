@@ -137,7 +137,7 @@ All adapters support the same `[Property]` properties:
 All adapters also support:
 - `[Example(...)]` — explicit test cases
 - `[From<T>]` — custom strategy providers
-- `[FromFactory("Method")]` — factory methods
+- `[FromMethod("Method")]` — factory methods
 - `Assume.That(condition)` — filtering
 - Automatic strategy resolution from parameter types
 - Byte-stream shrinking
