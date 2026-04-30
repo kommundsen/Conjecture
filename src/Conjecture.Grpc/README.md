@@ -1,6 +1,6 @@
 # Conjecture.Grpc
 
-gRPC interaction primitives for [Conjecture](https://github.com/kommundsen/Conjecture). Defines `GrpcInteraction` (a serializable description of a unary, client-stream, server-stream, or bidirectional gRPC call), `IGrpcTarget` (resolves a `CallInvoker`), and `GenerateGrpc` (strategies for each RPC mode), so a property test can drive any gRPC method with random inputs and shrink failures.
+gRPC interaction primitives for [Conjecture](https://github.com/kommundsen/Conjecture). Defines `GrpcInteraction` (a serializable description of a unary, client-stream, server-stream, or bidirectional gRPC call), `IGrpcTarget` (resolves a `CallInvoker`), and `GrpcStrategyExtensions` (strategies for each RPC mode), so a property test can drive any gRPC method with random inputs and shrink failures.
 
 ## Install
 
@@ -23,7 +23,7 @@ public class OrderingServiceTests
     public async Task UnaryCall_NeverPanics(GrpcInteraction interaction)
     {
         Strategy<PlaceOrderRequest> requests = Strategy.Just(new PlaceOrderRequest { Quantity = 1 });
-        Strategy<GrpcInteraction> calls = GenerateGrpc.Unary(
+        Strategy<GrpcInteraction> calls = GrpcStrategyExtensions.Unary(
             "ordering",
             OrderingService.PlaceOrderMethod,
             requests);
@@ -48,7 +48,7 @@ Use `HostGrpcTarget` to dispatch in-process against an `IHost` (e.g. when testin
 | `IGrpcTarget` | Resolves a `CallInvoker` for a named resource. |
 | `GrpcChannelTarget` | `IGrpcTarget` over a `GrpcChannel`. |
 | `HostGrpcTarget` | `IGrpcTarget` over an `IHost`. |
-| `GenerateGrpc.Unary` / `ServerStream` / `ClientStream` / `BidiStream` | Strategies per RPC mode. |
+| `GrpcStrategyExtensions.Unary` / `ServerStream` / `ClientStream` / `BidiStream` | Strategies per RPC mode. |
 | `GrpcInvariantExtensions` | `AssertStatusOk`, `AssertStatus`, `AssertNoUnknownStatus`. |
 
 ## Links

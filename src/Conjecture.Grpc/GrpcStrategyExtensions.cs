@@ -11,7 +11,7 @@ using Grpc.Core;
 namespace Conjecture.Grpc;
 
 /// <summary>Extension methods for generating gRPC interactions.</summary>
-public static class GenerateGrpc
+public static class GrpcStrategyExtensions
 {
     private static readonly IReadOnlyDictionary<string, string> EmptyMetadata =
         new Dictionary<string, string>(0);
