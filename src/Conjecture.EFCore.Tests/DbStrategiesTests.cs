@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Conjecture.EFCore.Tests;
 
-public class GenerateDbTests
+public class DbStrategiesTests
 {
     // ---- test entity ---------------------------------------------------
 
@@ -25,7 +25,7 @@ public class GenerateDbTests
 
     // ---- test DbContext ------------------------------------------------
 
-    private sealed class OrderDbContext(DbContextOptions<GenerateDbTests.OrderDbContext> options) : DbContext(options)
+    private sealed class OrderDbContext(DbContextOptions<DbStrategiesTests.OrderDbContext> options) : DbContext(options)
     {
         public DbSet<Order> Orders { get; set; } = null!;
 
@@ -45,7 +45,7 @@ public class GenerateDbTests
     private static IModel CreateOrderModel()
     {
         DbContextOptions<OrderDbContext> options = new DbContextOptionsBuilder<OrderDbContext>()
-            .UseInMemoryDatabase($"GenerateDbTests_{Guid.NewGuid()}")
+            .UseInMemoryDatabase($"DbStrategiesTests_{Guid.NewGuid()}")
             .Options;
         using OrderDbContext context = new(options);
         return context.Model;
@@ -120,7 +120,7 @@ public class GenerateDbTests
     public void Generate_Db_Sequence_ProducesListInRange()
     {
         IModel model = CreateOrderModel();
-        Strategy<IReadOnlyList<DbInteraction>> strategy = Strategy.Db.Sequence("orders-db", model, min: 2, max: 4);
+        Strategy<IReadOnlyList<DbInteraction>> strategy = Strategy.Db.Sequence("orders-db", model).WithLength(min: 2, max: 4).Build();
 
         IReadOnlyList<IReadOnlyList<DbInteraction>> samples = strategy.WithSeed(5UL).Sample(30);
 
@@ -132,7 +132,7 @@ public class GenerateDbTests
     public void Generate_Db_Sequence_ListContainsValidInteractions()
     {
         IModel model = CreateOrderModel();
-        Strategy<IReadOnlyList<DbInteraction>> strategy = Strategy.Db.Sequence("orders-db", model, min: 1, max: 5);
+        Strategy<IReadOnlyList<DbInteraction>> strategy = Strategy.Db.Sequence("orders-db", model).WithLength(min: 1, max: 5).Build();
 
         IReadOnlyList<IReadOnlyList<DbInteraction>> samples = strategy.WithSeed(6UL).Sample(30);
 
