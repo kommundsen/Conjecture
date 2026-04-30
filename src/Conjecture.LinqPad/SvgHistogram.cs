@@ -23,7 +23,7 @@ internal static class SvgHistogram
         where T : IConvertible
     {
         ulong? ulongSeed = SeedHelpers.ToUlong(seed);
-        IReadOnlyList<T> samples = DataGen.Sample(strategy, sampleSize, ulongSeed);
+        IReadOnlyList<T> samples = ulongSeed is { } s ? strategy.WithSeed(s).Sample(sampleSize) : strategy.Sample(sampleSize);
 
         List<double> doubles = new(samples.Count);
         foreach (T value in samples)

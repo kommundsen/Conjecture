@@ -22,7 +22,7 @@ public class LookaroundStrategyTests
         DotNetRegex regex = new(pattern);
         ulong seed = 1UL;
 
-        IReadOnlyList<string> samples = DataGen.Sample(Strategy.Matching(pattern), 50, seed);
+        IReadOnlyList<string> samples = Strategy.Matching(pattern).WithSeed(seed).Sample(50);
 
         Assert.All(samples, s =>
         {
@@ -42,7 +42,7 @@ public class LookaroundStrategyTests
         DotNetRegex regex = new(pattern);
         ulong seed = 2UL;
 
-        IReadOnlyList<string> samples = DataGen.Sample(Strategy.Matching(pattern), 50, seed);
+        IReadOnlyList<string> samples = Strategy.Matching(pattern).WithSeed(seed).Sample(50);
 
         Assert.All(samples, s =>
         {
@@ -60,7 +60,7 @@ public class LookaroundStrategyTests
         DotNetRegex regex = new(pattern);
         ulong seed = 3UL;
 
-        IReadOnlyList<string> samples = DataGen.Sample(Strategy.Matching(pattern), 50, seed);
+        IReadOnlyList<string> samples = Strategy.Matching(pattern).WithSeed(seed).Sample(50);
 
         Assert.All(samples, s => Assert.True(regex.IsMatch(s), s));
     }
@@ -74,7 +74,7 @@ public class LookaroundStrategyTests
         DotNetRegex regex = new(pattern);
         ulong seed = 4UL;
 
-        IReadOnlyList<string> samples = DataGen.Sample(Strategy.Matching(pattern), 50, seed);
+        IReadOnlyList<string> samples = Strategy.Matching(pattern).WithSeed(seed).Sample(50);
 
         Assert.All(samples, s => Assert.True(regex.IsMatch(s), s));
     }
@@ -88,7 +88,7 @@ public class LookaroundStrategyTests
         DotNetRegex regex = new(pattern);
         ulong seed = 5UL;
 
-        IReadOnlyList<string> samples = DataGen.Sample(Strategy.Matching(pattern), 20, seed);
+        IReadOnlyList<string> samples = Strategy.Matching(pattern).WithSeed(seed).Sample(20);
 
         Assert.All(samples, s => Assert.True(regex.IsMatch(s), s));
     }

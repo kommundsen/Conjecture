@@ -2,7 +2,7 @@
 
 Built-in output formatters for [Conjecture](https://github.com/kommundsen/Conjecture) standalone data generation.
 
-Use these formatters with `DataGen` to serialize generated values to JSON or NDJSON — useful for seeding databases, building test fixtures, or exporting datasets.
+Use these formatters with `Strategy<T>.Sample` / `Strategy<T>.Stream` to serialize generated values to JSON or NDJSON — useful for seeding databases, building test fixtures, or exporting datasets.
 
 ## Install
 
@@ -19,7 +19,7 @@ using Conjecture.Formatters;
 
 // Generate 100 integers and write them as a JSON array
 IOutputFormatter formatter = new JsonOutputFormatter();
-IReadOnlyList<int> values = DataGen.Sample(Strategy.Integer(), 100);
+IReadOnlyList<int> values = Strategy.Integer().Sample(100);
 await formatter.WriteAsync(values, File.OpenWrite("data.json"));
 
 // Or as newline-delimited JSON (NDJSON)

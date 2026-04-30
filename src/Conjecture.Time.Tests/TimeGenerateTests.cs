@@ -25,7 +25,7 @@ public class TimeGenerateExtensionsTests
         System.Collections.ObjectModel.ReadOnlyCollection<TimeZoneInfo> systemZones = TimeZoneInfo.GetSystemTimeZones();
         System.Collections.Generic.HashSet<string> systemIds = [.. systemZones.Select(static z => z.Id)];
 
-        IReadOnlyList<TimeZoneInfo> samples = DataGen.Sample(strategy, count: 20, seed: 1UL);
+        IReadOnlyList<TimeZoneInfo> samples = strategy.WithSeed(1UL).Sample(20);
 
         Assert.All(samples, z => Assert.Contains(z.Id, systemIds));
     }
@@ -35,7 +35,7 @@ public class TimeGenerateExtensionsTests
     {
         Strategy<FakeTimeProvider[]> strategy = Strategy.ClockSet(3, TimeSpan.FromSeconds(5));
 
-        FakeTimeProvider[] clocks = DataGen.SampleOne(strategy, seed: 1UL);
+        FakeTimeProvider[] clocks = strategy.WithSeed(1UL).Sample();
 
         Assert.Equal(3, clocks.Length);
     }
@@ -46,7 +46,7 @@ public class TimeGenerateExtensionsTests
         TimeSpan maxSkew = TimeSpan.FromSeconds(1);
         Strategy<FakeTimeProvider[]> strategy = Strategy.ClockSet(3, maxSkew);
 
-        FakeTimeProvider[] clocks = DataGen.SampleOne(strategy, seed: 1UL);
+        FakeTimeProvider[] clocks = strategy.WithSeed(1UL).Sample();
 
         for (int i = 0; i < clocks.Length; i++)
         {
@@ -70,7 +70,7 @@ public class TimeGenerateExtensionsTests
     {
         Strategy<FakeTimeProvider[]> strategy = Strategy.ClockSet(3, TimeSpan.FromSeconds(5));
 
-        FakeTimeProvider[] clocks = DataGen.SampleOne(strategy, seed: 1UL);
+        FakeTimeProvider[] clocks = strategy.WithSeed(1UL).Sample();
         _ = clocks[0].GetUtcNow();
         DateTimeOffset before1 = clocks[1].GetUtcNow();
         DateTimeOffset before2 = clocks[2].GetUtcNow();
@@ -86,7 +86,7 @@ public class TimeGenerateExtensionsTests
     {
         Strategy<FakeTimeProvider[]> strategy = Strategy.ClockSet(2, TimeSpan.FromSeconds(1));
 
-        FakeTimeProvider[] clocks = DataGen.SampleOne(strategy, seed: 1UL);
+        FakeTimeProvider[] clocks = strategy.WithSeed(1UL).Sample();
 
         Assert.All(clocks, static c => Assert.IsType<FakeTimeProvider>(c));
     }
@@ -96,7 +96,7 @@ public class TimeGenerateExtensionsTests
     {
         Strategy<string> strategy = Strategy.IanaZoneIds();
 
-        IReadOnlyList<string> samples = DataGen.Sample(strategy, count: 20, seed: 1UL);
+        IReadOnlyList<string> samples = strategy.WithSeed(1UL).Sample(20);
 
         Assert.All(samples, static id => TimeZoneInfo.FindSystemTimeZoneById(id));
     }
@@ -106,7 +106,7 @@ public class TimeGenerateExtensionsTests
     {
         Strategy<string> strategy = Strategy.IanaZoneIds(preferDst: true);
 
-        IReadOnlyList<string> samples = DataGen.Sample(strategy, count: 20, seed: 1UL);
+        IReadOnlyList<string> samples = strategy.WithSeed(1UL).Sample(20);
 
         Assert.All(samples, static id =>
         {
@@ -120,7 +120,7 @@ public class TimeGenerateExtensionsTests
     {
         Strategy<string> strategy = Strategy.WindowsZoneIds();
 
-        IReadOnlyList<string> samples = DataGen.Sample(strategy, count: 20, seed: 1UL);
+        IReadOnlyList<string> samples = strategy.WithSeed(1UL).Sample(20);
 
         Assert.All(samples, static id =>
         {
@@ -134,7 +134,7 @@ public class TimeGenerateExtensionsTests
     {
         Strategy<TimeZoneInfo> strategy = Strategy.TimeZone(preferDst: true);
 
-        IReadOnlyList<TimeZoneInfo> samples = DataGen.Sample(strategy, count: 20, seed: 1UL);
+        IReadOnlyList<TimeZoneInfo> samples = strategy.WithSeed(1UL).Sample(20);
 
         Assert.All(samples, static tz =>
             Assert.True(tz.SupportsDaylightSavingTime, $"Zone '{tz.Id}' does not support DST"));
@@ -145,7 +145,7 @@ public class TimeGenerateExtensionsTests
     {
         Strategy<string> strategy = Strategy.IanaZoneIds();
 
-        IReadOnlyList<string> samples = DataGen.Sample(strategy, count: 20, seed: 1UL);
+        IReadOnlyList<string> samples = strategy.WithSeed(1UL).Sample(20);
 
         System.Collections.Generic.HashSet<string> distinct = [.. samples];
         Assert.True(distinct.Count >= 3, $"Expected at least 3 distinct IANA zone IDs, got {distinct.Count}");

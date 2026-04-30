@@ -26,7 +26,7 @@ public class TimeProviderArbitraryTests
     {
         Strategy<TimeProvider> strategy = TimeProviderArbitrary.Create();
 
-        TimeProvider generated = DataGen.SampleOne(strategy, seed: 1UL);
+        TimeProvider generated = strategy.WithSeed(1UL).Sample();
 
         Assert.IsType<FakeTimeProvider>(generated);
     }

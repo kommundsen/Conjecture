@@ -22,7 +22,7 @@ public class GenerateHttpTests
     {
         Strategy<HttpInteraction> strategy = Strategy.Http("api").Get("/ping").Build();
 
-        HttpInteraction sample = DataGen.SampleOne(strategy, seed: 1UL);
+        HttpInteraction sample = strategy.WithSeed(1UL).Sample();
 
         Assert.Equal("GET", sample.Method);
         Assert.Equal("/ping", sample.Path);
@@ -35,7 +35,7 @@ public class GenerateHttpTests
     {
         Strategy<HttpInteraction> strategy = Strategy.Http("api").Post("/items").Build();
 
-        HttpInteraction sample = DataGen.SampleOne(strategy, seed: 1UL);
+        HttpInteraction sample = strategy.WithSeed(1UL).Sample();
 
         Assert.Equal("POST", sample.Method);
         Assert.Equal("/items", sample.Path);
@@ -47,7 +47,7 @@ public class GenerateHttpTests
         object body = new { Name = "alice" };
         Strategy<HttpInteraction> strategy = Strategy.Http("api").Post("/items", body).Build();
 
-        HttpInteraction sample = DataGen.SampleOne(strategy, seed: 1UL);
+        HttpInteraction sample = strategy.WithSeed(1UL).Sample();
 
         Assert.Equal("POST", sample.Method);
         Assert.Same(body, sample.Body);
@@ -58,7 +58,7 @@ public class GenerateHttpTests
     {
         Strategy<HttpInteraction> strategy = Strategy.Http("api").Put("/items/1").Build();
 
-        HttpInteraction sample = DataGen.SampleOne(strategy, seed: 1UL);
+        HttpInteraction sample = strategy.WithSeed(1UL).Sample();
 
         Assert.Equal("PUT", sample.Method);
         Assert.Equal("/items/1", sample.Path);
@@ -69,7 +69,7 @@ public class GenerateHttpTests
     {
         Strategy<HttpInteraction> strategy = Strategy.Http("api").Delete("/items/1").Build();
 
-        HttpInteraction sample = DataGen.SampleOne(strategy, seed: 1UL);
+        HttpInteraction sample = strategy.WithSeed(1UL).Sample();
 
         Assert.Equal("DELETE", sample.Method);
         Assert.Equal("/items/1", sample.Path);
@@ -81,7 +81,7 @@ public class GenerateHttpTests
     {
         Strategy<HttpInteraction> strategy = Strategy.Http("api").Patch("/items/1").Build();
 
-        HttpInteraction sample = DataGen.SampleOne(strategy, seed: 1UL);
+        HttpInteraction sample = strategy.WithSeed(1UL).Sample();
 
         Assert.Equal("PATCH", sample.Method);
     }
@@ -95,7 +95,7 @@ public class GenerateHttpTests
             .WithHeaders(headers)
             .Build();
 
-        HttpInteraction sample = DataGen.SampleOne(strategy, seed: 1UL);
+        HttpInteraction sample = strategy.WithSeed(1UL).Sample();
 
         Assert.NotNull(sample.Headers);
         Assert.Equal("abc", sample.Headers!["X-Trace"]);
@@ -109,7 +109,7 @@ public class GenerateHttpTests
             .WithResource("orders")
             .Build();
 
-        HttpInteraction sample = DataGen.SampleOne(strategy, seed: 1UL);
+        HttpInteraction sample = strategy.WithSeed(1UL).Sample();
 
         Assert.Equal("orders", sample.ResourceName);
     }
@@ -125,7 +125,7 @@ public class GenerateHttpTests
             .WithBodyStrategy(bodyStrategy)
             .Build();
 
-        HttpInteraction sample = DataGen.SampleOne(strategy, seed: 1UL);
+        HttpInteraction sample = strategy.WithSeed(1UL).Sample();
 
         Assert.Equal("from-strategy", sample.Body);
     }
@@ -139,7 +139,7 @@ public class GenerateHttpTests
             .WithBodyStrategy(bodyStrategy)
             .Build();
 
-        HttpInteraction sample = DataGen.SampleOne(strategy, seed: 1UL);
+        HttpInteraction sample = strategy.WithSeed(1UL).Sample();
 
         Assert.Equal("put-body", sample.Body);
     }
@@ -153,8 +153,8 @@ public class GenerateHttpTests
             .WithBodyStrategy(bodyStrategy)
             .Build();
 
-        IReadOnlyList<HttpInteraction> a = DataGen.Sample(strategy, count: 5, seed: 42UL);
-        IReadOnlyList<HttpInteraction> b = DataGen.Sample(strategy, count: 5, seed: 42UL);
+        IReadOnlyList<HttpInteraction> a = strategy.WithSeed(42UL).Sample(5);
+        IReadOnlyList<HttpInteraction> b = strategy.WithSeed(42UL).Sample(5);
 
         Assert.Equal(a.Count, b.Count);
         for (int i = 0; i < a.Count; i++)
@@ -169,7 +169,7 @@ public class GenerateHttpTests
         Strategy<HttpInteraction> httpStrategy = Strategy.Http("api").Get("/ping").Build();
         Strategy<(HttpInteraction, int)> paired = httpStrategy.Zip(Strategy.Integers(0, 10));
 
-        (HttpInteraction interaction, int number) = DataGen.SampleOne(paired, seed: 1UL);
+        (HttpInteraction interaction, int number) = paired.WithSeed(1UL).Sample();
 
         Assert.Equal("GET", interaction.Method);
         Assert.InRange(number, 0, 10);

@@ -88,7 +88,7 @@ public class InteractionStateMachineTests
     {
         Strategy<StateMachineRun<int>> strategy =
             Strategy.StateMachine<CountingMachine, int, IInteraction>(maxSteps: 5);
-        StateMachineRun<int> run = DataGen.SampleOne(strategy, seed: 42UL);
+        StateMachineRun<int> run = strategy.WithSeed(42UL).Sample();
         Assert.NotNull(run);
     }
 
@@ -97,7 +97,7 @@ public class InteractionStateMachineTests
     {
         Strategy<StateMachineRun<int>> strategy =
             Strategy.StateMachine<CountingMachine, int, IInteraction>(maxSteps: 5);
-        StateMachineRun<int> run = DataGen.SampleOne(strategy, seed: 42UL);
+        StateMachineRun<int> run = strategy.WithSeed(42UL).Sample();
         Assert.True(run.Passed);
     }
 
@@ -106,7 +106,7 @@ public class InteractionStateMachineTests
     {
         Strategy<StateMachineRun<int>> strategy =
             Strategy.StateMachine<CountingMachine, int, IInteraction>(maxSteps: 10);
-        StateMachineRun<int> run = DataGen.SampleOne(strategy, seed: 1UL);
+        StateMachineRun<int> run = strategy.WithSeed(1UL).Sample();
         Assert.Equal(run.Steps.Count, run.FinalState);
     }
 
@@ -120,7 +120,7 @@ public class InteractionStateMachineTests
     {
         Strategy<StateMachineRun<int>> strategy =
             Strategy.StateMachine<CountingMachine, int, IInteraction>(maxSteps: 10);
-        IReadOnlyList<StateMachineRun<int>> runs = DataGen.Sample(strategy, count: 20, seed: 7UL);
+        IReadOnlyList<StateMachineRun<int>> runs = strategy.WithSeed(7UL).Sample(20);
         int minSteps = runs.Min(r => r.Steps.Count);
         int maxSteps = runs.Max(r => r.Steps.Count);
         // Variable-length sequences confirm CommandStart sentinels are present for shrinking
@@ -133,7 +133,7 @@ public class InteractionStateMachineTests
     {
         Strategy<StateMachineRun<int>> strategy =
             Strategy.StateMachine<CountingMachine, int, IInteraction>(maxSteps: 0);
-        StateMachineRun<int> run = DataGen.SampleOne(strategy, seed: 1UL);
+        StateMachineRun<int> run = strategy.WithSeed(1UL).Sample();
         Assert.Empty(run.Steps);
     }
 

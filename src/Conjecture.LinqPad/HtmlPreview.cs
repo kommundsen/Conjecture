@@ -17,7 +17,7 @@ internal static class HtmlPreview
         bool capped = count > MaxCount;
         int effective = capped ? MaxCount : count;
         ulong? ulongSeed = SeedHelpers.ToUlong(seed);
-        IReadOnlyList<T> samples = DataGen.Sample(strategy, effective, ulongSeed);
+        IReadOnlyList<T> samples = ulongSeed is { } s ? strategy.WithSeed(s).Sample(effective) : strategy.Sample(effective);
 
         StringBuilder sb = new();
         sb.Append("<span>");

@@ -65,7 +65,7 @@ public sealed class ProtobufGenerateTests
     public void FromProtobuf_Generic_GeneratesObjectValueKind()
     {
         Strategy<JsonElement> strategy = Strategy.FromProtobuf<FileDescriptorProto>();
-        IReadOnlyList<JsonElement> samples = DataGen.Sample(strategy, 10, 42UL);
+        IReadOnlyList<JsonElement> samples = strategy.WithSeed(42UL).Sample(10);
         foreach (JsonElement element in samples)
         {
             Assert.Equal(JsonValueKind.Object, element.ValueKind);
@@ -80,7 +80,7 @@ public sealed class ProtobufGenerateTests
         // verify that the known scalar field "name" (index 0 in FileDescriptorProto) is present.
         // FileDescriptorProto has a "name" string field — it must appear in every generated object.
         Strategy<JsonElement> strategy = Strategy.FromProtobuf<FileDescriptorProto>();
-        IReadOnlyList<JsonElement> samples = DataGen.Sample(strategy, 10, 42UL);
+        IReadOnlyList<JsonElement> samples = strategy.WithSeed(42UL).Sample(10);
         foreach (JsonElement element in samples)
         {
             Assert.True(element.TryGetProperty("name", out JsonElement _), "Generated object must contain all non-oneof fields.");
@@ -100,7 +100,7 @@ public sealed class ProtobufGenerateTests
     {
         MessageDescriptor descriptor = BuildPersonDescriptor();
         Strategy<JsonElement> strategy = Strategy.FromProtobuf(descriptor);
-        IReadOnlyList<JsonElement> samples = DataGen.Sample(strategy, 10, 42UL);
+        IReadOnlyList<JsonElement> samples = strategy.WithSeed(42UL).Sample(10);
         foreach (JsonElement element in samples)
         {
             Assert.Equal(JsonValueKind.Object, element.ValueKind);
@@ -116,8 +116,8 @@ public sealed class ProtobufGenerateTests
         Strategy<JsonElement> genericStrategy = Strategy.FromProtobuf<FileDescriptorProto>();
         Strategy<JsonElement> descriptorStrategy = Strategy.FromProtobuf(descriptor);
 
-        IReadOnlyList<JsonElement> genericSamples = DataGen.Sample(genericStrategy, 5, 100UL);
-        IReadOnlyList<JsonElement> descriptorSamples = DataGen.Sample(descriptorStrategy, 5, 100UL);
+        IReadOnlyList<JsonElement> genericSamples = genericStrategy.WithSeed(100UL).Sample(5);
+        IReadOnlyList<JsonElement> descriptorSamples = descriptorStrategy.WithSeed(100UL).Sample(5);
 
         // Both must produce JSON objects (structural equivalence check).
         foreach (JsonElement element in genericSamples)
@@ -143,7 +143,7 @@ public sealed class ProtobufGenerateTests
     {
         MessageDescriptor descriptor = BuildPersonDescriptor();
         Strategy<JsonElement> strategy = Strategy.FromProtobuf(descriptor, maxDepth: 2);
-        IReadOnlyList<JsonElement> samples = DataGen.Sample(strategy, 5, 7UL);
+        IReadOnlyList<JsonElement> samples = strategy.WithSeed(7UL).Sample(5);
         foreach (JsonElement element in samples)
         {
             Assert.Equal(JsonValueKind.Object, element.ValueKind);

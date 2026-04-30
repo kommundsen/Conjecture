@@ -91,7 +91,7 @@ public sealed class AspNetCoreRequestBuilderTests(WebApplicationFactory<AspNetCo
             .ExcludeEndpoints(static ep => ep.RoutePattern.RawText == "/admin")
             .Build();
 
-        IReadOnlyList<HttpInteraction> samples = DataGen.Sample(strategy, count: 50, seed: 1UL);
+        IReadOnlyList<HttpInteraction> samples = strategy.WithSeed(1UL).Sample(50);
 
         Assert.All(samples, interaction =>
             Assert.DoesNotContain("/admin", interaction.Path, StringComparison.Ordinal));
@@ -135,7 +135,7 @@ public sealed class AspNetCoreRequestBuilderTests(WebApplicationFactory<AspNetCo
             .ExcludeEndpoints(static ep => ep.RoutePattern.RawText == "/b")
             .Build();
 
-        IReadOnlyList<HttpInteraction> samples = DataGen.Sample(strategy, count: 50, seed: 1UL);
+        IReadOnlyList<HttpInteraction> samples = strategy.WithSeed(1UL).Sample(50);
 
         Assert.All(samples, interaction => Assert.Equal("/c", interaction.Path));
     }
@@ -161,7 +161,7 @@ public sealed class AspNetCoreRequestBuilderTests(WebApplicationFactory<AspNetCo
             .Build();
 
         int sampleCount = 10;
-        DataGen.Sample(strategy, count: sampleCount, seed: 1UL);
+        strategy.WithSeed(1UL).Sample(sampleCount);
 
         Assert.Equal(sampleCount, callCount);
     }
@@ -180,7 +180,7 @@ public sealed class AspNetCoreRequestBuilderTests(WebApplicationFactory<AspNetCo
             .ValidRequestsOnly()
             .Build();
 
-        IReadOnlyList<HttpInteraction> samples = DataGen.Sample(strategy, count: 50, seed: 1UL);
+        IReadOnlyList<HttpInteraction> samples = strategy.WithSeed(1UL).Sample(50);
 
         // Valid interactions must not contain the malformed-body marker.
         Assert.All(
@@ -224,7 +224,7 @@ public sealed class AspNetCoreRequestBuilderTests(WebApplicationFactory<AspNetCo
             .MalformedRequestsOnly()
             .Build();
 
-        IReadOnlyList<HttpInteraction> samples = DataGen.Sample(strategy, count: 50, seed: 1UL);
+        IReadOnlyList<HttpInteraction> samples = strategy.WithSeed(1UL).Sample(50);
 
         // Every interaction generated under MalformedRequestsOnly must carry a signal
         // that identifies it as malformed: wrong Content-Type, malformed JSON body,
@@ -285,7 +285,7 @@ public sealed class AspNetCoreRequestBuilderTests(WebApplicationFactory<AspNetCo
         Strategy<HttpInteraction> strategy = new AspNetCoreRequestBuilder(host, client)
             .Build();
 
-        IReadOnlyList<HttpInteraction> samples = DataGen.Sample(strategy, count: 100, seed: 42UL);
+        IReadOnlyList<HttpInteraction> samples = strategy.WithSeed(42UL).Sample(100);
 
         int malformedCount = samples.Count(static interaction =>
             (interaction.Body is string s && s.Contains("invalid json", StringComparison.OrdinalIgnoreCase)) ||

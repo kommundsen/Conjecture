@@ -26,8 +26,8 @@ public bool DstSafe([From<DateTimeOffsetArbitrary>] DateTimeOffset dt)
 [Property]
 public bool ClockSkewTolerant(int x)
 {
-    FakeTimeProvider[] clocks = DataGen.SampleOne(
-        Strategy.ClockSet(nodeCount: 3, maxSkew: TimeSpan.FromSeconds(5)));
+    FakeTimeProvider[] clocks = Strategy.ClockSet(nodeCount: 3, maxSkew: TimeSpan.FromSeconds(5))
+        .Sample();
     // ...
 }
 ```

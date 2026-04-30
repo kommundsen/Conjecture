@@ -24,7 +24,7 @@ public static class StrategyExtensionsInteractive
         {
             bool capped = count > PreviewMaxCount;
             int effective = capped ? PreviewMaxCount : count;
-            IReadOnlyList<T> samples = DataGen.Sample(strategy, effective, seed);
+            IReadOnlyList<T> samples = seed is { } s ? strategy.WithSeed(s).Sample(effective) : strategy.Sample(effective);
 
             StringBuilder sb = new();
             for (int i = 0; i < samples.Count; i++)
@@ -55,7 +55,7 @@ public static class StrategyExtensionsInteractive
         {
             bool capped = count > SampleTableMaxCount;
             int effective = capped ? SampleTableMaxCount : count;
-            IReadOnlyList<T> samples = DataGen.Sample(strategy, effective, seed);
+            IReadOnlyList<T> samples = seed is { } s ? strategy.WithSeed(s).Sample(effective) : strategy.Sample(effective);
 
             // Compute column widths.
             int indexWidth = Math.Max(1, samples.Count.ToString().Length);
@@ -177,7 +177,7 @@ public static class StrategyExtensionsInteractive
         /// <summary>Renders a text histogram of sampled values projected by <paramref name="selector"/>.</summary>
         public string Histogram(Func<T, double> selector, int sampleSize = 1000, int bucketCount = 20, ulong? seed = null)
         {
-            IReadOnlyList<T> samples = DataGen.Sample(strategy, sampleSize, seed);
+            IReadOnlyList<T> samples = seed is { } s ? strategy.WithSeed(s).Sample(sampleSize) : strategy.Sample(sampleSize);
             List<double> doubles = new(samples.Count);
             foreach (T value in samples)
             {
@@ -194,7 +194,7 @@ public static class StrategyExtensionsInteractive
         /// <summary>Renders a text histogram of sampled values from <paramref name="strategy"/>.</summary>
         public string Histogram(int sampleSize = 1000, int bucketCount = 20, ulong? seed = null)
         {
-            IReadOnlyList<T> samples = DataGen.Sample(strategy, sampleSize, seed);
+            IReadOnlyList<T> samples = seed is { } s ? strategy.WithSeed(s).Sample(sampleSize) : strategy.Sample(sampleSize);
             List<double> doubles = new(samples.Count);
             foreach (T value in samples)
             {

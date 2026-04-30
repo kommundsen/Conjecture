@@ -12,7 +12,7 @@ let ``gen builder with return produces the value`` () =
     let result = gen {
         return 42
     }
-    let sample = DataGen.SampleOne(result |> Gen.unwrap)
+    let sample = StrategySamplingExtensions.Sample(result |> Gen.unwrap)
     Assert.Equal(42, sample)
 
 [<Fact>]
@@ -21,7 +21,7 @@ let ``gen builder with let! and return chains generators`` () =
         let! x = Gen.int (0, 10)
         return x * 2
     }
-    let samples = DataGen.Stream(result |> Gen.unwrap, 20)
+    let samples = StrategySamplingExtensions.Stream(result |> Gen.unwrap, 20)
     for sample in samples do
         Assert.True(sample >= 0 && sample <= 20)
         Assert.True(sample % 2 = 0)
@@ -33,7 +33,7 @@ let ``gen builder with and! combines generators`` () =
         and! y = Gen.bool
         return x, y
     }
-    let samples = DataGen.Stream(result |> Gen.unwrap, 20)
+    let samples = StrategySamplingExtensions.Stream(result |> Gen.unwrap, 20)
     for sample in samples do
         let (x, y) = sample
         Assert.True(x >= 0 && x <= 10)
@@ -46,7 +46,7 @@ let ``gen builder with multiple let! bindings produces correct range`` () =
         let! y = Gen.int (1, 5)
         return x + y
     }
-    let samples = DataGen.Stream(result |> Gen.unwrap, 30)
+    let samples = StrategySamplingExtensions.Stream(result |> Gen.unwrap, 30)
     for sample in samples do
         Assert.True(sample >= 2 && sample <= 10)
 
@@ -61,6 +61,6 @@ let ``gen builder with nested blocks composes correctly`` () =
         let! y = Gen.int (1, 3)
         return doubled + y
     }
-    let samples = DataGen.Stream(outerGen |> Gen.unwrap, 30)
+    let samples = StrategySamplingExtensions.Stream(outerGen |> Gen.unwrap, 30)
     for sample in samples do
         Assert.True(sample >= 3 && sample <= 9)

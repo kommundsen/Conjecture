@@ -51,3 +51,22 @@ static Conjecture.Core.Strategy.DateTimes() -> Conjecture.Core.Strategy<System.D
 static Conjecture.Core.Strategy.DateTimes(System.DateTime min, System.DateTime max) -> Conjecture.Core.Strategy<System.DateTime>!
 static Conjecture.Core.Strategy.Chars() -> Conjecture.Core.Strategy<char>!
 static Conjecture.Core.Strategy.OneOf<T>(params System.ReadOnlySpan<Conjecture.Core.Strategy<T>!> strategies) -> Conjecture.Core.Strategy<T>!
+Conjecture.Core.SeededStrategy<T>
+Conjecture.Core.SeededStrategy<T>.SeededStrategy() -> void
+Conjecture.Core.SeededStrategy<T>.SeededStrategy(Conjecture.Core.Strategy<T>! Strategy, ulong Seed) -> void
+Conjecture.Core.SeededStrategy<T>.Strategy.get -> Conjecture.Core.Strategy<T>!
+Conjecture.Core.SeededStrategy<T>.Strategy.init -> void
+Conjecture.Core.SeededStrategy<T>.Seed.get -> ulong
+Conjecture.Core.SeededStrategy<T>.Seed.init -> void
+Conjecture.Core.StrategySamplingExtensions
+Conjecture.Core.StrategySamplingExtensions.extension<T>(Conjecture.Core.Strategy<T>!)
+Conjecture.Core.StrategySamplingExtensions.extension<T>(Conjecture.Core.Strategy<T>!).Sample() -> T
+Conjecture.Core.StrategySamplingExtensions.extension<T>(Conjecture.Core.Strategy<T>!).Sample(int count) -> System.Collections.Generic.IReadOnlyList<T>!
+Conjecture.Core.StrategySamplingExtensions.extension<T>(Conjecture.Core.Strategy<T>!).Stream() -> System.Collections.Generic.IEnumerable<T>!
+Conjecture.Core.StrategySamplingExtensions.extension<T>(Conjecture.Core.Strategy<T>!).Stream(int count) -> System.Collections.Generic.IEnumerable<T>!
+Conjecture.Core.StrategySamplingExtensions.extension<T>(Conjecture.Core.Strategy<T>!).WithSeed(ulong seed) -> Conjecture.Core.SeededStrategy<T>
+Conjecture.Core.StrategySamplingExtensions.extension<T>(Conjecture.Core.SeededStrategy<T>)
+Conjecture.Core.StrategySamplingExtensions.extension<T>(Conjecture.Core.SeededStrategy<T>).Sample() -> T
+Conjecture.Core.StrategySamplingExtensions.extension<T>(Conjecture.Core.SeededStrategy<T>).Sample(int count) -> System.Collections.Generic.IReadOnlyList<T>!
+Conjecture.Core.StrategySamplingExtensions.extension<T>(Conjecture.Core.SeededStrategy<T>).Stream() -> System.Collections.Generic.IEnumerable<T>!
+Conjecture.Core.StrategySamplingExtensions.extension<T>(Conjecture.Core.SeededStrategy<T>).Stream(int count) -> System.Collections.Generic.IEnumerable<T>!

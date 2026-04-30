@@ -88,7 +88,7 @@ public static class GenerateCommand
 
         var provider = (IStrategyProvider<T>)providerInstance;
         Strategy<T> strategy = provider.Create();
-        IEnumerable<T> data = DataGen.Stream(strategy, count, seed);
+        IEnumerable<T> data = seed is { } s ? strategy.WithSeed(s).Stream(count) : strategy.Stream(count);
 
         using MemoryStream ms = new();
         await formatter.WriteAsync(data, ms);

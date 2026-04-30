@@ -18,7 +18,7 @@ public class TimeProviderStrategyTests
     {
         Strategy<(FakeTimeProvider Clock, IReadOnlyList<TimeSpan> Advances)> strategy =
             Strategy.ClockWithAdvances(advanceCount, TimeSpan.FromSeconds(10));
-        (_, IReadOnlyList<TimeSpan> advances) = DataGen.SampleOne(strategy, seed: 1UL);
+        (_, IReadOnlyList<TimeSpan> advances) = strategy.WithSeed(1UL).Sample();
 
         Assert.Equal(advanceCount, advances.Count);
     }
@@ -30,7 +30,7 @@ public class TimeProviderStrategyTests
             Strategy.ClockWithAdvances(20, TimeSpan.FromMinutes(1), allowBackward: false);
 
         IReadOnlyList<(FakeTimeProvider Clock, IReadOnlyList<TimeSpan> Advances)> samples =
-            DataGen.Sample(strategy, count: 10, seed: 1UL);
+            strategy.WithSeed(1UL).Sample(10);
 
         Assert.All(samples, static sample =>
             Assert.All(sample.Advances, static jump =>
@@ -44,7 +44,7 @@ public class TimeProviderStrategyTests
             Strategy.ClockWithAdvances(10, TimeSpan.FromMinutes(1), allowBackward: true);
 
         IReadOnlyList<(FakeTimeProvider Clock, IReadOnlyList<TimeSpan> Advances)> samples =
-            DataGen.Sample(strategy, count: 30, seed: 42UL);
+            strategy.WithSeed(42UL).Sample(30);
 
         bool anyNegative = samples.Any(static s => s.Advances.Any(static j => j < TimeSpan.Zero));
         Assert.True(anyNegative, "Expected at least one negative advance across 30 samples with allowBackward: true");
@@ -58,7 +58,7 @@ public class TimeProviderStrategyTests
             Strategy.ClockWithAdvances(10, maxJump, allowBackward: true);
 
         IReadOnlyList<(FakeTimeProvider Clock, IReadOnlyList<TimeSpan> Advances)> samples =
-            DataGen.Sample(strategy, count: 20, seed: 1UL);
+            strategy.WithSeed(1UL).Sample(20);
 
         Assert.All(samples, sample =>
             Assert.All(sample.Advances, jump =>
@@ -70,7 +70,7 @@ public class TimeProviderStrategyTests
     {
         Strategy<FakeTimeProvider> strategy = Strategy.AdvancingClocks(TimeSpan.FromMinutes(5));
 
-        IReadOnlyList<FakeTimeProvider> samples = DataGen.Sample(strategy, count: 20, seed: 1UL);
+        IReadOnlyList<FakeTimeProvider> samples = strategy.WithSeed(1UL).Sample(20);
 
         System.Collections.Generic.HashSet<DateTimeOffset> distinct = [.. samples.Select(static c => c.GetUtcNow())];
         Assert.True(distinct.Count >= 3, $"Expected at least 3 distinct UtcNow starting points, got {distinct.Count}");

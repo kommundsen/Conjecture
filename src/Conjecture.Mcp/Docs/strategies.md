@@ -64,15 +64,17 @@
 | `.NonEmpty` | `Strategy<List<T>>` | `Strategy<List<T>>` | Filters to non-empty lists |
 | `\|` | `Strategy<T>` | `Strategy<T>` | Union: `stratA \| stratB` picks from either |
 
-## `DataGen` (standalone data generation)
+## Sampling extensions (standalone data generation)
 
-Use `DataGen` to generate values outside property tests:
+Use the extension methods on `Strategy<T>` to generate values outside property tests:
 
 | Method | Returns | Notes |
 |--------|---------|-------|
-| `DataGen.Sample<T>(strategy, count, seed?)` | `IReadOnlyList<T>` | Materialize `count` values |
-| `DataGen.SampleOne<T>(strategy, seed?)` | `T` | Single value |
-| `DataGen.Stream<T>(strategy, count, seed?)` | `IEnumerable<T>` | Lazy enumeration of `count` values |
+| `strategy.Sample()` | `T` | Single value, fresh seed |
+| `strategy.Sample(count)` | `IReadOnlyList<T>` | Materialize `count` values, fresh seed |
+| `strategy.Stream()` | `IEnumerable<T>` | Unbounded lazy enumeration |
+| `strategy.Stream(count)` | `IEnumerable<T>` | Lazy enumeration of `count` values |
+| `strategy.WithSeed(seed)` | `SeededStrategy<T>` | Returns a deterministic view; chain `.Sample()` / `.Stream()` |
 
 ## `IGenerationContext` (inside `Strategy.Compose`)
 

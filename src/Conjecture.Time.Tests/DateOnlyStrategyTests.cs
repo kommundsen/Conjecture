@@ -15,7 +15,7 @@ public class DateOnlyStrategyTests
         DateOnly max = new(2025, 12, 31);
         Strategy<DateOnly> strategy = Strategy.DateOnlyValues(min, max);
 
-        IReadOnlyList<DateOnly> samples = DataGen.Sample(strategy, count: 50, seed: 1UL);
+        IReadOnlyList<DateOnly> samples = strategy.WithSeed(1UL).Sample(50);
 
         Assert.All(samples, d =>
         {
@@ -29,7 +29,7 @@ public class DateOnlyStrategyTests
     {
         Strategy<DateOnly> strategy = Strategy.DateOnlyValues().NearMonthBoundary();
 
-        IReadOnlyList<DateOnly> samples = DataGen.Sample(strategy, count: 50, seed: 1UL);
+        IReadOnlyList<DateOnly> samples = strategy.WithSeed(1UL).Sample(50);
 
         Assert.All(samples, d =>
         {
@@ -44,7 +44,7 @@ public class DateOnlyStrategyTests
     {
         Strategy<DateOnly> strategy = Strategy.DateOnlyValues().NearLeapDay();
 
-        IReadOnlyList<DateOnly> samples = DataGen.Sample(strategy, count: 50, seed: 1UL);
+        IReadOnlyList<DateOnly> samples = strategy.WithSeed(1UL).Sample(50);
 
         Assert.All(samples, d =>
         {

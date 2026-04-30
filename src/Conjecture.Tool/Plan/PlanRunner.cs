@@ -113,7 +113,7 @@ public class PlanRunner
     private object? RunProviderStrategy<T>(IStrategyProvider<T> provider, PlanStep step)
     {
         Strategy<T> strategy = provider.Create();
-        return DataGen.Sample(strategy, step.Count, step.Seed);
+        return step.Seed is { } seed ? strategy.WithSeed(seed).Sample(step.Count) : strategy.Sample(step.Count);
     }
 
     private void ValidateBindingKeys(
@@ -180,7 +180,7 @@ public class PlanRunner
             try
             {
                 Strategy<T> strategy = Strategy.SampledFrom(allBoundValues);
-                return DataGen.Sample(strategy, step.Count, step.Seed);
+                return step.Seed is { } seed ? strategy.WithSeed(seed).Sample(step.Count) : strategy.Sample(step.Count);
             }
             catch (ArgumentException)
             {
@@ -191,7 +191,8 @@ public class PlanRunner
         }
         else
         {
-            return DataGen.Sample(defaultStrategy(), step.Count, step.Seed);
+            Strategy<T> defaulted = defaultStrategy();
+            return step.Seed is { } seed ? defaulted.WithSeed(seed).Sample(step.Count) : defaulted.Sample(step.Count);
         }
     }
 

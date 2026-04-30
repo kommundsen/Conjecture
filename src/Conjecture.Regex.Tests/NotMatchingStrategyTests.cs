@@ -18,7 +18,7 @@ public class NotMatchingStrategyTests
         string pattern = @"^\d{3}-\d{2}-\d{4}$";
         DotNetRegex regex = new(pattern);
 
-        IReadOnlyList<string> samples = DataGen.Sample(Strategy.NotMatching(pattern), 50, seed: 1UL);
+        IReadOnlyList<string> samples = Strategy.NotMatching(pattern).WithSeed(1UL).Sample(50);
 
         Assert.All(samples, s => Assert.False(regex.IsMatch(s), s));
     }
@@ -31,7 +31,7 @@ public class NotMatchingStrategyTests
         string pattern = @"[a-z]+";
         DotNetRegex regex = new(pattern);
 
-        IReadOnlyList<string> samples = DataGen.Sample(Strategy.NotMatching(pattern), 50, seed: 2UL);
+        IReadOnlyList<string> samples = Strategy.NotMatching(pattern).WithSeed(2UL).Sample(50);
 
         Assert.All(samples, s => Assert.False(regex.IsMatch(s), s));
     }
@@ -44,7 +44,7 @@ public class NotMatchingStrategyTests
         string pattern = @"^$";
         DotNetRegex regex = new(pattern);
 
-        IReadOnlyList<string> samples = DataGen.Sample(Strategy.NotMatching(pattern), 50, seed: 3UL);
+        IReadOnlyList<string> samples = Strategy.NotMatching(pattern).WithSeed(3UL).Sample(50);
 
         Assert.All(samples, s =>
         {
@@ -61,7 +61,7 @@ public class NotMatchingStrategyTests
         string pattern = @"^[a-zA-Z0-9]*$";
         DotNetRegex regex = new(pattern);
 
-        IReadOnlyList<string> samples = DataGen.Sample(Strategy.NotMatching(pattern), 20, seed: 4UL);
+        IReadOnlyList<string> samples = Strategy.NotMatching(pattern).WithSeed(4UL).Sample(20);
 
         Assert.All(samples, s => Assert.False(regex.IsMatch(s), s));
     }
@@ -71,7 +71,7 @@ public class NotMatchingStrategyTests
     [Fact]
     public void NotMatching_Sampling_TerminatesWithinTimeout()
     {
-        IReadOnlyList<string> samples = DataGen.Sample(Strategy.NotMatching(@"^\d{3}$"), 30, seed: 5UL);
+        IReadOnlyList<string> samples = Strategy.NotMatching(@"^\d{3}$").WithSeed(5UL).Sample(30);
 
         Assert.Equal(30, samples.Count);
     }
@@ -83,7 +83,7 @@ public class NotMatchingStrategyTests
     {
         DotNetRegex regex = new(@"^\d{3}-\d{2}-\d{4}$");
 
-        IReadOnlyList<string> samples = DataGen.Sample(Strategy.NotMatching(regex), 50, seed: 1UL);
+        IReadOnlyList<string> samples = Strategy.NotMatching(regex).WithSeed(1UL).Sample(50);
 
         Assert.All(samples, s => Assert.False(regex.IsMatch(s), s));
     }

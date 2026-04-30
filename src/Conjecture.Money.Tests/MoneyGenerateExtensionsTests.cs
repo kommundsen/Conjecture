@@ -14,7 +14,7 @@ public class MoneyGenerateExtensionsTests
         decimal min = -1000m;
         decimal max = 1000m;
         Strategy<decimal> strategy = Strategy.Decimal(min, max);
-        IReadOnlyList<decimal> samples = DataGen.Sample(strategy, count: 100, seed: 42UL);
+        IReadOnlyList<decimal> samples = strategy.WithSeed(42UL).Sample(100);
 
         Assert.All(samples, v => Assert.InRange(v, min, max));
     }
@@ -23,7 +23,7 @@ public class MoneyGenerateExtensionsTests
     public void Decimal_Scale2_AllValuesHaveAtMostTwoDecimalPlaces()
     {
         Strategy<decimal> strategy = Strategy.Decimal(0m, 100m, scale: 2);
-        IReadOnlyList<decimal> samples = DataGen.Sample(strategy, count: 100, seed: 1UL);
+        IReadOnlyList<decimal> samples = strategy.WithSeed(1UL).Sample(100);
 
         Assert.All(samples, v =>
         {
@@ -36,7 +36,7 @@ public class MoneyGenerateExtensionsTests
     public void Decimal_Scale0_AllValuesAreWholeNumbers()
     {
         Strategy<decimal> strategy = Strategy.Decimal(0m, 1000m, scale: 0);
-        IReadOnlyList<decimal> samples = DataGen.Sample(strategy, count: 100, seed: 2UL);
+        IReadOnlyList<decimal> samples = strategy.WithSeed(2UL).Sample(100);
 
         Assert.All(samples, v => Assert.Equal(Math.Truncate(v), v));
     }
@@ -45,7 +45,7 @@ public class MoneyGenerateExtensionsTests
     public void Decimal_MinEqualsMax_AlwaysReturnsThatValue()
     {
         Strategy<decimal> strategy = Strategy.Decimal(42.5m, 42.5m);
-        IReadOnlyList<decimal> samples = DataGen.Sample(strategy, count: 20, seed: 3UL);
+        IReadOnlyList<decimal> samples = strategy.WithSeed(3UL).Sample(20);
 
         Assert.All(samples, v => Assert.Equal(42.5m, v));
     }
@@ -54,7 +54,7 @@ public class MoneyGenerateExtensionsTests
     public void Decimal_DefaultScale_ValuesSpanFullRange()
     {
         Strategy<decimal> strategy = Strategy.Decimal(-1000m, 1000m);
-        IReadOnlyList<decimal> samples = DataGen.Sample(strategy, count: 1000, seed: 4UL);
+        IReadOnlyList<decimal> samples = strategy.WithSeed(4UL).Sample(1000);
 
         bool anyMoreThanTwoPlaces = samples.Any(v => ((decimal.GetBits(v)[3] >> 16) & 0x1F) > 2);
         Assert.True(anyMoreThanTwoPlaces, "Expected at least one value with more than 2 decimal places when no scale is specified");
@@ -66,7 +66,7 @@ public class MoneyGenerateExtensionsTests
         decimal min = 10m;
         decimal max = 10.01m;
         Strategy<decimal> strategy = Strategy.Decimal(min, max);
-        IReadOnlyList<decimal> samples = DataGen.Sample(strategy, count: 50, seed: 5UL);
+        IReadOnlyList<decimal> samples = strategy.WithSeed(5UL).Sample(50);
 
         Assert.All(samples, v => Assert.InRange(v, min, max));
     }

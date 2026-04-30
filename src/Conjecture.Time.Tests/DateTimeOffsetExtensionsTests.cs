@@ -55,7 +55,7 @@ public class DateTimeOffsetExtensionsTests
         TimeZoneInfo zone = FindEasternTimeZone();
         Strategy<DateTimeOffset> strategy = Strategy.DateTimeOffsets().NearDstTransition(zone);
 
-        IReadOnlyList<DateTimeOffset> samples = DataGen.Sample(strategy, 20, seed: 1UL);
+        IReadOnlyList<DateTimeOffset> samples = strategy.WithSeed(1UL).Sample(20);
 
         Assert.All(samples, value => Assert.True(
             IsNearDstTransition(value, zone),
@@ -67,7 +67,7 @@ public class DateTimeOffsetExtensionsTests
     {
         Strategy<DateTimeOffset> strategy = Strategy.DateTimeOffsets().NearDstTransition(null);
 
-        IReadOnlyList<DateTimeOffset> samples = DataGen.Sample(strategy, 10, seed: 2UL);
+        IReadOnlyList<DateTimeOffset> samples = strategy.WithSeed(2UL).Sample(10);
 
         // Only assert no exception thrown and values are non-default; correctness of local zone tested separately
         Assert.Equal(10, samples.Count);
@@ -78,7 +78,7 @@ public class DateTimeOffsetExtensionsTests
     {
         Strategy<DateTimeOffset> strategy = Strategy.DateTimeOffsets().NearMidnight();
 
-        IReadOnlyList<DateTimeOffset> samples = DataGen.Sample(strategy, 30, seed: 3UL);
+        IReadOnlyList<DateTimeOffset> samples = strategy.WithSeed(3UL).Sample(30);
 
         Assert.All(samples, value =>
         {
@@ -93,7 +93,7 @@ public class DateTimeOffsetExtensionsTests
     {
         Strategy<DateTimeOffset> strategy = Strategy.DateTimeOffsets().NearLeapYear();
 
-        IReadOnlyList<DateTimeOffset> samples = DataGen.Sample(strategy, 20, seed: 4UL);
+        IReadOnlyList<DateTimeOffset> samples = strategy.WithSeed(4UL).Sample(20);
 
         Assert.All(samples, value =>
         {
@@ -112,7 +112,7 @@ public class DateTimeOffsetExtensionsTests
     {
         Strategy<DateTimeOffset> strategy = Strategy.DateTimeOffsets().NearEpoch();
 
-        IReadOnlyList<DateTimeOffset> samples = DataGen.Sample(strategy, 50, seed: 5UL);
+        IReadOnlyList<DateTimeOffset> samples = strategy.WithSeed(5UL).Sample(50);
 
         Assert.Contains(samples, value => value.Year >= 1969 && value.Year <= 1971);
     }
@@ -122,7 +122,7 @@ public class DateTimeOffsetExtensionsTests
     {
         Strategy<DateTimeOffset> strategy = Strategy.DateTimeOffsets().NearMidnight();
 
-        Exception? caught = Record.Exception(() => DataGen.Sample(strategy, 1, seed: 6UL));
+        Exception? caught = Record.Exception(() => strategy.WithSeed(6UL).Sample(1));
 
         Assert.Null(caught);
     }
@@ -168,7 +168,7 @@ public class DateTimeOffsetExtensionsTests
     {
         Strategy<DateTimeOffset> strategy = Strategy.DateTimeOffsets().WithPrecision(TimeSpan.FromMilliseconds(1));
 
-        IReadOnlyList<DateTimeOffset> samples = DataGen.Sample(strategy, count: 30, seed: 1UL);
+        IReadOnlyList<DateTimeOffset> samples = strategy.WithSeed(1UL).Sample(30);
 
         Assert.All(samples, value => Assert.Equal(0L, value.Ticks % TimeSpan.TicksPerMillisecond));
     }
@@ -178,7 +178,7 @@ public class DateTimeOffsetExtensionsTests
     {
         Strategy<DateTimeOffset> strategy = Strategy.DateTimeOffsets().WithPrecision(TimeSpan.FromSeconds(1));
 
-        IReadOnlyList<DateTimeOffset> samples = DataGen.Sample(strategy, count: 30, seed: 1UL);
+        IReadOnlyList<DateTimeOffset> samples = strategy.WithSeed(1UL).Sample(30);
 
         Assert.All(samples, value => Assert.Equal(0L, value.Ticks % TimeSpan.TicksPerSecond));
     }
@@ -190,7 +190,7 @@ public class DateTimeOffsetExtensionsTests
             Strategy.DateTimeOffsets().WithStrippedOffset();
 
         IReadOnlyList<(DateTimeOffset Original, DateTimeOffset Stripped)> samples =
-            DataGen.Sample(strategy, count: 30, seed: 1UL);
+            strategy.WithSeed(1UL).Sample(30);
 
         Assert.All(samples, result => Assert.Equal(TimeSpan.Zero, result.Stripped.Offset));
     }
@@ -202,7 +202,7 @@ public class DateTimeOffsetExtensionsTests
             Strategy.DateTimeOffsets().WithStrippedOffset();
 
         IReadOnlyList<(DateTimeOffset Original, DateTimeOffset Stripped)> samples =
-            DataGen.Sample(strategy, count: 30, seed: 1UL);
+            strategy.WithSeed(1UL).Sample(30);
 
         Assert.Contains(samples, result => result.Original.Offset != TimeSpan.Zero);
     }
@@ -214,7 +214,7 @@ public class DateTimeOffsetExtensionsTests
             Strategy.DateTimeOffsets().WithStrippedOffset();
 
         IReadOnlyList<(DateTimeOffset Original, DateTimeOffset Stripped)> samples =
-            DataGen.Sample(strategy, count: 30, seed: 1UL);
+            strategy.WithSeed(1UL).Sample(30);
 
         Assert.All(samples, result => Assert.Equal(result.Original.Ticks, result.Stripped.Ticks));
     }
