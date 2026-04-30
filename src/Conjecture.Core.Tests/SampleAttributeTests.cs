@@ -5,26 +5,26 @@ using Conjecture.Core;
 
 namespace Conjecture.Core.Tests;
 
-public class ExampleAttributeTests
+public class SampleAttributeTests
 {
     private enum Color { Red, Green, Blue }
 
     [Fact]
-    public void ExampleAttribute_IsSealed()
+    public void SampleAttribute_IsSealed()
     {
-        Assert.True(typeof(ExampleAttribute).IsSealed);
+        Assert.True(typeof(SampleAttribute).IsSealed);
     }
 
     [Fact]
-    public void ExampleAttribute_IsAttribute()
+    public void SampleAttribute_IsAttribute()
     {
-        Assert.True(typeof(ExampleAttribute).IsSubclassOf(typeof(Attribute)));
+        Assert.True(typeof(SampleAttribute).IsSubclassOf(typeof(Attribute)));
     }
 
     [Fact]
-    public void ExampleAttribute_AllowsMultipleOnMethod()
+    public void SampleAttribute_AllowsMultipleOnMethod()
     {
-        AttributeUsageAttribute usage = typeof(ExampleAttribute)
+        AttributeUsageAttribute usage = typeof(SampleAttribute)
             .GetCustomAttributes(typeof(AttributeUsageAttribute), inherit: false)
             .Cast<AttributeUsageAttribute>()
             .Single();
@@ -36,7 +36,7 @@ public class ExampleAttributeTests
     [Fact]
     public void Constructor_TwoInts_ArgumentsStored()
     {
-        ExampleAttribute attr = new(1, 2);
+        SampleAttribute attr = new(1, 2);
 
         Assert.Equal(new object?[] { 1, 2 }, attr.Arguments);
     }
@@ -44,7 +44,7 @@ public class ExampleAttributeTests
     [Fact]
     public void Constructor_SingleString_ArgumentStored()
     {
-        ExampleAttribute attr = new("hello");
+        SampleAttribute attr = new("hello");
 
         Assert.Equal(new object?[] { "hello" }, attr.Arguments);
     }
@@ -52,7 +52,7 @@ public class ExampleAttributeTests
     [Fact]
     public void Constructor_Bool_ArgumentStored()
     {
-        ExampleAttribute attr = new(true);
+        SampleAttribute attr = new(true);
 
         Assert.Equal(new object?[] { true }, attr.Arguments);
     }
@@ -60,7 +60,7 @@ public class ExampleAttributeTests
     [Fact]
     public void Constructor_Null_ArgumentStored()
     {
-        ExampleAttribute attr = new((object?)null);
+        SampleAttribute attr = new((object?)null);
 
         Assert.Equal(new object?[] { null }, attr.Arguments);
     }
@@ -68,7 +68,7 @@ public class ExampleAttributeTests
     [Fact]
     public void Constructor_Enum_ArgumentStored()
     {
-        ExampleAttribute attr = new(Color.Green);
+        SampleAttribute attr = new(Color.Green);
 
         Assert.Equal(new object?[] { Color.Green }, attr.Arguments);
     }
@@ -76,7 +76,7 @@ public class ExampleAttributeTests
     [Fact]
     public void Constructor_Type_ArgumentStored()
     {
-        ExampleAttribute attr = new(typeof(int));
+        SampleAttribute attr = new(typeof(int));
 
         Assert.Equal(new object?[] { typeof(int) }, attr.Arguments);
     }
@@ -84,12 +84,12 @@ public class ExampleAttributeTests
     [Fact]
     public void MultipleAttributes_OnMethod_AllRecorded()
     {
-        System.Reflection.MethodInfo method = typeof(ExampleAttributeTests)
+        System.Reflection.MethodInfo method = typeof(SampleAttributeTests)
             .GetMethod(nameof(AnnotatedMethod), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!;
 
-        ExampleAttribute[] attrs = method
-            .GetCustomAttributes(typeof(ExampleAttribute), inherit: false)
-            .Cast<ExampleAttribute>()
+        SampleAttribute[] attrs = method
+            .GetCustomAttributes(typeof(SampleAttribute), inherit: false)
+            .Cast<SampleAttribute>()
             .ToArray();
 
         Assert.Equal(3, attrs.Length);
@@ -98,12 +98,12 @@ public class ExampleAttributeTests
     [Fact]
     public void MultipleAttributes_OnMethod_ArgumentsMatchDeclarationOrder()
     {
-        System.Reflection.MethodInfo method = typeof(ExampleAttributeTests)
+        System.Reflection.MethodInfo method = typeof(SampleAttributeTests)
             .GetMethod(nameof(AnnotatedMethod), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!;
 
-        ExampleAttribute[] attrs = method
-            .GetCustomAttributes(typeof(ExampleAttribute), inherit: false)
-            .Cast<ExampleAttribute>()
+        SampleAttribute[] attrs = method
+            .GetCustomAttributes(typeof(SampleAttribute), inherit: false)
+            .Cast<SampleAttribute>()
             .OrderBy(a => (int)a.Arguments[0]!)
             .ToArray();
 
@@ -115,7 +115,7 @@ public class ExampleAttributeTests
     [Fact]
     public void Constructor_NoArgs_ArgumentsIsEmpty()
     {
-        ExampleAttribute attr = new();
+        SampleAttribute attr = new();
 
         Assert.Empty(attr.Arguments);
     }
@@ -123,13 +123,13 @@ public class ExampleAttributeTests
     [Fact]
     public void Arguments_ReturnsSameInstance()
     {
-        ExampleAttribute attr = new(1, 2);
+        SampleAttribute attr = new(1, 2);
 
         Assert.Same(attr.Arguments, attr.Arguments);
     }
 
-    [Example(1, 2)]
-    [Example(3, 4)]
-    [Example(5, 6)]
+    [Sample(1, 2)]
+    [Sample(3, 4)]
+    [Sample(5, 6)]
     private static void AnnotatedMethod() { }
 }

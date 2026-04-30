@@ -46,8 +46,8 @@ public class XunitV3PropertyExecutionTests
     }
 
     [Property(MaxExamples = 5, Seed = 1)]
-    [Example(0, 0)]
-    public void ExampleAttribute_ExplicitCaseRunsAlongGenerated(int a, int b)
+    [Sample(0, 0)]
+    public void SampleAttribute_ExplicitCaseRunsAlongGenerated(int a, int b)
     {
         _ = a;
         _ = b;

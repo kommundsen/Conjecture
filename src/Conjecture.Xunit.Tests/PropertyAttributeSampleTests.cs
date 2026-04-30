@@ -11,20 +11,20 @@ using Conjecture.Xunit;
 namespace Conjecture.Xunit.Tests;
 
 /// <summary>
-/// Integration tests for [Example] + [Property] wiring.
+/// Integration tests for [Sample] + [Property] wiring.
 /// The [Property]-decorated methods below ARE tests — xUnit discovers and executes them.
 /// </summary>
-public class PropertyAttributeExampleTests
+public class PropertyAttributeSampleTests
 {
     // ── Happy-path: explicit examples run, generated still run ──────────────
 
 #pragma warning disable IDE0060
-    [Example(0, 0)]
+    [Sample(0, 0)]
     [Property(MaxExamples = 5, Seed = 1UL)]
     public void TwoInts_SingleExample_BothExplicitAndGeneratedPass(int x, int y) { }
 
-    [Example(1, 2)]
-    [Example(3, 4)]
+    [Sample(1, 2)]
+    [Sample(3, 4)]
     [Property(MaxExamples = 3, Seed = 1UL)]
     public void TwoInts_MultipleExamples_AllExecuteWithoutError(int x, int y) { }
 #pragma warning restore IDE0060
@@ -32,13 +32,13 @@ public class PropertyAttributeExampleTests
     // ── Failure message for explicit example ────────────────────────────────
 
     [Fact]
-    public void BuildExampleFailureMessage_ContainsParamNamesAndArgValues()
+    public void BuildSampleFailureMessage_ContainsParamNamesAndArgValues()
     {
         ParameterInfo[] parameters = GetParams(nameof(TwoIntHelper));
-        ExampleAttribute example = new(3, 7);
+        SampleAttribute example = new(3, 7);
         Exception failure = new InvalidOperationException("bad value");
 
-        string message = TestCaseHelper.BuildExampleFailureMessage(example, parameters, failure);
+        string message = TestCaseHelper.BuildSampleFailureMessage(example, parameters, failure);
 
         Assert.Contains("x =", message);
         Assert.Contains("y =", message);
@@ -47,25 +47,25 @@ public class PropertyAttributeExampleTests
     }
 
     [Fact]
-    public void BuildExampleFailureMessage_IndicatesExplicitExample()
+    public void BuildSampleFailureMessage_IndicatesExplicitExample()
     {
         ParameterInfo[] parameters = GetParams(nameof(TwoIntHelper));
-        ExampleAttribute example = new(0, 0);
+        SampleAttribute example = new(0, 0);
         Exception failure = new("fail");
 
-        string message = TestCaseHelper.BuildExampleFailureMessage(example, parameters, failure);
+        string message = TestCaseHelper.BuildSampleFailureMessage(example, parameters, failure);
 
         Assert.Contains("explicit", message, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
-    public void BuildExampleFailureMessage_ContainsInnerExceptionMessage()
+    public void BuildSampleFailureMessage_ContainsInnerExceptionMessage()
     {
         ParameterInfo[] parameters = GetParams(nameof(TwoIntHelper));
-        ExampleAttribute example = new(1, 2);
+        SampleAttribute example = new(1, 2);
         Exception failure = new InvalidOperationException("specific failure reason");
 
-        string message = TestCaseHelper.BuildExampleFailureMessage(example, parameters, failure);
+        string message = TestCaseHelper.BuildSampleFailureMessage(example, parameters, failure);
 
         Assert.Contains("specific failure reason", message);
     }
@@ -73,35 +73,35 @@ public class PropertyAttributeExampleTests
     // ── Wrong arg count throws clear error ───────────────────────────────────
 
     [Fact]
-    public void ValidateExampleArgs_WrongCount_ThrowsArgumentException()
+    public void ValidateSampleArgs_WrongCount_ThrowsArgumentException()
     {
         ParameterInfo[] twoParams = GetParams(nameof(TwoIntHelper));
-        ExampleAttribute wrongCount = new(1); // 1 arg for 2-param method
+        SampleAttribute wrongCount = new(1); // 1 arg for 2-param method
 
         ArgumentException ex = Assert.Throws<ArgumentException>(
-            () => TestCaseHelper.ValidateExampleArgs(wrongCount, twoParams));
+            () => TestCaseHelper.ValidateSampleArgs(wrongCount, twoParams));
 
         Assert.Contains("2", ex.Message);
     }
 
     [Fact]
-    public void ValidateExampleArgs_CorrectCount_DoesNotThrow()
+    public void ValidateSampleArgs_CorrectCount_DoesNotThrow()
     {
         ParameterInfo[] twoParams = GetParams(nameof(TwoIntHelper));
-        ExampleAttribute correct = new(1, 2);
+        SampleAttribute correct = new(1, 2);
 
         // Should not throw
-        TestCaseHelper.ValidateExampleArgs(correct, twoParams);
+        TestCaseHelper.ValidateSampleArgs(correct, twoParams);
     }
 
     [Fact]
-    public void ValidateExampleArgs_ExtraArgs_ThrowsArgumentException()
+    public void ValidateSampleArgs_ExtraArgs_ThrowsArgumentException()
     {
         ParameterInfo[] twoParams = GetParams(nameof(TwoIntHelper));
-        ExampleAttribute tooMany = new(1, 2, 3); // 3 args for 2-param method
+        SampleAttribute tooMany = new(1, 2, 3); // 3 args for 2-param method
 
         Assert.Throws<ArgumentException>(
-            () => TestCaseHelper.ValidateExampleArgs(tooMany, twoParams));
+            () => TestCaseHelper.ValidateSampleArgs(tooMany, twoParams));
     }
 
     // ── Explicit examples contribute to ExampleCount ─────────────────────────
@@ -126,7 +126,7 @@ public class PropertyAttributeExampleTests
     // ── Helpers ──────────────────────────────────────────────────────────────
 
     private static ParameterInfo[] GetParams(string methodName) =>
-        typeof(PropertyAttributeExampleTests)
+        typeof(PropertyAttributeSampleTests)
             .GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static)!
             .GetParameters();
 

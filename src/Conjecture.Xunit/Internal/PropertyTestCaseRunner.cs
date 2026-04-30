@@ -101,31 +101,31 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
 
             ParameterInfo[] methodParams = methodInfo.GetParameters();
 
-            ExampleAttribute[] exampleAttrs = methodInfo
-                .GetCustomAttributes(typeof(ExampleAttribute), inherit: false)
-                .Cast<ExampleAttribute>()
+            SampleAttribute[] sampleAttrs = methodInfo
+                .GetCustomAttributes(typeof(SampleAttribute), inherit: false)
+                .Cast<SampleAttribute>()
                 .ToArray();
 
-            foreach (ExampleAttribute exampleAttr in exampleAttrs)
+            foreach (SampleAttribute sampleAttr in sampleAttrs)
             {
-                TestCaseHelper.ValidateExampleArgs(exampleAttr, methodParams);
+                TestCaseHelper.ValidateSampleArgs(sampleAttr, methodParams);
             }
 
             int explicitCount = 0;
             Exception? explicitFailure = null;
 
-            foreach (ExampleAttribute exampleAttr in exampleAttrs)
+            foreach (SampleAttribute sampleAttr in sampleAttrs)
             {
                 try
                 {
-                    object? returnVal = methodInfo.Invoke(testInstance, exampleAttr.Arguments);
+                    object? returnVal = methodInfo.Invoke(testInstance, sampleAttr.Arguments);
                     if (returnVal is Task task) { await task; }
                     else if (returnVal is ValueTask vt) { await vt; }
                     explicitCount++;
                 }
                 catch (TargetInvocationException ex) when (ex.InnerException is not null)
                 {
-                    explicitFailure = new Exception(TestCaseHelper.BuildExampleFailureMessage(exampleAttr, methodParams, ex.InnerException), ex.InnerException);
+                    explicitFailure = new Exception(TestCaseHelper.BuildSampleFailureMessage(sampleAttr, methodParams, ex.InnerException), ex.InnerException);
                     break;
                 }
             }

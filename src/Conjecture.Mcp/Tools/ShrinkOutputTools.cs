@@ -108,7 +108,7 @@ internal static class ShrinkOutputTools
         {
             sb.AppendLine("## Explicit Example Failure");
             sb.AppendLine();
-            sb.AppendLine("A hand-written `[Example]` seed value caused the property to fail.");
+            sb.AppendLine("A hand-written `[Sample]` seed value caused the property to fail.");
             if (originalParams.Count > 0)
             {
                 sb.AppendLine();

@@ -125,15 +125,15 @@ internal sealed class PropertyTestFramework : ITestFramework, IDataProducer
         string displayName = $"{method.DeclaringType!.Name}.{method.Name}";
         TestNodeUid parentNodeUid = new(uid);
         ParameterInfo[] parameters = method.GetParameters();
-        bool exampleFailed = false;
+        bool sampleFailed = false;
         object? instance = method.IsStatic ? null : Activator.CreateInstance(method.DeclaringType!);
 
-        ExampleAttribute[] examples = method.GetCustomAttributes<ExampleAttribute>().ToArray();
-        for (int i = 0; i < examples.Length; i++)
+        SampleAttribute[] samples = method.GetCustomAttributes<SampleAttribute>().ToArray();
+        for (int i = 0; i < samples.Length; i++)
         {
-            ExampleAttribute example = examples[i];
-            string childUid = uid + ":example:" + i;
-            string childDisplayName = $"{displayName}[Example {i}]";
+            SampleAttribute sample = samples[i];
+            string childUid = uid + ":sample:" + i;
+            string childDisplayName = $"{displayName}[Sample {i}]";
             TestNode childNode = new()
             {
                 Uid = new(childUid),
@@ -142,14 +142,14 @@ internal sealed class PropertyTestFramework : ITestFramework, IDataProducer
 
             try
             {
-                TestCaseHelper.ValidateExampleArgs(example, parameters);
+                TestCaseHelper.ValidateSampleArgs(sample, parameters);
                 if (TestCaseHelper.IsAsyncReturnType(method.ReturnType))
                 {
-                    await TestCaseHelper.InvokeAsync(method, instance, example.Arguments!);
+                    await TestCaseHelper.InvokeAsync(method, instance, sample.Arguments!);
                 }
                 else
                 {
-                    TestCaseHelper.InvokeSync(method, instance, example.Arguments!);
+                    TestCaseHelper.InvokeSync(method, instance, sample.Arguments!);
                 }
 
                 childNode.Properties.Add(PassedTestNodeStateProperty.CachedInstance);
@@ -157,7 +157,7 @@ internal sealed class PropertyTestFramework : ITestFramework, IDataProducer
             }
             catch (Exception ex)
             {
-                string msg = TestCaseHelper.BuildExampleFailureMessage(example, parameters, ex);
+                string msg = TestCaseHelper.BuildSampleFailureMessage(sample, parameters, ex);
                 childNode.Properties.Add(new FailedTestNodeStateProperty(ex, msg));
                 if (capabilities?.TrxEnabled == true)
                 {
@@ -178,12 +178,12 @@ internal sealed class PropertyTestFramework : ITestFramework, IDataProducer
                 }
 
                 await bus.PublishAsync(this, new TestNodeUpdateMessage(sessionUid, parentNode));
-                exampleFailed = true;
+                sampleFailed = true;
                 break;
             }
         }
 
-        if (exampleFailed)
+        if (sampleFailed)
         {
             return;
         }

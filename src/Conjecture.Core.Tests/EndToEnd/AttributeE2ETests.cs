@@ -25,12 +25,12 @@ public sealed class AttributeE2ETests
     private static Strategy<int> EvenInts() =>
         Strategy.Integers<int>(0, 50).Where(n => n % 2 == 0);
 
-    // ── [Example] before generated: explicit count merges with TestRunner count ─
+    // ── [Sample] before generated: explicit count merges with TestRunner count ─
 
     [Fact]
     public async Task ExplicitExamples_CombinedCount_EqualsExplicitPlusGenerated()
     {
-        // WithExtraExamples is how PropertyTestCaseRunner merges [Example] runs
+        // WithExtraExamples is how PropertyTestCaseRunner merges [Sample] runs
         // into the TestRunner result before reporting.
         int explicitCount = 2;
 

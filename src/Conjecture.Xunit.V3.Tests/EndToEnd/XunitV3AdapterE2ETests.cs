@@ -18,7 +18,7 @@ file sealed class BoundedPositiveInts : IStrategyProvider<int>
 
 /// <summary>
 /// End-to-end tests for the xUnit v3 adapter covering the full pipeline:
-/// basic [Property], failing + shrinking, [Example], [From&lt;T&gt;], [FromFactory],
+/// basic [Property], failing + shrinking, [Sample], [From&lt;T&gt;], [FromFactory],
 /// async, database round-trip, and settings propagation.
 /// </summary>
 public sealed class XunitV3AdapterE2ETests : IDisposable
@@ -139,15 +139,15 @@ public sealed class XunitV3AdapterE2ETests : IDisposable
         Assert.Contains("y =", message);
     }
 
-    // ── [Example] ───────────────────────────────────────────────────────────────
+    // ── [Sample] ───────────────────────────────────────────────────────────────
 
     [Property(MaxExamples = 5, Seed = 1UL)]
-    [Example(42, true)]
-    [Example(0, false)]
-    public void ExampleAttribute_ExplicitCasesRunAlongGenerated(int x, bool flag) { _ = x; _ = flag; }
+    [Sample(42, true)]
+    [Sample(0, false)]
+    public void SampleAttribute_ExplicitCasesRunAlongGenerated(int x, bool flag) { _ = x; _ = flag; }
 
     [Fact]
-    public async Task ExampleAttribute_ExplicitCountMergesWithGeneratedCount()
+    public async Task SampleAttribute_ExplicitCountMergesWithGeneratedCount()
     {
         ConjectureSettings settings = new() { MaxExamples = 10, Seed = 1UL };
         TestRunResult generated = await TestRunner.Run(settings, _ => { });

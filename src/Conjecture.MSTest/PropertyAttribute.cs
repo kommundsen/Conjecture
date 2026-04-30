@@ -51,14 +51,14 @@ public sealed class PropertyAttribute(
         MethodInfo methodInfo = testMethod.MethodInfo;
         ParameterInfo[] methodParams = testMethod.ParameterTypes;
 
-        ExampleAttribute[] exampleAttrs = methodInfo
-            .GetCustomAttributes(typeof(ExampleAttribute), inherit: false)
-            .Cast<ExampleAttribute>()
+        SampleAttribute[] sampleAttrs = methodInfo
+            .GetCustomAttributes(typeof(SampleAttribute), inherit: false)
+            .Cast<SampleAttribute>()
             .ToArray();
 
-        foreach (ExampleAttribute ea in exampleAttrs)
+        foreach (SampleAttribute sa in sampleAttrs)
         {
-            TestCaseHelper.ValidateExampleArgs(ea, methodParams);
+            TestCaseHelper.ValidateSampleArgs(sa, methodParams);
         }
 
         ILogger logger = TestOutputHelperLogger.FromWriteLine(Console.WriteLine);
@@ -70,15 +70,15 @@ public sealed class PropertyAttribute(
         int explicitCount = 0;
         Exception? explicitFailure = null;
 
-        foreach (ExampleAttribute ea in exampleAttrs)
+        foreach (SampleAttribute sa in sampleAttrs)
         {
-            object[] exampleArgs = Array.ConvertAll(ea.Arguments, a => a!);
-            TestResult invResult = await testMethod.InvokeAsync(exampleArgs);
+            object[] sampleArgs = Array.ConvertAll(sa.Arguments, a => a!);
+            TestResult invResult = await testMethod.InvokeAsync(sampleArgs);
             if (invResult.Outcome != UnitTestOutcome.Passed)
             {
                 explicitFailure = invResult.TestFailureException
-                    ?? new Exception(TestCaseHelper.BuildExampleFailureMessage(
-                        ea, methodParams, new Exception($"Example failed with outcome: {invResult.Outcome}")));
+                    ?? new Exception(TestCaseHelper.BuildSampleFailureMessage(
+                        sa, methodParams, new Exception($"Sample failed with outcome: {invResult.Outcome}")));
                 break;
             }
 
