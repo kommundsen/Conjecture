@@ -12,7 +12,7 @@ namespace Conjecture.EFCore;
 /// <summary>Extension methods for generating EF Core entity instances.</summary>
 public static class DbStrategyExtensions
 {
-    // Both overloads take optional maxDepth; suppress RS0026 as in RegexGenerateExtensions.
+    // Both overloads take optional maxDepth; suppress RS0026 as in RegexStrategyExtensions.
 #pragma warning disable RS0026
     extension(Strategy)
     {
