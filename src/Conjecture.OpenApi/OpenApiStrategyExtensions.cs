@@ -13,7 +13,7 @@ using Microsoft.OpenApi.Readers;
 namespace Conjecture.OpenApi;
 
 /// <summary>Extension methods on <see cref="Strategy"/> for OpenAPI-driven generation.</summary>
-public static class OpenApiGenerate
+public static class OpenApiStrategyExtensions
 {
     private static readonly HttpClient SharedHttpClient = new();
 
