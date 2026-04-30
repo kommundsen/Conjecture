@@ -8,7 +8,7 @@ using Conjecture.Core;
 namespace Conjecture.Http;
 
 /// <summary>Extension methods on <see cref="Strategy"/> for HTTP interaction generation.</summary>
-public static class HttpGenerateExtensions
+public static class HttpStrategyExtensions
 {
     extension(Strategy)
     {
