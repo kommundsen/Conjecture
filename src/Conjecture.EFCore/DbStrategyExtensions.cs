@@ -38,6 +38,9 @@ public static class DbStrategyExtensions
                 return ctx.Generate(inner);
             });
         }
+
+        /// <summary>Returns a <see cref="DbStrategies"/> for composing database interaction strategies.</summary>
+        public static DbStrategies Db => new();
     }
 #pragma warning restore RS0026
 }
