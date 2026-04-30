@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Conjecture.EFCore.Tests;
 
-public class EFCoreGenerateTests
+public class DbStrategyExtensionsTests
 {
     // ---- test entities -------------------------------------------------
 
@@ -34,7 +34,7 @@ public class EFCoreGenerateTests
 
     // ---- test DbContext ------------------------------------------------
 
-    private sealed class ShopContext(DbContextOptions<EFCoreGenerateTests.ShopContext> options) : DbContext(options)
+    private sealed class ShopContext(DbContextOptions<DbStrategyExtensionsTests.ShopContext> options) : DbContext(options)
     {
         public DbSet<Customer> Customers { get; set; } = null!;
         public DbSet<Order> Orders { get; set; } = null!;

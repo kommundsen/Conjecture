@@ -1,1 +1,9 @@
 #nullable enable
+*REMOVED*Conjecture.EFCore.EFCoreGenerateExtensions
+*REMOVED*Conjecture.EFCore.EFCoreGenerateExtensions.extension(Conjecture.Core.Strategy!)
+*REMOVED*static Conjecture.EFCore.EFCoreGenerateExtensions.extension(Conjecture.Core.Strategy!).Entity<T>(Microsoft.EntityFrameworkCore.DbContext! context, int maxDepth = 2) -> Conjecture.Core.Strategy<T!>!
+*REMOVED*static Conjecture.EFCore.EFCoreGenerateExtensions.extension(Conjecture.Core.Strategy!).Entity<T>(System.Func<Microsoft.EntityFrameworkCore.DbContext!>! contextFactory, int maxDepth = 2) -> Conjecture.Core.Strategy<T!>!
+Conjecture.EFCore.DbStrategyExtensions
+Conjecture.EFCore.DbStrategyExtensions.extension(Conjecture.Core.Strategy!)
+static Conjecture.EFCore.DbStrategyExtensions.extension(Conjecture.Core.Strategy!).Entity<T>(Microsoft.EntityFrameworkCore.DbContext! context, int maxDepth = 2) -> Conjecture.Core.Strategy<T!>!
+static Conjecture.EFCore.DbStrategyExtensions.extension(Conjecture.Core.Strategy!).Entity<T>(System.Func<Microsoft.EntityFrameworkCore.DbContext!>! contextFactory, int maxDepth = 2) -> Conjecture.Core.Strategy<T!>!
