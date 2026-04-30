@@ -17,7 +17,7 @@ file sealed class BoundedPositiveInts : IStrategyProvider<int>
 
 /// <summary>
 /// End-to-end tests for the NUnit adapter covering the full pipeline:
-/// basic [Property], failing + shrinking, [Example], [From&lt;T&gt;], [FromFactory],
+/// basic [Property], failing + shrinking, [Sample], [From&lt;T&gt;], [FromFactory],
 /// async, database round-trip, and settings propagation.
 /// </summary>
 [TestFixture]
@@ -143,17 +143,17 @@ public sealed class NUnitAdapterE2ETests
         Assert.That(message, Does.Contain("y ="));
     }
 
-    // ── [Example] ───────────────────────────────────────────────────────────────
+    // ── [Sample] ───────────────────────────────────────────────────────────────
 
 #pragma warning disable IDE0060
     [Conjecture.NUnit.Property(MaxExamples = 5, Seed = 1UL)]
-    [Example(42, true)]
-    [Example(0, false)]
-    public void ExampleAttribute_ExplicitCasesRunAlongGenerated(int x, bool flag) { }
+    [Sample(42, true)]
+    [Sample(0, false)]
+    public void SampleAttribute_ExplicitCasesRunAlongGenerated(int x, bool flag) { }
 #pragma warning restore IDE0060
 
     [Test]
-    public async Task ExampleAttribute_ExplicitCountMergesWithGeneratedCount()
+    public async Task SampleAttribute_ExplicitCountMergesWithGeneratedCount()
     {
         ConjectureSettings settings = new() { MaxExamples = 10, Seed = 1UL };
         TestRunResult generated = await TestRunner.Run(settings, _ => { });

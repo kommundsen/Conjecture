@@ -90,20 +90,20 @@ public sealed class AsyncPropertyE2ETests
         Assert.True(shrunk > 10, $"Shrunk value {shrunk} should still violate the property");
     }
 
-    // ── Async with [Example]: explicit cases run and are counted ──────────────
+    // ── Async with [Sample]: explicit cases run and are counted ──────────────
 
     [Fact]
     public async Task AsyncTask_ExplicitExamples_ContributeToExampleCount()
     {
-        // Simulates PropertyTestCaseRunner running [Example] delegates before
+        // Simulates PropertyTestCaseRunner running [Sample] delegates before
         // calling TestRunner.RunAsync, then merging counts via WithExtraExamples.
         int explicitCount = 3;
         ConjectureSettings settings = new() { MaxExamples = 10, Seed = 7UL };
 
-        // Run explicit async examples (simulating [Example] dispatch).
+        // Run explicit async examples (simulating [Sample] dispatch).
         for (int i = 0; i < explicitCount; i++)
         {
-            await Task.Yield(); // each [Example] is invoked as an async call
+            await Task.Yield(); // each [Sample] is invoked as an async call
         }
 
         TestRunResult generated = await TestRunner.RunAsync(settings, async data =>
@@ -122,7 +122,7 @@ public sealed class AsyncPropertyE2ETests
     [Fact]
     public async Task AsyncTask_ExplicitExampleFails_GeneratedExamplesNotRun()
     {
-        // If an explicit [Example] fails, PropertyTestCaseRunner short-circuits before
+        // If an explicit [Sample] fails, PropertyTestCaseRunner short-circuits before
         // calling TestRunner.RunAsync. We simulate by checking that a failing explicit
         // invocation is detected before the generation phase.
         bool generationPhaseReached = false;
