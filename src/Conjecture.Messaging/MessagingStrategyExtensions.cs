@@ -6,7 +6,7 @@ using Conjecture.Core;
 namespace Conjecture.Messaging;
 
 /// <summary>Extension methods on <see cref="Strategy"/> for messaging interaction generation.</summary>
-public static class MessagingGenerateExtensions
+public static class MessagingStrategyExtensions
 {
     extension(Strategy)
     {
