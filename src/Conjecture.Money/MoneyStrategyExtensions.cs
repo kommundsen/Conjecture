@@ -6,7 +6,7 @@ using Conjecture.Money.Internal;
 namespace Conjecture.Core;
 
 /// <summary>Extension methods on <see cref="Strategy"/> for monetary value generation.</summary>
-public static class MoneyGenerateExtensions
+public static class MoneyStrategyExtensions
 {
     extension(Strategy)
     {
