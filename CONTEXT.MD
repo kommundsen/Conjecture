@@ -18,8 +18,11 @@ This file overrides Hypothesis-Python vocabulary, and any informal synonyms used
 ### Generation
 
 - **Strategy** — value-producing abstraction. `Strategy<T>` is the generic type; the non-generic `Strategy` static class exposes built-in factories (`Strategy.Integers`, `Strategy.Strings`, …). _Avoid:_ generator, generate, arbitrary, producer, gen, arb, factory.
+  _Note (F# carve-out):_ `Conjecture.FSharp` exposes `Gen<'a>`, `Gen.bind`, `GenBuilder` etc. as idiomatic F#. These wrap `Strategy<T>` internally and do not bleed into C# public API.
 - **IGenerationContext** — imperative draw API used inside `Compose` (`Generate<T>()`, `Assume()`, `Target()`). _Avoid:_ IGeneratorContext, context, ctx, source, sink.
 - **Compose** — strategy built by drawing from other strategies imperatively via `IGenerationContext`. _Avoid:_ build, combine, monad, bind.
+  _Note (`*Builder` rule):_ A `*Builder` type is permitted **only** when it accumulates state across chained calls and produces the strategy via a terminal `Build()` (e.g. `HttpStrategyBuilder`, `AspNetCoreRequestBuilder`, `DbInteractionSequenceBuilder`). Single-op DTO factories that return `Strategy<T>` directly do **not** use the `*Builder` suffix — they use `*Strategies` (see below).
+  _Note (`*Strategies` rule):_ Adapters expose their single-op factory clusters via a `*Strategies` access object (`DbStrategies`, `MessagingStrategies`). Plural-as-collection signals "a holder for related factory methods." The entry-point lives on `Strategy` itself (`Strategy.Db`, `Strategy.Messaging`).
 - **IStrategyProvider\<T\>** — source-generated strategy adapter emitted from `[Arbitrary]`. _Avoid:_ factory, registration, adapter.
 - **`[Arbitrary]`** — attribute marking a type for `IStrategyProvider` generation. _Avoid:_ `[Generate]`, `[Strategy]`, `[Gen]`.
 
@@ -59,6 +62,7 @@ This file overrides Hypothesis-Python vocabulary, and any informal synonyms used
 - **`[Property]`** — per-framework test attribute (Xunit, Xunit.V3, NUnit, MSTest, TestingPlatform). All implement `IPropertyTest`. _Avoid:_ `[Conjecture]`, `[Test]`, `[Theory]`, `[Fact]`.
 - **`[Sample]`** — attribute supplying pre-canned inputs that become Examples when run (e.g. `[Sample(1, 2, 3)]`). _Avoid:_ `[Example]`, `[InlineData]`, `[TestCase]`.
 - **IPropertyTest** — common configuration interface across adapters (`MaxExamples`, `Seed`, `Database`, `MaxStrategyRejections`, `DeadlineMs`, `Targeting`, `TargetingProportion`). _Avoid:_ ITest, IConfig, IRunner.
+- **Interaction** — a single discrete action on a domain-specific target (HTTP, messaging, gRPC, database). Implements `IInteraction`; data DTOs use the `*Interaction` postfix (`HttpInteraction`, `MessageInteraction`, `GrpcInteraction`, `DbInteraction`). A Property Example may execute many Interactions in sequence or state-machine order. _Avoid:_ action, step, operation.
 
 ### Internals
 
@@ -77,6 +81,10 @@ Names that are `internal` to `Conjecture.Core`. Use only when discussing impleme
 - A successfully shrunk `Interesting` **Example** is persisted to the **Example Database** and may be exported as a **Reproduction**.
 - **Targeting** consumes **Observations** recorded by `Target` calls during the **Generation** phase to bias subsequent draws.
 - An `[Arbitrary]`-annotated type produces an **IStrategyProvider\<T\>** at compile time, which yields a **Strategy\<T\>** at runtime.
+
+## Layering convention
+
+End-user contracts live in `Conjecture.{Pkg}` (e.g., `Conjecture.Core`, `Conjecture.Aspire`). Extension-author contracts live in the matching `Conjecture.{Pkg}.Abstractions` package, under namespace `Conjecture.Abstractions.{Sub}`, and are marked `[EditorBrowsable(EditorBrowsableState.Never)]`. Internal engine implementation stays in the `Internal/` sub-namespace and is never publicly visible.
 
 ## Flagged ambiguities
 
