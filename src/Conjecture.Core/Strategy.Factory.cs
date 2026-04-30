@@ -227,7 +227,7 @@ public static class Strategy
     public static Strategy<TimeOnly> TimeOnlyValues(TimeOnly min, TimeOnly max)
         => new TimeOnlyStrategy(min, max);
 
-    /// <summary>Returns a strategy that generates identifier strings of the form <c>[a-z]+\d+</c>. The alpha prefix is drawn via IR string nodes so <c>StringAwarePass</c> can simplify it toward 'a', and the digit suffix is drawn so <c>NumericAwareShrinkPass</c> can shrink it.</summary>
+    /// <summary>Returns a strategy that generates identifier strings of the form <c>[a-z]+\d+</c>. The alpha prefix is drawn via IR string nodes so <c>StringAwarePass</c> can shrink it toward 'a', and the digit suffix is drawn so <c>NumericAwareShrinkPass</c> can shrink it.</summary>
     public static Strategy<string> Identifiers(
         int minPrefixLength = 1,
         int maxPrefixLength = 6,
