@@ -184,7 +184,7 @@ internal sealed class ConjectureData
         if (cursor >= replayNodes!.Count)
         {
             Status = Status.Overrun;
-            throw new InvalidOperationException("Replay buffer exhausted.");
+            throw new InvalidOperationException("Replay IR exhausted.");
         }
         return replayNodes[cursor++];
     }
