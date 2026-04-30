@@ -33,13 +33,13 @@ public async Task<bool> Api_returns_200(int id)
 |---|---|---|---|
 | `MaxExamples` | `int` | `100` | Number of examples to generate |
 | `Seed` | `ulong` | `0` | `0` = random; any other value pins the seed |
-| `UseDatabase` | `bool` | `true` | Persist and replay failures |
+| `Database` | `bool` | `true` | Persist and replay failures |
 | `MaxStrategyRejections` | `int` | `5` | Max consecutive `Where()` rejections |
 | `DeadlineMs` | `int` | `0` | `0` = no deadline; otherwise per-example timeout in ms |
 | `Targeting` | `bool` | `true` | Enable hill-climbing phase |
 | `TargetingProportion` | `double` | `0.5` | Fraction of examples spent on targeting |
-| `ExportReproOnFailure` | `bool` | `false` | Write shrunk counterexample to file on failure |
-| `ReproOutputPath` | `string` | `".conjecture/repros/"` | Output directory for repro files |
+| `ExportReproductionOnFailure` | `bool` | `false` | Write shrunk counterexample to file on failure |
+| `ReproductionOutputPath` | `string` | `".conjecture/repros/"` | Output directory for repro files |
 
 ### MTP-specific notes
 
@@ -72,7 +72,7 @@ Applies settings to a test method, or at assembly level to all tests in the asse
 public bool My_property(int value) => ...;
 
 // Assembly-level:
-[assembly: ConjectureSettings(MaxExamples = 500, UseDatabase = false)]
+[assembly: ConjectureSettings(MaxExamples = 500, Database = false)]
 ```
 
 All `ConjectureSettings` record properties are available. See [Reference: Settings](settings.md) for the full table.
@@ -185,5 +185,5 @@ Applies `ConjectureSettings` to every `[Property]` test in the assembly. See `[C
 
 ```csharp
 // In any .cs file in your test project:
-[assembly: ConjectureSettings(MaxExamples = 1000, UseDatabase = false)]
+[assembly: ConjectureSettings(MaxExamples = 1000, Database = false)]
 ```

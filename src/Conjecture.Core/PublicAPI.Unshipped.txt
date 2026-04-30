@@ -87,3 +87,14 @@ Conjecture.Core.StrategyRegexAttribute.Pattern.get -> string!
 Conjecture.Core.StrategyMaxDepthAttribute
 Conjecture.Core.StrategyMaxDepthAttribute.StrategyMaxDepthAttribute(int maxDepth) -> void
 Conjecture.Core.StrategyMaxDepthAttribute.MaxDepth.get -> int
+Conjecture.Core.ConjectureSettings.Database.get -> bool
+Conjecture.Core.ConjectureSettings.Database.init -> void
+Conjecture.Core.ConjectureSettingsAttribute.Database.get -> bool
+Conjecture.Core.ConjectureSettingsAttribute.Database.init -> void
+Conjecture.Core.ConjectureSettings.ExportReproductionOnFailure.get -> bool
+Conjecture.Core.ConjectureSettings.ExportReproductionOnFailure.init -> void
+Conjecture.Core.ConjectureSettings.ReproductionOutputPath.get -> string!
+Conjecture.Core.ConjectureSettings.ReproductionOutputPath.init -> void
+Conjecture.Core.IPropertyTest.Database.get -> bool
+Conjecture.Core.IReproductionExport.ExportReproductionOnFailure.get -> bool
+Conjecture.Core.IReproductionExport.ReproductionOutputPath.get -> string!

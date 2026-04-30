@@ -21,7 +21,7 @@ internal sealed class PropertyTestCase : XunitTestCase, ISelfExecutingXunitTestC
 {
     internal int MaxExamples { get; private set; }
     internal ulong? Seed { get; private set; }
-    internal bool UseDatabase { get; private set; }
+    internal bool Database { get; private set; }
     internal int MaxStrategyRejections { get; private set; }
     internal int DeadlineMs { get; private set; }
     internal bool Targeting { get; private set; } = true;
@@ -46,7 +46,7 @@ internal sealed class PropertyTestCase : XunitTestCase, ISelfExecutingXunitTestC
         int? sourceLineNumber,
         int maxExamples,
         ulong? seed,
-        bool useDatabase,
+        bool database,
         int maxStrategyRejections,
         int deadlineMs,
         bool targeting,
@@ -57,7 +57,7 @@ internal sealed class PropertyTestCase : XunitTestCase, ISelfExecutingXunitTestC
     {
         MaxExamples = maxExamples;
         Seed = seed;
-        UseDatabase = useDatabase;
+        Database = database;
         MaxStrategyRejections = maxStrategyRejections;
         DeadlineMs = deadlineMs;
         Targeting = targeting;
@@ -69,7 +69,7 @@ internal sealed class PropertyTestCase : XunitTestCase, ISelfExecutingXunitTestC
         base.Serialize(info);
         info.AddValue("MaxExamples", MaxExamples);
         info.AddValue("Seed", Seed.HasValue ? Seed.Value.ToString() : null);
-        info.AddValue("UseDatabase", UseDatabase);
+        info.AddValue("Database", Database);
         info.AddValue("MaxStrategyRejections", MaxStrategyRejections);
         info.AddValue("DeadlineMs", DeadlineMs);
         info.AddValue("Targeting", Targeting);
@@ -82,7 +82,7 @@ internal sealed class PropertyTestCase : XunitTestCase, ISelfExecutingXunitTestC
         MaxExamples = info.GetValue<int>("MaxExamples");
         string? seedStr = info.GetValue<string?>("Seed");
         Seed = seedStr is not null ? ulong.Parse(seedStr) : null;
-        UseDatabase = info.GetValue<bool>("UseDatabase");
+        Database = info.GetValue<bool>("Database");
         MaxStrategyRejections = info.GetValue<int>("MaxStrategyRejections");
         DeadlineMs = info.GetValue<int>("DeadlineMs");
         Targeting = info.GetValue<bool>("Targeting");
@@ -155,7 +155,7 @@ internal sealed class PropertyTestCase : XunitTestCase, ISelfExecutingXunitTestC
             {
                 MaxExamples = MaxExamples,
                 Seed = Seed,
-                UseDatabase = UseDatabase,
+                Database = Database,
                 MaxStrategyRejections = MaxStrategyRejections,
                 Deadline = DeadlineMs > 0 ? TimeSpan.FromMilliseconds(DeadlineMs) : null,
                 Targeting = Targeting,

@@ -10,13 +10,13 @@ internal sealed class PropertyTestCase : XunitTestCase
 {
     internal int MaxExamples { get; private set; }
     internal ulong? Seed { get; private set; }
-    internal bool UseDatabase { get; private set; }
+    internal bool Database { get; private set; }
     internal int MaxStrategyRejections { get; private set; }
     internal int DeadlineMs { get; private set; }
     internal bool Targeting { get; private set; } = true;
     internal double TargetingProportion { get; private set; } = 0.5;
-    internal bool ExportReproOnFailure { get; private set; }
-    internal string ReproOutputPath { get; private set; } = ".conjecture/repros/";
+    internal bool ExportReproductionOnFailure { get; private set; }
+    internal string ReproductionOutputPath { get; private set; } = ".conjecture/repros/";
 
     [Obsolete("For deserialization only", error: false)]
     public PropertyTestCase() { }
@@ -28,7 +28,7 @@ internal sealed class PropertyTestCase : XunitTestCase
         ITestMethod testMethod,
         int maxExamples,
         ulong? seed,
-        bool useDatabase,
+        bool database,
         int maxStrategyRejections,
         int deadlineMs,
         bool targeting,
@@ -39,13 +39,13 @@ internal sealed class PropertyTestCase : XunitTestCase
     {
         MaxExamples = maxExamples;
         Seed = seed;
-        UseDatabase = useDatabase;
+        Database = database;
         MaxStrategyRejections = maxStrategyRejections;
         DeadlineMs = deadlineMs;
         Targeting = targeting;
         TargetingProportion = targetingProportion;
-        ExportReproOnFailure = exportReproOnFailure;
-        ReproOutputPath = reproOutputPath;
+        ExportReproductionOnFailure = exportReproOnFailure;
+        ReproductionOutputPath = reproOutputPath;
     }
 
     public override void Serialize(IXunitSerializationInfo info)
@@ -53,13 +53,13 @@ internal sealed class PropertyTestCase : XunitTestCase
         base.Serialize(info);
         info.AddValue("MaxExamples", MaxExamples);
         info.AddValue("Seed", Seed.HasValue ? Seed.Value.ToString() : null);
-        info.AddValue("UseDatabase", UseDatabase);
+        info.AddValue("Database", Database);
         info.AddValue("MaxStrategyRejections", MaxStrategyRejections);
         info.AddValue("DeadlineMs", DeadlineMs);
         info.AddValue("Targeting", Targeting.ToString());
         info.AddValue("TargetingProportion", TargetingProportion.ToString("R"));
-        info.AddValue("ExportReproOnFailure", ExportReproOnFailure.ToString());
-        info.AddValue("ReproOutputPath", ReproOutputPath);
+        info.AddValue("ExportReproductionOnFailure", ExportReproductionOnFailure.ToString());
+        info.AddValue("ReproductionOutputPath", ReproductionOutputPath);
     }
 
     public override void Deserialize(IXunitSerializationInfo info)
@@ -68,7 +68,7 @@ internal sealed class PropertyTestCase : XunitTestCase
         MaxExamples = info.GetValue<int>("MaxExamples");
         string? seedStr = info.GetValue<string?>("Seed");
         Seed = seedStr is not null ? ulong.Parse(seedStr) : null;
-        UseDatabase = info.GetValue<bool>("UseDatabase");
+        Database = info.GetValue<bool>("Database");
         MaxStrategyRejections = info.GetValue<int>("MaxStrategyRejections");
         DeadlineMs = info.GetValue<int>("DeadlineMs");
         string? targetingStr = info.GetValue<string?>("Targeting");
@@ -82,10 +82,10 @@ internal sealed class PropertyTestCase : XunitTestCase
             TargetingProportion = parsed;
         }
 
-        string? exportReproStr = info.GetValue<string?>("ExportReproOnFailure");
-        ExportReproOnFailure = exportReproStr is not null && bool.Parse(exportReproStr);
-        string? reproOutputPathStr = info.GetValue<string?>("ReproOutputPath");
-        ReproOutputPath = reproOutputPathStr ?? ".conjecture/repros/";
+        string? exportReproStr = info.GetValue<string?>("ExportReproductionOnFailure");
+        ExportReproductionOnFailure = exportReproStr is not null && bool.Parse(exportReproStr);
+        string? reproOutputPathStr = info.GetValue<string?>("ReproductionOutputPath");
+        ReproductionOutputPath = reproOutputPathStr ?? ".conjecture/repros/";
     }
 
     public override Task<RunSummary> RunAsync(

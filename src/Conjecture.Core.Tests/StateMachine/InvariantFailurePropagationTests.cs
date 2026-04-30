@@ -47,7 +47,7 @@ public class InvariantFailurePropagationTests
     [Fact]
     public async Task AlwaysFailMachine_TestRunnerDetectsFailure()
     {
-        ConjectureSettings settings = new() { MaxExamples = 10, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 10, Database = false };
         TestRunResult result = await TestRunner.Run(settings,
             data => _ = new StateMachineStrategy<AlwaysFailMachine, int, string>(maxSteps: 5).Generate(data));
         Assert.False(result.Passed);
@@ -56,7 +56,7 @@ public class InvariantFailurePropagationTests
     [Fact]
     public async Task NeverFailMachine_TestRunnerPasses()
     {
-        ConjectureSettings settings = new() { MaxExamples = 20, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 20, Database = false };
         TestRunResult result = await TestRunner.Run(settings,
             data => _ = new StateMachineStrategy<NeverFailMachine, int, string>(maxSteps: 5).Generate(data));
         Assert.True(result.Passed);
@@ -65,7 +65,7 @@ public class InvariantFailurePropagationTests
     [Fact]
     public async Task SometimesFailMachine_FoundWithinMaxExamples()
     {
-        ConjectureSettings settings = new() { MaxExamples = 100, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 100, Database = false };
         TestRunResult result = await TestRunner.Run(settings,
             data => _ = new StateMachineStrategy<FailAfterTenMachine, int, string>(maxSteps: 20).Generate(data));
         Assert.False(result.Passed);
@@ -74,7 +74,7 @@ public class InvariantFailurePropagationTests
     [Fact]
     public async Task FailureExceptionMessage_ContainsStepInfo()
     {
-        ConjectureSettings settings = new() { MaxExamples = 10, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 10, Database = false };
         string? failureStackTrace = null;
         TestRunResult result = await TestRunner.Run(settings,
             data => _ = new StateMachineStrategy<AlwaysFailMachine, int, string>(maxSteps: 5).Generate(data));

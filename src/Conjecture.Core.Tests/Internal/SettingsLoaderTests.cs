@@ -55,7 +55,7 @@ public class SettingsLoaderTests
         var defaults = new Conjecture.Core.ConjectureSettings();
         Assert.Equal(defaults.MaxExamples, settings.MaxExamples);
         Assert.Equal(defaults.Seed, settings.Seed);
-        Assert.Equal(defaults.UseDatabase, settings.UseDatabase);
+        Assert.Equal(defaults.Database, settings.Database);
         Assert.Equal(defaults.Deadline, settings.Deadline);
     }
 
@@ -80,7 +80,7 @@ public class SettingsLoaderTests
 
         Assert.Equal(200, settings.MaxExamples);
         Assert.Equal(defaults.Seed, settings.Seed);
-        Assert.Equal(defaults.UseDatabase, settings.UseDatabase);
+        Assert.Equal(defaults.Database, settings.Database);
         Assert.Equal(defaults.DatabasePath, settings.DatabasePath);
     }
 }

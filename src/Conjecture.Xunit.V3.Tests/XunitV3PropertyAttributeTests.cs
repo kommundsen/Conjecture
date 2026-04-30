@@ -24,10 +24,10 @@ public class XunitV3PropertyAttributeTests
     }
 
     [Fact]
-    public void PropertyAttribute_DefaultUseDatabase_IsTrue()
+    public void PropertyAttribute_DefaultDatabase_IsTrue()
     {
         PropertyAttribute attr = new();
-        Assert.True(attr.UseDatabase);
+        Assert.True(attr.Database);
     }
 
     [Fact]

@@ -60,12 +60,12 @@ public class SettingsResolverTests
     {
         var dir = MakeTempDir();
         WriteSettings(dir, """{"maxExamples": 77}""");
-        var attribute = new ConjectureSettingsAttribute { UseDatabase = false };
+        var attribute = new ConjectureSettingsAttribute { Database = false };
 
         var result = SettingsResolver.Resolve(dir, attribute);
 
         Assert.Equal(77, result.MaxExamples);
-        Assert.False(result.UseDatabase);
+        Assert.False(result.Database);
     }
 
     [Fact]
@@ -85,14 +85,14 @@ public class SettingsResolverTests
     public void Resolve_TestLevelSettings_OverridesAllLowerLayers()
     {
         var dir = MakeTempDir();
-        WriteSettings(dir, """{"maxExamples": 50, "useDatabase": false}""");
+        WriteSettings(dir, """{"maxExamples": 50, "database": false}""");
         var attribute = new ConjectureSettingsAttribute { MaxExamples = 200 };
-        var testLevel = new ConjectureSettings { MaxExamples = 1, UseDatabase = true };
+        var testLevel = new ConjectureSettings { MaxExamples = 1, Database = true };
 
         var result = SettingsResolver.Resolve(dir, attribute, testLevel);
 
         Assert.Equal(1, result.MaxExamples);
-        Assert.True(result.UseDatabase);
+        Assert.True(result.Database);
     }
 
     [Fact]
@@ -105,7 +105,7 @@ public class SettingsResolverTests
 
         var defaults = new ConjectureSettings();
         Assert.Equal(defaults.MaxExamples, result.MaxExamples);
-        Assert.Equal(defaults.UseDatabase, result.UseDatabase);
+        Assert.Equal(defaults.Database, result.Database);
         Assert.Equal(defaults.MaxStrategyRejections, result.MaxStrategyRejections);
     }
 

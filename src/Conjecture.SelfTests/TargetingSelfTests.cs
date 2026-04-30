@@ -31,7 +31,7 @@ public class TargetingSelfTests
             MaxExamples = generationBudget,
             Seed = seed,
             Targeting = false,
-            UseDatabase = false,
+            Database = false,
         };
         await TestRunner.Run(genSettings, data =>
         {
@@ -48,7 +48,7 @@ public class TargetingSelfTests
             Seed = seed,
             Targeting = true,
             TargetingProportion = targetingProportion,
-            UseDatabase = false,
+            Database = false,
         };
         TestRunResult result = await TestRunner.Run(targetSettings, data =>
         {
@@ -73,7 +73,7 @@ public class TargetingSelfTests
             Seed = 42UL,
             Targeting = true,
             TargetingProportion = 0.5,
-            UseDatabase = false,
+            Database = false,
         };
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
@@ -95,7 +95,7 @@ public class TargetingSelfTests
             Seed = 1UL,
             Targeting = true,
             TargetingProportion = 0.5,
-            UseDatabase = false,
+            Database = false,
         };
         TestRunResult result = await TestRunner.Run(settings, data =>
         {

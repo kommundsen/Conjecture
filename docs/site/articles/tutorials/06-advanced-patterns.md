@@ -68,7 +68,7 @@ The database lives at `DatabasePath` (default: `.conjecture/examples/`).
 
 The example database is a local file. In CI, you can:
 - **Commit it** — `.conjecture/examples/` in your repo ensures CI replays known failures
-- **Disable it** — `[assembly: ConjectureSettings(UseDatabase = false)]`
+- **Disable it** — `[assembly: ConjectureSettings(Database = false)]`
 
 ## Assembly-Level Settings
 

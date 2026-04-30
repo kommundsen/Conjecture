@@ -41,20 +41,20 @@ public void MyProperty(int x, string s) { ... }
 |-----------|------|---------|-------|
 | `Seed` | `ulong?` | `null` (random) | Fixed seed for deterministic replay |
 | `MaxExamples` | `int` | `100` | Number of examples to generate |
-| `UseDatabase` | `bool` | `true` | Whether to use the SQLite example cache |
+| `Database` | `bool` | `true` | Whether to use the SQLite example cache |
 | `MaxStrategyRejections` | `int` | `5` | Max strategy rejections per value |
 | `DeadlineMs` | `int` | `0` | Per-example deadline in ms; `0` = no deadline |
 | `Targeting` | `bool` | `true` | Whether to run a targeting phase |
 | `TargetingProportion` | `double` | `0.5` | Fraction of budget for targeting |
-| `ExportReproOnFailure` | `bool` | `false` | Write reproduction file on failure |
-| `ReproOutputPath` | `string` | `".conjecture/repros/"` | Output path for reproduction files |
+| `ExportReproductionOnFailure` | `bool` | `false` | Write reproduction file on failure |
+| `ReproductionOutputPath` | `string` | `".conjecture/repros/"` | Output path for reproduction files |
 
 ## `[ConjectureSettings]`
 
 Applies `ConjectureSettings` to a test method or test class. Takes precedence over defaults.
 
 ```csharp
-[ConjectureSettings(MaxExamples = 500, UseDatabase = false)]
+[ConjectureSettings(MaxExamples = 500, Database = false)]
 [Property]
 public void HeavyTest(int x) { ... }
 ```

@@ -80,7 +80,7 @@ var personStrategy = Generate.Compose<Person>(ctx =>
 | Hypothesis `settings(...)` | `ConjectureSettings` / `[Property]` | Default |
 |---|---|---|
 | `max_examples=100` | `MaxExamples = 100` | 100 |
-| `database=...` | `UseDatabase = true` | `true` |
+| `database=...` | `Database = true` | `true` |
 | `deadline=timedelta(ms=200)` | `DeadlineMs = 200` | no deadline |
 | — | `Seed = 42UL` | random |
 | — | `MaxStrategyRejections = 5` | 5 |

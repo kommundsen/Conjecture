@@ -33,9 +33,9 @@ public sealed class TestRunnerDatabaseTests : IDisposable
     }
 
     [Fact]
-    public async Task Run_FailingTest_UseDatabase_SavesBufferToDatabase()
+    public async Task Run_FailingTest_Database_SavesBufferToDatabase()
     {
-        ConjectureSettings settings = new() { MaxExamples = 10, UseDatabase = true };
+        ConjectureSettings settings = new() { MaxExamples = 10, Database = true };
         string testId = "test-failing-saves";
 
         await TestRunner.Run(settings, _ => throw new InvalidOperationException("fail"), db, testId);
@@ -47,7 +47,7 @@ public sealed class TestRunnerDatabaseTests : IDisposable
     [Fact]
     public async Task Run_FailingThenSameId_ReplaysStoredBufferFirst()
     {
-        ConjectureSettings settings = new() { MaxExamples = 10, UseDatabase = true };
+        ConjectureSettings settings = new() { MaxExamples = 10, Database = true };
         string testId = "test-replay-first";
         bool replayInvoked = false;
 
@@ -71,7 +71,7 @@ public sealed class TestRunnerDatabaseTests : IDisposable
     [Fact]
     public async Task Run_PassingReplay_RemovesBufferFromDatabase()
     {
-        ConjectureSettings settings = new() { MaxExamples = 10, UseDatabase = true };
+        ConjectureSettings settings = new() { MaxExamples = 10, Database = true };
         string testId = "test-passing-removes";
 
         // Save a buffer that would be replayed
@@ -84,9 +84,9 @@ public sealed class TestRunnerDatabaseTests : IDisposable
     }
 
     [Fact]
-    public async Task Run_UseDatabaseFalse_DoesNotSaveOnFailure()
+    public async Task Run_DatabaseFalse_DoesNotSaveOnFailure()
     {
-        ConjectureSettings settings = new() { MaxExamples = 10, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 10, Database = false };
         string testId = "test-no-db-save";
 
         await TestRunner.Run(settings, _ => throw new InvalidOperationException("fail"), db, testId);
@@ -95,7 +95,7 @@ public sealed class TestRunnerDatabaseTests : IDisposable
     }
 
     [Fact]
-    public async Task Run_UseDatabaseFalse_DoesNotReplayStoredBuffer()
+    public async Task Run_DatabaseFalse_DoesNotReplayStoredBuffer()
     {
         string testId = "test-no-db-replay";
 
@@ -103,7 +103,7 @@ public sealed class TestRunnerDatabaseTests : IDisposable
         db.Save(testId, [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
 
         bool replayInvoked = false;
-        ConjectureSettings noDbSettings = new() { MaxExamples = 10, UseDatabase = false };
+        ConjectureSettings noDbSettings = new() { MaxExamples = 10, Database = false };
         await TestRunner.Run(noDbSettings, data =>
         {
             if (data.IsReplay)
@@ -112,13 +112,13 @@ public sealed class TestRunnerDatabaseTests : IDisposable
             }
         }, db, testId);
 
-        Assert.False(replayInvoked, "UseDatabase=false should skip DB load");
+        Assert.False(replayInvoked, "Database=false should skip DB load");
     }
 
     [Fact]
     public async Task Run_ExplicitSeed_DoesNotSaveOnFailure()
     {
-        ConjectureSettings settings = new() { MaxExamples = 10, Seed = 42UL, UseDatabase = true };
+        ConjectureSettings settings = new() { MaxExamples = 10, Seed = 42UL, Database = true };
         string testId = "test-seed-no-save";
 
         await TestRunner.Run(settings, _ => throw new InvalidOperationException("fail"), db, testId);
@@ -135,7 +135,7 @@ public sealed class TestRunnerDatabaseTests : IDisposable
         db.Save(testId, [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
 
         bool replayInvoked = false;
-        ConjectureSettings settings = new() { MaxExamples = 10, Seed = 99UL, UseDatabase = true };
+        ConjectureSettings settings = new() { MaxExamples = 10, Seed = 99UL, Database = true };
         await TestRunner.Run(settings, data =>
         {
             if (data.IsReplay)

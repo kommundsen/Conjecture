@@ -29,7 +29,7 @@ public sealed class PropertyStrategyRegistryGeneratorTests
             {
                 public int MaxExamples { get; set; }
                 public ulong Seed { get; set; }
-                public bool UseDatabase { get; set; }
+                public bool Database { get; set; }
                 public int MaxStrategyRejections { get; set; }
                 public int DeadlineMs { get; set; }
                 public bool Targeting { get; set; }

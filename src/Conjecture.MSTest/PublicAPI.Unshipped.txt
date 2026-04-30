@@ -1,1 +1,3 @@
 #nullable enable
+Conjecture.MSTest.PropertyAttribute.Database.get -> bool
+Conjecture.MSTest.PropertyAttribute.Database.set -> void

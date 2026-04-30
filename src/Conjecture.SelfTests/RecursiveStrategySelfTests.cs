@@ -31,7 +31,7 @@ public class RecursiveStrategySelfTests
     [Property]
     public async Task RecursiveStrategy_SameIRNodes_ProduceSameValue()
     {
-        ConjectureSettings settings = new() { Seed = 7UL, MaxExamples = 50, UseDatabase = false };
+        ConjectureSettings settings = new() { Seed = 7UL, MaxExamples = 50, Database = false };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
@@ -50,7 +50,7 @@ public class RecursiveStrategySelfTests
     [Property]
     public async Task RecursiveStrategy_ShrunkValue_HasDepthAtMostOriginal()
     {
-        ConjectureSettings settings = new() { Seed = 42UL, MaxExamples = 50, UseDatabase = false };
+        ConjectureSettings settings = new() { Seed = 42UL, MaxExamples = 50, Database = false };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {

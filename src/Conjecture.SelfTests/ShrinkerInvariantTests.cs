@@ -34,7 +34,7 @@ public class ShrinkerInvariantTests
     [Property]
     public async Task Idempotent_ReshrinkingFullyShrunkResult_MakesNoProgress()
     {
-        ConjectureSettings settings = new() { Seed = 42ul, MaxExamples = 20, UseDatabase = false };
+        ConjectureSettings settings = new() { Seed = 42ul, MaxExamples = 20, Database = false };
 
         TestRunResult result = await TestRunner.Run(settings, FailIfOver10);
 
@@ -50,7 +50,7 @@ public class ShrinkerInvariantTests
     [Property]
     public async Task PreservesFailure_ShrunkCounterexample_StillInteresting()
     {
-        ConjectureSettings settings = new() { Seed = 1ul, MaxExamples = 20, UseDatabase = false };
+        ConjectureSettings settings = new() { Seed = 1ul, MaxExamples = 20, Database = false };
 
         TestRunResult result = await TestRunner.Run(settings, FailIfOver5);
 
@@ -61,7 +61,7 @@ public class ShrinkerInvariantTests
     [Property]
     public async Task Reduces_ShrunkCounterexample_IsLexicographicallyLeqOriginal()
     {
-        ConjectureSettings settings = new() { Seed = 99ul, MaxExamples = 20, UseDatabase = false };
+        ConjectureSettings settings = new() { Seed = 99ul, MaxExamples = 20, Database = false };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
@@ -81,7 +81,7 @@ public class ShrinkerInvariantTests
     [Property]
     public async Task BoundsRespected_ShrunkNodes_AllWithinStrategyBounds()
     {
-        ConjectureSettings settings = new() { Seed = 7ul, MaxExamples = 20, UseDatabase = false };
+        ConjectureSettings settings = new() { Seed = 7ul, MaxExamples = 20, Database = false };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {

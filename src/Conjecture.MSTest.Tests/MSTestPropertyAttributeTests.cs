@@ -32,10 +32,10 @@ public class MSTestPropertyAttributeTests
     }
 
     [TestMethod]
-    public void PropertyAttribute_DefaultUseDatabase_IsTrue()
+    public void PropertyAttribute_DefaultDatabase_IsTrue()
     {
         ConjecturePropertyAttribute attr = new();
-        Assert.IsTrue(attr.UseDatabase);
+        Assert.IsTrue(attr.Database);
     }
 
     [TestMethod]
@@ -67,10 +67,10 @@ public class MSTestPropertyAttributeTests
     }
 
     [TestMethod]
-    public void PropertyAttribute_UseDatabase_CanBeSetFalse()
+    public void PropertyAttribute_Database_CanBeSetFalse()
     {
-        ConjecturePropertyAttribute attr = new() { UseDatabase = false };
-        Assert.IsFalse(attr.UseDatabase);
+        ConjecturePropertyAttribute attr = new() { Database = false };
+        Assert.IsFalse(attr.Database);
     }
 
     [TestMethod]

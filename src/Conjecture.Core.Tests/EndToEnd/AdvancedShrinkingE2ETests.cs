@@ -15,7 +15,7 @@ public class AdvancedShrinkingE2ETests
     [Fact]
     public async Task Float_GreaterThan100_ShrinksToSmallestDoubleAbove100()
     {
-        ConjectureSettings settings = new() { MaxExamples = 200, Seed = 1UL, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 200, Seed = 1UL, Database = false };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
@@ -43,7 +43,7 @@ public class AdvancedShrinkingE2ETests
     public async Task String_ContainsErr_ShrinksToExactlyErr()
     {
         Strategy<string> strategy = Strategy.Strings(alphabet: "er");
-        ConjectureSettings settings = new() { MaxExamples = 50, Seed = 2UL, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 50, Seed = 2UL, Database = false };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
@@ -67,7 +67,7 @@ public class AdvancedShrinkingE2ETests
     public async Task List_SumGreaterThan100_ShrinksToSingleElementList()
     {
         Strategy<List<int>> strategy = Strategy.Lists(Strategy.Integers<int>(0, 200));
-        ConjectureSettings settings = new() { MaxExamples = 200, Seed = 3UL, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 200, Seed = 3UL, Database = false };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
@@ -91,7 +91,7 @@ public class AdvancedShrinkingE2ETests
     [Fact]
     public async Task TwoParams_SumGreaterThan100_ShrinksToLexMinimalPair()
     {
-        ConjectureSettings settings = new() { MaxExamples = 200, Seed = 4UL, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 200, Seed = 4UL, Database = false };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
@@ -122,7 +122,7 @@ public class AdvancedShrinkingE2ETests
             MaxExamples = 200,
             Seed = 5UL,
             Deadline = TimeSpan.FromSeconds(30),
-            UseDatabase = false,
+            Database = false,
         };
 
         TestRunResult result = await TestRunner.Run(settings, data =>

@@ -24,7 +24,7 @@ public sealed class PropertyAttribute(
     public ulong Seed { get; set; }
 
     /// <summary>Whether to use the example database. Defaults to <see langword="true"/>.</summary>
-    public bool UseDatabase { get; set; } = true;
+    public bool Database { get; set; } = true;
 
     /// <summary>Maximum number of times a strategy may reject a value. Defaults to 5.</summary>
     public int MaxStrategyRejections { get; set; } = 5;

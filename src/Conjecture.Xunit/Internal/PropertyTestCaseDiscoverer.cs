@@ -17,13 +17,13 @@ internal sealed class PropertyTestCaseDiscoverer(IMessageSink diagnosticMessageS
 
         int maxExamples = adapter.MaxExamples > 0 ? adapter.MaxExamples : 100;
         ulong? seed = adapter.Seed != 0UL ? adapter.Seed : null;
-        bool useDatabase = adapter.UseDatabase;
+        bool database = adapter.Database;
         int maxStrategyRejections = adapter.MaxStrategyRejections > 0 ? adapter.MaxStrategyRejections : 5;
         int deadlineMs = adapter.DeadlineMs;
         bool targeting = adapter.Targeting;
         double targetingProportion = adapter.TargetingProportion;
-        bool exportReproOnFailure = adapter.ExportReproOnFailure;
-        string reproOutputPath = adapter.ReproOutputPath;
+        bool exportReproOnFailure = adapter.ExportReproductionOnFailure;
+        string reproOutputPath = adapter.ReproductionOutputPath;
 
         yield return new PropertyTestCase(
             diagnosticMessageSink,
@@ -32,7 +32,7 @@ internal sealed class PropertyTestCaseDiscoverer(IMessageSink diagnosticMessageS
             testMethod,
             maxExamples,
             seed,
-            useDatabase,
+            database,
             maxStrategyRejections,
             deadlineMs,
             targeting,

@@ -36,12 +36,12 @@ public sealed class TargetingDatabaseTests : IDisposable
     [Fact]
     public async Task TargetingFailure_SavesCounterexampleToDatabase()
     {
-        // No explicit Seed so UseDatabase remains active.
+        // No explicit Seed so Database remains active.
         // Gen budget = 9, targeting budget = 81 — HillClimber reliably climbs to >= 99.
         ConjectureSettings settings = new()
         {
             MaxExamples = 90,
-            UseDatabase = true,
+            Database = true,
             Targeting = true,
             TargetingProportion = 0.9,
         };
@@ -68,7 +68,7 @@ public sealed class TargetingDatabaseTests : IDisposable
         ConjectureSettings settings = new()
         {
             MaxExamples = 90,
-            UseDatabase = true,
+            Database = true,
             Targeting = true,
             TargetingProportion = 0.9,
         };
@@ -111,12 +111,12 @@ public sealed class TargetingDatabaseTests : IDisposable
     [Fact]
     public async Task TargetingFailure_SeedReproduction_RefindsFailure()
     {
-        // UseDatabase=false so the Seed property is not nullified by db logic.
+        // Database=false so the Seed property is not nullified by db logic.
         // Same seed must produce the same targeting path and re-find the failure.
         ConjectureSettings firstSettings = new()
         {
             MaxExamples = 200,
-            UseDatabase = false,
+            Database = false,
             Targeting = true,
             TargetingProportion = 0.5,
         };
@@ -138,7 +138,7 @@ public sealed class TargetingDatabaseTests : IDisposable
         {
             MaxExamples = firstSettings.MaxExamples,
             Seed = first.Seed,
-            UseDatabase = false,
+            Database = false,
             Targeting = firstSettings.Targeting,
             TargetingProportion = firstSettings.TargetingProportion,
         };

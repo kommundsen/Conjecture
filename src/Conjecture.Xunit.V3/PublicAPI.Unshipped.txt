@@ -1,1 +1,3 @@
 #nullable enable
+Conjecture.Xunit.V3.PropertyAttribute.Database.get -> bool
+Conjecture.Xunit.V3.PropertyAttribute.Database.set -> void

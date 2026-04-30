@@ -129,7 +129,7 @@ public sealed class IRNodeKindWiringTests : IDisposable
     public async Task Serialization_Float64Node_RoundTripsViaDatabase()
     {
         const string testId = "float64-roundtrip";
-        ConjectureSettings settings = new() { MaxExamples = 1, UseDatabase = true };
+        ConjectureSettings settings = new() { MaxExamples = 1, Database = true };
         FloatingPointStrategy<double> strategy = new(0.0, 1.0);
 
         await TestRunner.Run(settings, data =>
@@ -157,7 +157,7 @@ public sealed class IRNodeKindWiringTests : IDisposable
     public async Task Serialization_Float32Node_RoundTripsViaDatabase()
     {
         const string testId = "float32-roundtrip";
-        ConjectureSettings settings = new() { MaxExamples = 1, UseDatabase = true };
+        ConjectureSettings settings = new() { MaxExamples = 1, Database = true };
         FloatingPointStrategy<float> strategy = new(0f, 1f);
 
         await TestRunner.Run(settings, data =>
@@ -185,7 +185,7 @@ public sealed class IRNodeKindWiringTests : IDisposable
     public async Task Serialization_StringNodes_RoundTripsViaDatabase()
     {
         const string testId = "string-roundtrip";
-        ConjectureSettings settings = new() { MaxExamples = 1, UseDatabase = true };
+        ConjectureSettings settings = new() { MaxExamples = 1, Database = true };
         StringStrategy strategy = new(minLength: 1, maxLength: 5);
 
         await TestRunner.Run(settings, data =>
@@ -222,7 +222,7 @@ public sealed class IRNodeKindWiringTests : IDisposable
         db.Save(testId, BuildIntegerNodeBuffer(expectedValue, min, max));
 
         ulong? replayed = null;
-        ConjectureSettings settings = new() { MaxExamples = 1, UseDatabase = true };
+        ConjectureSettings settings = new() { MaxExamples = 1, Database = true };
         await TestRunner.Run(settings, data =>
         {
             if (data.IsReplay)

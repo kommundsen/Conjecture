@@ -29,7 +29,7 @@ public class ShrinkerHotPathBenchmarks
         {
             Seed = 42UL,
             MaxExamples = 100,
-            UseDatabase = false,
+            Database = false,
         };
         commandSequenceStrategy = Strategy.StateMachine<CounterMachineFailsAt3, int, CounterCommand>(maxSteps: 10);
         collectionStrategy = Strategy.Lists(Strategy.Integers<int>(), minSize: 20, maxSize: 20);

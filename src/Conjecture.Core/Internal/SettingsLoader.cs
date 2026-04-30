@@ -34,7 +34,7 @@ internal static class SettingsLoader
         {
             MaxExamples = dto.MaxExamples ?? defaults.MaxExamples,
             Seed = dto.Seed,
-            UseDatabase = dto.UseDatabase ?? defaults.UseDatabase,
+            Database = dto.Database ?? defaults.Database,
             Deadline = dto.Deadline,
             MaxStrategyRejections = dto.MaxStrategyRejections ?? defaults.MaxStrategyRejections,
             MaxUnsatisfiedRatio = dto.MaxUnsatisfiedRatio ?? defaults.MaxUnsatisfiedRatio,
@@ -46,7 +46,7 @@ internal static class SettingsLoader
     {
         public int? MaxExamples { get; init; }
         public ulong? Seed { get; init; }
-        public bool? UseDatabase { get; init; }
+        public bool? Database { get; init; }
         public TimeSpan? Deadline { get; init; }
         public int? MaxStrategyRejections { get; init; }
         public int? MaxUnsatisfiedRatio { get; init; }

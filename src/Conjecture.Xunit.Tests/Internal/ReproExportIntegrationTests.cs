@@ -12,9 +12,9 @@ using Conjecture.Xunit.Internal;
 namespace Conjecture.Xunit.Tests.Internal;
 
 /// <summary>
-/// Integration tests for the repro-export feature: when ExportReproOnFailure is true
-/// and a property fails, a .cs file is created under ReproOutputPath.
-/// Drives: PropertyAttribute.ExportReproOnFailure, PropertyAttribute.ReproOutputPath,
+/// Integration tests for the repro-export feature: when ExportReproductionOnFailure is true
+/// and a property fails, a .cs file is created under ReproductionOutputPath.
+/// Drives: PropertyAttribute.ExportReproductionOnFailure, PropertyAttribute.ReproductionOutputPath,
 ///         ReproFileBuilder.WriteToFile, and the plumbing in PropertyTestCaseRunner.
 /// </summary>
 public class ReproExportIntegrationTests
@@ -51,7 +51,7 @@ public class ReproExportIntegrationTests
     }
 
     [Fact]
-    public async Task WriteToFile_ExportReproOnFailureTrue_CreatesFileInOutputPath()
+    public async Task WriteToFile_ExportReproductionOnFailureTrue_CreatesFileInOutputPath()
     {
         string tempDir = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
         Directory.CreateDirectory(tempDir);
@@ -134,19 +134,19 @@ public class ReproExportIntegrationTests
     }
 
     [Fact]
-    public async Task WriteToFile_ExportReproOnFailureFalse_NoFileCreated()
+    public async Task WriteToFile_ExportReproductionOnFailureFalse_NoFileCreated()
     {
         string tempDir = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
         Directory.CreateDirectory(tempDir);
         try
         {
-            // ExportReproOnFailure = false (default) — PropertyTestCaseRunner must not write any file.
+            // ExportReproductionOnFailure = false (default) — PropertyTestCaseRunner must not write any file.
             ConjectureSettings settings = new()
             {
                 MaxExamples = 50,
                 Seed = 1UL,
-                ExportReproOnFailure = false,
-                ReproOutputPath = tempDir,
+                ExportReproductionOnFailure = false,
+                ReproductionOutputPath = tempDir,
             };
             ParameterInfo[] parameters = Params(nameof(IntProperty));
 
@@ -162,7 +162,7 @@ public class ReproExportIntegrationTests
             Assert.False(result.Passed);
 
             // Simulate the guard in PropertyTestCaseRunner: skip WriteToFile when disabled.
-            if (settings.ExportReproOnFailure)
+            if (settings.ExportReproductionOnFailure)
             {
                 ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
                 object[] shrunkArgs = SharedParameterStrategyResolver.Resolve(parameters, replay);
@@ -180,37 +180,37 @@ public class ReproExportIntegrationTests
     }
 
     /// <summary>
-    /// Verifies that PropertyTestCase carries ExportReproOnFailure and ReproOutputPath
+    /// Verifies that PropertyTestCase carries ExportReproductionOnFailure and ReproductionOutputPath
     /// from the attribute so PropertyTestCaseRunner can forward them to ConjectureSettings.
     /// This test fails to compile until PropertyTestCase exposes these two properties.
     /// </summary>
     [Fact]
-    public void PropertyTestCase_ExportReproOnFailure_DefaultIsFalse()
+    public void PropertyTestCase_ExportReproductionOnFailure_DefaultIsFalse()
     {
 #pragma warning disable CS0618 // used for testing only
         PropertyTestCase testCase = new();
 #pragma warning restore CS0618
 
-        Assert.False(testCase.ExportReproOnFailure);
+        Assert.False(testCase.ExportReproductionOnFailure);
     }
 
     [Fact]
-    public void PropertyTestCase_ReproOutputPath_DefaultIsConjecturePath()
+    public void PropertyTestCase_ReproductionOutputPath_DefaultIsConjecturePath()
     {
 #pragma warning disable CS0618 // used for testing only
         PropertyTestCase testCase = new();
 #pragma warning restore CS0618
 
-        Assert.Equal(".conjecture/repros/", testCase.ReproOutputPath);
+        Assert.Equal(".conjecture/repros/", testCase.ReproductionOutputPath);
     }
 
     [Fact]
-    public async Task RunnerWiring_ExportReproOnFailureTrue_WritesFileToReproOutputPath()
+    public async Task RunnerWiring_ExportReproductionOnFailureTrue_WritesFileToReproductionOutputPath()
     {
         // This test proves the full runner-wiring: ConjectureSettings must carry
-        // ExportReproOnFailure/ReproOutputPath so that PropertyTestCaseRunner can call
+        // ExportReproductionOnFailure/ReproductionOutputPath so that PropertyTestCaseRunner can call
         // ReproFileBuilder.WriteToFile after a failing run. Until the runner reads
-        // testCase.ExportReproOnFailure and testCase.ReproOutputPath and forwards them,
+        // testCase.ExportReproductionOnFailure and testCase.ReproductionOutputPath and forwards them,
         // the settings object will have the wrong values and no file will be created.
         string tempDir = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
         Directory.CreateDirectory(tempDir);
@@ -220,8 +220,8 @@ public class ReproExportIntegrationTests
             {
                 MaxExamples = 50,
                 Seed = 2UL,
-                ExportReproOnFailure = true,
-                ReproOutputPath = tempDir,
+                ExportReproductionOnFailure = true,
+                ReproductionOutputPath = tempDir,
             };
             ParameterInfo[] parameters = Params(nameof(IntProperty));
 
@@ -237,7 +237,7 @@ public class ReproExportIntegrationTests
             Assert.False(result.Passed);
 
             // Simulate the complete runner logic that PropertyTestCaseRunner must execute.
-            // When settings.ExportReproOnFailure is true and the run failed, the runner
+            // When settings.ExportReproductionOnFailure is true and the run failed, the runner
             // must reconstruct parameter values and call ReproFileBuilder.WriteToFile.
             ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
             object[] shrunkArgs = SharedParameterStrategyResolver.Resolve(parameters, replay);
@@ -256,10 +256,10 @@ public class ReproExportIntegrationTests
                 TestFramework.Xunit,
                 DateTimeOffset.UtcNow);
 
-            // The runner must guard on settings.ExportReproOnFailure — verify the guard works.
-            if (settings.ExportReproOnFailure && !result.Passed)
+            // The runner must guard on settings.ExportReproductionOnFailure — verify the guard works.
+            if (settings.ExportReproductionOnFailure && !result.Passed)
             {
-                ReproFileBuilder.WriteToFile(context, settings.ReproOutputPath);
+                ReproFileBuilder.WriteToFile(context, settings.ReproductionOutputPath);
             }
 
             string[] files = Directory.GetFiles(tempDir, "*.cs");
@@ -272,35 +272,35 @@ public class ReproExportIntegrationTests
     }
 
     [Fact]
-    public void PropertyAttribute_ExportReproOnFailure_DefaultIsFalse()
+    public void PropertyAttribute_ExportReproductionOnFailure_DefaultIsFalse()
     {
         PropertyAttribute attr = new();
 
-        Assert.False(attr.ExportReproOnFailure);
+        Assert.False(attr.ExportReproductionOnFailure);
     }
 
     [Fact]
-    public void PropertyAttribute_ExportReproOnFailure_CanBeSetToTrue()
+    public void PropertyAttribute_ExportReproductionOnFailure_CanBeSetToTrue()
     {
-        PropertyAttribute attr = new() { ExportReproOnFailure = true };
+        PropertyAttribute attr = new() { ExportReproductionOnFailure = true };
 
-        Assert.True(attr.ExportReproOnFailure);
+        Assert.True(attr.ExportReproductionOnFailure);
     }
 
     [Fact]
-    public void PropertyAttribute_ReproOutputPath_DefaultIsConjecturePath()
+    public void PropertyAttribute_ReproductionOutputPath_DefaultIsConjecturePath()
     {
         PropertyAttribute attr = new();
 
-        Assert.Equal(".conjecture/repros/", attr.ReproOutputPath);
+        Assert.Equal(".conjecture/repros/", attr.ReproductionOutputPath);
     }
 
     [Fact]
-    public void PropertyAttribute_ReproOutputPath_CanBeSet()
+    public void PropertyAttribute_ReproductionOutputPath_CanBeSet()
     {
-        PropertyAttribute attr = new() { ReproOutputPath = "/tmp/my-repros/" };
+        PropertyAttribute attr = new() { ReproductionOutputPath = "/tmp/my-repros/" };
 
-        Assert.Equal("/tmp/my-repros/", attr.ReproOutputPath);
+        Assert.Equal("/tmp/my-repros/", attr.ReproductionOutputPath);
     }
 
     [Fact]

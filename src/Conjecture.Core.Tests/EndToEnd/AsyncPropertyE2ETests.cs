@@ -50,7 +50,7 @@ public sealed class AsyncPropertyE2ETests
     [Fact]
     public async Task AsyncTask_FailingProperty_ShrinksToMinimalCounterexample()
     {
-        ConjectureSettings settings = new() { MaxExamples = 200, Seed = 1UL, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 200, Seed = 1UL, Database = false };
         Strategy<int> strategy = Strategy.Integers<int>(0, 100);
 
         TestRunResult result = await TestRunner.RunAsync(settings, async data =>
@@ -72,7 +72,7 @@ public sealed class AsyncPropertyE2ETests
     [Fact]
     public async Task AsyncTask_FailingProperty_ShrunkCounterexampleStillFails()
     {
-        ConjectureSettings settings = new() { MaxExamples = 200, Seed = 5UL, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 200, Seed = 5UL, Database = false };
         Strategy<int> strategy = Strategy.Integers<int>(0, 200);
 
         TestRunResult result = await TestRunner.RunAsync(settings, async data =>
@@ -178,7 +178,7 @@ public sealed class AsyncPropertyE2ETests
     {
         // PositiveIntsProvider generates [1, 50]; smallest failing value for v > 5 is 6.
         Strategy<int> strategy = new PositiveIntsProvider().Create();
-        ConjectureSettings settings = new() { MaxExamples = 200, Seed = 20UL, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 200, Seed = 20UL, Database = false };
 
         TestRunResult result = await TestRunner.RunAsync(settings, async data =>
         {

@@ -10,19 +10,19 @@ namespace Conjecture.Xunit.Tests;
 public class PropertyAttributeSettingsTests
 {
     [Fact]
-    public void UseDatabase_DefaultsToTrue()
+    public void Database_DefaultsToTrue()
     {
         PropertyAttribute attr = new();
 
-        Assert.True(attr.UseDatabase);
+        Assert.True(attr.Database);
     }
 
     [Fact]
-    public void UseDatabase_CanBeSetToFalse()
+    public void Database_CanBeSetToFalse()
     {
-        PropertyAttribute attr = new() { UseDatabase = false };
+        PropertyAttribute attr = new() { Database = false };
 
-        Assert.False(attr.UseDatabase);
+        Assert.False(attr.Database);
     }
 
     [Fact]

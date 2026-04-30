@@ -11,8 +11,8 @@ namespace Conjecture.Core;
 public interface IReproductionExport
 {
     /// <summary>Whether to export a reproduction file when the test fails.</summary>
-    bool ExportReproOnFailure { get; }
+    bool ExportReproductionOnFailure { get; }
 
     /// <summary>Output path for exported reproduction files.</summary>
-    string ReproOutputPath { get; }
+    string ReproductionOutputPath { get; }
 }
