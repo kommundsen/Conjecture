@@ -87,7 +87,7 @@ internal sealed class NumericAwareShrinkPass : IShrinkPass
         int runEnd,
         ulong currentValue)
     {
-        // Try 0 first — the most aggressive reduction.
+        // Try 0 first — the most aggressive shrink.
         if (await TryCandidateValue(state, lenIndex, charStart, charCount, runStart, runEnd, 0))
         {
             return true;
