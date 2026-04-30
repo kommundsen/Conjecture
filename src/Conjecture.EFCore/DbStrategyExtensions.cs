@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Conjecture.EFCore;
 
 /// <summary>Extension methods for generating EF Core entity instances.</summary>
-public static class EFCoreGenerateExtensions
+public static class DbStrategyExtensions
 {
     // Both overloads take optional maxDepth; suppress RS0026 as in RegexGenerateExtensions.
 #pragma warning disable RS0026
