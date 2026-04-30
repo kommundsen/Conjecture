@@ -7,7 +7,7 @@
 
 namespace Conjecture.Core;
 
-/// <summary>Provides imperative draw and assume operations within a <c>Strategy.Compose</c> factory.</summary>
+/// <summary>Provides imperative draw and assume operations within a <c>Strategy.Compose</c> body.</summary>
 public interface IGenerationContext
 {
     /// <summary>Generates a value from <paramref name="strategy"/>.</summary>
@@ -18,6 +18,6 @@ public interface IGenerationContext
 
     /// <summary>Records a numeric observation to guide targeted generation.</summary>
     /// <param name="observation">The value to maximize. Must be finite (not NaN or Infinity).</param>
-    /// <param name="label">Identifies this observation label. Multiple labels are optimized independently.</param>
+    /// <param name="label">Identifies this observation label. Multiple labels are targeted independently.</param>
     void Target(double observation, string label = "default");
 }
