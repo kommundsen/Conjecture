@@ -1,1 +1,7 @@
 #nullable enable
+*REMOVED*Conjecture.Messaging.MessagingGenerateExtensions
+*REMOVED*Conjecture.Messaging.MessagingGenerateExtensions.extension(Conjecture.Core.Strategy!)
+*REMOVED*static Conjecture.Messaging.MessagingGenerateExtensions.extension(Conjecture.Core.Strategy!).Messaging.get -> Conjecture.Messaging.MessagingGenerateBuilder!
+Conjecture.Messaging.MessagingStrategyExtensions
+Conjecture.Messaging.MessagingStrategyExtensions.extension(Conjecture.Core.Strategy!)
+static Conjecture.Messaging.MessagingStrategyExtensions.extension(Conjecture.Core.Strategy!).Messaging.get -> Conjecture.Messaging.MessagingGenerateBuilder!
