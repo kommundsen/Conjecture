@@ -15,7 +15,7 @@ namespace Conjecture.Aspire.EFCore;
 /// <summary>
 /// Extension methods on <see cref="IDbTarget"/> for polling a predicate until satisfied or a timeout elapses.
 /// </summary>
-// Both overloads have optional parameters; suppress RS0026 as in EFCoreGenerateExtensions.
+// Both overloads have optional parameters; suppress RS0026 as in DbStrategyExtensions.
 #pragma warning disable RS0026
 public static class IDbTargetWaitForExtensions
 {
