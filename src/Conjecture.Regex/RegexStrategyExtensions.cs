@@ -11,7 +11,7 @@ using DotNetRegex = System.Text.RegularExpressions.Regex;
 namespace Conjecture.Core;
 
 /// <summary>Extension methods for generating strings that match (or do not match) a regular expression.</summary>
-public static class RegexGenerateExtensions
+public static class RegexStrategyExtensions
 {
     private const int CacheCapacity = 256;
 
