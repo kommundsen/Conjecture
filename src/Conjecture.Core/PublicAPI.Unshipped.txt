@@ -3,7 +3,7 @@ Conjecture.Core.IGenerationContext
 Conjecture.Core.IGenerationContext.Assume(bool condition) -> void
 Conjecture.Core.IGenerationContext.Generate<T>(Conjecture.Core.Strategy<T>! strategy) -> T
 Conjecture.Core.IGenerationContext.Target(double observation, string! label = "default") -> void
-static Conjecture.Core.Strategy.Compose<T>(System.Func<Conjecture.Core.IGenerationContext!, T>! factory) -> Conjecture.Core.Strategy<T>!
+static Conjecture.Core.Strategy.Compose<T>(System.Func<Conjecture.Core.IGenerationContext!, T>! body) -> Conjecture.Core.Strategy<T>!
 static Conjecture.Core.PartialConstructorContext.Current.get -> Conjecture.Core.IGenerationContext!
 static Conjecture.Core.PartialConstructorContext.Use(Conjecture.Core.IGenerationContext! ctx) -> System.IDisposable!
 Conjecture.Core.Strategy
