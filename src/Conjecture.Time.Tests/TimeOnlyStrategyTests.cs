@@ -15,7 +15,7 @@ public class TimeOnlyStrategyTests
         TimeOnly max = new(18, 0);
         Strategy<TimeOnly> strategy = Strategy.TimeOnlyValues(min, max);
 
-        IReadOnlyList<TimeOnly> samples = DataGen.Sample(strategy, count: 50, seed: 1UL);
+        IReadOnlyList<TimeOnly> samples = strategy.WithSeed(1UL).Sample(50);
 
         Assert.All(samples, t =>
         {
@@ -30,7 +30,7 @@ public class TimeOnlyStrategyTests
         Strategy<TimeOnly> strategy = Strategy.TimeOnlyValues().NearMidnight();
         long threshold = 30 * TimeSpan.TicksPerSecond;
 
-        IReadOnlyList<TimeOnly> samples = DataGen.Sample(strategy, count: 50, seed: 1UL);
+        IReadOnlyList<TimeOnly> samples = strategy.WithSeed(1UL).Sample(50);
 
         Assert.All(samples, t =>
         {
@@ -47,7 +47,7 @@ public class TimeOnlyStrategyTests
         TimeOnly noon = new(12, 0, 0);
         long threshold = 30 * TimeSpan.TicksPerSecond;
 
-        IReadOnlyList<TimeOnly> samples = DataGen.Sample(strategy, count: 50, seed: 1UL);
+        IReadOnlyList<TimeOnly> samples = strategy.WithSeed(1UL).Sample(50);
 
         Assert.All(samples, t =>
         {
@@ -62,7 +62,7 @@ public class TimeOnlyStrategyTests
         Strategy<TimeOnly> strategy = Strategy.TimeOnlyValues().NearEndOfDay();
         TimeOnly threshold = new(23, 59, 29);
 
-        IReadOnlyList<TimeOnly> samples = DataGen.Sample(strategy, count: 50, seed: 1UL);
+        IReadOnlyList<TimeOnly> samples = strategy.WithSeed(1UL).Sample(50);
 
         Assert.All(samples, t =>
             Assert.True(t.Ticks >= threshold.Ticks, $"{t} is not within 30 seconds of end of day"));

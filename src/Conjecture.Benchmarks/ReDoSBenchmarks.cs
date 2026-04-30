@@ -24,16 +24,16 @@ public class ReDoSBenchmarks
 
     [Benchmark]
     public string? NestedQuantifier_FindPathologicalInput()
-        => DataGen.Sample(Strategy.ReDoSHunter(NestedQuantifier, MaxMatchMs), count: 1, seed: 42UL)
+        => Strategy.ReDoSHunter(NestedQuantifier, MaxMatchMs).WithSeed(42UL).Sample(1)
                .FirstOrDefault();
 
     [Benchmark]
     public string? AlternationLoop_FindPathologicalInput()
-        => DataGen.Sample(Strategy.ReDoSHunter(AlternationLoop, MaxMatchMs), count: 1, seed: 42UL)
+        => Strategy.ReDoSHunter(AlternationLoop, MaxMatchMs).WithSeed(42UL).Sample(1)
                .FirstOrDefault();
 
     [Benchmark]
     public string? NestedAlternation_FindPathologicalInput()
-        => DataGen.Sample(Strategy.ReDoSHunter(NestedAlternation, MaxMatchMs), count: 1, seed: 42UL)
+        => Strategy.ReDoSHunter(NestedAlternation, MaxMatchMs).WithSeed(42UL).Sample(1)
                .FirstOrDefault();
 }

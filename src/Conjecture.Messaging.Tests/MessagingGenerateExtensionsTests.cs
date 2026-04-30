@@ -40,7 +40,7 @@ public class MessagingGenerateExtensionsTests
             "orders",
             Strategy.Bytes(4).Select(static b => (ReadOnlyMemory<byte>)b));
 
-        MessageInteraction sample = DataGen.SampleOne(strategy, seed: 1UL);
+        MessageInteraction sample = strategy.WithSeed(1UL).Sample();
 
         Assert.Equal("orders", sample.Destination);
     }
@@ -52,7 +52,7 @@ public class MessagingGenerateExtensionsTests
             "orders",
             Strategy.Bytes(4).Select(static b => (ReadOnlyMemory<byte>)b));
 
-        MessageInteraction sample = DataGen.SampleOne(strategy, seed: 1UL);
+        MessageInteraction sample = strategy.WithSeed(1UL).Sample();
 
         Assert.False(string.IsNullOrEmpty(sample.MessageId));
     }
@@ -64,8 +64,8 @@ public class MessagingGenerateExtensionsTests
             "invoices",
             Strategy.Bytes(4).Select(static b => (ReadOnlyMemory<byte>)b));
 
-        MessageInteraction first = DataGen.SampleOne(strategy, seed: 42UL);
-        MessageInteraction second = DataGen.SampleOne(strategy, seed: 42UL);
+        MessageInteraction first = strategy.WithSeed(42UL).Sample();
+        MessageInteraction second = strategy.WithSeed(42UL).Sample();
 
         Assert.Equal(first.MessageId, second.MessageId);
     }
@@ -77,8 +77,8 @@ public class MessagingGenerateExtensionsTests
             "invoices",
             Strategy.Bytes(4).Select(static b => (ReadOnlyMemory<byte>)b));
 
-        MessageInteraction first = DataGen.SampleOne(strategy, seed: 1UL);
-        MessageInteraction second = DataGen.SampleOne(strategy, seed: 2UL);
+        MessageInteraction first = strategy.WithSeed(1UL).Sample();
+        MessageInteraction second = strategy.WithSeed(2UL).Sample();
 
         Assert.NotEqual(first.MessageId, second.MessageId);
     }
@@ -90,7 +90,7 @@ public class MessagingGenerateExtensionsTests
             "orders",
             Strategy.Bytes(4).Select(static b => (ReadOnlyMemory<byte>)b));
 
-        MessageInteraction sample = DataGen.SampleOne(strategy, seed: 1UL);
+        MessageInteraction sample = strategy.WithSeed(1UL).Sample();
 
         Assert.Empty(sample.Headers);
     }
@@ -102,7 +102,7 @@ public class MessagingGenerateExtensionsTests
             "orders",
             Strategy.Bytes(4).Select(static b => (ReadOnlyMemory<byte>)b));
 
-        MessageInteraction sample = DataGen.SampleOne(strategy, seed: 1UL);
+        MessageInteraction sample = strategy.WithSeed(1UL).Sample();
 
         Assert.Null(sample.CorrelationId);
     }
@@ -120,7 +120,7 @@ public class MessagingGenerateExtensionsTests
     {
         Strategy<MessageInteraction> strategy = Strategy.Messaging.Consume("orders");
 
-        MessageInteraction sample = DataGen.SampleOne(strategy, seed: 1UL);
+        MessageInteraction sample = strategy.WithSeed(1UL).Sample();
 
         Assert.Equal("orders", sample.Destination);
     }
@@ -130,7 +130,7 @@ public class MessagingGenerateExtensionsTests
     {
         Strategy<MessageInteraction> strategy = Strategy.Messaging.Consume("orders");
 
-        MessageInteraction sample = DataGen.SampleOne(strategy, seed: 1UL);
+        MessageInteraction sample = strategy.WithSeed(1UL).Sample();
 
         Assert.Equal(0, sample.Body.Length);
     }
@@ -145,7 +145,7 @@ public class MessagingGenerateExtensionsTests
             destination,
             Strategy.Bytes(2).Select(static b => (ReadOnlyMemory<byte>)b));
 
-        MessageInteraction sample = DataGen.SampleOne(strategy, seed: 1UL);
+        MessageInteraction sample = strategy.WithSeed(1UL).Sample();
 
         Assert.Equal(destination, sample.Destination);
     }
@@ -158,7 +158,7 @@ public class MessagingGenerateExtensionsTests
     {
         Strategy<MessageInteraction> strategy = Strategy.Messaging.Consume(destination);
 
-        MessageInteraction sample = DataGen.SampleOne(strategy, seed: 1UL);
+        MessageInteraction sample = strategy.WithSeed(1UL).Sample();
 
         Assert.Equal(destination, sample.Destination);
     }
@@ -170,7 +170,7 @@ public class MessagingGenerateExtensionsTests
             "orders",
             Strategy.Bytes(8).Select(static b => (ReadOnlyMemory<byte>)b));
 
-        MessageInteraction sent = DataGen.SampleOne(strategy, seed: 77UL);
+        MessageInteraction sent = strategy.WithSeed(77UL).Sample();
         InMemoryMessageBusTarget target = new();
 
         await target.ExecuteAsync(sent, CancellationToken.None);
@@ -193,7 +193,7 @@ public class MessagingGenerateExtensionsTests
             headersStrategy,
             correlationStrategy);
 
-        MessageInteraction sample = DataGen.SampleOne(strategy, seed: 1UL);
+        MessageInteraction sample = strategy.WithSeed(1UL).Sample();
 
         Assert.Equal("events", sample.Destination);
         Assert.Equal("application/json", sample.Headers["content-type"]);

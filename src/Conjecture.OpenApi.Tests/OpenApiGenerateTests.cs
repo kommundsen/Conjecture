@@ -195,7 +195,7 @@ public sealed class OpenApiGenerateTests
         {
             OpenApiDocument doc = await Strategy.FromOpenApi(path);
             Strategy<JsonElement> strategy = doc.RequestBody("POST", "/pets");
-            IReadOnlyList<JsonElement> samples = DataGen.Sample(strategy, 20, 42UL);
+            IReadOnlyList<JsonElement> samples = strategy.WithSeed(42UL).Sample(20);
 
             foreach (JsonElement element in samples)
             {
@@ -233,7 +233,7 @@ public sealed class OpenApiGenerateTests
         {
             OpenApiDocument doc = await Strategy.FromOpenApi(path);
             Strategy<JsonElement> strategy = doc.PathParameter("GET", "/pets/{petId}", "petId");
-            IReadOnlyList<JsonElement> samples = DataGen.Sample(strategy, 20, 42UL);
+            IReadOnlyList<JsonElement> samples = strategy.WithSeed(42UL).Sample(20);
 
             foreach (JsonElement element in samples)
             {
@@ -255,7 +255,7 @@ public sealed class OpenApiGenerateTests
         {
             OpenApiDocument doc = await Strategy.FromOpenApi(path);
             Strategy<JsonElement> strategy = doc.QueryParameter("GET", "/pets", "limit");
-            IReadOnlyList<JsonElement> samples = DataGen.Sample(strategy, 20, 42UL);
+            IReadOnlyList<JsonElement> samples = strategy.WithSeed(42UL).Sample(20);
 
             foreach (JsonElement element in samples)
             {

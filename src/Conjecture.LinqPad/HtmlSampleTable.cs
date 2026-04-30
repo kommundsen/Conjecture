@@ -17,7 +17,7 @@ internal static class HtmlSampleTable
         bool capped = count > MaxRows;
         int effective = capped ? MaxRows : count;
         ulong? ulongSeed = SeedHelpers.ToUlong(seed);
-        IReadOnlyList<T> samples = DataGen.Sample(strategy, effective, ulongSeed);
+        IReadOnlyList<T> samples = ulongSeed is { } s ? strategy.WithSeed(s).Sample(effective) : strategy.Sample(effective);
 
         StringBuilder sb = new();
         sb.Append("<table><thead><th>#</th><th>Value</th></thead>");

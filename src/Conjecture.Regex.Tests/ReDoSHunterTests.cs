@@ -28,7 +28,7 @@ public sealed class ReDoSHunterTests
         DotNetRegex slowRegex = new(pattern, RegexOptions.None, TimeSpan.FromMilliseconds(10));
         Strategy<string> strategy = Strategy.ReDoSHunter(pattern, maxMatchMs: 5);
 
-        IReadOnlyList<string> samples = DataGen.Sample(strategy, SampleSize, Seed);
+        IReadOnlyList<string> samples = strategy.WithSeed(Seed).Sample(SampleSize);
 
         Assert.Contains(samples, s =>
         {
@@ -46,7 +46,7 @@ public sealed class ReDoSHunterTests
         DotNetRegex slowRegex = new(pattern, RegexOptions.None, TimeSpan.FromMilliseconds(10));
         Strategy<string> strategy = Strategy.ReDoSHunter(pattern, maxMatchMs: 5);
 
-        IReadOnlyList<string> samples = DataGen.Sample(strategy, SampleSize, Seed);
+        IReadOnlyList<string> samples = strategy.WithSeed(Seed).Sample(SampleSize);
 
         Assert.Contains(samples, s =>
         {
@@ -64,7 +64,7 @@ public sealed class ReDoSHunterTests
         DotNetRegex slowRegex = new(pattern, RegexOptions.None, TimeSpan.FromMilliseconds(10));
         Strategy<string> strategy = Strategy.ReDoSHunter(pattern, maxMatchMs: 5);
 
-        IReadOnlyList<string> samples = DataGen.Sample(strategy, SampleSize, Seed);
+        IReadOnlyList<string> samples = strategy.WithSeed(Seed).Sample(SampleSize);
 
         Assert.Contains(samples, s =>
         {
@@ -82,7 +82,7 @@ public sealed class ReDoSHunterTests
         DotNetRegex regex = new(pattern);
         Strategy<string> strategy = Strategy.ReDoSHunter(pattern, maxMatchMs: 5);
 
-        IReadOnlyList<string> samples = DataGen.Sample(strategy, SampleSize, Seed);
+        IReadOnlyList<string> samples = strategy.WithSeed(Seed).Sample(SampleSize);
 
         Assert.All(samples, s => Assert.Matches(regex, s));
     }
@@ -106,7 +106,7 @@ public sealed class ReDoSHunterTests
         DotNetRegex verifyRegex = new("a+");
         Strategy<string> strategy = Strategy.ReDoSHunter(regex, maxMatchMs: 5);
 
-        IReadOnlyList<string> samples = DataGen.Sample(strategy, SampleSize, Seed);
+        IReadOnlyList<string> samples = strategy.WithSeed(Seed).Sample(SampleSize);
 
         Assert.All(samples, s => Assert.Matches(verifyRegex, s));
     }
@@ -120,7 +120,7 @@ public sealed class ReDoSHunterTests
         DotNetRegex slowRegex = new(pattern, RegexOptions.None, TimeSpan.FromMilliseconds(5));
         Strategy<string> strategy = Strategy.ReDoSHunter(pattern, maxMatchMs: 5);
 
-        IReadOnlyList<string> samples = DataGen.Sample(strategy, SampleSize, Seed);
+        IReadOnlyList<string> samples = strategy.WithSeed(Seed).Sample(SampleSize);
 
         string? counterexample = null;
         foreach (string s in samples)

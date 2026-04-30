@@ -108,7 +108,7 @@ public sealed class AspNetCoreRequestBuilderFromOpenApiTests(WebApplicationFacto
         // doc when the walker classifies a body parameter (controllers via ApiExplorer).
         // For minimal-API delegates the walker emits only path + query bindings today,
         // so this test pins the cross-cutting behaviour: route + method are unchanged.
-        IReadOnlyList<HttpInteraction> samples = DataGen.Sample(strategy, count: 5, seed: 1UL);
+        IReadOnlyList<HttpInteraction> samples = strategy.WithSeed(1UL).Sample(5);
 
         foreach (HttpInteraction sample in samples)
         {

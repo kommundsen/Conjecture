@@ -22,7 +22,7 @@ public sealed class JsonSchemaGenerateTests
     public void FromJsonSchema_IntegerSchemaText_GeneratesNumberValueKind()
     {
         Strategy<JsonElement> strategy = Strategy.FromJsonSchema("""{"type": "integer"}""");
-        IReadOnlyList<JsonElement> samples = DataGen.Sample(strategy, 20, 42UL);
+        IReadOnlyList<JsonElement> samples = strategy.WithSeed(42UL).Sample(20);
         foreach (JsonElement element in samples)
         {
             Assert.Equal(JsonValueKind.Number, element.ValueKind);
@@ -34,7 +34,7 @@ public sealed class JsonSchemaGenerateTests
     {
         using JsonDocument doc = JsonDocument.Parse("""{"type": "integer"}""");
         Strategy<JsonElement> strategy = Strategy.FromJsonSchema(doc.RootElement);
-        IReadOnlyList<JsonElement> samples = DataGen.Sample(strategy, 20, 42UL);
+        IReadOnlyList<JsonElement> samples = strategy.WithSeed(42UL).Sample(20);
         foreach (JsonElement element in samples)
         {
             Assert.Equal(JsonValueKind.Number, element.ValueKind);
@@ -50,7 +50,7 @@ public sealed class JsonSchemaGenerateTests
             File.WriteAllText(tempPath, """{"type": "integer"}""");
             FileInfo schemaFile = new(tempPath);
             Strategy<JsonElement> strategy = Strategy.FromJsonSchema(schemaFile);
-            IReadOnlyList<JsonElement> samples = DataGen.Sample(strategy, 20, 42UL);
+            IReadOnlyList<JsonElement> samples = strategy.WithSeed(42UL).Sample(20);
             foreach (JsonElement element in samples)
             {
                 Assert.Equal(JsonValueKind.Number, element.ValueKind);
