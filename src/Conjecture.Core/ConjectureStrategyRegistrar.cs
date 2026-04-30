@@ -24,7 +24,7 @@ public static class ConjectureStrategyRegistrar
         activeResolver = (type, data) =>
         {
             object? strategy = strategyFactory(type);
-            return strategy is IGeneratableStrategy gen ? gen.GenerateBoxed(data) : null;
+            return strategy is IGeneratableStrategy generatable ? generatable.GenerateBoxed(data) : null;
         };
     }
 
