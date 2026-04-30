@@ -17,7 +17,7 @@ public static class ConjectureStrategyRegistrar
 {
     private static Func<Type, ConjectureData, object?>? activeResolver;
 
-    /// <summary>Registers a generated strategy factory. Called by source-generated module initializers.</summary>
+    /// <summary>Registers a generated <see cref="IStrategyProvider{T}"/>. Called by source-generated module initializers.</summary>
     /// <param name="strategyFactory">Returns a boxed <see cref="Strategy{T}"/> for the given type, or <see langword="null"/> if unsupported.</param>
     public static void Register(Func<Type, object?> strategyFactory)
     {
