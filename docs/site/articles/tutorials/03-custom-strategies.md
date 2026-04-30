@@ -61,7 +61,7 @@ public bool Money_amount_is_non_negative([From<MoneyStrategy>] Money money)
 }
 ```
 
-## Option 2: `[FromFactory]` — Static Factory Methods
+## Option 2: `[FromMethod]` — Static Factory Methods
 
 If you prefer keeping the strategy close to the test, use a static factory method:
 
@@ -74,7 +74,7 @@ public class PaymentTests
         select new Money(amount, currency);
 
     [Property]
-    public bool Payment_preserves_currency([FromFactory("PositiveMoney")] Money money)
+    public bool Payment_preserves_currency([FromMethod("PositiveMoney")] Money money)
     {
         var payment = new Payment(money);
         return payment.Amount.Currency == money.Currency;
@@ -125,7 +125,7 @@ public class NonEmptyListOfMoney : IStrategyProvider<List<Money>>
 |---|---|
 | Automatic resolution | Primitive types, standard collections |
 | `[From<T>]` with `IStrategyProvider<T>` | Reusable strategies shared across tests |
-| `[FromFactory]` | One-off strategies specific to a test class |
+| `[FromMethod]` | One-off strategies specific to a test class |
 | `[Arbitrary]` source generator | Types you own with simple constructor patterns |
 
 ## Next

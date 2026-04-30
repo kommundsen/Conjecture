@@ -18,7 +18,7 @@ file sealed class BoundedPositiveInts : IStrategyProvider<int>
 
 /// <summary>
 /// End-to-end tests for the xUnit v3 adapter covering the full pipeline:
-/// basic [Property], failing + shrinking, [Sample], [From&lt;T&gt;], [FromFactory],
+/// basic [Property], failing + shrinking, [Sample], [From&lt;T&gt;], [FromMethod],
 /// async, database round-trip, and settings propagation.
 /// </summary>
 public sealed class XunitV3AdapterE2ETests : IDisposable
@@ -45,7 +45,7 @@ public sealed class XunitV3AdapterE2ETests : IDisposable
 #pragma warning disable IDE0060
     private static void IntMethod(int x) { }
     private static void TwoIntMethod(int x, int y) { }
-    private static void IntFromFactoryMethod([FromFactory(nameof(EvenPositiveInts))] int x) { }
+    private static void IntFromMethod([FromMethod(nameof(EvenPositiveInts))] int x) { }
 #pragma warning restore IDE0060
 
     private static ParameterInfo[] Params(string name) =>
@@ -199,20 +199,20 @@ public sealed class XunitV3AdapterE2ETests : IDisposable
         Assert.Equal(6, strategy.Generate(replay));
     }
 
-    // ── [FromFactory] ────────────────────────────────────────────────────────────
+    // ── [FromMethod] ────────────────────────────────────────────────────────────
 
     [Property(MaxExamples = 20, Seed = 1UL)]
-    public void FromFactoryAttribute_EvenPositiveInts_AllValuesEvenAndInRange(
-        [FromFactory(nameof(EvenPositiveInts))] int x)
+    public void FromMethodAttribute_EvenPositiveInts_AllValuesEvenAndInRange(
+        [FromMethod(nameof(EvenPositiveInts))] int x)
     {
         Assert.True(x >= 1 && x <= 50 && x % 2 == 0, $"Expected even in [1,50], got {x}");
     }
 
     [Fact]
-    public async Task FromFactoryAttribute_ViaResolver_ConstrainsValues()
+    public async Task FromMethodAttribute_ViaResolver_ConstrainsValues()
     {
         ConjectureSettings settings = new() { MaxExamples = 50, Seed = 11UL };
-        ParameterInfo[] parameters = Params(nameof(IntFromFactoryMethod));
+        ParameterInfo[] parameters = Params(nameof(IntFromMethod));
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {

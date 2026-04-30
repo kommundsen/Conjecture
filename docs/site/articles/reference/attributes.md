@@ -95,7 +95,7 @@ public bool Positive_ints_are_positive([From<PositiveInts>] int value) => value 
 
 `TProvider` must implement `IStrategyProvider<T>` where `T` matches the parameter type. The provider must have a public parameterless constructor.
 
-## `[FromFactory]`
+## `[FromMethod]`
 
 Specifies a static factory method on the test class that returns a `Strategy<T>` for a parameter.
 
@@ -103,7 +103,7 @@ Specifies a static factory method on the test class that returns a `Strategy<T>`
 
 ```csharp
 [Property]
-public bool Orders_have_items([FromFactory(nameof(CreateOrderStrategy))] Order order)
+public bool Orders_have_items([FromMethod(nameof(CreateOrderStrategy))] Order order)
 {
     return order.Items.Count > 0;
 }

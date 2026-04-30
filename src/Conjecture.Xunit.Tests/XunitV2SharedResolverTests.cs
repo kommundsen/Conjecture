@@ -61,7 +61,7 @@ public class XunitV2SharedResolverTests
     private static void TakesFloat(float f) { }
     private static void TakesDouble(double d) { }
     private static void TakesFromEven([From<EvenIntProvider>] int n) { }
-    private static void TakesFromFactory([FromFactory(nameof(DoubleFactory))] int n) { }
+    private static void TakesFromMethod([FromMethod(nameof(DoubleFactory))] int n) { }
     private static void TakesPoint(Point p) { }
 #pragma warning restore IDE0060
 
@@ -103,12 +103,12 @@ public class XunitV2SharedResolverTests
         }
     }
 
-    // ── [FromFactory] ─────────────────────────────────────────────────────────
+    // ── [FromMethod] ─────────────────────────────────────────────────────────
 
     [Fact]
-    public void Resolve_FromFactory_DrawsFromStaticMethod()
+    public void Resolve_FromMethod_DrawsFromStaticMethod()
     {
-        ParameterInfo[] parameters = ParamsOf(nameof(TakesFromFactory));
+        ParameterInfo[] parameters = ParamsOf(nameof(TakesFromMethod));
 
         for (int i = 0; i < 20; i++)
         {
