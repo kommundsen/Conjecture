@@ -45,11 +45,11 @@ Strategy<Order> orders = Generate.For<Order>(cfg => cfg
 
 Constraint attributes are applied to constructor parameters or `init` properties of `[Arbitrary]` types. The source generator reads them at compile time.
 
-### `[GenRange]`
+### `[StrategyRange]`
 
 ```csharp
 [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property)]
-public sealed class GenRangeAttribute(double min, double max) : Attribute
+public sealed class StrategyRangeAttribute(double min, double max) : Attribute
 ```
 
 Constrains the generated range for a numeric parameter to [`min`, `max`]. Applies to `int`, `long`, `short`, `byte`, `uint`, `ulong`, `ushort`, `sbyte`, `float`, `double`, and `decimal`.
@@ -57,15 +57,15 @@ Constrains the generated range for a numeric parameter to [`min`, `max`]. Applie
 ```csharp
 [Arbitrary]
 public partial record Product(
-    [GenRange(0.01, 9_999.99)] decimal Price,
-    [GenRange(1, 500)] int Quantity);
+    [StrategyRange(0.01, 9_999.99)] decimal Price,
+    [StrategyRange(1, 500)] int Quantity);
 ```
 
-### `[GenStringLength]`
+### `[StrategyStringLength]`
 
 ```csharp
 [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property)]
-public sealed class GenStringLengthAttribute(int minLength, int maxLength) : Attribute
+public sealed class StrategyStringLengthAttribute(int minLength, int maxLength) : Attribute
 ```
 
 Constrains the length of generated strings to [`minLength`, `maxLength`].
@@ -73,15 +73,15 @@ Constrains the length of generated strings to [`minLength`, `maxLength`].
 ```csharp
 [Arbitrary]
 public partial record Customer(
-    [GenStringLength(1, 100)] string Name,
-    [GenStringLength(5, 254)] string Email);
+    [StrategyStringLength(1, 100)] string Name,
+    [StrategyStringLength(5, 254)] string Email);
 ```
 
-### `[GenRegex]`
+### `[StrategyRegex]`
 
 ```csharp
 [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property)]
-public sealed class GenRegexAttribute(string pattern) : Attribute
+public sealed class StrategyRegexAttribute(string pattern) : Attribute
 ```
 
 Constrains generated strings to match `pattern`. Requires the `Conjecture.Regex` package.
@@ -89,23 +89,23 @@ Constrains generated strings to match `pattern`. Requires the `Conjecture.Regex`
 ```csharp
 [Arbitrary]
 public partial record PhoneNumber(
-    [GenRegex(@"^\+\d{7,15}$")] string Value);
+    [StrategyRegex(@"^\+\d{7,15}$")] string Value);
 ```
 
 If `Conjecture.Regex` is not referenced, the generator emits **CON202** and falls back to unconstrained strings.
 
-### `[GenMaxDepth]`
+### `[StrategyMaxDepth]`
 
 ```csharp
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-public sealed class GenMaxDepthAttribute(int maxDepth) : Attribute
+public sealed class StrategyMaxDepthAttribute(int maxDepth) : Attribute
 ```
 
 Applied to the **type** (not a parameter) to cap recursive generation depth. Required on self-referential or mutually recursive types; optional on non-recursive types.
 
 ```csharp
 [Arbitrary]
-[GenMaxDepth(4)]
+[StrategyMaxDepth(4)]
 public partial class TreeNode
 {
     public TreeNode(int Value, TreeNode? Left, TreeNode? Right) { /* ... */ }
@@ -139,7 +139,7 @@ Default depth when the attribute is absent: **5**.
 | Enum `T` | `Generate.Enums<T>()` |
 | `[Arbitrary]` type | `Generate.For<T>()` (nested) |
 
-`[GenRange]`, `[GenStringLength]`, and `[GenRegex]` override the defaults for the individual parameter they are applied to.
+`[StrategyRange]`, `[StrategyStringLength]`, and `[StrategyRegex]` override the defaults for the individual parameter they are applied to.
 
 ## Supported collection types
 
@@ -153,7 +153,7 @@ Default depth when the attribute is absent: **5**.
 | `IReadOnlySet<T>`, `HashSet<T>` | `Generate.Sets(inner)` |
 | `IReadOnlyDictionary<K,V>`, `Dictionary<K,V>` | `Generate.Dictionaries(keyInner, valueInner)` |
 
-Collection size defaults to 0–100 elements. Apply `[GenRange]` to a `List<T>` parameter to constrain the element count.
+Collection size defaults to 0–100 elements. Apply `[StrategyRange]` to a `List<T>` parameter to constrain the element count.
 
 ## `Generate.For<T>()` call-site diagnostics
 
@@ -209,11 +209,11 @@ Strategy<Widget> widgets = Generate.For<Widget>();  // CON312
 public partial class Widget { }
 ```
 
-### CON313 — mutual recursion without `[GenMaxDepth]`
+### CON313 — mutual recursion without `[StrategyMaxDepth]`
 
 **Severity:** Warning
 
-Two or more `[Arbitrary]` types reference each other without either having `[GenMaxDepth]`. Generation may be very deep or diverge.
+Two or more `[Arbitrary]` types reference each other without either having `[StrategyMaxDepth]`. Generation may be very deep or diverge.
 
 ```csharp
 // Warning — CON313:
@@ -223,9 +223,9 @@ public partial record Parent(Child? Child);
 [Arbitrary]
 public partial record Child(Parent? Parent);
 
-// Fix: add [GenMaxDepth] to at least one side
+// Fix: add [StrategyMaxDepth] to at least one side
 [Arbitrary]
-[GenMaxDepth(3)]
+[StrategyMaxDepth(3)]
 public partial record Parent(Child? Child);
 ```
 

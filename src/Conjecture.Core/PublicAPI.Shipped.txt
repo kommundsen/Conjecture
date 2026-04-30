@@ -147,20 +147,6 @@ Conjecture.Core.ForConfiguration<T>
 Conjecture.Core.ForConfiguration<T>.ForConfiguration() -> void
 Conjecture.Core.ForConfiguration<T>.Override<TProp>(System.Linq.Expressions.Expression<System.Func<T, TProp>!>! selector, Conjecture.Core.Strategy<TProp>! strategy) -> Conjecture.Core.ForConfiguration<T>!
 Conjecture.Core.ForConfiguration<T>.TryGet<TProp>(string! propertyName) -> Conjecture.Core.Strategy<TProp>?
-Conjecture.Core.GenRangeAttribute
-Conjecture.Core.GenRangeAttribute.GenRangeAttribute(double min, double max) -> void
-Conjecture.Core.GenRangeAttribute.Max.get -> double
-Conjecture.Core.GenRangeAttribute.Min.get -> double
-Conjecture.Core.GenStringLengthAttribute
-Conjecture.Core.GenStringLengthAttribute.GenStringLengthAttribute(int minLength, int maxLength) -> void
-Conjecture.Core.GenStringLengthAttribute.MaxLength.get -> int
-Conjecture.Core.GenStringLengthAttribute.MinLength.get -> int
-Conjecture.Core.GenRegexAttribute
-Conjecture.Core.GenRegexAttribute.GenRegexAttribute(string! pattern) -> void
-Conjecture.Core.GenRegexAttribute.Pattern.get -> string!
-Conjecture.Core.GenMaxDepthAttribute
-Conjecture.Core.GenMaxDepthAttribute.GenMaxDepthAttribute(int maxDepth) -> void
-Conjecture.Core.GenMaxDepthAttribute.MaxDepth.get -> int
 Conjecture.Core.GenerateForRegistry
 static Conjecture.Core.GenerateForRegistry.IsRegistered(System.Type! type) -> bool
 static Conjecture.Core.GenerateForRegistry.Register(System.Type! type, System.Func<Conjecture.Core.IStrategyProvider!>! factory) -> void

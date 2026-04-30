@@ -42,15 +42,15 @@ public sealed class RecursiveTypeTests
         Assert.Contains("maxDepth: 5", text);
     }
 
-    // --- Behaviour 2: [GenMaxDepth(3)] overrides maxDepth ---
+    // --- Behaviour 2: [StrategyMaxDepth(3)] overrides maxDepth ---
 
     [Fact]
-    public void GenMaxDepthAttribute_OverridesDefaultMaxDepth()
+    public void StrategyMaxDepthAttribute_OverridesDefaultMaxDepth()
     {
         string source = """
             using Conjecture.Core;
             namespace MyApp;
-            [Arbitrary, GenMaxDepth(3)] public partial record TreeNode(int Value, [Arbitrary] TreeNode? Child);
+            [Arbitrary, StrategyMaxDepth(3)] public partial record TreeNode(int Value, [Arbitrary] TreeNode? Child);
             """;
 
         string text = GetGeneratedText(source, "TreeNode.g.cs");
@@ -59,12 +59,12 @@ public sealed class RecursiveTypeTests
     }
 
     [Fact]
-    public void GenMaxDepthAttribute_DoesNotEmitDefaultMaxDepth()
+    public void StrategyMaxDepthAttribute_DoesNotEmitDefaultMaxDepth()
     {
         string source = """
             using Conjecture.Core;
             namespace MyApp;
-            [Arbitrary, GenMaxDepth(3)] public partial record TreeNode(int Value, [Arbitrary] TreeNode? Child);
+            [Arbitrary, StrategyMaxDepth(3)] public partial record TreeNode(int Value, [Arbitrary] TreeNode? Child);
             """;
 
         string text = GetGeneratedText(source, "TreeNode.g.cs");

@@ -96,19 +96,19 @@ Attach generation constraints directly on constructor parameters or properties. 
 [Arbitrary]
 public partial record Product(
     string Name,
-    [GenRange(0.01, 9_999.99)] decimal Price,
-    [GenRange(0, 10_000)] int Stock);
+    [StrategyRange(0.01, 9_999.99)] decimal Price,
+    [StrategyRange(0, 10_000)] int Stock);
 ```
 
-`[GenRange]` applies to any numeric parameter (`int`, `long`, `double`, `decimal`, etc.).
+`[StrategyRange]` applies to any numeric parameter (`int`, `long`, `double`, `decimal`, etc.).
 
 ### Constrain string length
 
 ```csharp
 [Arbitrary]
 public partial record Customer(
-    [GenStringLength(1, 100)] string Name,
-    [GenStringLength(5, 254)] string Email);
+    [StrategyStringLength(1, 100)] string Name,
+    [StrategyStringLength(5, 254)] string Email);
 ```
 
 ### Constrain string format with a regex
@@ -116,19 +116,19 @@ public partial record Customer(
 ```csharp
 [Arbitrary]
 public partial record UkPostcode(
-    [GenRegex(@"^[A-Z]{1,2}\d[A-Z\d]? \d[ABD-HJLNP-UW-Z]{2}$")] string Value);
+    [StrategyRegex(@"^[A-Z]{1,2}\d[A-Z\d]? \d[ABD-HJLNP-UW-Z]{2}$")] string Value);
 ```
 
 > [!NOTE]
-> `[GenRegex]` requires the `Conjecture.Regex` package to be referenced. If it is absent, the generator falls back to unconstrained strings and emits a **CON202** warning.
+> `[StrategyRegex]` requires the `Conjecture.Regex` package to be referenced. If it is absent, the generator falls back to unconstrained strings and emits a **CON202** warning.
 
 ## Handle self-referential types
 
-For types that reference themselves, use `[GenMaxDepth]` to cap generation depth.
+For types that reference themselves, use `[StrategyMaxDepth]` to cap generation depth.
 
 ```csharp
 [Arbitrary]
-[GenMaxDepth(3)]
+[StrategyMaxDepth(3)]
 public partial class TreeNode
 {
     public TreeNode(int Value, TreeNode? Left, TreeNode? Right) { /* ... */ }
@@ -140,10 +140,10 @@ public partial class TreeNode
 
 The generator emits a depth-bounded strategy: at `maxDepth = 0` it generates a leaf node (nullable child parameters become `null`); at greater depths it recurses.
 
-Without `[GenMaxDepth]` on a self-referential type, the generator emits a **CON313** warning and uses a default depth of 5.
+Without `[StrategyMaxDepth]` on a self-referential type, the generator emits a **CON313** warning and uses a default depth of 5.
 
 > [!TIP]
-> Deeper trees find more edge cases but slow down generation and shrinking. Start with `[GenMaxDepth(3)]` and increase only if you need deeper coverage.
+> Deeper trees find more edge cases but slow down generation and shrinking. Start with `[StrategyMaxDepth(3)]` and increase only if you need deeper coverage.
 
 ## See also
 

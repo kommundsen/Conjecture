@@ -234,7 +234,7 @@ These fire at `Generate.For<T>()` or `[From<T>]` call sites. See [Reference: Gen
 | CON310 | Error | `Generate.For<T>()` target is an interface |
 | CON311 | Error | `Generate.For<T>()` target is abstract with no `[Arbitrary]` subtypes |
 | CON312 | Error | `Generate.For<T>()` has no registered provider — type lacks `[Arbitrary]` |
-| CON313 | Warning | Mutually recursive `[Arbitrary]` types without `[GenMaxDepth]` |
+| CON313 | Warning | Mutually recursive `[Arbitrary]` types without `[StrategyMaxDepth]` |
 
 ### Sealed hierarchy diagnostics (CON205, CON300–CON302)
 

@@ -18,7 +18,7 @@ Reflection works — but it has three costs that source generation avoids:
 
 When the Roslyn incremental generator sees `[Arbitrary]` on a `partial` type, it performs three steps at build time:
 
-**1. Type model extraction.** The generator reads the type's constructor — primary constructor for records, most-accessible constructor for classes and structs. It maps each parameter to a strategy expression using the primitive mapping table, respecting `[GenRange]`, `[GenStringLength]`, `[GenRegex]`, and `[GenMaxDepth]` attributes.
+**1. Type model extraction.** The generator reads the type's constructor — primary constructor for records, most-accessible constructor for classes and structs. It maps each parameter to a strategy expression using the primitive mapping table, respecting `[StrategyRange]`, `[StrategyStringLength]`, `[StrategyRegex]`, and `[StrategyMaxDepth]` attributes.
 
 **2. Code emission.** The generator emits two things alongside the type:
 - An `IStrategyProvider<T>` implementation (e.g. `OrderArbitrary`) that calls `Generate.Compose` with the resolved strategies.
