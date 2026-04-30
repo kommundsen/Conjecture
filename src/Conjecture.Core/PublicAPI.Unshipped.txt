@@ -70,3 +70,6 @@ Conjecture.Core.StrategySamplingExtensions.extension<T>(Conjecture.Core.SeededSt
 Conjecture.Core.StrategySamplingExtensions.extension<T>(Conjecture.Core.SeededStrategy<T>).Sample(int count) -> System.Collections.Generic.IReadOnlyList<T>!
 Conjecture.Core.StrategySamplingExtensions.extension<T>(Conjecture.Core.SeededStrategy<T>).Stream() -> System.Collections.Generic.IEnumerable<T>!
 Conjecture.Core.StrategySamplingExtensions.extension<T>(Conjecture.Core.SeededStrategy<T>).Stream(int count) -> System.Collections.Generic.IEnumerable<T>!
+Conjecture.Core.SampleAttribute
+Conjecture.Core.SampleAttribute.SampleAttribute(params object?[]! arguments) -> void
+Conjecture.Core.SampleAttribute.Arguments.get -> object?[]!

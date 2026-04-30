@@ -59,19 +59,19 @@ Applies `ConjectureSettings` to a test method or test class. Takes precedence ov
 public void HeavyTest(int x) { ... }
 ```
 
-## `[Example]`
+## `[Sample]`
 
 Seeds explicit, hand-written examples that are always run (in addition to random ones).
 
 ```csharp
 [Property]
-[Example(0)]
-[Example(int.MaxValue)]
-[Example(-1)]
+[Sample(0)]
+[Sample(int.MaxValue)]
+[Sample(-1)]
 public void MyProperty(int x) { ... }
 ```
 
-Each `[Example]` value is passed directly to the first parameter. For multi-parameter tests, `[Example]` takes a params array matching the method signature types.
+Each `[Sample]` value is passed directly to the first parameter. For multi-parameter tests, `[Sample]` takes a params array matching the method signature types.
 
 ## `[From<T>]`
 
@@ -105,7 +105,7 @@ When Conjecture resolves a strategy for a `[Property]` parameter, it checks in t
 
 1. `[From<T>]` attribute on the parameter
 2. `[FromFactory]` attribute on the parameter
-3. `[Example]` attribute (for explicit examples)
+3. `[Sample]` attribute (for explicit examples)
 4. `IStrategyProvider<T>` registered via the source generator (`[Arbitrary]`)
 5. Built-in strategies (primitives, collections)
 6. `ConjectureException` if no strategy found

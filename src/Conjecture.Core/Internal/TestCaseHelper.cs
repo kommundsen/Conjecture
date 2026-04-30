@@ -47,18 +47,18 @@ internal static class TestCaseHelper
         }
     }
 
-    internal static void ValidateExampleArgs(ExampleAttribute example, ParameterInfo[] parameters)
+    internal static void ValidateSampleArgs(SampleAttribute sample, ParameterInfo[] parameters)
     {
-        if (example.Arguments.Length != parameters.Length)
+        if (sample.Arguments.Length != parameters.Length)
         {
             throw new ArgumentException(
-                $"[Example] provides {example.Arguments.Length} argument(s) but the method expects {parameters.Length}.");
+                $"[Sample] provides {sample.Arguments.Length} argument(s) but the method expects {parameters.Length}.");
         }
     }
 
-    internal static string BuildExampleFailureMessage(ExampleAttribute example, ParameterInfo[] parameters, Exception failure)
+    internal static string BuildSampleFailureMessage(SampleAttribute sample, ParameterInfo[] parameters, Exception failure)
     {
-        IEnumerable<(string name, object? value)> pairs = parameters.Zip(example.Arguments, (p, a) => (p.Name!, a));
+        IEnumerable<(string name, object? value)> pairs = parameters.Zip(sample.Arguments, (p, a) => (p.Name!, a));
         return CounterexampleFormatter.FormatExplicit(pairs, failure);
     }
 
