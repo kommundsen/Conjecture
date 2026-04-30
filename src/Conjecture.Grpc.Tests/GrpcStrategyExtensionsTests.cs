@@ -43,7 +43,7 @@ public class GenerateGrpcTests
         Method<TestRequest, TestResponse> method = BuildMethod();
         Strategy<TestRequest> requestStrategy = Strategy.Just(new TestRequest(42));
 
-        Strategy<GrpcInteraction> strategy = GenerateGrpc.Unary("greeter", method, requestStrategy);
+        Strategy<GrpcInteraction> strategy = GrpcStrategyExtensions.Unary("greeter", method, requestStrategy);
 
         Assert.NotNull(strategy);
     }
@@ -54,7 +54,7 @@ public class GenerateGrpcTests
         Method<TestRequest, TestResponse> method = BuildMethod();
         Strategy<TestRequest> requestStrategy = Strategy.Just(new TestRequest(1));
 
-        Strategy<GrpcInteraction> strategy = GenerateGrpc.Unary("svc", method, requestStrategy);
+        Strategy<GrpcInteraction> strategy = GrpcStrategyExtensions.Unary("svc", method, requestStrategy);
         GrpcInteraction interaction = strategy.WithSeed(1UL).Sample();
 
         Assert.Equal(GrpcRpcMode.Unary, interaction.Mode);
@@ -66,7 +66,7 @@ public class GenerateGrpcTests
         Method<TestRequest, TestResponse> method = BuildMethod();
         Strategy<TestRequest> requestStrategy = Strategy.Just(new TestRequest(7));
 
-        Strategy<GrpcInteraction> strategy = GenerateGrpc.Unary("svc", method, requestStrategy);
+        Strategy<GrpcInteraction> strategy = GrpcStrategyExtensions.Unary("svc", method, requestStrategy);
         GrpcInteraction interaction = strategy.WithSeed(1UL).Sample();
 
         Assert.Single(interaction.RequestMessages);
@@ -79,7 +79,7 @@ public class GenerateGrpcTests
         TestRequest original = new(99);
         Strategy<TestRequest> requestStrategy = Strategy.Just(original);
 
-        Strategy<GrpcInteraction> strategy = GenerateGrpc.Unary("svc", method, requestStrategy);
+        Strategy<GrpcInteraction> strategy = GrpcStrategyExtensions.Unary("svc", method, requestStrategy);
         GrpcInteraction interaction = strategy.WithSeed(1UL).Sample();
 
         byte[] bytes = interaction.RequestMessages[0].ToArray();
@@ -93,7 +93,7 @@ public class GenerateGrpcTests
         Method<TestRequest, TestResponse> method = BuildMethod("pkg.Greeter", "SayHello");
         Strategy<TestRequest> requestStrategy = Strategy.Just(new TestRequest(0));
 
-        Strategy<GrpcInteraction> strategy = GenerateGrpc.Unary("svc", method, requestStrategy);
+        Strategy<GrpcInteraction> strategy = GrpcStrategyExtensions.Unary("svc", method, requestStrategy);
         GrpcInteraction interaction = strategy.WithSeed(1UL).Sample();
 
         Assert.Equal(method.FullName, interaction.FullMethodName);
@@ -108,7 +108,7 @@ public class GenerateGrpcTests
         Method<TestRequest, TestResponse> method = BuildMethod();
         Strategy<TestRequest> requestStrategy = Strategy.Just(new TestRequest(3));
 
-        Strategy<GrpcInteraction> strategy = GenerateGrpc.Unary(resourceName, method, requestStrategy);
+        Strategy<GrpcInteraction> strategy = GrpcStrategyExtensions.Unary(resourceName, method, requestStrategy);
         GrpcInteraction interaction = strategy.WithSeed(1UL).Sample();
 
         Assert.Equal(resourceName, interaction.ResourceName);
@@ -121,7 +121,7 @@ public class GenerateGrpcTests
         Strategy<int> intStrategy = Strategy.Integers<int>(1, 1000);
         Strategy<TestRequest> requestStrategy = intStrategy.Select(static i => new TestRequest(i));
 
-        Strategy<GrpcInteraction> strategy = GenerateGrpc.Unary("svc", method, requestStrategy);
+        Strategy<GrpcInteraction> strategy = GrpcStrategyExtensions.Unary("svc", method, requestStrategy);
         IReadOnlyList<GrpcInteraction> samples = strategy.WithSeed(42UL).Sample(10);
 
         HashSet<int> distinctValues = [];
@@ -140,7 +140,7 @@ public class GenerateGrpcTests
         Method<TestRequest, TestResponse> method = BuildMethod();
         Strategy<TestRequest> requestStrategy = Strategy.Just(new TestRequest(5));
 
-        Strategy<GrpcInteraction> strategy = GenerateGrpc.Unary("svc", method, requestStrategy);
+        Strategy<GrpcInteraction> strategy = GrpcStrategyExtensions.Unary("svc", method, requestStrategy);
         GrpcInteraction interaction = strategy.WithSeed(1UL).Sample();
 
         Assert.Empty(interaction.Metadata);
@@ -153,7 +153,7 @@ public class GenerateGrpcTests
         Strategy<TestRequest> requestStrategy = Strategy.Just(new TestRequest(5));
         Dictionary<string, string> customMeta = new() { ["authorization"] = "Bearer tok" };
 
-        Strategy<GrpcInteraction> strategy = GenerateGrpc.Unary("svc", method, requestStrategy, customMeta);
+        Strategy<GrpcInteraction> strategy = GrpcStrategyExtensions.Unary("svc", method, requestStrategy, customMeta);
         GrpcInteraction interaction = strategy.WithSeed(1UL).Sample();
 
         Assert.Equal("Bearer tok", interaction.Metadata["authorization"]);
