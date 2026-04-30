@@ -8,7 +8,7 @@ using Microsoft.Extensions.Time.Testing;
 namespace Conjecture.Time;
 
 /// <summary>Extension methods on <see cref="Strategy"/> for time-related test value generation.</summary>
-public static class TimeGenerateExtensions
+public static class TimeStrategyExtensions
 {
     // UTC at index 0 so SampledFrom shrinks toward it; deduplicated in case GetSystemTimeZones already includes UTC.
     private static readonly TimeZoneInfo[] SystemTimeZones = BuildSystemTimeZones();
@@ -27,29 +27,29 @@ public static class TimeGenerateExtensions
         /// <summary>Returns a strategy that picks uniformly from the system time zones, shrinking toward UTC.</summary>
         public static Strategy<TimeZoneInfo> TimeZones()
         {
-            return Strategy.SampledFrom(TimeGenerateExtensions.SystemTimeZones);
+            return Strategy.SampledFrom(TimeStrategyExtensions.SystemTimeZones);
         }
 
         /// <summary>Returns a strategy that samples IANA timezone IDs from a cross-platform-safe subset.</summary>
         public static Strategy<string> IanaZoneIds(bool preferDst = false)
         {
             return preferDst
-                ? Strategy.SampledFrom(TimeGenerateExtensions.IanaDstIds)
+                ? Strategy.SampledFrom(TimeStrategyExtensions.IanaDstIds)
                 : Strategy.SampledFrom(CrossPlatformTimeZones.IanaIds);
         }
 
         /// <summary>Returns a strategy that samples Windows timezone IDs from a cross-platform-safe subset.</summary>
         public static Strategy<string> WindowsZoneIds()
         {
-            return Strategy.SampledFrom(TimeGenerateExtensions.WindowsIds);
+            return Strategy.SampledFrom(TimeStrategyExtensions.WindowsIds);
         }
 
         /// <summary>Returns a strategy that samples TimeZoneInfo from the cross-platform-safe subset, optionally filtering to DST zones.</summary>
         public static Strategy<TimeZoneInfo> TimeZone(bool preferDst = false)
         {
             return preferDst
-                ? Strategy.SampledFrom(TimeGenerateExtensions.CrossPlatformDstZones)
-                : Strategy.SampledFrom(TimeGenerateExtensions.CrossPlatformZones);
+                ? Strategy.SampledFrom(TimeStrategyExtensions.CrossPlatformDstZones)
+                : Strategy.SampledFrom(TimeStrategyExtensions.CrossPlatformZones);
         }
 
         /// <summary>
@@ -125,7 +125,7 @@ public static class TimeGenerateExtensions
 
             return Strategy.Compose<(FakeTimeProvider Clock, IReadOnlyList<TimeSpan> Advances)>(ctx =>
             {
-                DateTimeOffset start = ctx.Generate(TimeGenerateExtensions.ClockStartStrategy);
+                DateTimeOffset start = ctx.Generate(TimeStrategyExtensions.ClockStartStrategy);
                 FakeTimeProvider clock = new(start);
                 TimeSpan[] advances = new TimeSpan[advanceCount];
                 for (int i = 0; i < advanceCount; i++)
@@ -147,7 +147,7 @@ public static class TimeGenerateExtensions
         {
             return Strategy.Compose<RecurringEventSample>(ctx =>
             {
-                DateTimeOffset windowStart = ctx.Generate(TimeGenerateExtensions.ClockStartStrategy);
+                DateTimeOffset windowStart = ctx.Generate(TimeStrategyExtensions.ClockStartStrategy);
                 DateTimeOffset windowEnd = windowStart + window;
                 List<DateTimeOffset> occurrences = [];
                 DateTimeOffset? current = nextOccurrence(windowStart);
