@@ -25,7 +25,7 @@ internal sealed class StringAwarePass : IShrinkPass
         }
         for (int i = 0; i < state.Nodes.Count; i++)
         {
-            if (state.Nodes[i].Kind == IRNodeKind.StringChar && await TrySimplifyChar(state, i))
+            if (state.Nodes[i].Kind == IRNodeKind.StringChar && await TryShrinkChar(state, i))
             {
                 return true;
             }
@@ -87,7 +87,7 @@ internal sealed class StringAwarePass : IShrinkPass
         return false;
     }
 
-    private static async ValueTask<bool> TrySimplifyChar(ShrinkState state, int charIndex)
+    private static async ValueTask<bool> TryShrinkChar(ShrinkState state, int charIndex)
     {
         IRNode charNode = state.Nodes[charIndex];
         foreach (ulong target in CharTargets)
