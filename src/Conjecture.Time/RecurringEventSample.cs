@@ -3,7 +3,7 @@
 
 namespace Conjecture.Time;
 
-/// <summary>A sample produced by <see cref="TimeGenerateExtensions.RecurringEvents"/>.</summary>
+/// <summary>A sample produced by <see cref="TimeStrategyExtensions.RecurringEvents"/>.</summary>
 /// <param name="WindowStart">The inclusive start of the generated window.</param>
 /// <param name="WindowEnd">The inclusive end of the generated window.</param>
 /// <param name="Occurrences">All occurrences that fall within the window.</param>
