@@ -5,7 +5,7 @@ namespace Conjecture.Core;
 
 /// <summary>Constrains generated string length to [<paramref name="minLength"/>, <paramref name="maxLength"/>].</summary>
 [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property, AllowMultiple = false)]
-public sealed class GenStringLengthAttribute(int minLength, int maxLength) : Attribute
+public sealed class StrategyStringLengthAttribute(int minLength, int maxLength) : Attribute
 {
     /// <summary>Gets the minimum generated string length.</summary>
     public int MinLength { get; } = minLength;

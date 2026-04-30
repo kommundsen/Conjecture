@@ -7,7 +7,7 @@ namespace Conjecture.Core;
 
 /// <summary>Caps the recursive generation depth for a self-referential or mutually recursive type to <paramref name="maxDepth"/>.</summary>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-public sealed class GenMaxDepthAttribute(int maxDepth) : Attribute
+public sealed class StrategyMaxDepthAttribute(int maxDepth) : Attribute
 {
     /// <summary>Gets the maximum generation depth.</summary>
     public int MaxDepth { get; } = maxDepth;

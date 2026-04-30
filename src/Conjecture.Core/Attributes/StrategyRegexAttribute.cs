@@ -5,7 +5,7 @@ namespace Conjecture.Core;
 
 /// <summary>Constrains generated strings to match <paramref name="pattern"/>.</summary>
 [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property, AllowMultiple = false)]
-public sealed class GenRegexAttribute(string pattern) : Attribute
+public sealed class StrategyRegexAttribute(string pattern) : Attribute
 {
     /// <summary>Gets the regex pattern generated strings must match.</summary>
     public string Pattern { get; } = pattern;

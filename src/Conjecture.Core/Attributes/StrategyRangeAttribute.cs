@@ -5,7 +5,7 @@ namespace Conjecture.Core;
 
 /// <summary>Constrains the generated range of a numeric member to [<paramref name="min"/>, <paramref name="max"/>].</summary>
 [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property, AllowMultiple = false)]
-public sealed class GenRangeAttribute(double min, double max) : Attribute
+public sealed class StrategyRangeAttribute(double min, double max) : Attribute
 {
     /// <summary>Gets the inclusive lower bound.</summary>
     public double Min { get; } = min;

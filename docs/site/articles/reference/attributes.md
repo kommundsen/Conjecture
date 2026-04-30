@@ -174,10 +174,10 @@ Applied to constructor parameters or `init` properties of `[Arbitrary]` types to
 
 | Attribute | Target | Effect |
 |---|---|---|
-| `[GenRange(min, max)]` | Numeric parameters | Constrains generated value to [`min`, `max`] |
-| `[GenStringLength(min, max)]` | `string` parameters | Constrains generated string length |
-| `[GenRegex(pattern)]` | `string` parameters | Constrains generated strings to match the pattern |
-| `[GenMaxDepth(n)]` | The type itself | Caps recursive generation depth to `n` |
+| `[StrategyRange(min, max)]` | Numeric parameters | Constrains generated value to [`min`, `max`] |
+| `[StrategyStringLength(min, max)]` | `string` parameters | Constrains generated string length |
+| `[StrategyRegex(pattern)]` | `string` parameters | Constrains generated strings to match the pattern |
+| `[StrategyMaxDepth(n)]` | The type itself | Caps recursive generation depth to `n` |
 
 ## `[assembly: ConjectureSettings]`
 
