@@ -10,7 +10,7 @@ using Grpc.Core;
 
 namespace Conjecture.Grpc;
 
-/// <summary>Strategy factory methods for gRPC interactions.</summary>
+/// <summary>Extension methods for generating gRPC interactions.</summary>
 public static class GenerateGrpc
 {
     private static readonly IReadOnlyDictionary<string, string> EmptyMetadata =

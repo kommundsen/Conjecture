@@ -10,7 +10,7 @@ using DotNetRegex = System.Text.RegularExpressions.Regex;
 
 namespace Conjecture.Core;
 
-/// <summary>Factory methods for generating strings that match (or do not match) a regular expression.</summary>
+/// <summary>Extension methods for generating strings that match (or do not match) a regular expression.</summary>
 public static class RegexGenerateExtensions
 {
     private const int CacheCapacity = 256;
