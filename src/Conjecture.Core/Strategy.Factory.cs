@@ -136,7 +136,7 @@ public static class Strategy
     /// <param name="maxDepth">Maximum recursion depth. Generated values have depth in [0, maxDepth]. Must be ≥ 0.</param>
     /// <returns>
     ///   A <see cref="Strategy{T}"/> whose generated values have depth at most <paramref name="maxDepth"/>.
-    ///   The depth draw is an IR integer, so the shrinker reduces it toward 0, producing shallower structures
+    ///   The depth draw is an IR integer, so the shrinker shrinks it toward 0, producing shallower structures
     ///   when shrinking a counterexample.
     /// </returns>
     /// <example>
