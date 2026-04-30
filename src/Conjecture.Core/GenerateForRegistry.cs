@@ -23,20 +23,20 @@ public static class GenerateForRegistry
     // Parallel dictionary holding AOT-safe boxed strategies for use via ResolveBoxed.
     private static readonly ConcurrentDictionary<Type, Strategy<object?>> BoxedStrategies = new();
 
-    /// <summary>Registers an override-aware factory for <paramref name="type"/>. Called by source-generated module initializers.</summary>
+    /// <summary>Registers an override-aware <see cref="IStrategyProvider"/> for <paramref name="type"/>. Called by source-generated module initializers.</summary>
     public static void RegisterOverride(Type type, Func<object, object> factory)
     {
         OverrideProviders[type] = factory;
     }
 
-    /// <summary>Registers a provider factory for <paramref name="type"/>. Called by source-generated module initializers.</summary>
+    /// <summary>Registers an <see cref="IStrategyProvider"/> for <paramref name="type"/>. Called by source-generated module initializers.</summary>
     public static void Register(Type type, Func<IStrategyProvider> factory)
     {
         Providers[type] = factory;
     }
 
     /// <summary>
-    /// Registers a provider factory together with a pre-built boxed strategy for <paramref name="type"/>.
+    /// Registers an <see cref="IStrategyProvider"/> together with a pre-built boxed strategy for <paramref name="type"/>.
     /// Enables <see cref="ResolveBoxed"/> for callers that only know the type at runtime.
     /// </summary>
     public static void Register(Type type, Func<IStrategyProvider> factory, Strategy<object?> boxedStrategy)
@@ -48,7 +48,7 @@ public static class GenerateForRegistry
         BoxedStrategies[type] = boxedStrategy;
     }
 
-    /// <summary>Returns <see langword="true"/> when a provider factory for <paramref name="type"/> has been registered.</summary>
+    /// <summary>Returns <see langword="true"/> when an <see cref="IStrategyProvider"/> for <paramref name="type"/> has been registered.</summary>
     public static bool IsRegistered(Type type) => Providers.ContainsKey(type);
 
     /// <summary>
@@ -74,7 +74,7 @@ public static class GenerateForRegistry
             : ((IStrategyProvider<T>)factory()).Create();
     }
 
-    /// <summary>Resolves an override-aware strategy for <typeparamref name="T"/> using the registered factory and the provided <paramref name="cfg"/>. Throws if the type is not registered.</summary>
+    /// <summary>Resolves an override-aware strategy for <typeparamref name="T"/> using the registered <see cref="IStrategyProvider"/> and the provided <paramref name="cfg"/>. Throws if the type is not registered.</summary>
     public static Strategy<T> ResolveWithOverrides<T>(ForConfiguration<T> cfg)
     {
         Type key = typeof(T);
