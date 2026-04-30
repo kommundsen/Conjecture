@@ -8,7 +8,7 @@ using System.Numerics;
 
 namespace Conjecture.Core;
 
-/// <summary>Factory methods for creating and composing Conjecture strategies.</summary>
+/// <summary>Static methods for creating and composing Conjecture strategies.</summary>
 public static class Strategy
 {
     /// <summary>Creates a strategy from an imperative factory function using <see cref="IGenerationContext"/>.</summary>
