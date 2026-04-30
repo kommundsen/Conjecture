@@ -12,14 +12,14 @@ namespace Conjecture.Messaging;
 /// Fluent builder for <see cref="Strategy{T}"/> of <see cref="MessageInteraction"/>.
 /// Entry point: <c>Strategy.Messaging</c>.
 /// </summary>
-public sealed class MessagingGenerateBuilder
+public sealed class MessagingStrategies
 {
     private static readonly IReadOnlyDictionary<string, string> EmptyHeaders =
         new Dictionary<string, string>(0);
 
     private static readonly Strategy<Guid> GuidStrategy = Strategy.Guids();
 
-    internal MessagingGenerateBuilder()
+    internal MessagingStrategies()
     {
     }
 
