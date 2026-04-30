@@ -15,7 +15,7 @@ public static class Target
 
     /// <summary>Records a numeric observation to maximize during the targeting phase.</summary>
     /// <param name="observation">The value to maximize. Must be finite (not NaN or Infinity).</param>
-    /// <param name="label">Identifies this observation label. Multiple labels are optimized independently.</param>
+    /// <param name="label">Identifies this observation label. Multiple labels are targeted independently.</param>
     public static void Maximize(double observation, string label = "default")
     {
         ConjectureData data = CurrentData.Value
@@ -25,7 +25,7 @@ public static class Target
 
     /// <summary>Records a numeric observation to minimize during the targeting phase.</summary>
     /// <param name="observation">The value to minimize. Must be finite (not NaN or Infinity).</param>
-    /// <param name="label">Identifies this observation label. Multiple labels are optimized independently.</param>
+    /// <param name="label">Identifies this observation label. Multiple labels are targeted independently.</param>
     public static void Minimize(double observation, string label = "default")
     {
         Maximize(-observation, label);
