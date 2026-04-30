@@ -29,7 +29,7 @@ public class TargetingBenchmarks
             MaxExamples = 100,
             Targeting = true,
             TargetingProportion = 0.5,
-            UseDatabase = false,
+            Database = false,
         };
         intStrategy = Strategy.Integers<int>(0, 1000);
     }

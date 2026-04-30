@@ -54,14 +54,14 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
         {
             MaxExamples = testCase.MaxExamples,
             Seed = testCase.Seed,
-            UseDatabase = testCase.UseDatabase,
+            Database = testCase.Database,
             MaxStrategyRejections = testCase.MaxStrategyRejections,
             Deadline = testCase.DeadlineMs > 0 ? TimeSpan.FromMilliseconds(testCase.DeadlineMs) : null,
             Targeting = testCase.Targeting,
             TargetingProportion = testCase.TargetingProportion,
             Logger = logger,
-            ExportReproOnFailure = testCase.ExportReproOnFailure,
-            ReproOutputPath = testCase.ReproOutputPath,
+            ExportReproductionOnFailure = testCase.ExportReproductionOnFailure,
+            ReproductionOutputPath = testCase.ReproductionOutputPath,
         };
     }
 
@@ -173,7 +173,7 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
         else
         {
             summary.Failed = 1;
-            if (settings.ExportReproOnFailure && result is not null && !result.Passed && result.Counterexample is not null)
+            if (settings.ExportReproductionOnFailure && result is not null && !result.Passed && result.Counterexample is not null)
             {
                 try
                 {
@@ -193,7 +193,7 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
                         result.ShrinkCount,
                         Conjecture.Core.Internal.TestFramework.Xunit,
                         DateTimeOffset.UtcNow);
-                    ReproFileBuilder.WriteToFile(context, settings.ReproOutputPath);
+                    ReproFileBuilder.WriteToFile(context, settings.ReproductionOutputPath);
                 }
                 catch (Exception ex)
                 {

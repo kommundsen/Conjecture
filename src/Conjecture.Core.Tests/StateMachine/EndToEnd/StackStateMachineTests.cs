@@ -162,7 +162,7 @@ public class StackStateMachineTests
     [Fact]
     public async Task BuggyStack_WithPlantedBug_FindsFailureWithin100Examples()
     {
-        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 1UL, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 1UL, Database = false };
         TestRunResult result = await TestRunner.Run(settings,
             data => _ = Strategy.StateMachine<BuggyStackMachine, StackState, StackCommand>().Generate(data));
         Assert.False(result.Passed);
@@ -171,7 +171,7 @@ public class StackStateMachineTests
     [Fact]
     public async Task BuggyStack_ShrunkCounterexample_IsMinimal()
     {
-        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 1UL, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 1UL, Database = false };
         TestRunResult result = await TestRunner.Run(settings,
             data => _ = Strategy.StateMachine<BuggyStackMachine, StackState, StackCommand>().Generate(data));
         Assert.False(result.Passed);
@@ -184,7 +184,7 @@ public class StackStateMachineTests
     {
         // Minimal failing sequence is [Push, Pop]: Push makes the stack non-empty,
         // then the buggy Pop decrements ModelCount by 2, violating the invariant.
-        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 1UL, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 1UL, Database = false };
         TestRunResult result = await TestRunner.Run(settings,
             data => _ = Strategy.StateMachine<BuggyStackMachine, StackState, StackCommand>().Generate(data));
         Assert.False(result.Passed);
@@ -195,7 +195,7 @@ public class StackStateMachineTests
     [Fact]
     public async Task CorrectStack_NoBug_PassesAllExamples()
     {
-        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 3UL, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 3UL, Database = false };
         TestRunResult result = await TestRunner.Run(settings,
             data => _ = Strategy.StateMachine<CorrectStackMachine, StackState, StackCommand>().Generate(data));
         Assert.True(result.Passed);
@@ -208,7 +208,7 @@ public class StackStateMachineTests
         // StateAwareStackMachine only yields Pop when Stack.Count > 0. If the engine ever
         // selected Pop when Count == 0, Stack.Pop() would throw, causing a failure. A passing
         // result confirms state-dependent command availability is respected.
-        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 2UL, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 2UL, Database = false };
         TestRunResult result = await TestRunner.Run(settings,
             data => _ = Strategy.StateMachine<StateAwareStackMachine, StackState, StackCommand>().Generate(data));
         Assert.True(result.Passed);

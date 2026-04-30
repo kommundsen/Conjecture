@@ -50,7 +50,7 @@ internal static class TestRunner
         ExampleDatabase db,
         string testIdHash)
     {
-        bool useDb = settings.UseDatabase && settings.Seed is null;
+        bool useDb = settings.Database && settings.Seed is null;
 
         if (useDb)
         {

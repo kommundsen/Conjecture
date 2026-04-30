@@ -101,7 +101,7 @@ public sealed class NUnitReportingTests
     [Test]
     public async Task Database_FailingRun_BufferSavedToDatabase()
     {
-        ConjectureSettings settings = new() { MaxExamples = 10, UseDatabase = true };
+        ConjectureSettings settings = new() { MaxExamples = 10, Database = true };
         MethodInfo method = typeof(NUnitReportingTests)
             .GetMethod(nameof(Database_FailingRun_BufferSavedToDatabase))!;
         string testId = TestCaseHelper.ComputeTestId(method);
@@ -114,7 +114,7 @@ public sealed class NUnitReportingTests
     [Test]
     public async Task Database_SecondRun_ReplaysStoredBuffer()
     {
-        ConjectureSettings settings = new() { MaxExamples = 10, UseDatabase = true };
+        ConjectureSettings settings = new() { MaxExamples = 10, Database = true };
         MethodInfo method = typeof(NUnitReportingTests)
             .GetMethod(nameof(Database_SecondRun_ReplaysStoredBuffer))!;
         string testId = TestCaseHelper.ComputeTestId(method);

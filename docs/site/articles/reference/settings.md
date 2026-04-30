@@ -16,7 +16,7 @@ Settings are resolved in this order (most specific wins):
 |---|---|---|---|
 | `MaxExamples` | `int` | `100` | Number of generated examples per test. Must be > 0. |
 | `Seed` | `ulong?` | `null` | Fixed PRNG seed for reproducibility. `null` = random. On `[Property]`, use `ulong` where `0` = random. |
-| `UseDatabase` | `bool` | `true` | Persist and replay failing examples across runs. |
+| `Database` | `bool` | `true` | Persist and replay failing examples across runs. |
 | `DatabasePath` | `string` | `".conjecture/examples/"` | Directory for the example database. |
 | `Deadline` | `TimeSpan?` | `null` | Per-example timeout. `null` = no deadline. On `[Property]`, use `DeadlineMs` (int milliseconds; `0` = no deadline). |
 | `MaxStrategyRejections` | `int` | `5` | Max consecutive rejections by a single `Where()` filter before throwing. Must be ≥ 0. |
@@ -24,8 +24,8 @@ Settings are resolved in this order (most specific wins):
 | `Targeting` | `bool` | `true` | Enable or disable the targeted testing phase (hill climbing after generation). |
 | `TargetingProportion` | `double` | `0.5` | Fraction of `MaxExamples` reserved for targeting. Must be in `[0.0, 1.0)`. |
 | `Logger` | `ILogger` | `NullLogger.Instance` | Structured logging sink. Adapters auto-wire framework output. |
-| `ExportReproOnFailure` | `bool` | `false` | Write the shrunk counterexample byte buffer to a file on failure. |
-| `ReproOutputPath` | `string` | `".conjecture/repros/"` | Directory for exported repro files. Used when `ExportReproOnFailure = true`. |
+| `ExportReproductionOnFailure` | `bool` | `false` | Write the shrunk counterexample byte buffer to a file on failure. |
+| `ReproductionOutputPath` | `string` | `".conjecture/repros/"` | Directory for exported repro files. Used when `ExportReproductionOnFailure = true`. |
 | `TestName` | `string?` | `null` | Test method name. Populated automatically by framework adapters; populates the `test.name` tag on the `PropertyTest` trace span. |
 | `TestClassName` | `string?` | `null` | Test class name. Populated automatically by framework adapters; populates the `test.class.name` tag on the `PropertyTest` trace span. |
 
@@ -37,13 +37,13 @@ These properties are available on the `[Property]` attribute (per-test only):
 |---|---|---|---|
 | `MaxExamples` | `int` | `100` | |
 | `Seed` | `ulong` | `0` | `0` = random seed |
-| `UseDatabase` | `bool` | `true` | |
+| `Database` | `bool` | `true` | |
 | `MaxStrategyRejections` | `int` | `5` | |
 | `DeadlineMs` | `int` | `0` | `0` = no deadline |
 | `Targeting` | `bool` | `true` | |
 | `TargetingProportion` | `double` | `0.5` | |
-| `ExportReproOnFailure` | `bool` | `false` | |
-| `ReproOutputPath` | `string` | `".conjecture/repros/"` | |
+| `ExportReproductionOnFailure` | `bool` | `false` | |
+| `ReproductionOutputPath` | `string` | `".conjecture/repros/"` | |
 
 ## Assembly-level defaults
 
@@ -53,7 +53,7 @@ Apply settings to all tests in an assembly:
 // In any .cs file in your test project:
 using Conjecture.Core;
 
-[assembly: ConjectureSettings(MaxExamples = 500, UseDatabase = false)]
+[assembly: ConjectureSettings(MaxExamples = 500, Database = false)]
 ```
 
 ## Programmatic settings
@@ -62,7 +62,7 @@ The `ConjectureSettings` record is immutable and supports `with` expressions:
 
 ```csharp
 ConjectureSettings defaults = new();
-ConjectureSettings ci = defaults with { MaxExamples = 1000, UseDatabase = false };
+ConjectureSettings ci = defaults with { MaxExamples = 1000, Database = false };
 ConjectureSettings debug = defaults with { Seed = 42UL, Deadline = TimeSpan.FromSeconds(30) };
 ```
 
@@ -71,7 +71,7 @@ ConjectureSettings debug = defaults with { Seed = 42UL, Deadline = TimeSpan.From
 ### CI — more examples, no database
 
 ```csharp
-[assembly: ConjectureSettings(MaxExamples = 1000, UseDatabase = false)]
+[assembly: ConjectureSettings(MaxExamples = 1000, Database = false)]
 ```
 
 ### Debugging — reproduce a specific failure

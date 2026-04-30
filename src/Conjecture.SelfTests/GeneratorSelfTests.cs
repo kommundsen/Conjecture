@@ -30,7 +30,7 @@ public class GeneratorSelfTests
     public async Task GeneratedStrategy_Select_TransformsValues()
     {
         Strategy<int> xStrategy = new SelfPointArbitrary().Create().Select(p => p.X);
-        ConjectureSettings settings = new() { Seed = 2UL, MaxExamples = 20, UseDatabase = false };
+        ConjectureSettings settings = new() { Seed = 2UL, MaxExamples = 20, Database = false };
 
         TestRunResult result = await TestRunner.Run(settings, data => _ = xStrategy.Generate(data));
 
@@ -42,7 +42,7 @@ public class GeneratorSelfTests
     {
         Strategy<SelfPoint> positivePoints = new SelfPointArbitrary().Create()
             .Where(p => p.X > 0 && p.Y > 0);
-        ConjectureSettings settings = new() { Seed = 3UL, MaxExamples = 20, UseDatabase = false };
+        ConjectureSettings settings = new() { Seed = 3UL, MaxExamples = 20, Database = false };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
@@ -72,7 +72,7 @@ public class GeneratorSelfTests
             new SelfPointArbitrary().Create()
                 .SelectMany(p => labelStrategy.Select(l => (Point: p, Label: l)));
 
-        ConjectureSettings settings = new() { Seed = 5UL, MaxExamples = 20, UseDatabase = false };
+        ConjectureSettings settings = new() { Seed = 5UL, MaxExamples = 20, Database = false };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {

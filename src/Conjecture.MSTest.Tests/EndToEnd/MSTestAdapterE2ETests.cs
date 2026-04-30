@@ -194,7 +194,7 @@ public sealed class MSTestAdapterE2ETests
     {
         // [From<BoundedPositiveInts>] generates [1, 100]; property fails when v > 5 → shrinks to 6.
         Strategy<int> strategy = new BoundedPositiveInts().Create();
-        ConjectureSettings settings = new() { MaxExamples = 200, Seed = 20UL, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 200, Seed = 20UL, Database = false };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
@@ -279,7 +279,7 @@ public sealed class MSTestAdapterE2ETests
     public async Task Database_FailingRun_SavesCounterexampleBuffer()
     {
         string dbPath = Path.Combine(tempDir, "conjecture.db");
-        ConjectureSettings settings = new() { MaxExamples = 10, UseDatabase = true };
+        ConjectureSettings settings = new() { MaxExamples = 10, Database = true };
         string testId = "mstest-e2e-fail-saves";
 
         using ExampleDatabase db = new(dbPath);
@@ -292,7 +292,7 @@ public sealed class MSTestAdapterE2ETests
     public async Task Database_SecondRun_ReplaysStoredBuffer()
     {
         string dbPath = Path.Combine(tempDir, "conjecture.db");
-        ConjectureSettings settings = new() { MaxExamples = 10, UseDatabase = true };
+        ConjectureSettings settings = new() { MaxExamples = 10, Database = true };
         string testId = "mstest-e2e-replay";
         bool replayInvoked = false;
 
@@ -312,7 +312,7 @@ public sealed class MSTestAdapterE2ETests
     public async Task Database_FixedProperty_RemovesStoredBuffer()
     {
         string dbPath = Path.Combine(tempDir, "conjecture.db");
-        ConjectureSettings settings = new() { MaxExamples = 10, UseDatabase = true };
+        ConjectureSettings settings = new() { MaxExamples = 10, Database = true };
         string testId = "mstest-e2e-fix-clears";
 
         using ExampleDatabase db = new(dbPath);

@@ -11,7 +11,7 @@ namespace Conjecture.Core;
 public sealed class ConjectureSettingsAttribute : Attribute
 {
     private int? maxExamples;
-    private bool? useDatabase;
+    private bool? database;
     private int? maxStrategyRejections;
     private int? maxUnsatisfiedRatio;
     private string? databasePath;
@@ -26,10 +26,10 @@ public sealed class ConjectureSettingsAttribute : Attribute
     }
 
     /// <summary>Whether to use the example database.</summary>
-    public bool UseDatabase
+    public bool Database
     {
-        get => useDatabase ?? true;
-        init => useDatabase = value;
+        get => database ?? true;
+        init => database = value;
     }
 
     /// <summary>Maximum number of times a strategy may reject a value.</summary>
@@ -72,7 +72,7 @@ public sealed class ConjectureSettingsAttribute : Attribute
     {
         MaxExamples = maxExamples ?? baseline.MaxExamples,
         Seed = baseline.Seed,
-        UseDatabase = useDatabase ?? baseline.UseDatabase,
+        Database = database ?? baseline.Database,
         Deadline = baseline.Deadline,
         MaxStrategyRejections = maxStrategyRejections ?? baseline.MaxStrategyRejections,
         MaxUnsatisfiedRatio = maxUnsatisfiedRatio ?? baseline.MaxUnsatisfiedRatio,

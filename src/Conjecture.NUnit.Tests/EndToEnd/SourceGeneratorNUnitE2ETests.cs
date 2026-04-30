@@ -66,7 +66,7 @@ public class SourceGeneratorNUnitE2ETests
         // Use NuSourceCoord (byte fields, range [0,255]) so RedistributionPass stays
         // O(max 255 iterations) rather than O(2 billion) for full int range.
         Strategy<NuSourceCoord> strategy = new NuSourceCoordArbitrary().Create();
-        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 1UL, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 1UL, Database = false };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
@@ -84,7 +84,7 @@ public class SourceGeneratorNUnitE2ETests
     public async Task GeneratedArbitrary_FailureMessage_ContainsParamNameAndSeed()
     {
         // byte fields avoid the O(2^32) RedistributionPass issue with full int range.
-        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 3UL, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 3UL, Database = false };
         ParameterInfo[] parameters = Params(nameof(NuSourceCoordMethod));
 
         TestRunResult result = await TestRunner.Run(settings, data =>

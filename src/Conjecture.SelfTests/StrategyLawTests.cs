@@ -14,7 +14,7 @@ public class StrategyLawTests
     [Property]
     public async Task FunctorIdentity_SelectIdentity_ProducesSameValue()
     {
-        ConjectureSettings settings = new() { Seed = 0xC0FFEEul, MaxExamples = 1, UseDatabase = false };
+        ConjectureSettings settings = new() { Seed = 0xC0FFEEul, MaxExamples = 1, Database = false };
         int baseline = 0;
         int mapped = 0;
 
@@ -28,7 +28,7 @@ public class StrategyLawTests
     [Property]
     public async Task FilterTrue_WhereAlwaysTrue_ProducesSameValue()
     {
-        ConjectureSettings settings = new() { Seed = 0xDEADBEEFul, MaxExamples = 1, UseDatabase = false };
+        ConjectureSettings settings = new() { Seed = 0xDEADBEEFul, MaxExamples = 1, Database = false };
         int baseline = 0;
         int filtered = 0;
 
@@ -43,7 +43,7 @@ public class StrategyLawTests
     public async Task FilterFalse_WhereNeverTrue_NoValidExamplesProduced()
     {
         // MaxExamples = 1 keeps the test fast; all attempts are filtered so no valid examples run.
-        ConjectureSettings settings = new() { Seed = 1ul, MaxExamples = 1, UseDatabase = false };
+        ConjectureSettings settings = new() { Seed = 1ul, MaxExamples = 1, Database = false };
 
         TestRunResult result = await TestRunner.Run(settings, data => _ = Strategy.Integers<int>().Where(_ => false).Generate(data));
 
@@ -54,7 +54,7 @@ public class StrategyLawTests
     [Property]
     public async Task SelectManyAssociativity_ConstantStrategies_BothSidesEqual()
     {
-        ConjectureSettings settings = new() { Seed = 777ul, MaxExamples = 1, UseDatabase = false };
+        ConjectureSettings settings = new() { Seed = 777ul, MaxExamples = 1, Database = false };
 
         // s: always 3, f: x -> x*3, g: y -> y+1  →  expected: (3*3)+1 = 10
         int left = 0;

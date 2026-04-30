@@ -1,1 +1,3 @@
 #nullable enable
+Conjecture.NUnit.PropertyAttribute.Database.get -> bool
+Conjecture.NUnit.PropertyAttribute.Database.set -> void

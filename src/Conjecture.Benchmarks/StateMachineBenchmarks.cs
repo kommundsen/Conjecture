@@ -79,7 +79,7 @@ public class StateMachineBenchmarks
         passingStrategy = Strategy.StateMachine<CounterMachineNoFail, int, CounterCommand>(maxSteps: 50);
         failingShortStrategy = Strategy.StateMachine<CounterMachineFailsAt3, int, CounterCommand>(maxSteps: 10);
         failingLongStrategy = Strategy.StateMachine<CounterMachineFailsAt20, int, CounterCommand>(maxSteps: 50);
-        shrinkSettings = new ConjectureSettings { Seed = 42UL, MaxExamples = 100, UseDatabase = false };
+        shrinkSettings = new ConjectureSettings { Seed = 42UL, MaxExamples = 100, Database = false };
     }
 
     /// <summary>Throughput of generating 50-step sequences for a no-failure machine.</summary>

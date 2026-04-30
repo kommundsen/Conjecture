@@ -26,10 +26,10 @@ public class NUnitPropertyAttributeTests
     }
 
     [Test]
-    public void PropertyAttribute_DefaultUseDatabase_IsTrue()
+    public void PropertyAttribute_DefaultDatabase_IsTrue()
     {
         ConjecturePropertyAttribute attr = new();
-        Assert.That(attr.UseDatabase, Is.True);
+        Assert.That(attr.Database, Is.True);
     }
 
     [Test]

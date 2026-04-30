@@ -20,7 +20,7 @@ internal sealed class PropertyTestCaseDiscoverer : IXunitTestCaseDiscoverer
 
         int maxExamples = propTest.MaxExamples > 0 ? propTest.MaxExamples : 100;
         ulong? seed = propTest.Seed != 0UL ? propTest.Seed : null;
-        bool useDatabase = propTest.UseDatabase;
+        bool database = propTest.Database;
         int maxStrategyRejections = propTest.MaxStrategyRejections > 0 ? propTest.MaxStrategyRejections : 5;
         int deadlineMs = propTest.DeadlineMs;
         bool targeting = propTest.Targeting;
@@ -45,7 +45,7 @@ internal sealed class PropertyTestCaseDiscoverer : IXunitTestCaseDiscoverer
             null,
             maxExamples,
             seed,
-            useDatabase,
+            database,
             maxStrategyRejections,
             deadlineMs,
             targeting,

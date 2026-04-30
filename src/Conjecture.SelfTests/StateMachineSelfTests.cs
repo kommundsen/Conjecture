@@ -82,7 +82,7 @@ public class StateMachineSelfTests
     [Property]
     public async Task MonotoneShrinking_CommandSequence_ShrunkStepCountLeqOriginal()
     {
-        ConjectureSettings settings = new() { Seed = 1UL, MaxExamples = 100, UseDatabase = false };
+        ConjectureSettings settings = new() { Seed = 1UL, MaxExamples = 100, Database = false };
         TestRunResult result = await TestRunner.Run(settings,
             data => _ = MachineStrategy().Generate(data));
 
@@ -96,7 +96,7 @@ public class StateMachineSelfTests
     [Property]
     public async Task ShrinkingPreservesFailure_ShrunkCounterexample_ReplaysAsInteresting()
     {
-        ConjectureSettings settings = new() { Seed = 1UL, MaxExamples = 100, UseDatabase = false };
+        ConjectureSettings settings = new() { Seed = 1UL, MaxExamples = 100, Database = false };
         TestRunResult result = await TestRunner.Run(settings,
             data => _ = MachineStrategy().Generate(data));
 
@@ -109,7 +109,7 @@ public class StateMachineSelfTests
     [Property]
     public async Task CommandSequenceShrinkPass_Idempotent_NoFurtherProgressAfterShrink()
     {
-        ConjectureSettings settings = new() { Seed = 1UL, MaxExamples = 100, UseDatabase = false };
+        ConjectureSettings settings = new() { Seed = 1UL, MaxExamples = 100, Database = false };
         TestRunResult result = await TestRunner.Run(settings,
             data => _ = MachineStrategy().Generate(data));
 

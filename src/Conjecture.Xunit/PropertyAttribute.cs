@@ -20,7 +20,7 @@ public sealed class PropertyAttribute : FactAttribute, IPropertyTest, IReproduct
     public ulong Seed { get; set; }
 
     /// <summary>Whether to use the example database. Defaults to <see langword="true"/>.</summary>
-    public bool UseDatabase { get; set; } = true;
+    public bool Database { get; set; } = true;
 
     /// <summary>Maximum number of times a strategy may reject a value. Defaults to 5.</summary>
     public int MaxStrategyRejections { get; set; } = 5;
@@ -35,8 +35,8 @@ public sealed class PropertyAttribute : FactAttribute, IPropertyTest, IReproduct
     public double TargetingProportion { get; set; } = 0.5;
 
     /// <summary>Whether to export a reproduction file on test failure. Defaults to <see langword="false"/>.</summary>
-    public bool ExportReproOnFailure { get; set; } = false;
+    public bool ExportReproductionOnFailure { get; set; } = false;
 
     /// <summary>Output path for exported reproduction files. Defaults to <c>.conjecture/repros/</c>.</summary>
-    public string ReproOutputPath { get; set; } = ".conjecture/repros/";
+    public string ReproductionOutputPath { get; set; } = ".conjecture/repros/";
 }

@@ -33,7 +33,7 @@ public class ShrinkIntegrationTests
         // failing sequence is exactly 3 steps.
         // CommandSequenceShrinkPass registered in tier 0 must shrink to that minimum.
         TestRunResult result = await TestRunner.Run(
-            new ConjectureSettings { MaxExamples = 200, UseDatabase = false },
+            new ConjectureSettings { MaxExamples = 200, Database = false },
             data =>
             {
                 StateMachineStrategy<FailsAtThreeMachine, int, string> strategy = new(maxSteps: 50);
@@ -49,7 +49,7 @@ public class ShrinkIntegrationTests
     public async Task Shrink_StateMachineFailure_ShrinkCountIsPositive()
     {
         TestRunResult result = await TestRunner.Run(
-            new ConjectureSettings { MaxExamples = 200, Seed = 1UL, UseDatabase = false },
+            new ConjectureSettings { MaxExamples = 200, Seed = 1UL, Database = false },
             data =>
             {
                 StateMachineStrategy<FailsAtThreeMachine, int, string> strategy = new(maxSteps: 50);
@@ -66,7 +66,7 @@ public class ShrinkIntegrationTests
         // A non-stateful failing property (no CommandStart nodes) should still shrink
         // correctly — CommandSequenceShrinkPass returns false immediately for it.
         TestRunResult result = await TestRunner.Run(
-            new ConjectureSettings { MaxExamples = 50, Seed = 1UL, UseDatabase = false },
+            new ConjectureSettings { MaxExamples = 50, Seed = 1UL, Database = false },
             data =>
             {
                 ulong v = data.NextInteger(0, 1000);

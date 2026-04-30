@@ -58,5 +58,5 @@ When you fix a bug and remove the `Seed`, the database takes over: the stored bu
 ## See also
 
 - [How to manage the example database](../how-to/manage-example-database.md) — configuration and version control options
-- [Reference: Settings](../reference/settings.md) — `UseDatabase`, `DatabasePath`
+- [Reference: Settings](../reference/settings.md) — `Database`, `DatabasePath`
 - [How to reproduce a failure](../how-to/reproduce-a-failure.md) — seed-based reproduction

@@ -38,10 +38,10 @@ public class AssemblySettingsAttributeTests
     }
 
     [Fact]
-    public void Default_UseDatabase_IsTrue()
+    public void Default_Database_IsTrue()
     {
         var attr = new ConjectureSettingsAttribute();
-        Assert.True(attr.UseDatabase);
+        Assert.True(attr.Database);
     }
 
     [Fact]
@@ -95,14 +95,14 @@ public class AssemblySettingsAttributeTests
     }
 
     [Fact]
-    public void Apply_UseDatabaseExplicitlyFalse_OverridesBaselineTrue()
+    public void Apply_DatabaseExplicitlyFalse_OverridesBaselineTrue()
     {
-        var attr = new ConjectureSettingsAttribute { UseDatabase = false };
-        var baseline = new ConjectureSettings { UseDatabase = true };
+        var attr = new ConjectureSettingsAttribute { Database = false };
+        var baseline = new ConjectureSettings { Database = true };
 
         var result = attr.Apply(baseline);
 
-        Assert.False(result.UseDatabase);
+        Assert.False(result.Database);
     }
 
     [Fact]

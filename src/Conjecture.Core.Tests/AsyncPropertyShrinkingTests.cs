@@ -92,7 +92,7 @@ public sealed class AsyncPropertyShrinkingTests : IDisposable
     [Fact]
     public async Task RunAsync_WithDatabase_FailingTest_SavesBufferToDatabase()
     {
-        var settings = new ConjectureSettings { MaxExamples = 10, UseDatabase = true };
+        var settings = new ConjectureSettings { MaxExamples = 10, Database = true };
         string testId = "async-fail-save";
 
         await TestRunner.RunAsync(settings, _ => throw new InvalidOperationException("fail"), db, testId);
@@ -103,7 +103,7 @@ public sealed class AsyncPropertyShrinkingTests : IDisposable
     [Fact]
     public async Task RunAsync_WithDatabase_ReplaysStoredBufferOnSecondRun()
     {
-        var settings = new ConjectureSettings { MaxExamples = 10, UseDatabase = true };
+        var settings = new ConjectureSettings { MaxExamples = 10, Database = true };
         string testId = "async-replay";
         bool replayInvoked = false;
 
@@ -129,7 +129,7 @@ public sealed class AsyncPropertyShrinkingTests : IDisposable
     [Fact]
     public async Task RunAsync_WithDatabase_PassingReplay_ClearsDatabase()
     {
-        var settings = new ConjectureSettings { MaxExamples = 10, UseDatabase = true };
+        var settings = new ConjectureSettings { MaxExamples = 10, Database = true };
         string testId = "async-passing-clears";
 
         db.Save(testId, [0x00, 0x00, 0x00, 0x00]);

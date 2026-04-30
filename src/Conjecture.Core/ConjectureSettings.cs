@@ -31,7 +31,7 @@ public record ConjectureSettings
     public ulong? Seed { get; init; }
 
     /// <summary>Whether to use the example database. Defaults to <see langword="true"/>.</summary>
-    public bool UseDatabase { get; init; } = true;
+    public bool Database { get; init; } = true;
 
     /// <summary>Optional deadline for each test run. When <see langword="null"/> no deadline is enforced.</summary>
     public TimeSpan? Deadline { get; init; }
@@ -79,14 +79,14 @@ public record ConjectureSettings
         {
             MaxExamples = attr.MaxExamples,
             Seed = attr.Seed != 0UL ? attr.Seed : null,
-            UseDatabase = attr.UseDatabase,
+            Database = attr.Database,
             MaxStrategyRejections = attr.MaxStrategyRejections,
             Deadline = attr.DeadlineMs > 0 ? TimeSpan.FromMilliseconds(attr.DeadlineMs) : null,
             Targeting = attr.Targeting,
             TargetingProportion = attr.TargetingProportion,
             Logger = logger ?? NullLogger.Instance,
-            ExportReproOnFailure = (attr as IReproductionExport)?.ExportReproOnFailure ?? false,
-            ReproOutputPath = (attr as IReproductionExport)?.ReproOutputPath ?? ".conjecture/repros/",
+            ExportReproductionOnFailure = (attr as IReproductionExport)?.ExportReproductionOnFailure ?? false,
+            ReproductionOutputPath = (attr as IReproductionExport)?.ReproductionOutputPath ?? ".conjecture/repros/",
         };
     }
 
@@ -100,10 +100,10 @@ public record ConjectureSettings
     public ILogger Logger { get; init; } = NullLogger.Instance;
 
     /// <summary>Whether to export a reproduction file on test failure. Defaults to <see langword="false"/>.</summary>
-    public bool ExportReproOnFailure { get; init; } = false;
+    public bool ExportReproductionOnFailure { get; init; } = false;
 
     /// <summary>Output path for exported reproduction files. Defaults to <c>.conjecture/repros/</c>.</summary>
-    public string ReproOutputPath { get; init; } = ".conjecture/repros/";
+    public string ReproductionOutputPath { get; init; } = ".conjecture/repros/";
 
     /// <summary>Set by test framework adapters to populate the <c>test.name</c> tag on trace spans.</summary>
     public string? TestName { get; init; }

@@ -44,20 +44,20 @@ public void MyProperty(int x, string s) { ... }
 |-----------|------|---------|-------|
 | `Seed` | `ulong?` | `null` (random) | Fixed seed for deterministic replay, e.g. `0xDEAD` |
 | `MaxExamples` | `int` | `100` | Number of examples to generate |
-| `UseDatabase` | `bool` | `true` | Whether to use the SQLite example cache |
+| `Database` | `bool` | `true` | Whether to use the SQLite example cache |
 | `MaxStrategyRejections` | `int` | `5` | Max times a strategy may reject a generated value |
 | `DeadlineMs` | `int` | `0` | Per-example time limit in milliseconds; `0` means no deadline |
 | `Targeting` | `bool` | `true` | Whether to run a targeting phase after generation |
 | `TargetingProportion` | `double` | `0.5` | Fraction of `MaxExamples` budget allocated to targeting |
-| `ExportReproOnFailure` | `bool` | `false` | Write a reproduction file on test failure |
-| `ReproOutputPath` | `string` | `".conjecture/repros/"` | Output directory for reproduction files |
+| `ExportReproductionOnFailure` | `bool` | `false` | Write a reproduction file on test failure |
+| `ReproductionOutputPath` | `string` | `".conjecture/repros/"` | Output directory for reproduction files |
 
 ### Example with settings
 
 ```csharp
 using Conjecture.TestingPlatform;
 
-[Property(MaxExamples = 500, UseDatabase = false, DeadlineMs = 200)]
+[Property(MaxExamples = 500, Database = false, DeadlineMs = 200)]
 public void ParseRoundtrip(string input) { ... }
 
 // Deterministic replay from a previous failure:

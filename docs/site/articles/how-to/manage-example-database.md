@@ -22,7 +22,7 @@ The default path is `.conjecture/examples/`. Override it at the assembly or test
 [assembly: ConjectureSettings(DatabasePath = ".test-data/conjecture/")]
 
 // Per-test
-[Property(UseDatabase = true)]
+[Property(Database = true)]
 public bool My_property(int value) => ...;
 ```
 
@@ -31,13 +31,13 @@ public bool My_property(int value) => ...;
 **Globally** — for CI or stateless test runs:
 
 ```csharp
-[assembly: ConjectureSettings(UseDatabase = false)]
+[assembly: ConjectureSettings(Database = false)]
 ```
 
 **Per-test:**
 
 ```csharp
-[Property(UseDatabase = false)]
+[Property(Database = false)]
 public bool Stateless_test(int value) => ...;
 ```
 
@@ -45,7 +45,7 @@ public bool Stateless_test(int value) => ...;
 
 ```csharp
 #if CI
-[assembly: ConjectureSettings(UseDatabase = false)]
+[assembly: ConjectureSettings(Database = false)]
 #endif
 ```
 
@@ -77,7 +77,7 @@ Keep the database locally, disable in CI via an environment variable and a condi
 
 | Setting | Type | Default | Description |
 |---|---|---|---|
-| `UseDatabase` | `bool` | `true` | Enable/disable database persistence |
+| `Database` | `bool` | `true` | Enable/disable database persistence |
 | `DatabasePath` | `string` | `".conjecture/examples/"` | Directory for database files |
 
 See [Reference: Settings](../reference/settings.md) for the full settings table.
