@@ -9,6 +9,9 @@
 # Claude Code agent worktrees (transient local copies)
 .claude/worktrees/
 
+# Local scratch space for working notes / plan checklists
+.scratch/
+
 # Conjecture example database (local shrink cache)
 .conjecture/
 

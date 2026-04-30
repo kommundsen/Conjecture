@@ -25,7 +25,7 @@ public sealed class JsonSchemaStrategyTests
 
     private static IReadOnlyList<JsonElement> Sample(JsonSchemaStrategy strategy, int count = 50, ulong seed = 42UL)
     {
-        return DataGen.Sample(strategy, count, seed);
+        return strategy.WithSeed(seed).Sample(count);
     }
 
     [Fact]

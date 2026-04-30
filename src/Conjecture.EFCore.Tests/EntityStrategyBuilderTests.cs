@@ -103,7 +103,7 @@ public class EntityStrategyBuilderTests
         EntityStrategyBuilder builder = new(model);
 
         Strategy<Customer> strategy = builder.Build<Customer>();
-        IReadOnlyList<Customer> samples = DataGen.Sample(strategy, count: 20, seed: 1UL);
+        IReadOnlyList<Customer> samples = strategy.WithSeed(1UL).Sample(20);
 
         Assert.All(samples, static c =>
         {
@@ -121,7 +121,7 @@ public class EntityStrategyBuilderTests
         EntityStrategyBuilder builder = new(model);
 
         Strategy<Product> strategy = builder.Build<Product>();
-        IReadOnlyList<Product> samples = DataGen.Sample(strategy, count: 20, seed: 2UL);
+        IReadOnlyList<Product> samples = strategy.WithSeed(2UL).Sample(20);
 
         Assert.All(samples, static p =>
         {
@@ -139,7 +139,7 @@ public class EntityStrategyBuilderTests
         EntityStrategyBuilder builder = new EntityStrategyBuilder(model).WithMaxDepth(0);
 
         Strategy<Order> strategy = builder.Build<Order>();
-        IReadOnlyList<Order> samples = DataGen.Sample(strategy, count: 20, seed: 3UL);
+        IReadOnlyList<Order> samples = strategy.WithSeed(3UL).Sample(20);
 
         Assert.All(samples, static o => Assert.Null(o.Customer));
     }
@@ -153,7 +153,7 @@ public class EntityStrategyBuilderTests
 
         Strategy<Customer> strategy = builder.Build<Customer>();
         // Take several samples for robustness; at depth 2, Customer.Orders[*].Customer must be null
-        IReadOnlyList<Customer> samples = DataGen.Sample(strategy, count: 30, seed: 4UL);
+        IReadOnlyList<Customer> samples = strategy.WithSeed(4UL).Sample(30);
 
         // At least some orders should be present across samples
         bool anyOrders = samples.Any(static c => c.Orders.Count > 0);
@@ -172,7 +172,7 @@ public class EntityStrategyBuilderTests
             .WithoutNavigation<Customer>(static c => c.Orders);
 
         Strategy<Customer> strategy = builder.Build<Customer>();
-        IReadOnlyList<Customer> samples = DataGen.Sample(strategy, count: 20, seed: 5UL);
+        IReadOnlyList<Customer> samples = strategy.WithSeed(5UL).Sample(20);
 
         Assert.All(samples, static c => Assert.Empty(c.Orders));
     }

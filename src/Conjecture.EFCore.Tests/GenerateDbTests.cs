@@ -59,7 +59,7 @@ public class GenerateDbTests
         IModel model = CreateOrderModel();
         Strategy<DbInteraction> strategy = Strategy.Db.Add<Order>("orders-db", model);
 
-        IReadOnlyList<DbInteraction> samples = DataGen.Sample(strategy, count: 20, seed: 1UL);
+        IReadOnlyList<DbInteraction> samples = strategy.WithSeed(1UL).Sample(20);
 
         Assert.All(samples, static s =>
         {
@@ -75,7 +75,7 @@ public class GenerateDbTests
         IModel model = CreateOrderModel();
         Strategy<DbInteraction> strategy = Strategy.Db.Update<Order>("orders-db", model);
 
-        IReadOnlyList<DbInteraction> samples = DataGen.Sample(strategy, count: 20, seed: 2UL);
+        IReadOnlyList<DbInteraction> samples = strategy.WithSeed(2UL).Sample(20);
 
         Assert.All(samples, static s =>
         {
@@ -91,7 +91,7 @@ public class GenerateDbTests
         IModel model = CreateOrderModel();
         Strategy<DbInteraction> strategy = Strategy.Db.Remove<Order>("orders-db", model);
 
-        IReadOnlyList<DbInteraction> samples = DataGen.Sample(strategy, count: 20, seed: 3UL);
+        IReadOnlyList<DbInteraction> samples = strategy.WithSeed(3UL).Sample(20);
 
         Assert.All(samples, static s =>
         {
@@ -106,7 +106,7 @@ public class GenerateDbTests
     {
         Strategy<DbInteraction> strategy = Strategy.Db.SaveChanges("orders-db");
 
-        IReadOnlyList<DbInteraction> samples = DataGen.Sample(strategy, count: 10, seed: 4UL);
+        IReadOnlyList<DbInteraction> samples = strategy.WithSeed(4UL).Sample(10);
 
         Assert.All(samples, static s =>
         {
@@ -122,7 +122,7 @@ public class GenerateDbTests
         IModel model = CreateOrderModel();
         Strategy<IReadOnlyList<DbInteraction>> strategy = Strategy.Db.Sequence("orders-db", model, min: 2, max: 4);
 
-        IReadOnlyList<IReadOnlyList<DbInteraction>> samples = DataGen.Sample(strategy, count: 30, seed: 5UL);
+        IReadOnlyList<IReadOnlyList<DbInteraction>> samples = strategy.WithSeed(5UL).Sample(30);
 
         Assert.All(samples, static list => Assert.True(list.Count >= 2 && list.Count <= 4,
                 $"Expected Count in [2,4] but got {list.Count}"));
@@ -134,7 +134,7 @@ public class GenerateDbTests
         IModel model = CreateOrderModel();
         Strategy<IReadOnlyList<DbInteraction>> strategy = Strategy.Db.Sequence("orders-db", model, min: 1, max: 5);
 
-        IReadOnlyList<IReadOnlyList<DbInteraction>> samples = DataGen.Sample(strategy, count: 30, seed: 6UL);
+        IReadOnlyList<IReadOnlyList<DbInteraction>> samples = strategy.WithSeed(6UL).Sample(30);
 
         Assert.All(samples, static list => Assert.All(list, static interaction =>
             {

@@ -61,7 +61,7 @@ public class StrategyExtensionsInteractiveShrinkTraceTests
     {
         for (ulong seed = 0UL; seed < 10_000UL; seed++)
         {
-            int value = DataGen.SampleOne(strategy, seed);
+            int value = strategy.WithSeed(seed).Sample();
             if (value >= 10)
             {
                 return seed;
@@ -75,7 +75,7 @@ public class StrategyExtensionsInteractiveShrinkTraceTests
     {
         for (ulong seed = 0UL; seed < 10_000UL; seed++)
         {
-            int value = DataGen.SampleOne(strategy, seed);
+            int value = strategy.WithSeed(seed).Sample();
             if (value < 10)
             {
                 return seed;

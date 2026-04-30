@@ -95,7 +95,7 @@ public class PropertyStrategyBuilderTests
         IProperty property = GetProperty<AllTypesEntity>(context, nameof(AllTypesEntity.Id));
 
         Strategy<object?> strategy = PropertyStrategyBuilder.Build(property);
-        System.Collections.Generic.IReadOnlyList<object?> samples = DataGen.Sample(strategy, count: 20, seed: 1UL);
+        System.Collections.Generic.IReadOnlyList<object?> samples = strategy.WithSeed(1UL).Sample(20);
 
         Assert.All(samples, static s =>
         {
@@ -111,7 +111,7 @@ public class PropertyStrategyBuilderTests
         IProperty property = GetProperty<AllTypesEntity>(context, nameof(AllTypesEntity.NullableInt));
 
         Strategy<object?> strategy = PropertyStrategyBuilder.Build(property);
-        System.Collections.Generic.IReadOnlyList<object?> samples = DataGen.Sample(strategy, count: 100, seed: 2UL);
+        System.Collections.Generic.IReadOnlyList<object?> samples = strategy.WithSeed(2UL).Sample(100);
 
         bool hasNull = samples.Any(static s => s is null);
         bool hasInt = samples.Any(static s => s is int);
@@ -126,7 +126,7 @@ public class PropertyStrategyBuilderTests
         IProperty property = GetProperty<AllTypesEntity>(context, nameof(AllTypesEntity.StringWithMaxLength));
 
         Strategy<object?> strategy = PropertyStrategyBuilder.Build(property);
-        System.Collections.Generic.IReadOnlyList<object?> samples = DataGen.Sample(strategy, count: 50, seed: 3UL);
+        System.Collections.Generic.IReadOnlyList<object?> samples = strategy.WithSeed(3UL).Sample(50);
 
         Assert.All(samples, static s =>
         {
@@ -144,7 +144,7 @@ public class PropertyStrategyBuilderTests
         IProperty property = GetProperty<AllTypesEntity>(context, nameof(AllTypesEntity.DecimalValue));
 
         Strategy<object?> strategy = PropertyStrategyBuilder.Build(property);
-        System.Collections.Generic.IReadOnlyList<object?> samples = DataGen.Sample(strategy, count: 50, seed: 4UL);
+        System.Collections.Generic.IReadOnlyList<object?> samples = strategy.WithSeed(4UL).Sample(50);
 
         Assert.All(samples, static s =>
         {
@@ -166,7 +166,7 @@ public class PropertyStrategyBuilderTests
         IProperty property = GetProperty<ValueGeneratedEntity>(context, nameof(ValueGeneratedEntity.Id));
 
         Strategy<object?> strategy = PropertyStrategyBuilder.Build(property);
-        System.Collections.Generic.IReadOnlyList<object?> samples = DataGen.Sample(strategy, count: 10, seed: 5UL);
+        System.Collections.Generic.IReadOnlyList<object?> samples = strategy.WithSeed(5UL).Sample(10);
 
         Assert.All(samples, static s => Assert.Equal(0, s));
     }
@@ -178,7 +178,7 @@ public class PropertyStrategyBuilderTests
         IProperty property = GetProperty<AllTypesEntity>(context, nameof(AllTypesEntity.GuidValue));
 
         Strategy<object?> strategy = PropertyStrategyBuilder.Build(property);
-        System.Collections.Generic.IReadOnlyList<object?> samples = DataGen.Sample(strategy, count: 20, seed: 6UL);
+        System.Collections.Generic.IReadOnlyList<object?> samples = strategy.WithSeed(6UL).Sample(20);
 
         Assert.All(samples, static s =>
         {
@@ -195,7 +195,7 @@ public class PropertyStrategyBuilderTests
         IProperty property = GetProperty<AllTypesEntity>(context, nameof(AllTypesEntity.RequiredString));
 
         Strategy<object?> strategy = PropertyStrategyBuilder.Build(property);
-        System.Collections.Generic.IReadOnlyList<object?> samples = DataGen.Sample(strategy, count: 20, seed: 7UL);
+        System.Collections.Generic.IReadOnlyList<object?> samples = strategy.WithSeed(7UL).Sample(20);
 
         Assert.All(samples, static s =>
         {

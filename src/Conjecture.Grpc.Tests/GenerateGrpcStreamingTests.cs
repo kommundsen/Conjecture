@@ -45,7 +45,7 @@ public class GenerateGrpcStreamingTests
         Strategy<TestRequest> requestStrategy = Strategy.Just(new TestRequest(1));
 
         Strategy<GrpcInteraction> strategy = GenerateGrpc.ServerStream("svc", method, requestStrategy);
-        GrpcInteraction interaction = DataGen.SampleOne(strategy, seed: 1UL);
+        GrpcInteraction interaction = strategy.WithSeed(1UL).Sample();
 
         Assert.Equal(GrpcRpcMode.ServerStream, interaction.Mode);
     }
@@ -57,7 +57,7 @@ public class GenerateGrpcStreamingTests
         Strategy<TestRequest> requestStrategy = Strategy.Just(new TestRequest(7));
 
         Strategy<GrpcInteraction> strategy = GenerateGrpc.ServerStream("svc", method, requestStrategy);
-        GrpcInteraction interaction = DataGen.SampleOne(strategy, seed: 1UL);
+        GrpcInteraction interaction = strategy.WithSeed(1UL).Sample();
 
         Assert.Single(interaction.RequestMessages);
     }
@@ -70,7 +70,7 @@ public class GenerateGrpcStreamingTests
         Strategy<TestRequest> requestStrategy = Strategy.Just(original);
 
         Strategy<GrpcInteraction> strategy = GenerateGrpc.ServerStream("svc", method, requestStrategy);
-        GrpcInteraction interaction = DataGen.SampleOne(strategy, seed: 1UL);
+        GrpcInteraction interaction = strategy.WithSeed(1UL).Sample();
 
         byte[] bytes = interaction.RequestMessages[0].ToArray();
         TestRequest roundTripped = method.RequestMarshaller.Deserializer(bytes);
@@ -84,7 +84,7 @@ public class GenerateGrpcStreamingTests
         Strategy<TestRequest> requestStrategy = Strategy.Just(new TestRequest(0));
 
         Strategy<GrpcInteraction> strategy = GenerateGrpc.ServerStream("svc", method, requestStrategy);
-        GrpcInteraction interaction = DataGen.SampleOne(strategy, seed: 1UL);
+        GrpcInteraction interaction = strategy.WithSeed(1UL).Sample();
 
         Assert.Equal(method.FullName, interaction.FullMethodName);
     }
@@ -98,7 +98,7 @@ public class GenerateGrpcStreamingTests
         Strategy<TestRequest> requestStrategy = Strategy.Just(new TestRequest(0));
 
         Strategy<GrpcInteraction> strategy = GenerateGrpc.ServerStream(resourceName, method, requestStrategy);
-        GrpcInteraction interaction = DataGen.SampleOne(strategy, seed: 1UL);
+        GrpcInteraction interaction = strategy.WithSeed(1UL).Sample();
 
         Assert.Equal(resourceName, interaction.ResourceName);
     }
@@ -110,7 +110,7 @@ public class GenerateGrpcStreamingTests
         Strategy<TestRequest> requestStrategy = Strategy.Just(new TestRequest(3));
 
         Strategy<GrpcInteraction> strategy = GenerateGrpc.ServerStream("svc", method, requestStrategy);
-        GrpcInteraction interaction = DataGen.SampleOne(strategy, seed: 1UL);
+        GrpcInteraction interaction = strategy.WithSeed(1UL).Sample();
 
         Assert.Empty(interaction.Metadata);
     }
@@ -123,7 +123,7 @@ public class GenerateGrpcStreamingTests
         Dictionary<string, string> customMeta = new() { ["x-trace-id"] = "abc123" };
 
         Strategy<GrpcInteraction> strategy = GenerateGrpc.ServerStream("svc", method, requestStrategy, customMeta);
-        GrpcInteraction interaction = DataGen.SampleOne(strategy, seed: 1UL);
+        GrpcInteraction interaction = strategy.WithSeed(1UL).Sample();
 
         Assert.Equal("abc123", interaction.Metadata["x-trace-id"]);
     }
@@ -139,7 +139,7 @@ public class GenerateGrpcStreamingTests
                     .Select(static list => (IReadOnlyList<TestRequest>)list);
 
         Strategy<GrpcInteraction> strategy = GenerateGrpc.ClientStream("svc", method, requestsStrategy);
-        GrpcInteraction interaction = DataGen.SampleOne(strategy, seed: 1UL);
+        GrpcInteraction interaction = strategy.WithSeed(1UL).Sample();
 
         Assert.Equal(GrpcRpcMode.ClientStream, interaction.Mode);
     }
@@ -152,7 +152,7 @@ public class GenerateGrpcStreamingTests
         Strategy<IReadOnlyList<TestRequest>> requestsStrategy = Strategy.Just(fixedList);
 
         Strategy<GrpcInteraction> strategy = GenerateGrpc.ClientStream("svc", method, requestsStrategy);
-        GrpcInteraction interaction = DataGen.SampleOne(strategy, seed: 1UL);
+        GrpcInteraction interaction = strategy.WithSeed(1UL).Sample();
 
         Assert.Equal(3, interaction.RequestMessages.Count);
     }
@@ -166,7 +166,7 @@ public class GenerateGrpcStreamingTests
             Strategy.Just((IReadOnlyList<TestRequest>)requests);
 
         Strategy<GrpcInteraction> strategy = GenerateGrpc.ClientStream("svc", method, requestsStrategy);
-        GrpcInteraction interaction = DataGen.SampleOne(strategy, seed: 1UL);
+        GrpcInteraction interaction = strategy.WithSeed(1UL).Sample();
 
         for (int i = 0; i < requests.Count; i++)
         {
@@ -184,7 +184,7 @@ public class GenerateGrpcStreamingTests
         Strategy<IReadOnlyList<TestRequest>> requestsStrategy = Strategy.Just(emptyList);
 
         Strategy<GrpcInteraction> strategy = GenerateGrpc.ClientStream("svc", method, requestsStrategy);
-        GrpcInteraction interaction = DataGen.SampleOne(strategy, seed: 1UL);
+        GrpcInteraction interaction = strategy.WithSeed(1UL).Sample();
 
         Assert.Empty(interaction.RequestMessages);
     }
@@ -197,7 +197,7 @@ public class GenerateGrpcStreamingTests
         Strategy<IReadOnlyList<TestRequest>> requestsStrategy = Strategy.Just(singleItem);
 
         Strategy<GrpcInteraction> strategy = GenerateGrpc.ClientStream("svc", method, requestsStrategy);
-        GrpcInteraction interaction = DataGen.SampleOne(strategy, seed: 1UL);
+        GrpcInteraction interaction = strategy.WithSeed(1UL).Sample();
 
         Assert.Empty(interaction.Metadata);
     }
@@ -211,7 +211,7 @@ public class GenerateGrpcStreamingTests
         Dictionary<string, string> customMeta = new() { ["authorization"] = "Bearer tok" };
 
         Strategy<GrpcInteraction> strategy = GenerateGrpc.ClientStream("svc", method, requestsStrategy, customMeta);
-        GrpcInteraction interaction = DataGen.SampleOne(strategy, seed: 1UL);
+        GrpcInteraction interaction = strategy.WithSeed(1UL).Sample();
 
         Assert.Equal("Bearer tok", interaction.Metadata["authorization"]);
     }
@@ -225,7 +225,7 @@ public class GenerateGrpcStreamingTests
                     .Select(static list => (IReadOnlyList<TestRequest>)list);
 
         Strategy<GrpcInteraction> strategy = GenerateGrpc.ClientStream("svc", method, requestsStrategy);
-        GrpcInteraction interaction = DataGen.SampleOne(strategy, seed: 42UL);
+        GrpcInteraction interaction = strategy.WithSeed(42UL).Sample();
 
         Assert.InRange(interaction.RequestMessages.Count, 3, 5);
     }
@@ -240,7 +240,7 @@ public class GenerateGrpcStreamingTests
         Strategy<IReadOnlyList<TestRequest>> requestsStrategy = Strategy.Just(twoItems);
 
         Strategy<GrpcInteraction> strategy = GenerateGrpc.BidiStream("svc", method, requestsStrategy);
-        GrpcInteraction interaction = DataGen.SampleOne(strategy, seed: 1UL);
+        GrpcInteraction interaction = strategy.WithSeed(1UL).Sample();
 
         Assert.Equal(GrpcRpcMode.Bidi, interaction.Mode);
     }
@@ -253,7 +253,7 @@ public class GenerateGrpcStreamingTests
         Strategy<IReadOnlyList<TestRequest>> requestsStrategy = Strategy.Just(fixedList);
 
         Strategy<GrpcInteraction> strategy = GenerateGrpc.BidiStream("svc", method, requestsStrategy);
-        GrpcInteraction interaction = DataGen.SampleOne(strategy, seed: 1UL);
+        GrpcInteraction interaction = strategy.WithSeed(1UL).Sample();
 
         Assert.Equal(2, interaction.RequestMessages.Count);
     }
@@ -267,7 +267,7 @@ public class GenerateGrpcStreamingTests
             Strategy.Just((IReadOnlyList<TestRequest>)requests);
 
         Strategy<GrpcInteraction> strategy = GenerateGrpc.BidiStream("svc", method, requestsStrategy);
-        GrpcInteraction interaction = DataGen.SampleOne(strategy, seed: 1UL);
+        GrpcInteraction interaction = strategy.WithSeed(1UL).Sample();
 
         for (int i = 0; i < requests.Count; i++)
         {
@@ -285,7 +285,7 @@ public class GenerateGrpcStreamingTests
         Strategy<IReadOnlyList<TestRequest>> requestsStrategy = Strategy.Just(singleItem);
 
         Strategy<GrpcInteraction> strategy = GenerateGrpc.BidiStream("svc", method, requestsStrategy);
-        GrpcInteraction interaction = DataGen.SampleOne(strategy, seed: 1UL);
+        GrpcInteraction interaction = strategy.WithSeed(1UL).Sample();
 
         Assert.Empty(interaction.Metadata);
     }
@@ -299,7 +299,7 @@ public class GenerateGrpcStreamingTests
         Dictionary<string, string> customMeta = new() { ["x-request-id"] = "req-42" };
 
         Strategy<GrpcInteraction> strategy = GenerateGrpc.BidiStream("svc", method, requestsStrategy, customMeta);
-        GrpcInteraction interaction = DataGen.SampleOne(strategy, seed: 1UL);
+        GrpcInteraction interaction = strategy.WithSeed(1UL).Sample();
 
         Assert.Equal("req-42", interaction.Metadata["x-request-id"]);
     }
@@ -313,7 +313,7 @@ public class GenerateGrpcStreamingTests
                     .Select(static list => (IReadOnlyList<TestRequest>)list);
 
         Strategy<GrpcInteraction> strategy = GenerateGrpc.BidiStream("svc", method, requestsStrategy);
-        GrpcInteraction interaction = DataGen.SampleOne(strategy, seed: 77UL);
+        GrpcInteraction interaction = strategy.WithSeed(77UL).Sample();
 
         Assert.InRange(interaction.RequestMessages.Count, 2, 6);
     }

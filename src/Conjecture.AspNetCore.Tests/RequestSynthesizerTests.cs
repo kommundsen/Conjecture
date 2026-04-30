@@ -106,7 +106,7 @@ public sealed class RequestSynthesizerTests
         RequestSynthesizer synthesizer = new(endpoint);
         Strategy<HttpInteraction> strategy = synthesizer.ValidStrategy();
 
-        IReadOnlyList<HttpInteraction> samples = DataGen.Sample(strategy, count: 10, seed: 1UL);
+        IReadOnlyList<HttpInteraction> samples = strategy.WithSeed(1UL).Sample(10);
 
         Assert.All(samples, interaction =>
         {
@@ -126,7 +126,7 @@ public sealed class RequestSynthesizerTests
         RequestSynthesizer synthesizer = new(endpoint);
         Strategy<HttpInteraction> strategy = synthesizer.ValidStrategy();
 
-        IReadOnlyList<HttpInteraction> samples = DataGen.Sample(strategy, count: 10, seed: 1UL);
+        IReadOnlyList<HttpInteraction> samples = strategy.WithSeed(1UL).Sample(10);
 
         Assert.All(samples, interaction =>
         {
@@ -141,7 +141,7 @@ public sealed class RequestSynthesizerTests
         RequestSynthesizer synthesizer = new(endpoint);
         Strategy<HttpInteraction> strategy = synthesizer.ValidStrategy();
 
-        IReadOnlyList<HttpInteraction> samples = DataGen.Sample(strategy, count: 10, seed: 1UL);
+        IReadOnlyList<HttpInteraction> samples = strategy.WithSeed(1UL).Sample(10);
 
         Assert.All(samples, interaction =>
         {
@@ -160,7 +160,7 @@ public sealed class RequestSynthesizerTests
         RequestSynthesizer synthesizer = new(endpoint);
         Strategy<HttpInteraction> strategy = synthesizer.ValidStrategy();
 
-        IReadOnlyList<HttpInteraction> samples = DataGen.Sample(strategy, count: 10, seed: 1UL);
+        IReadOnlyList<HttpInteraction> samples = strategy.WithSeed(1UL).Sample(10);
 
         Assert.All(samples, interaction =>
         {
@@ -182,7 +182,7 @@ public sealed class RequestSynthesizerTests
         RequestSynthesizer synthesizer = new(endpoint);
         Strategy<HttpInteraction> strategy = synthesizer.ValidStrategy();
 
-        IReadOnlyList<HttpInteraction> samples = DataGen.Sample(strategy, count: 10, seed: 1UL);
+        IReadOnlyList<HttpInteraction> samples = strategy.WithSeed(1UL).Sample(10);
 
         Assert.All(samples, interaction =>
         {
@@ -236,8 +236,8 @@ public sealed class RequestSynthesizerTests
         Strategy<HttpInteraction> validStrategy = synthesizer.ValidStrategy();
         Strategy<HttpInteraction> malformedStrategy = synthesizer.MalformedStrategy();
 
-        IReadOnlyList<HttpInteraction> validSamples = DataGen.Sample(validStrategy, count: 10, seed: 1UL);
-        IReadOnlyList<HttpInteraction> malformedSamples = DataGen.Sample(malformedStrategy, count: 10, seed: 1UL);
+        IReadOnlyList<HttpInteraction> validSamples = validStrategy.WithSeed(1UL).Sample(10);
+        IReadOnlyList<HttpInteraction> malformedSamples = malformedStrategy.WithSeed(1UL).Sample(10);
 
         // At least one of the malformed interactions must differ from all valid ones in
         // Content-Type header OR body content.

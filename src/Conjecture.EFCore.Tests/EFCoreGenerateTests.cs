@@ -88,7 +88,7 @@ public class EFCoreGenerateTests
         using ShopContext context = CreateShopContext();
         Strategy<Customer> strategy = Strategy.Entity<Customer>(context);
 
-        IReadOnlyList<Customer> samples = DataGen.Sample(strategy, count: 10, seed: 1UL);
+        IReadOnlyList<Customer> samples = strategy.WithSeed(1UL).Sample(10);
 
         Assert.All(samples, static c => Assert.NotNull(c));
     }
@@ -99,7 +99,7 @@ public class EFCoreGenerateTests
         using ShopContext context = CreateShopContext();
         Strategy<Customer> strategy = Strategy.Entity<Customer>(context);
 
-        IReadOnlyList<Customer> samples = DataGen.Sample(strategy, count: 20, seed: 2UL);
+        IReadOnlyList<Customer> samples = strategy.WithSeed(2UL).Sample(20);
 
         Assert.All(samples, static c => Assert.NotNull(c.Name));
     }
@@ -117,7 +117,7 @@ public class EFCoreGenerateTests
                     .UseInMemoryDatabase($"EFCoreGenerateTests_Factory_Inner_{Guid.NewGuid()}")
                     .Options));
 
-        IReadOnlyList<Customer> samples = DataGen.Sample(strategy, count: 10, seed: 3UL);
+        IReadOnlyList<Customer> samples = strategy.WithSeed(3UL).Sample(10);
 
         Assert.Equal(10, samples.Count);
         // All must be distinct object references — factory creates a new entity per sample
@@ -133,7 +133,7 @@ public class EFCoreGenerateTests
         using ShopContext context = CreateShopContext();
         Strategy<Customer> strategy = Strategy.Entity<Customer>(context, maxDepth: 0);
 
-        IReadOnlyList<Customer> samples = DataGen.Sample(strategy, count: 20, seed: 4UL);
+        IReadOnlyList<Customer> samples = strategy.WithSeed(4UL).Sample(20);
 
         Assert.All(samples, static c => Assert.Empty(c.Orders));
     }

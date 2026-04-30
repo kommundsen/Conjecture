@@ -17,7 +17,7 @@ public class RecurringEventStrategyTests
             zone,
             TimeSpan.FromHours(24));
 
-        IReadOnlyList<RecurringEventSample> samples = DataGen.Sample(strategy, count: 20, seed: 1UL);
+        IReadOnlyList<RecurringEventSample> samples = strategy.WithSeed(1UL).Sample(20);
 
         Assert.All(samples, sample => Assert.All(sample.Occurrences, occ => Assert.True(
                     occ >= sample.WindowStart && occ <= sample.WindowEnd,
@@ -33,7 +33,7 @@ public class RecurringEventStrategyTests
             zone,
             TimeSpan.FromHours(24));
 
-        IReadOnlyList<RecurringEventSample> samples = DataGen.Sample(strategy, count: 20, seed: 1UL);
+        IReadOnlyList<RecurringEventSample> samples = strategy.WithSeed(1UL).Sample(20);
 
         Assert.All(samples, sample =>
         {
@@ -55,7 +55,7 @@ public class RecurringEventStrategyTests
             zone,
             TimeSpan.FromHours(24));
 
-        RecurringEventSample sample = DataGen.SampleOne(strategy, seed: 1UL);
+        RecurringEventSample sample = strategy.WithSeed(1UL).Sample();
 
         if (sample.Occurrences.Count < 2)
         {
@@ -79,7 +79,7 @@ public class RecurringEventStrategyTests
                 TimeSpan.FromHours(24))
             .NearDstTransition();
 
-        IReadOnlyList<RecurringEventSample> samples = DataGen.Sample(strategy, count: 20, seed: 1UL);
+        IReadOnlyList<RecurringEventSample> samples = strategy.WithSeed(1UL).Sample(20);
 
         Assert.All(samples, sample =>
         {
@@ -117,7 +117,7 @@ public class RecurringEventStrategyTests
             zone,
             TimeSpan.FromHours(24));
 
-        IReadOnlyList<RecurringEventSample> samples = DataGen.Sample(strategy, count: 20, seed: 1UL);
+        IReadOnlyList<RecurringEventSample> samples = strategy.WithSeed(1UL).Sample(20);
 
         Assert.All(samples, sample => Assert.Empty(sample.Occurrences));
     }

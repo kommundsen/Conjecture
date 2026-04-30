@@ -145,7 +145,7 @@ public sealed class OpenApiSchemaAdapterTests
 
     private static IReadOnlyList<T> Sample<T>(Strategy<T> strategy, int count = 20, ulong seed = 42UL)
     {
-        return DataGen.Sample(strategy, count, seed);
+        return strategy.WithSeed(seed).Sample(count);
     }
 
     [Fact]

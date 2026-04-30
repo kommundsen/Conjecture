@@ -140,7 +140,7 @@ public sealed class ProtobufFieldStrategyTests
     {
         MessageDescriptor descriptor = BuildPersonDescriptor();
         ProtobufFieldStrategy strategy = new(descriptor);
-        IReadOnlyList<JsonElement> samples = DataGen.Sample(strategy, 10, 42UL);
+        IReadOnlyList<JsonElement> samples = strategy.WithSeed(42UL).Sample(10);
         foreach (JsonElement element in samples)
         {
             Assert.Equal(JsonValueKind.Object, element.ValueKind);
@@ -152,7 +152,7 @@ public sealed class ProtobufFieldStrategyTests
     {
         MessageDescriptor descriptor = BuildPersonDescriptor();
         ProtobufFieldStrategy strategy = new(descriptor);
-        IReadOnlyList<JsonElement> samples = DataGen.Sample(strategy, 10, 42UL);
+        IReadOnlyList<JsonElement> samples = strategy.WithSeed(42UL).Sample(10);
         foreach (JsonElement element in samples)
         {
             Assert.True(element.TryGetProperty("name", out JsonElement name));
@@ -165,7 +165,7 @@ public sealed class ProtobufFieldStrategyTests
     {
         MessageDescriptor descriptor = BuildPersonDescriptor();
         ProtobufFieldStrategy strategy = new(descriptor);
-        IReadOnlyList<JsonElement> samples = DataGen.Sample(strategy, 10, 42UL);
+        IReadOnlyList<JsonElement> samples = strategy.WithSeed(42UL).Sample(10);
         foreach (JsonElement element in samples)
         {
             Assert.True(element.TryGetProperty("age", out JsonElement age));
@@ -178,7 +178,7 @@ public sealed class ProtobufFieldStrategyTests
     {
         MessageDescriptor descriptor = BuildPersonDescriptor();
         ProtobufFieldStrategy strategy = new(descriptor);
-        IReadOnlyList<JsonElement> samples = DataGen.Sample(strategy, 10, 42UL);
+        IReadOnlyList<JsonElement> samples = strategy.WithSeed(42UL).Sample(10);
         foreach (JsonElement element in samples)
         {
             Assert.True(element.TryGetProperty("emails", out JsonElement emails));
@@ -191,7 +191,7 @@ public sealed class ProtobufFieldStrategyTests
     {
         MessageDescriptor descriptor = BuildPersonDescriptor();
         ProtobufFieldStrategy strategy = new(descriptor);
-        IReadOnlyList<JsonElement> samples = DataGen.Sample(strategy, 20, 99UL);
+        IReadOnlyList<JsonElement> samples = strategy.WithSeed(99UL).Sample(20);
         foreach (JsonElement element in samples)
         {
             element.TryGetProperty("emails", out JsonElement emails);
@@ -209,7 +209,7 @@ public sealed class ProtobufFieldStrategyTests
         ProtobufFieldStrategy strategy = new(descriptor);
         Exception? caught = Record.Exception(() =>
         {
-            IReadOnlyList<JsonElement> _ = DataGen.Sample(strategy, 5, 1UL);
+            IReadOnlyList<JsonElement> _ = strategy.WithSeed(1UL).Sample(5);
         });
         Assert.Null(caught);
     }
@@ -221,7 +221,7 @@ public sealed class ProtobufFieldStrategyTests
         ProtobufFieldStrategy strategy = new(descriptor, maxDepth: 1);
         Exception? caught = Record.Exception(() =>
         {
-            IReadOnlyList<JsonElement> _ = DataGen.Sample(strategy, 5, 1UL);
+            IReadOnlyList<JsonElement> _ = strategy.WithSeed(1UL).Sample(5);
         });
         Assert.Null(caught);
     }
@@ -231,7 +231,7 @@ public sealed class ProtobufFieldStrategyTests
     {
         MessageDescriptor descriptor = BuildOneofDescriptor();
         ProtobufFieldStrategy strategy = new(descriptor);
-        IReadOnlyList<JsonElement> samples = DataGen.Sample(strategy, 20, 7UL);
+        IReadOnlyList<JsonElement> samples = strategy.WithSeed(7UL).Sample(20);
         foreach (JsonElement element in samples)
         {
             Assert.Equal(JsonValueKind.Object, element.ValueKind);
@@ -243,7 +243,7 @@ public sealed class ProtobufFieldStrategyTests
     {
         MessageDescriptor descriptor = BuildOneofDescriptor();
         ProtobufFieldStrategy strategy = new(descriptor);
-        IReadOnlyList<JsonElement> samples = DataGen.Sample(strategy, 50, 7UL);
+        IReadOnlyList<JsonElement> samples = strategy.WithSeed(7UL).Sample(50);
         foreach (JsonElement element in samples)
         {
             bool hasText = element.TryGetProperty("text", out JsonElement _);
