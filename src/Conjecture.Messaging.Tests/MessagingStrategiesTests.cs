@@ -11,14 +11,14 @@ using Conjecture.Messaging;
 
 namespace Conjecture.Messaging.Tests;
 
-public class MessagingGenerateExtensionsTests
+public class MessagingStrategiesTests
 {
     private static readonly IReadOnlyDictionary<string, string> EmptyHeaders = new Dictionary<string, string>(0);
 
     [Fact]
     public void Messaging_ReturnsMessagingGenerateBuilder()
     {
-        MessagingGenerateBuilder builder = Strategy.Messaging;
+        MessagingStrategies builder = Strategy.Messaging;
 
         Assert.NotNull(builder);
     }

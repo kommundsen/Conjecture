@@ -10,7 +10,7 @@ public static class MessagingStrategyExtensions
 {
     extension(Strategy)
     {
-        /// <summary>Returns a <see cref="MessagingGenerateBuilder"/> for composing message interaction strategies.</summary>
-        public static MessagingGenerateBuilder Messaging => new();
+        /// <summary>Returns a <see cref="MessagingStrategies"/> for composing message interaction strategies.</summary>
+        public static MessagingStrategies Messaging => new();
     }
 }
