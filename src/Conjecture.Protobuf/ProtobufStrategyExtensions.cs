@@ -12,7 +12,7 @@ namespace Conjecture.Protobuf;
 
 /// <summary>Extension methods on <see cref="Strategy"/> for Protobuf-driven generation.</summary>
 #pragma warning disable RS0026 // multiple overloads with optional parameters — established project pattern
-public static class ProtobufGenerate
+public static class ProtobufStrategyExtensions
 {
     extension(Strategy)
     {
