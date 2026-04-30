@@ -105,8 +105,8 @@ internal static class DiagnosticDescriptors
 
     internal static readonly DiagnosticDescriptor Con313MutualRecursionWithoutMaxDepth = new(
         id: "CON313",
-        title: "Mutual recursion without [GenMaxDepth]",
-        messageFormat: "Types '{0}' and '{1}' are mutually recursive but neither has [GenMaxDepth]. Add [GenMaxDepth(n)] to cap generation depth.",
+        title: "Mutual recursion without [StrategyMaxDepth]",
+        messageFormat: "Types '{0}' and '{1}' are mutually recursive but neither has [StrategyMaxDepth]. Add [StrategyMaxDepth(n)] to cap generation depth.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true);

@@ -11,4 +11,4 @@ CON302 | Conjecture | Error | No concrete [Arbitrary] subtypes found for abstrac
 CON310 | Usage | Error | Strategy.For<T>() target is an interface
 CON311 | Usage | Error | Strategy.For<T>() target is abstract with no [Arbitrary] subtypes
 CON312 | Usage | Error | Strategy.For<T>() has no registered provider
-CON313 | Usage | Warning | Mutually recursive [Arbitrary] types without [GenMaxDepth]
+CON313 | Usage | Warning | Mutually recursive [Arbitrary] types without [StrategyMaxDepth]

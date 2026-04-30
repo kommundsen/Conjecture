@@ -96,7 +96,7 @@ internal static class TypeModelExtractor
         }
 
         // Detect mutual recursion: if any [Arbitrary] member type (not self-recursive) references
-        // back to the current type, and neither has [GenMaxDepth], emit CON313.
+        // back to the current type, and neither has [StrategyMaxDepth], emit CON313.
         if (maxDepth < 0)
         {
             foreach (INamedTypeSymbol refSymbol in arbitraryRefSymbols)
@@ -132,7 +132,7 @@ internal static class TypeModelExtractor
     {
         foreach (AttributeData attr in symbol.GetAttributes())
         {
-            if (attr.AttributeClass?.ToDisplayString() == "Conjecture.Core.GenMaxDepthAttribute"
+            if (attr.AttributeClass?.ToDisplayString() == "Conjecture.Core.StrategyMaxDepthAttribute"
                 && attr.ConstructorArguments.Length == 1
                 && attr.ConstructorArguments[0].Value is int depth)
             {
@@ -378,13 +378,13 @@ internal static class TypeModelExtractor
         int? strMax = null;
         bool required = false;
 
-        bool hasGenRange = false;
-        bool hasGenStringLength = false;
+        bool hasStrategyRange = false;
+        bool hasStrategyStringLength = false;
 
         ApplyAttributeConstraints(
             memberSymbol.GetAttributes(),
             ref rangeMin, ref rangeMax, ref strMin, ref strMax, ref required,
-            ref hasGenRange, ref hasGenStringLength);
+            ref hasStrategyRange, ref hasStrategyStringLength);
 
         // For primary constructor parameters, also check the synthesized property —
         // some attributes targeting [property:] end up there.
@@ -406,7 +406,7 @@ internal static class TypeModelExtractor
                 ApplyAttributeConstraints(
                     synthProp.GetAttributes(),
                     ref rangeMin, ref rangeMax, ref strMin, ref strMax, ref required,
-                    ref hasGenRange, ref hasGenStringLength);
+                    ref hasStrategyRange, ref hasStrategyStringLength);
             }
         }
 
@@ -418,7 +418,7 @@ internal static class TypeModelExtractor
         ref double? rangeMin, ref double? rangeMax,
         ref int? strMin, ref int? strMax,
         ref bool required,
-        ref bool hasGenRange, ref bool hasGenStringLength)
+        ref bool hasStrategyRange, ref bool hasStrategyStringLength)
     {
         foreach (AttributeData attr in attrs)
         {
@@ -431,25 +431,25 @@ internal static class TypeModelExtractor
             // For unresolved (error) attributes, fall back to short-name syntax inspection.
             string shortName = GetAttributeShortName(attr);
 
-            if (attrFqn == "Conjecture.Core.GenRangeAttribute")
+            if (attrFqn == "Conjecture.Core.StrategyRangeAttribute")
             {
-                if (!hasGenRange && attr.ConstructorArguments.Length >= 2)
+                if (!hasStrategyRange && attr.ConstructorArguments.Length >= 2)
                 {
                     rangeMin = Convert.ToDouble(attr.ConstructorArguments[0].Value);
                     rangeMax = Convert.ToDouble(attr.ConstructorArguments[1].Value);
-                    hasGenRange = true;
+                    hasStrategyRange = true;
                 }
             }
-            else if (attrFqn == "Conjecture.Core.GenStringLengthAttribute")
+            else if (attrFqn == "Conjecture.Core.StrategyStringLengthAttribute")
             {
-                if (!hasGenStringLength && attr.ConstructorArguments.Length >= 2)
+                if (!hasStrategyStringLength && attr.ConstructorArguments.Length >= 2)
                 {
                     strMin = Convert.ToInt32(attr.ConstructorArguments[0].Value);
                     strMax = Convert.ToInt32(attr.ConstructorArguments[1].Value);
-                    hasGenStringLength = true;
+                    hasStrategyStringLength = true;
                 }
             }
-            else if (!hasGenRange
+            else if (!hasStrategyRange
                 && (attrFqn == "System.ComponentModel.DataAnnotations.RangeAttribute"
                     || (attrFqn is null && (shortName == "Range" || shortName == "RangeAttribute"))))
             {
@@ -468,7 +468,7 @@ internal static class TypeModelExtractor
                     TryReadRangeFromSyntax(attr, ref rangeMin, ref rangeMax);
                 }
             }
-            else if (!hasGenStringLength
+            else if (!hasStrategyStringLength
                 && (attrFqn == "System.ComponentModel.DataAnnotations.StringLengthAttribute"
                     || (attrFqn is null && (shortName == "StringLength" || shortName == "StringLengthAttribute"))))
             {
@@ -484,12 +484,12 @@ internal static class TypeModelExtractor
                         }
                     }
 
-                    hasGenStringLength = true;
+                    hasStrategyStringLength = true;
                 }
                 else if (attrFqn is null)
                 {
                     TryReadStringLengthFromSyntax(attr, ref strMin, ref strMax);
-                    hasGenStringLength = strMax.HasValue;
+                    hasStrategyStringLength = strMax.HasValue;
                 }
             }
             else if (attrFqn == "System.ComponentModel.DataAnnotations.RequiredAttribute"

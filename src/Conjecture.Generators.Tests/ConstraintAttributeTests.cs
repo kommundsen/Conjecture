@@ -13,14 +13,14 @@ namespace Conjecture.Generators.Tests;
 public sealed class ConstraintAttributeTests
 {
     [Fact]
-    public void GenRange_OnInt_EmitsBoundedIntegers()
+    public void StrategyRange_OnInt_EmitsBoundedIntegers()
     {
         string text = GetGeneratedText(
             """
             using System.ComponentModel.DataAnnotations;
             using Conjecture.Core;
             namespace MyApp;
-            [Arbitrary] public partial record R([GenRange(0, 100)] int Count);
+            [Arbitrary] public partial record R([StrategyRange(0, 100)] int Count);
             """,
             "R.g.cs");
 
@@ -28,14 +28,14 @@ public sealed class ConstraintAttributeTests
     }
 
     [Fact]
-    public void GenRange_OnDecimal_EmitsBoundedDecimals()
+    public void StrategyRange_OnDecimal_EmitsBoundedDecimals()
     {
         string text = GetGeneratedText(
             """
             using System.ComponentModel.DataAnnotations;
             using Conjecture.Core;
             namespace MyApp;
-            [Arbitrary] public partial record R([GenRange(0.01, 999.99)] decimal Total);
+            [Arbitrary] public partial record R([StrategyRange(0.01, 999.99)] decimal Total);
             """,
             "R.g.cs");
 
@@ -75,14 +75,14 @@ public sealed class ConstraintAttributeTests
     }
 
     [Fact]
-    public void GenRange_WinsOver_RangeDataAnnotation()
+    public void StrategyRange_WinsOver_RangeDataAnnotation()
     {
         string text = GetGeneratedText(
             """
             using System.ComponentModel.DataAnnotations;
             using Conjecture.Core;
             namespace MyApp;
-            [Arbitrary] public partial record R([GenRange(0, 10)] [Range(5, 20)] int Score);
+            [Arbitrary] public partial record R([StrategyRange(0, 10)] [Range(5, 20)] int Score);
             """,
             "R.g.cs");
 
