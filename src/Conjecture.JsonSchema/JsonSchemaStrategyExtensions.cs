@@ -9,7 +9,7 @@ using Conjecture.Core;
 namespace Conjecture.JsonSchema;
 
 /// <summary>Extension methods on <see cref="Strategy"/> for JSON Schema-driven generation.</summary>
-public static class JsonSchemaGenerate
+public static class JsonSchemaStrategyExtensions
 {
     extension(Strategy)
     {

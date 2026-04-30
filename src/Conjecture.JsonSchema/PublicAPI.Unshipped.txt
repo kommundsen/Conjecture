@@ -1,1 +1,11 @@
 #nullable enable
+*REMOVED*Conjecture.JsonSchema.JsonSchemaGenerate
+*REMOVED*Conjecture.JsonSchema.JsonSchemaGenerate.extension(Conjecture.Core.Strategy!)
+*REMOVED*static Conjecture.JsonSchema.JsonSchemaGenerate.extension(Conjecture.Core.Strategy!).FromJsonSchema(string! jsonSchemaText) -> Conjecture.Core.Strategy<System.Text.Json.JsonElement>!
+*REMOVED*static Conjecture.JsonSchema.JsonSchemaGenerate.extension(Conjecture.Core.Strategy!).FromJsonSchema(System.IO.FileInfo! schemaFile) -> Conjecture.Core.Strategy<System.Text.Json.JsonElement>!
+*REMOVED*static Conjecture.JsonSchema.JsonSchemaGenerate.extension(Conjecture.Core.Strategy!).FromJsonSchema(System.Text.Json.JsonElement root) -> Conjecture.Core.Strategy<System.Text.Json.JsonElement>!
+Conjecture.JsonSchema.JsonSchemaStrategyExtensions
+Conjecture.JsonSchema.JsonSchemaStrategyExtensions.extension(Conjecture.Core.Strategy!)
+static Conjecture.JsonSchema.JsonSchemaStrategyExtensions.extension(Conjecture.Core.Strategy!).FromJsonSchema(string! jsonSchemaText) -> Conjecture.Core.Strategy<System.Text.Json.JsonElement>!
+static Conjecture.JsonSchema.JsonSchemaStrategyExtensions.extension(Conjecture.Core.Strategy!).FromJsonSchema(System.IO.FileInfo! schemaFile) -> Conjecture.Core.Strategy<System.Text.Json.JsonElement>!
+static Conjecture.JsonSchema.JsonSchemaStrategyExtensions.extension(Conjecture.Core.Strategy!).FromJsonSchema(System.Text.Json.JsonElement root) -> Conjecture.Core.Strategy<System.Text.Json.JsonElement>!
