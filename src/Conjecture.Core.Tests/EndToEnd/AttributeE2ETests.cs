@@ -50,7 +50,7 @@ public sealed class AttributeE2ETests
     {
         int explicitCount = 2;
 
-        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 2UL, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 2UL, Database = false };
         TestRunResult generated = await TestRunner.Run(settings, data =>
         {
             int v = Strategy.Integers<int>(0, 100).Generate(data);
@@ -125,7 +125,7 @@ public sealed class AttributeE2ETests
     {
         // Provider generates [1, 100]; minimal failing value for v > 5 is 6.
         Strategy<int> strategy = new PositiveBoundedProvider().Create();
-        ConjectureSettings settings = new() { MaxExamples = 200, Seed = 20UL, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 200, Seed = 20UL, Database = false };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
@@ -144,7 +144,7 @@ public sealed class AttributeE2ETests
     public async Task From_PositiveBounded_ShrunkCounterexample_RespectsUpperBound()
     {
         Strategy<int> strategy = new PositiveBoundedProvider().Create();
-        ConjectureSettings settings = new() { MaxExamples = 50, Seed = 21UL, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 50, Seed = 21UL, Database = false };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {

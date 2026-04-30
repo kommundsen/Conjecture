@@ -17,7 +17,7 @@ public interface IPropertyTest
     ulong Seed { get; }
 
     /// <summary>Whether to use the example database.</summary>
-    bool UseDatabase { get; }
+    bool Database { get; }
 
     /// <summary>Maximum number of times a strategy may reject a value before the test is abandoned.</summary>
     int MaxStrategyRejections { get; }

@@ -77,13 +77,13 @@ Set `[Property]` attribute properties to control individual test runs:
 public bool Reverse_preserves_length(List<int> xs) =>
     xs.AsEnumerable().Reverse().Count() == xs.Count;
 
-[Property(Seed = 42UL, UseDatabase = false)]
+[Property(Seed = 42UL, Database = false)]
 public void Deterministic_property(int value)
 {
     Assert.True(value < int.MaxValue);
 }
 
-[Property(ExportReproOnFailure = true, ReproOutputPath = "failures/")]
+[Property(ExportReproductionOnFailure = true, ReproductionOutputPath = "failures/")]
 public bool Serialisation_roundtrips(string input) =>
     Deserialise(Serialise(input)) == input;
 ```
@@ -93,7 +93,7 @@ For the full list of properties and their defaults, see [Attributes reference](.
 To apply defaults across the whole assembly, use `[assembly: ConjectureSettings(...)]`:
 
 ```csharp
-[assembly: ConjectureSettings(MaxExamples = 500, UseDatabase = false)]
+[assembly: ConjectureSettings(MaxExamples = 500, Database = false)]
 ```
 
 > [!NOTE]

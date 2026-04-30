@@ -26,7 +26,7 @@ public class NumericAwareShrinkPassBenchmarks
         {
             MaxExamples = 200,
             Seed = 1UL,
-            UseDatabase = false,
+            Database = false,
         };
     }
 

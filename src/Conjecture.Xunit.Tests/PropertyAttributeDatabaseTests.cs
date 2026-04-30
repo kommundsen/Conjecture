@@ -38,9 +38,9 @@ public sealed class PropertyAttributeDatabaseTests : IDisposable
     }
 
     [Fact]
-    public void FailingTest_UseDatabase_BufferSavedToDatabase()
+    public void FailingTest_Database_BufferSavedToDatabase()
     {
-        ConjectureSettings settings = new() { MaxExamples = 10, UseDatabase = true };
+        ConjectureSettings settings = new() { MaxExamples = 10, Database = true };
         string testId = "db-test-failing";
 
         TestRunner.Run(settings, _ => throw new InvalidOperationException("fail"), db, testId);
@@ -51,7 +51,7 @@ public sealed class PropertyAttributeDatabaseTests : IDisposable
     [Fact]
     public void FailingTest_SecondRun_ReplaysStoredBuffer()
     {
-        ConjectureSettings settings = new() { MaxExamples = 10, UseDatabase = true };
+        ConjectureSettings settings = new() { MaxExamples = 10, Database = true };
         string testId = "db-test-replay";
         bool replayInvoked = false;
 
@@ -75,7 +75,7 @@ public sealed class PropertyAttributeDatabaseTests : IDisposable
     [Fact]
     public void PassingTest_AfterStoredFailure_ClearsBuffer()
     {
-        ConjectureSettings settings = new() { MaxExamples = 10, UseDatabase = true };
+        ConjectureSettings settings = new() { MaxExamples = 10, Database = true };
         string testId = "db-test-clear";
 
         // Pre-save a buffer as if a previous failure occurred

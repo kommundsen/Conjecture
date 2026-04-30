@@ -35,8 +35,6 @@ static Conjecture.Core.BuiltInFormatters.Double.get -> Conjecture.Core.IStrategy
 static Conjecture.Core.BuiltInFormatters.Single.get -> Conjecture.Core.IStrategyFormatter<float>!
 static Conjecture.Core.BuiltInFormatters.String.get -> Conjecture.Core.IStrategyFormatter<string!>!
 static Conjecture.Core.BuiltInFormatters.ByteArray.get -> Conjecture.Core.IStrategyFormatter<byte[]!>!
-Conjecture.Core.ConjectureSettings.UseDatabase.get -> bool
-Conjecture.Core.ConjectureSettings.UseDatabase.init -> void
 Conjecture.Core.ConjectureSettings.Deadline.get -> System.TimeSpan?
 Conjecture.Core.ConjectureSettings.Deadline.init -> void
 Conjecture.Core.ConjectureSettings.MaxStrategyRejections.get -> int
@@ -49,8 +47,6 @@ Conjecture.Core.ConjectureSettingsAttribute
 Conjecture.Core.ConjectureSettingsAttribute.ConjectureSettingsAttribute() -> void
 Conjecture.Core.ConjectureSettingsAttribute.MaxExamples.get -> int
 Conjecture.Core.ConjectureSettingsAttribute.MaxExamples.init -> void
-Conjecture.Core.ConjectureSettingsAttribute.UseDatabase.get -> bool
-Conjecture.Core.ConjectureSettingsAttribute.UseDatabase.init -> void
 Conjecture.Core.ConjectureSettingsAttribute.MaxStrategyRejections.get -> int
 Conjecture.Core.ConjectureSettingsAttribute.MaxStrategyRejections.init -> void
 Conjecture.Core.ConjectureSettingsAttribute.MaxUnsatisfiedRatio.get -> int
@@ -106,10 +102,6 @@ Conjecture.Core.ConjectureSettings.Logger.init -> void
 Conjecture.Core.IOutputFormatter
 Conjecture.Core.IOutputFormatter.Name.get -> string!
 Conjecture.Core.IOutputFormatter.WriteAsync<T>(System.Collections.Generic.IEnumerable<T>! data, System.IO.Stream! output, System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
-Conjecture.Core.ConjectureSettings.ExportReproOnFailure.get -> bool
-Conjecture.Core.ConjectureSettings.ExportReproOnFailure.init -> void
-Conjecture.Core.ConjectureSettings.ReproOutputPath.get -> string!
-Conjecture.Core.ConjectureSettings.ReproOutputPath.init -> void
 Conjecture.Core.StrategyExtensionProperties
 Conjecture.Core.StrategyExtensionProperties.extension(Conjecture.Core.Strategy<int>!)
 Conjecture.Core.StrategyExtensionProperties.extension(Conjecture.Core.Strategy<int>!).Positive.get -> Conjecture.Core.Strategy<int>!
@@ -129,10 +121,7 @@ Conjecture.Core.IPropertyTest.MaxStrategyRejections.get -> int
 Conjecture.Core.IPropertyTest.Seed.get -> ulong
 Conjecture.Core.IPropertyTest.Targeting.get -> bool
 Conjecture.Core.IPropertyTest.TargetingProportion.get -> double
-Conjecture.Core.IPropertyTest.UseDatabase.get -> bool
 Conjecture.Core.IReproductionExport
-Conjecture.Core.IReproductionExport.ExportReproOnFailure.get -> bool
-Conjecture.Core.IReproductionExport.ReproOutputPath.get -> string!
 static Conjecture.Core.ConjectureSettings.From(Conjecture.Core.IPropertyTest! attr, Microsoft.Extensions.Logging.ILogger? logger = null) -> Conjecture.Core.ConjectureSettings!
 static Conjecture.Core.ConjectureStrategyRegistrar.Register(System.Func<System.Type!, object?>! strategyFactory) -> void
 Conjecture.Core.ConjectureObservability

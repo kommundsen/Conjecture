@@ -4,25 +4,25 @@ When a property test fails and is shrunk, Conjecture can write the minimal count
 
 ## Enable export
 
-Set `ExportReproOnFailure = true` in settings:
+Set `ExportReproductionOnFailure = true` in settings:
 
 ```csharp
-[Property(ExportReproOnFailure = true)]
+[Property(ExportReproductionOnFailure = true)]
 public bool My_property(int value) => value < 1000;
 ```
 
 Or at the assembly level to export all failures:
 
 ```csharp
-[assembly: ConjectureSettings(ExportReproOnFailure = true)]
+[assembly: ConjectureSettings(ExportReproductionOnFailure = true)]
 ```
 
 ## Configure the output path
 
-By default, repros are written to `.conjecture/repros/`. Override with `ReproOutputPath`:
+By default, repros are written to `.conjecture/repros/`. Override with `ReproductionOutputPath`:
 
 ```csharp
-[Property(ExportReproOnFailure = true, ReproOutputPath = "artifacts/repros/")]
+[Property(ExportReproductionOnFailure = true, ReproductionOutputPath = "artifacts/repros/")]
 public bool My_property(int value) => value < 1000;
 ```
 
@@ -30,8 +30,8 @@ Or assembly-wide:
 
 ```csharp
 [assembly: ConjectureSettings(
-    ExportReproOnFailure = true,
-    ReproOutputPath = "artifacts/repros/")]
+    ExportReproductionOnFailure = true,
+    ReproductionOutputPath = "artifacts/repros/")]
 ```
 
 ## Output format
@@ -63,5 +63,5 @@ In a GitHub Actions workflow:
 
 ## See also
 
-- [Reference: Settings](../reference/settings.md) — `ExportReproOnFailure`, `ReproOutputPath`
+- [Reference: Settings](../reference/settings.md) — `ExportReproductionOnFailure`, `ReproductionOutputPath`
 - [How to reproduce a failure](reproduce-a-failure.md) — pin a seed to replay a failure

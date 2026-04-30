@@ -5,8 +5,6 @@ Conjecture.NUnit.PropertyAttribute.MaxExamples.get -> int
 Conjecture.NUnit.PropertyAttribute.MaxExamples.set -> void
 Conjecture.NUnit.PropertyAttribute.Seed.get -> ulong
 Conjecture.NUnit.PropertyAttribute.Seed.set -> void
-Conjecture.NUnit.PropertyAttribute.UseDatabase.get -> bool
-Conjecture.NUnit.PropertyAttribute.UseDatabase.set -> void
 Conjecture.NUnit.PropertyAttribute.MaxStrategyRejections.get -> int
 Conjecture.NUnit.PropertyAttribute.MaxStrategyRejections.set -> void
 Conjecture.NUnit.PropertyAttribute.DeadlineMs.get -> int

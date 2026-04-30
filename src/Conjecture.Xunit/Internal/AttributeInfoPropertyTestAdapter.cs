@@ -16,11 +16,11 @@ internal sealed class AttributeInfoPropertyTestAdapter(IAttributeInfo info) : IP
 {
     public int MaxExamples => info.GetNamedArgument<int>("MaxExamples");
     public ulong Seed => info.GetNamedArgument<ulong>("Seed");
-    public bool UseDatabase => info.GetNamedArgument<bool>("UseDatabase");
+    public bool Database => info.GetNamedArgument<bool>("Database");
     public int MaxStrategyRejections => info.GetNamedArgument<int>("MaxStrategyRejections");
     public int DeadlineMs => info.GetNamedArgument<int>("DeadlineMs");
     public bool Targeting => info.GetNamedArgument<bool>("Targeting");
     public double TargetingProportion => info.GetNamedArgument<double>("TargetingProportion");
-    public bool ExportReproOnFailure => info.GetNamedArgument<bool>("ExportReproOnFailure");
-    public string ReproOutputPath => info.GetNamedArgument<string>("ReproOutputPath") ?? ".conjecture/repros/";
+    public bool ExportReproductionOnFailure => info.GetNamedArgument<bool>("ExportReproductionOnFailure");
+    public string ReproductionOutputPath => info.GetNamedArgument<string>("ReproductionOutputPath") ?? ".conjecture/repros/";
 }

@@ -209,7 +209,7 @@ public class QueueStateMachineTests
     [Fact]
     public async Task BuggyQueue_WithPlantedBug_FindsFailureWithin100Examples()
     {
-        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 1UL, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 1UL, Database = false };
         TestRunResult result = await TestRunner.Run(settings,
             data => _ = Strategy.StateMachine<BuggyQueueMachine, QueueState, QueueCommand>().Generate(data));
         Assert.False(result.Passed);
@@ -218,7 +218,7 @@ public class QueueStateMachineTests
     [Fact]
     public async Task BuggyQueue_ShrunkCounterexample_IsMinimal()
     {
-        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 1UL, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 1UL, Database = false };
         TestRunResult result = await TestRunner.Run(settings,
             data => _ = Strategy.StateMachine<BuggyQueueMachine, QueueState, QueueCommand>().Generate(data));
         Assert.False(result.Passed);
@@ -235,7 +235,7 @@ public class QueueStateMachineTests
         // shrink to 0 yet the bug is still detectable.
         // A single-element queue is unaffected (bug only fires when Count > 1),
         // so no 2-step sequence can trigger the invariant.
-        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 1UL, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 1UL, Database = false };
         TestRunResult result = await TestRunner.Run(settings,
             data => _ = Strategy.StateMachine<BuggyQueueMachine, QueueState, QueueCommand>().Generate(data));
         Assert.False(result.Passed);
@@ -246,7 +246,7 @@ public class QueueStateMachineTests
     [Fact]
     public async Task CorrectQueue_NoBug_PassesAllExamples()
     {
-        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 3UL, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 3UL, Database = false };
         TestRunResult result = await TestRunner.Run(settings,
             data => _ = Strategy.StateMachine<CorrectQueueMachine, QueueState, QueueCommand>().Generate(data));
         Assert.True(result.Passed);
@@ -258,7 +258,7 @@ public class QueueStateMachineTests
     {
         // StateAwareQueueMachine only yields Dequeue/Peek when Count > 0. A passing
         // result confirms the engine respects state-dependent command availability.
-        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 2UL, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 2UL, Database = false };
         TestRunResult result = await TestRunner.Run(settings,
             data => _ = Strategy.StateMachine<StateAwareQueueMachine, QueueState, QueueCommand>().Generate(data));
         Assert.True(result.Passed);

@@ -19,7 +19,7 @@ public class ReportingQualityE2ETests
     public async Task FailingProperty_WithShrinks_MessageContainsBothFalsifyingAndMinimalSections()
     {
         Strategy<int> strategy = Strategy.Integers<int>(0, 1000);
-        ConjectureSettings settings = new() { MaxExamples = 200, Seed = 1UL, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 200, Seed = 1UL, Database = false };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
@@ -55,7 +55,7 @@ public class ReportingQualityE2ETests
     public async Task FailingProperty_ZeroShrinks_MessageContainsOnlyFalsifyingSection()
     {
         // Min == value forces no shrinking possible.
-        ConjectureSettings settings = new() { MaxExamples = 10, Seed = 2UL, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 10, Seed = 2UL, Database = false };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
@@ -85,7 +85,7 @@ public class ReportingQualityE2ETests
     public async Task FailingProperty_StringValue_AppearsInQuotesInMessage()
     {
         Strategy<string> strategy = Strategy.Strings(minLength: 3, maxLength: 5);
-        ConjectureSettings settings = new() { MaxExamples = 50, Seed = 10UL, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 50, Seed = 10UL, Database = false };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
@@ -113,7 +113,7 @@ public class ReportingQualityE2ETests
     public async Task FailingProperty_ListValue_AppearsInBracketsInMessage()
     {
         Strategy<List<int>> strategy = Strategy.Lists(Strategy.Integers<int>(0, 5), minSize: 2, maxSize: 4);
-        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 20UL, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 20UL, Database = false };
 
         TestRunResult result = await TestRunner.Run(settings, data =>
         {
@@ -142,7 +142,7 @@ public class ReportingQualityE2ETests
     [Fact]
     public async Task FailingProperty_StackTrace_DoesNotContainConjectureInternalsAfterTrim()
     {
-        ConjectureSettings settings = new() { MaxExamples = 10, Seed = 30UL, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 10, Seed = 30UL, Database = false };
 
         TestRunResult result = await TestRunner.Run(settings, _ => throw new Exception("always fails"));
 
@@ -157,7 +157,7 @@ public class ReportingQualityE2ETests
     [Fact]
     public async Task FailingProperty_StackTrace_UserFramesArePreserved()
     {
-        ConjectureSettings settings = new() { MaxExamples = 10, Seed = 31UL, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 10, Seed = 31UL, Database = false };
 
         TestRunResult result = await TestRunner.Run(settings, _ => UserFail());
 
@@ -174,7 +174,7 @@ public class ReportingQualityE2ETests
     [Fact]
     public async Task FailingProperty_SeedInMessage_ReproducesSameCounterexample()
     {
-        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 40UL, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 40UL, Database = false };
         Strategy<int> strategy = Strategy.Integers<int>(0, 1000);
 
         TestRunResult result1 = await TestRunner.Run(settings, data =>
@@ -195,7 +195,7 @@ public class ReportingQualityE2ETests
         Assert.Contains($"Reproduce with: [Property(Seed = 0x{seed:X})]", message);
 
         // Running again with the extracted seed must reproduce the same shrunk counterexample.
-        ConjectureSettings reproSettings = new() { MaxExamples = 100, Seed = seed, UseDatabase = false };
+        ConjectureSettings reproSettings = new() { MaxExamples = 100, Seed = seed, Database = false };
         TestRunResult result2 = await TestRunner.Run(reproSettings, data =>
         {
             int x = strategy.Generate(data);
@@ -215,7 +215,7 @@ public class ReportingQualityE2ETests
     public async Task FailingProperty_SeedFormat_IsHexadecimalInReproduceLine()
     {
         const ulong testSeed = 0xA7F3B2E1UL;
-        ConjectureSettings settings = new() { MaxExamples = 5, Seed = testSeed, UseDatabase = false };
+        ConjectureSettings settings = new() { MaxExamples = 5, Seed = testSeed, Database = false };
 
         TestRunResult result = await TestRunner.Run(settings, _ => throw new Exception("always fails"));
 

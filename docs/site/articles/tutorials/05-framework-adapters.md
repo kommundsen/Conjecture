@@ -126,13 +126,13 @@ All adapters support the same `[Property]` properties:
 |---|---|---|---|
 | `MaxExamples` | `int` | 100 | Examples to generate |
 | `Seed` | `ulong` | 0 (random) | Fixed seed for reproducibility |
-| `UseDatabase` | `bool` | `true` | Persist failing examples |
+| `Database` | `bool` | `true` | Persist failing examples |
 | `MaxStrategyRejections` | `int` | 5 | Max filter rejections per strategy |
 | `DeadlineMs` | `int` | 0 (none) | Per-example timeout in ms |
 | `Targeting` | `bool` | `true` | Run a targeting phase after generation |
 | `TargetingProportion` | `double` | 0.5 | Fraction of `MaxExamples` budget for targeting |
-| `ExportReproOnFailure` | `bool` | `false` | Write a reproduction file on failure |
-| `ReproOutputPath` | `string` | `.conjecture/repros/` | Output directory for reproduction files |
+| `ExportReproductionOnFailure` | `bool` | `false` | Write a reproduction file on failure |
+| `ReproductionOutputPath` | `string` | `.conjecture/repros/` | Output directory for reproduction files |
 
 All adapters also support:
 - `[Example(...)]` — explicit test cases

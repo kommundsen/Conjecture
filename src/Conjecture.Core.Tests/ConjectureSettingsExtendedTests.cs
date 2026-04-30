@@ -8,10 +8,10 @@ namespace Conjecture.Core.Tests;
 public class ConjectureSettingsExtendedTests
 {
     [Fact]
-    public void UseDatabase_Default_IsTrue()
+    public void Database_Default_IsTrue()
     {
         var settings = new ConjectureSettings();
-        Assert.True(settings.UseDatabase);
+        Assert.True(settings.Database);
     }
 
     [Fact]

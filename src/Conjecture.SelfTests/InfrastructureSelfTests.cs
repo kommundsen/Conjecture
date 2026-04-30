@@ -67,7 +67,7 @@ public class InfrastructureSelfTests
     [Property]
     public async Task ReportingAccuracy_ShrinkCount_MatchesActualShrinkIterations()
     {
-        ConjectureSettings settings = new() { Seed = 42ul, MaxExamples = 20, UseDatabase = false };
+        ConjectureSettings settings = new() { Seed = 42ul, MaxExamples = 20, Database = false };
 
         static void Predicate(ConjectureData data)
         {

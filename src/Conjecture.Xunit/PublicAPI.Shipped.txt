@@ -9,13 +9,7 @@ Conjecture.Xunit.PropertyAttribute.MaxStrategyRejections.get -> int
 Conjecture.Xunit.PropertyAttribute.MaxStrategyRejections.set -> void
 Conjecture.Xunit.PropertyAttribute.Seed.get -> ulong
 Conjecture.Xunit.PropertyAttribute.Seed.set -> void
-Conjecture.Xunit.PropertyAttribute.UseDatabase.get -> bool
-Conjecture.Xunit.PropertyAttribute.UseDatabase.set -> void
 Conjecture.Xunit.PropertyAttribute.Targeting.get -> bool
 Conjecture.Xunit.PropertyAttribute.Targeting.set -> void
 Conjecture.Xunit.PropertyAttribute.TargetingProportion.get -> double
 Conjecture.Xunit.PropertyAttribute.TargetingProportion.set -> void
-Conjecture.Xunit.PropertyAttribute.ExportReproOnFailure.get -> bool
-Conjecture.Xunit.PropertyAttribute.ExportReproOnFailure.set -> void
-Conjecture.Xunit.PropertyAttribute.ReproOutputPath.get -> string!
-Conjecture.Xunit.PropertyAttribute.ReproOutputPath.set -> void

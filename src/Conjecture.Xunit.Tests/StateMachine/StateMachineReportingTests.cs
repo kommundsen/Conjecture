@@ -57,7 +57,7 @@ public class StateMachineReportingTests
     public async Task StatefulProperty_FailureMessage_ContainsSeedReproductionLine()
     {
         TestRunResult result = await TestRunner.Run(
-            new ConjectureSettings { MaxExamples = 1, Seed = 0xCAFEUL, UseDatabase = false },
+            new ConjectureSettings { MaxExamples = 1, Seed = 0xCAFEUL, Database = false },
             data => _ = Strategy.StateMachine<AlwaysFailReportingMachine, int, string>(maxSteps: 3).Generate(data));
 
         Assert.False(result.Passed);
@@ -69,7 +69,7 @@ public class StateMachineReportingTests
     public async Task StatefulProperty_ShrinkCount_IsReportedInResult()
     {
         TestRunResult result = await TestRunner.Run(
-            new ConjectureSettings { MaxExamples = 50, Seed = 1UL, UseDatabase = false },
+            new ConjectureSettings { MaxExamples = 50, Seed = 1UL, Database = false },
             data => _ = Strategy.StateMachine<FailsAtThreeReportingMachine, int, string>(maxSteps: 20).Generate(data));
 
         Assert.False(result.Passed);

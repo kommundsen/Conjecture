@@ -39,7 +39,7 @@ public sealed class DatabaseRegressionE2ETests : IDisposable
     [Fact]
     public async Task Fail_SavesCounterexampleToDatabase()
     {
-        ConjectureSettings settings = new() { MaxExamples = 20, UseDatabase = true };
+        ConjectureSettings settings = new() { MaxExamples = 20, Database = true };
         string testId = "e2e-roundtrip-fail-saves";
 
         using ExampleDatabase db = new(dbPath);
@@ -51,7 +51,7 @@ public sealed class DatabaseRegressionE2ETests : IDisposable
     [Fact]
     public async Task Fail_ThenRerun_ReplaysStoredBuffer()
     {
-        ConjectureSettings settings = new() { MaxExamples = 20, UseDatabase = true };
+        ConjectureSettings settings = new() { MaxExamples = 20, Database = true };
         string testId = "e2e-roundtrip-replay";
 
         using ExampleDatabase db = new(dbPath);
@@ -77,7 +77,7 @@ public sealed class DatabaseRegressionE2ETests : IDisposable
     [Fact]
     public async Task Fail_ThenFix_RemovesStoredBuffer()
     {
-        ConjectureSettings settings = new() { MaxExamples = 20, UseDatabase = true };
+        ConjectureSettings settings = new() { MaxExamples = 20, Database = true };
         string testId = "e2e-roundtrip-fix-cleans";
 
         using ExampleDatabase db = new(dbPath);
@@ -95,9 +95,9 @@ public sealed class DatabaseRegressionE2ETests : IDisposable
     // --- DB file on disk ---
 
     [Fact]
-    public async Task FailingProperty_UseDatabase_DbFileExistsOnDisk()
+    public async Task FailingProperty_Database_DbFileExistsOnDisk()
     {
-        ConjectureSettings settings = new() { MaxExamples = 10, UseDatabase = true };
+        ConjectureSettings settings = new() { MaxExamples = 10, Database = true };
         string testId = "e2e-db-file-exists";
 
         using (ExampleDatabase db = new(dbPath))
@@ -109,9 +109,9 @@ public sealed class DatabaseRegressionE2ETests : IDisposable
     }
 
     [Fact]
-    public async Task FailingProperty_UseDatabase_DbFileContainsSavedBuffer()
+    public async Task FailingProperty_Database_DbFileContainsSavedBuffer()
     {
-        ConjectureSettings settings = new() { MaxExamples = 10, UseDatabase = true };
+        ConjectureSettings settings = new() { MaxExamples = 10, Database = true };
         string testId = "e2e-db-file-has-buffer";
 
         using ExampleDatabase db = new(dbPath);
@@ -128,7 +128,7 @@ public sealed class DatabaseRegressionE2ETests : IDisposable
     public async Task FailureMessage_IncludesSeed_ForReproduction()
     {
         Strategy<int> strategy = Strategy.Integers<int>(0, 100);
-        ConjectureSettings settings = new() { MaxExamples = 50, UseDatabase = true };
+        ConjectureSettings settings = new() { MaxExamples = 50, Database = true };
         string testId = "e2e-seed-in-message";
 
         using ExampleDatabase db = new(dbPath);
@@ -156,7 +156,7 @@ public sealed class DatabaseRegressionE2ETests : IDisposable
         Strategy<int> strategy = Strategy.Integers<int>(0, 100);
 
         // First run: no seed, find a failing example
-        ConjectureSettings settings1 = new() { MaxExamples = 50, UseDatabase = false };
+        ConjectureSettings settings1 = new() { MaxExamples = 50, Database = false };
         using ExampleDatabase db = new(dbPath);
         TestRunResult first = await TestRunner.Run(settings1, data =>
         {
@@ -172,7 +172,7 @@ public sealed class DatabaseRegressionE2ETests : IDisposable
         {
             MaxExamples = 50,
             Seed = first.Seed!.Value,
-            UseDatabase = false
+            Database = false
         };
         TestRunResult second = await TestRunner.Run(settings2, data =>
         {

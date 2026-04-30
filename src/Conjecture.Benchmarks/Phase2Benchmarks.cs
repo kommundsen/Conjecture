@@ -28,7 +28,7 @@ public class ShrinkingBenchmarks
         {
             MaxExamples = 200,
             Seed = 1UL,
-            UseDatabase = false,
+            Database = false,
         };
     }
 
@@ -109,7 +109,7 @@ public class AsyncPropertyOverheadBenchmarks
         {
             MaxExamples = 100,
             Seed = 2UL,
-            UseDatabase = false,
+            Database = false,
         };
     }
 
