@@ -16,7 +16,7 @@ This guide maps Python Hypothesis concepts to their Conjecture equivalents. If y
 
 | Hypothesis | Conjecture | Notes |
 |---|---|---|
-| `st.integers()` | `Strategy.Integers<T>()` | Generic over `IBinaryInteger<T>` — works for `int`, `long`, `byte`, etc. |
+| `st.integers()` | `Strategy.Integers<T>()` | Generic over `IBinaryInteger<T>` — works for `int`, `long`, `byte`, `short`, `uint`, `ulong`, `sbyte`, `ushort`, `nint`, `nuint`. |
 | `st.integers(min_value=0, max_value=100)` | `Strategy.Integers<int>(0, 100)` | |
 | `st.floats()` | `Strategy.Doubles()` / `Strategy.Floats()` | Separate methods for `double` and `float` |
 | `st.booleans()` | `Strategy.Booleans()` | |
@@ -30,6 +30,7 @@ This guide maps Python Hypothesis concepts to their Conjecture equivalents. If y
 | `st.tuples(st.integers(), st.text())` | `Strategy.Tuples(Strategy.Integers<int>(), Strategy.Strings())` | Up to 4 elements |
 | `st.lists(st.integers())` | `Strategy.Lists(Strategy.Integers<int>())` | Returns `Strategy<List<T>>` |
 | `st.lists(st.integers(), min_size=1, max_size=10)` | `Strategy.Lists(Strategy.Integers<int>(), minSize: 1, maxSize: 10)` | |
+| `np.array(...)` / `T[]` | `Strategy.Arrays(Strategy.Integers<int>(), minSize: 0, maxSize: 100)` | Returns `Strategy<T[]>` |
 | `st.frozensets(st.integers())` | `Strategy.Sets(Strategy.Integers<int>())` | Returns `Strategy<IReadOnlySet<T>>` |
 | `st.dictionaries(st.text(), st.integers())` | `Strategy.Dictionaries(Strategy.Strings(), Strategy.Integers<int>())` | Returns `Strategy<IReadOnlyDictionary<TKey, TValue>>` |
 | `st.one_of(st_a, st_b)` | `Strategy.OneOf(stratA, stratB)` | |

@@ -32,13 +32,14 @@ No hand-written test cases. Conjecture generates random lists, runs the property
 - **Automatic test generation** — generates random inputs from type-aware strategies
 - **Intelligent shrinking** — finds the smallest failing input via byte-stream minimization
 - **LINQ composition** — build complex strategies with `Select`, `Where`, `SelectMany`
-- **All major frameworks** — xUnit v2, xUnit v3, NUnit, MSTest
+- **All major frameworks** — xUnit v2, xUnit v3, NUnit, MSTest, Microsoft Testing Platform, F# Expecto
 - **Source generators** — derive strategies for your types with `[Arbitrary]`
 - **Roslyn analyzers** — catch common mistakes at compile time
 - **Stateful testing** — model systems as state machines and explore command sequences
 - **Targeted testing** — steer generation toward extremes with `Target.Maximize` / `Target.Minimize`
 - **Recursive strategies** — generate bounded-depth trees and self-referential types
 - **Example database** — persist failing inputs for automatic regression prevention
+- **Reproduction export** — write a runnable `.cs` repro of any failing input via `ExportReproductionOnFailure`
 - **Structured logging** — structured events for generation, shrinking, and targeting phases
 
 ## Install

@@ -37,6 +37,9 @@ public class SortTests
 
 Run the test executable directly (`dotnet run` or the produced exe). Conjecture executes the property 100 times against random `List<int>` inputs; on failure, it shrinks to the minimal failing list and reports a reproducible seed.
 
+Set `[ConjectureSettings(ExportReproductionOnFailure = true)]` to write a runnable `.cs` repro alongside the failure. See [Export reproductions](https://ommundsen.dev/Conjecture/articles/how-to/export-repros.html).
+
+
 ## Links
 
 - [GitHub](https://github.com/kommundsen/Conjecture)
