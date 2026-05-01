@@ -194,6 +194,9 @@ internal static class StrategyTools
             ```
             """,
 
+            "Guid" =>
+                "Use `Strategy.Guids()` → `Strategy<Guid>`.",
+
             "byte[]" =>
                 "Use `Strategy.Bytes(size)` for a fixed-length byte array → `Strategy<byte[]>`.",
 
