@@ -18,35 +18,27 @@ public sealed class CON109Tests
 
         """;
 
-    // --- Fires on [Property] parameter of custom struct with no [Arbitrary] and no [From<T>] ---
+    // --- [Property] parameter of custom type with no strategy → CON109 ---
 
-    [Fact]
-    public async Task PropertyParam_CustomStructNoArbitraryNoFrom_EmitsCon109()
+    [Theory]
+    [InlineData(
+        "struct MyPoint { public int X; public int Y; }",
+        "MyPoint {|CON109:p|}")]
+    [InlineData(
+        "class Widget { }",
+        "Widget {|CON109:w|}")]
+    public async Task PropertyParam_CustomType_EmitsCon109(string typeDecl, string param)
     {
-        await VerifyAsync(Preamble + """
-            struct MyPoint { public int X; public int Y; }
+        await VerifyAsync(Preamble + $$"""
+            {{typeDecl}}
             class Tests {
                 [Property]
-                public bool Foo(MyPoint {|CON109:p|}) => true;
+                public bool Foo({{param}}) => true;
             }
             """);
     }
 
-    // --- Fires on [Property] parameter of custom class with no [Arbitrary] and no [From<T>] ---
-
-    [Fact]
-    public async Task PropertyParam_CustomClassNoArbitraryNoFrom_EmitsCon109()
-    {
-        await VerifyAsync(Preamble + """
-            class Widget { }
-            class Tests {
-                [Property]
-                public bool Foo(Widget {|CON109:w|}) => true;
-            }
-            """);
-    }
-
-    // --- Silent when parameter has [From<TStrategy>] ---
+    // --- Strategies resolved via [From<T>] or [Arbitrary] → no diagnostic ---
 
     [Fact]
     public async Task PropertyParam_WithFromAttribute_NoCon109()
@@ -61,8 +53,6 @@ public sealed class CON109Tests
             """);
     }
 
-    // --- Silent when parameter type is decorated with [Arbitrary] ---
-
     [Fact]
     public async Task PropertyParam_TypeWithArbitraryAttribute_NoCon109()
     {
@@ -75,72 +65,25 @@ public sealed class CON109Tests
             """);
     }
 
-    // --- Silent for built-in int parameter ---
+    // --- Built-in / known types → no diagnostic ---
 
-    [Fact]
-    public async Task PropertyParam_BuiltInInt_NoCon109()
+    [Theory]
+    [InlineData("int x", "x >= 0")]
+    [InlineData("bool b", "b || !b")]
+    [InlineData("string s", "s is not null")]
+    [InlineData("double d", "double.IsFinite(d) || !double.IsFinite(d)")]
+    [InlineData("System.Int32 x", "x >= 0")]
+    public async Task PropertyParam_BuiltInType_NoCon109(string param, string body)
     {
-        await VerifyAsync(Preamble + """
+        await VerifyAsync(Preamble + $$"""
             class Tests {
                 [Property]
-                public bool Foo(int x) => x >= 0;
+                public bool Foo({{param}}) => {{body}};
             }
             """);
     }
 
-    // --- Silent for built-in bool parameter ---
-
-    [Fact]
-    public async Task PropertyParam_BuiltInBool_NoCon109()
-    {
-        await VerifyAsync(Preamble + """
-            class Tests {
-                [Property]
-                public bool Foo(bool b) => b || !b;
-            }
-            """);
-    }
-
-    // --- Silent for built-in string parameter ---
-
-    [Fact]
-    public async Task PropertyParam_BuiltInString_NoCon109()
-    {
-        await VerifyAsync(Preamble + """
-            class Tests {
-                [Property]
-                public bool Foo(string s) => s is not null;
-            }
-            """);
-    }
-
-    // --- Silent for built-in double parameter ---
-
-    [Fact]
-    public async Task PropertyParam_BuiltInDouble_NoCon109()
-    {
-        await VerifyAsync(Preamble + """
-            class Tests {
-                [Property]
-                public bool Foo(double d) => double.IsFinite(d) || !double.IsFinite(d);
-            }
-            """);
-    }
-
-    // --- Silent for fully-qualified primitive (System.Int32) ---
-
-    [Fact]
-    public async Task PropertyParam_FullyQualifiedInt_NoCon109()
-    {
-        await VerifyAsync(Preamble + """
-            class Tests {
-                [Property]
-                public bool Foo(System.Int32 x) => x >= 0;
-            }
-            """);
-    }
-
-    // --- Silent for methods without [Property] ---
+    // --- Methods without [Property] → no diagnostic ---
 
     [Fact]
     public async Task NonPropertyMethod_CustomStructParam_NoCon109()
@@ -153,7 +96,7 @@ public sealed class CON109Tests
             """);
     }
 
-    // --- Diagnostic span points to the parameter name ---
+    // --- Diagnostic span and metadata ---
 
     [Fact]
     public async Task PropertyParam_CustomStruct_Con109IsWarning()
@@ -168,8 +111,6 @@ public sealed class CON109Tests
             """,
             new DiagnosticResult("CON109", DiagnosticSeverity.Warning).WithLocation(0));
     }
-
-    // --- Diagnostic message contains parameter name and type name ---
 
     [Fact]
     public async Task PropertyParam_CustomStruct_Con109MessageContainsParamAndType()
