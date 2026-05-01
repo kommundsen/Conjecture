@@ -3,6 +3,7 @@
 
 using Conjecture.Mcp.Tools;
 
+
 namespace Conjecture.Mcp.Tests.Tools;
 
 public class StrategyToolsAspireEFCoreTests

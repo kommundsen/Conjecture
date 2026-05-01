@@ -10,6 +10,8 @@ using Aspire.Hosting;
 using Conjecture.Aspire;
 using Conjecture.Core;
 
+using Conjecture.Abstractions.Aspire;
+
 namespace Conjecture.Aspire.Tests.Samples;
 
 // ── xUnit v2 wiring: ICollectionFixture<T> at collection scope ───────────────

@@ -1,1 +1,16 @@
 #nullable enable
+*REMOVED*Conjecture.Aspire.IAspireAppFixture
+*REMOVED*Conjecture.Aspire.IAspireAppFixture.IAspireAppFixture() -> void
+*REMOVED*virtual Conjecture.Aspire.IAspireAppFixture.DisposeAsync() -> System.Threading.Tasks.ValueTask
+*REMOVED*virtual Conjecture.Aspire.IAspireAppFixture.HealthCheckedResources.get -> System.Collections.Generic.IEnumerable<string!>!
+*REMOVED*virtual Conjecture.Aspire.IAspireAppFixture.MaxRetryAttempts.get -> int
+*REMOVED*virtual Conjecture.Aspire.IAspireAppFixture.ResetAsync(Aspire.Hosting.DistributedApplication! app, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+*REMOVED*virtual Conjecture.Aspire.IAspireAppFixture.RetryDelay.get -> System.TimeSpan
+*REMOVED*virtual Conjecture.Aspire.IAspireAppFixture.StartAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Aspire.Hosting.DistributedApplication!>!
+*REMOVED*virtual Conjecture.Aspire.IAspireAppFixture.WaitForHealthyAsync(Aspire.Hosting.DistributedApplication! app, string! resourceName, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+*REMOVED*Conjecture.Aspire.AspireSessionLifetimeHandler.AspireSessionLifetimeHandler(Conjecture.Aspire.IAspireAppFixture! fixture) -> void
+*REMOVED*Conjecture.Aspire.AspireSessionLifetimeHandler.Fixture.get -> Conjecture.Aspire.IAspireAppFixture!
+*REMOVED*static Conjecture.Aspire.AspireProperty.RunAsync<TState>(Conjecture.Aspire.IAspireAppFixture! fixture, Conjecture.Aspire.AspireStateMachine<TState>! machine, Conjecture.Core.ConjectureSettings! settings, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task!
+Conjecture.Aspire.AspireSessionLifetimeHandler.AspireSessionLifetimeHandler(Conjecture.Abstractions.Aspire.IAspireAppFixture! fixture) -> void
+Conjecture.Aspire.AspireSessionLifetimeHandler.Fixture.get -> Conjecture.Abstractions.Aspire.IAspireAppFixture!
+static Conjecture.Aspire.AspireProperty.RunAsync<TState>(Conjecture.Abstractions.Aspire.IAspireAppFixture! fixture, Conjecture.Aspire.AspireStateMachine<TState>! machine, Conjecture.Core.ConjectureSettings! settings, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task!

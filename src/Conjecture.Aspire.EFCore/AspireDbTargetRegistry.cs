@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 
 using Conjecture.EFCore;
 
+using Conjecture.Abstractions.Aspire;
+
 namespace Conjecture.Aspire.EFCore;
 
 /// <summary>
@@ -16,7 +18,7 @@ namespace Conjecture.Aspire.EFCore;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Typical usage inside an <see cref="Conjecture.Aspire.IAspireAppFixture"/> subclass:
+/// Typical usage inside an <see cref="Conjecture.Abstractions.Aspire.IAspireAppFixture"/> subclass:
 /// </para>
 /// <code>
 /// private readonly AspireDbTargetRegistry _registry;
