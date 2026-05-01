@@ -59,7 +59,7 @@ internal sealed class CON103Analyzer : DiagnosticAnalyzer
             return;
         }
 
-        if (!GenBoundsHelper.TryFindMinMaxArgIndices(invocation, method, out int minIdx, out int maxIdx))
+        if (!StrategyBoundsHelper.TryFindMinMaxArgIndices(invocation, method, out int minIdx, out int maxIdx))
         {
             return;
         }

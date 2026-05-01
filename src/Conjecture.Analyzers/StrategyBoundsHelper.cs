@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Conjecture.Analyzers;
 
-internal static class GenBoundsHelper
+internal static class StrategyBoundsHelper
 {
     internal static bool TryFindMinMaxArgIndices(
         InvocationExpressionSyntax invocation,
