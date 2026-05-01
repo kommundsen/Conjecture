@@ -13,7 +13,7 @@
 | `Strategy.Doubles(min, max)` | `Strategy<double>` | Bounded range |
 | `Strategy.Strings(minLength, maxLength, minCodepoint, maxCodepoint, alphabet)` | `Strategy<string>` | All params optional; default: printable ASCII, length 0–20 |
 | `Strategy.Text(minLength, maxLength)` | `Strategy<string>` | Alias for Strings() |
-| `Strategy.Bytes(size)` | `Strategy<byte[]>` | Fixed-length byte array |
+| `Strategy.Arrays<T>(inner, minSize, maxSize)` | `Strategy<T[]>` | Variable-length array; for byte arrays use `Strategy.Arrays(Strategy.Integers<byte>(), minSize, maxSize)` |
 | `Strategy.Just<T>(value)` | `Strategy<T>` | Always returns the given value |
 | `Strategy.OneOf<T>(strategies[])` | `Strategy<T>` | Picks uniformly from strategies |
 | `Strategy.SampledFrom<T>(values)` | `Strategy<T>` | Picks uniformly from a fixed list |

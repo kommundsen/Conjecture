@@ -18,7 +18,7 @@ using Conjecture.Messaging;
 InMemoryMessageBusTarget bus = new();
 
 Strategy<MessageInteraction> publishes = Strategy.Messaging
-    .Publish("orders", Strategy.Bytes(0, 256));
+    .Publish("orders", Strategy.Arrays(Strategy.Integers<byte>(), 0, 256).Select(static b => (ReadOnlyMemory<byte>)b));
 
 await bus.ExecuteAsync(publishes.Sample(), CancellationToken.None);
 

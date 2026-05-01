@@ -119,8 +119,7 @@ public static class PropertyStrategyBuilder
         if (underlying == typeof(byte[]))
         {
             int maxLength = property.GetMaxLength() ?? 256;
-            return Strategy.Integers<int>(0, maxLength)
-                .SelectMany(len => Strategy.Bytes(len))
+            return Strategy.Arrays(Strategy.Integers<byte>(), 0, maxLength)
                 .Select(static b => (object?)b);
         }
 
