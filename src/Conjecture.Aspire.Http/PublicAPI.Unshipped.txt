@@ -1,0 +1,4 @@
+#nullable enable
+Conjecture.Aspire.Http.DistributedApplicationHttpTarget
+Conjecture.Aspire.Http.DistributedApplicationHttpTarget.DistributedApplicationHttpTarget(Aspire.Hosting.DistributedApplication! app) -> void
+Conjecture.Aspire.Http.DistributedApplicationHttpTarget.ResolveClient(string! resourceName) -> System.Net.Http.HttpClient!
