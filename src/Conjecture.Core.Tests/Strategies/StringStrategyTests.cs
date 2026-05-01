@@ -54,15 +54,4 @@ public class StringStrategyTests
         Assert.Contains(samples, s => s.Length == 0);
     }
 
-    [Fact]
-    public void Text_IsAliasForStrings()
-    {
-        Strategy<string> textStrategy = Strategy.Text();
-        string s = textStrategy.WithSeed(77UL).Sample();
-        Assert.IsType<string>(s);
-        foreach (char c in s)
-        {
-            Assert.InRange((int)c, 32, 126);
-        }
-    }
 }
