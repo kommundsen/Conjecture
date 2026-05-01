@@ -86,9 +86,6 @@ public static class Strategy
             ? new StringStrategy(alphabet, minLength, maxLength)
             : new StringStrategy(minLength, maxLength, minCodepoint, maxCodepoint);
 
-    /// <summary>Alias for <see cref="Strings(int, int, int, int, string)"/>.</summary>
-    public static Strategy<string> Text(int minLength = 0, int maxLength = 20) => Strings(minLength, maxLength);
-
     /// <summary>Returns a strategy that produces nullable <typeparamref name="T"/> values, with ~10% null probability.</summary>
     public static Strategy<T?> Nullable<T>(Strategy<T> inner) where T : struct
     {
