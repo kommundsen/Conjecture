@@ -17,79 +17,33 @@ public sealed class CON102Tests
 
         """;
 
-    // --- .GetAwaiter().GetResult() inside [Property] → CON102 ---
+    // --- Any blocking call inside [Property] → CON102 ---
 
-    [Fact]
-    public async Task GetAwaiterGetResult_InsidePropertyMethod_EmitsCon102()
+    [Theory]
+    [InlineData("{ {|CON102:Task.Delay(0).GetAwaiter().GetResult()|}; }")]
+    [InlineData("{ int r = {|CON102:Task.FromResult(x).Result|}; }")]
+    [InlineData("{ {|CON102:Task.Delay(0).Wait()|}; }")]
+    public async Task BlockingCall_InsidePropertyMethod_EmitsCon102(string body)
     {
-        await VerifyAnalyzerAsync(Preamble + """
+        await VerifyAnalyzerAsync(Preamble + $$"""
             class Tests {
                 [Property]
-                public void Foo(int x) { {|CON102:Task.Delay(0).GetAwaiter().GetResult()|}; }
+                public void Foo(int x) {{body}}
             }
             """);
     }
 
-    [Fact]
-    public async Task GetAwaiterGetResult_InsidePropertyMethod_Con102IsInfo()
+    [Theory]
+    [InlineData("{ {|#0:Task.Delay(0).GetAwaiter().GetResult()|}; }")]
+    [InlineData("{ int r = {|#0:Task.FromResult(x).Result|}; }")]
+    [InlineData("{ {|#0:Task.Delay(0).Wait()|}; }")]
+    public async Task BlockingCall_InsidePropertyMethod_DiagnosticIsInfo(string body)
     {
         await VerifyAnalyzerAsync(
-            Preamble + """
+            Preamble + $$"""
             class Tests {
                 [Property]
-                public void Foo(int x) { {|#0:Task.Delay(0).GetAwaiter().GetResult()|}; }
-            }
-            """,
-            new DiagnosticResult("CON102", DiagnosticSeverity.Info).WithLocation(0));
-    }
-
-    // --- .Result on Task inside [Property] → CON102 ---
-
-    [Fact]
-    public async Task TaskResult_InsidePropertyMethod_EmitsCon102()
-    {
-        await VerifyAnalyzerAsync(Preamble + """
-            class Tests {
-                [Property]
-                public void Foo(int x) { int r = {|CON102:Task.FromResult(x).Result|}; }
-            }
-            """);
-    }
-
-    [Fact]
-    public async Task TaskResult_InsidePropertyMethod_Con102IsInfo()
-    {
-        await VerifyAnalyzerAsync(
-            Preamble + """
-            class Tests {
-                [Property]
-                public void Foo(int x) { int r = {|#0:Task.FromResult(x).Result|}; }
-            }
-            """,
-            new DiagnosticResult("CON102", DiagnosticSeverity.Info).WithLocation(0));
-    }
-
-    // --- .Wait() on Task inside [Property] → CON102 ---
-
-    [Fact]
-    public async Task TaskWait_InsidePropertyMethod_EmitsCon102()
-    {
-        await VerifyAnalyzerAsync(Preamble + """
-            class Tests {
-                [Property]
-                public void Foo(int x) { {|CON102:Task.Delay(0).Wait()|}; }
-            }
-            """);
-    }
-
-    [Fact]
-    public async Task TaskWait_InsidePropertyMethod_Con102IsInfo()
-    {
-        await VerifyAnalyzerAsync(
-            Preamble + """
-            class Tests {
-                [Property]
-                public void Foo(int x) { {|#0:Task.Delay(0).Wait()|}; }
+                public void Foo(int x) {{body}}
             }
             """,
             new DiagnosticResult("CON102", DiagnosticSeverity.Info).WithLocation(0));
@@ -97,112 +51,43 @@ public sealed class CON102Tests
 
     // --- Same patterns outside [Property] → no diagnostic ---
 
-    [Fact]
-    public async Task GetAwaiterGetResult_OutsidePropertyMethod_NoCon102()
+    [Theory]
+    [InlineData("{ Task.Delay(0).GetAwaiter().GetResult(); }")]
+    [InlineData("{ int r = Task.FromResult(x).Result; }")]
+    [InlineData("{ Task.Delay(0).Wait(); }")]
+    public async Task BlockingCall_OutsidePropertyMethod_NoDiagnostic(string body)
     {
-        await VerifyAnalyzerAsync(Preamble + """
+        await VerifyAnalyzerAsync(Preamble + $$"""
             class Tests {
-                public void Foo(int x) { Task.Delay(0).GetAwaiter().GetResult(); }
+                public void Foo(int x) {{body}}
             }
             """);
     }
 
-    [Fact]
-    public async Task TaskResult_OutsidePropertyMethod_NoCon102()
+    // --- Code fix: blocking call → async Task + await ---
+
+    [Theory]
+    [InlineData(
+        "{ {|CON102:Task.Delay(0).GetAwaiter().GetResult()|}; }",
+        "{ await Task.Delay(0); }")]
+    [InlineData(
+        "{ int r = {|CON102:Task.FromResult(x).Result|}; }",
+        "{ int r = await Task.FromResult(x); }")]
+    [InlineData(
+        "{ {|CON102:Task.Delay(0).Wait()|}; }",
+        "{ await Task.Delay(0); }")]
+    public async Task CodeFix_BlockingCall_ConvertsToAsyncAwait(string body, string fixedBody)
     {
-        await VerifyAnalyzerAsync(Preamble + """
-            class Tests {
-                public void Foo(int x) { int r = Task.FromResult(x).Result; }
-            }
-            """);
-    }
-
-    [Fact]
-    public async Task TaskWait_OutsidePropertyMethod_NoCon102()
-    {
-        await VerifyAnalyzerAsync(Preamble + """
-            class Tests {
-                public void Foo(int x) { Task.Delay(0).Wait(); }
-            }
-            """);
-    }
-
-    // --- Code fix: GetAwaiter().GetResult() → async Task + await ---
-
-    [Fact]
-    public async Task CodeFix_GetAwaiterGetResult_ConvertsToAsyncAwait()
-    {
-        string source = Preamble + """
+        string source = Preamble + $$"""
             class Tests {
                 [Property]
-                public void Foo(int x) { {|CON102:Task.Delay(0).GetAwaiter().GetResult()|}; }
+                public void Foo(int x) {{body}}
             }
             """;
-        string fixedSource = Preamble + """
+        string fixedSource = Preamble + $$"""
             class Tests {
                 [Property]
-                public async Task Foo(int x) { await Task.Delay(0); }
-            }
-            """;
-
-        await VerifyCodeFixAsync(source, fixedSource);
-    }
-
-    [Fact]
-    public async Task CodeFix_GetAwaiterGetResult_MethodReturnsTask()
-    {
-        string source = Preamble + """
-            class Tests {
-                [Property]
-                public void Foo(int x) { {|CON102:Task.Delay(0).GetAwaiter().GetResult()|}; }
-            }
-            """;
-        string fixedSource = Preamble + """
-            class Tests {
-                [Property]
-                public async Task Foo(int x) { await Task.Delay(0); }
-            }
-            """;
-
-        await VerifyCodeFixAsync(source, fixedSource);
-    }
-
-    // --- Code fix: .Result → async Task + await ---
-
-    [Fact]
-    public async Task CodeFix_TaskResult_ConvertsToAsyncAwait()
-    {
-        string source = Preamble + """
-            class Tests {
-                [Property]
-                public void Foo(int x) { int r = {|CON102:Task.FromResult(x).Result|}; }
-            }
-            """;
-        string fixedSource = Preamble + """
-            class Tests {
-                [Property]
-                public async Task Foo(int x) { int r = await Task.FromResult(x); }
-            }
-            """;
-
-        await VerifyCodeFixAsync(source, fixedSource);
-    }
-
-    // --- Code fix: .Wait() → async Task + await ---
-
-    [Fact]
-    public async Task CodeFix_TaskWait_ConvertsToAsyncAwait()
-    {
-        string source = Preamble + """
-            class Tests {
-                [Property]
-                public void Foo(int x) { {|CON102:Task.Delay(0).Wait()|}; }
-            }
-            """;
-        string fixedSource = Preamble + """
-            class Tests {
-                [Property]
-                public async Task Foo(int x) { await Task.Delay(0); }
+                public async Task Foo(int x) {{fixedBody}}
             }
             """;
 
