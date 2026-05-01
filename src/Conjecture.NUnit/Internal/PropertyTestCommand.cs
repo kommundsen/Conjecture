@@ -40,7 +40,7 @@ internal sealed class PropertyTestCommand(TestCommand innerCommand, IPropertyTes
             TestCaseHelper.ValidateSampleArgs(sa, methodParams);
         }
 
-        ILogger logger = TestOutputHelperLogger.FromWriteLine(msg => TestContext.Out.WriteLine(msg));
+        ILogger logger = TestOutputLogger.FromWriteLine(msg => TestContext.Out.WriteLine(msg));
         ConjectureSettings settings = ConjectureSettings.From(attr, logger);
 
         string dbPath = Path.Combine(settings.DatabasePath, "conjecture.db");

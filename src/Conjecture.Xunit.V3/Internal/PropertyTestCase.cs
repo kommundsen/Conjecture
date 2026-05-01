@@ -145,7 +145,7 @@ internal sealed class PropertyTestCase : XunitTestCase, ISelfExecutingXunitTestC
             {
                 TestOutputHelper outputHelper = new();
                 outputHelper.Initialize(messageBus, test);
-                logger = TestOutputHelperLogger.FromWriteLine(outputHelper.WriteLine);
+                logger = TestOutputLogger.FromWriteLine(outputHelper.WriteLine);
                 testInstance = Activator.CreateInstance(TestMethod.TestClass.Class, ResolveConstructorArguments(constructorArguments, outputHelper));
             }
             else

@@ -63,7 +63,7 @@ public sealed class PropertyAttribute(
             TestCaseHelper.ValidateSampleArgs(sa, methodParams);
         }
 
-        ILogger logger = TestOutputHelperLogger.FromWriteLine(Console.WriteLine);
+        ILogger logger = TestOutputLogger.FromWriteLine(Console.WriteLine);
         ConjectureSettings settings = ConjectureSettings.From(this, logger);
 
         string dbPath = Path.Combine(settings.DatabasePath, "conjecture.db");
