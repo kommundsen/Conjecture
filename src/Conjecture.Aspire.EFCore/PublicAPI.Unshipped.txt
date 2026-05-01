@@ -11,3 +11,7 @@ Conjecture.Aspire.EFCore.AspireEFCoreInvariants.AssertNoPartialWritesOnErrorAsyn
 Conjecture.Aspire.EFCore.AspireInteractionSequenceBuilder.Build(int minSize = 1, int maxSize = 20) -> Conjecture.Core.Strategy<System.Collections.Generic.IReadOnlyList<Conjecture.Abstractions.Interactions.IAddressedInteraction!>!>!
 *REMOVED*static Conjecture.Aspire.EFCore.AspireDbFixtureExtensions.CreateDbRegistry(this Conjecture.Aspire.IAspireAppFixture! fixture) -> Conjecture.Aspire.EFCore.AspireDbTargetRegistry!
 static Conjecture.Aspire.EFCore.AspireDbFixtureExtensions.CreateDbRegistry(this Conjecture.Abstractions.Aspire.IAspireAppFixture! fixture) -> Conjecture.Aspire.EFCore.AspireDbTargetRegistry!
+Conjecture.Aspire.EFCore.SnapshotTraceReporter
+Conjecture.Aspire.EFCore.SnapshotTraceReporter.SnapshotTraceReporter() -> void
+Conjecture.Aspire.EFCore.SnapshotTraceReporter.FormatReport() -> string!
+Conjecture.Aspire.EFCore.SnapshotTraceReporter.RecordSnapshot(object! snapshot, object? capturedValue) -> void
