@@ -48,4 +48,39 @@ public class IntegerStrategyTests
         Strategy<byte> strategy = Strategy.Integers<byte>(0, 10);
         Assert.All(strategy.WithSeed(1UL).Sample(100), v => Assert.InRange(v, (byte)0, (byte)10));
     }
+
+    [Fact]
+    public void Integers_UInt_DefaultRange_InRange()
+    {
+        Strategy<uint> strategy = Strategy.Integers<uint>();
+        Assert.All(strategy.WithSeed(1UL).Sample(100), v => Assert.InRange(v, uint.MinValue, uint.MaxValue));
+    }
+
+    [Fact]
+    public void Integers_ULong_DefaultRange_InRange()
+    {
+        Strategy<ulong> strategy = Strategy.Integers<ulong>();
+        Assert.All(strategy.WithSeed(1UL).Sample(100), v => Assert.InRange(v, ulong.MinValue, ulong.MaxValue));
+    }
+
+    [Fact]
+    public void Integers_UShort_DefaultRange_InRange()
+    {
+        Strategy<ushort> strategy = Strategy.Integers<ushort>();
+        Assert.All(strategy.WithSeed(1UL).Sample(100), v => Assert.InRange(v, ushort.MinValue, ushort.MaxValue));
+    }
+
+    [Fact]
+    public void Integers_Short_DefaultRange_InRange()
+    {
+        Strategy<short> strategy = Strategy.Integers<short>();
+        Assert.All(strategy.WithSeed(1UL).Sample(100), v => Assert.InRange(v, short.MinValue, short.MaxValue));
+    }
+
+    [Fact]
+    public void Integers_SByte_DefaultRange_InRange()
+    {
+        Strategy<sbyte> strategy = Strategy.Integers<sbyte>();
+        Assert.All(strategy.WithSeed(1UL).Sample(100), v => Assert.InRange(v, sbyte.MinValue, sbyte.MaxValue));
+    }
 }
