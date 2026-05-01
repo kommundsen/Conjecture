@@ -265,6 +265,32 @@ internal sealed class PropertyTestFramework : ITestFramework, IDataProducer
         }
         else
         {
+            if (settings.ExportReproductionOnFailure && result.Counterexample is not null)
+            {
+                try
+                {
+                    ConjectureData replay = ConjectureData.ForRecord(result.Counterexample);
+                    object[] values = SharedParameterStrategyResolver.Resolve(parameters, replay);
+                    IEnumerable<(string Name, object? Value, Type Type)> reproParams = parameters.Zip(values,
+                        static (p, v) => (p.Name!, (object?)v, p.ParameterType));
+                    ReproContext context = new(
+                        method.DeclaringType?.Name ?? "UnknownClass",
+                        method.Name,
+                        TestCaseHelper.IsAsyncReturnType(method.ReturnType),
+                        reproParams,
+                        result.Seed!.Value,
+                        result.ExampleCount,
+                        result.ShrinkCount,
+                        Conjecture.Core.Internal.TestFramework.Xunit,
+                        DateTimeOffset.UtcNow);
+                    ReproFileBuilder.WriteToFile(context, settings.ReproductionOutputPath);
+                }
+                catch (Exception)
+                {
+                    // Repro export must not propagate; failure reporting happens below.
+                }
+            }
+
             string failureMessage;
             try
             {
