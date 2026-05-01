@@ -42,19 +42,21 @@ public class ConjectureSettingsExtendedTests
         Assert.Equal(".conjecture/examples/", settings.DatabasePath);
     }
 
-    [Theory]
-    [InlineData(-1)]
-    [InlineData(int.MinValue)]
+    [Property]
+    [Sample(-1)]
+    [Sample(int.MinValue)]
     public void MaxStrategyRejections_NegativeValue_Throws(int value)
     {
+        Assume.That(value < 0);
         Assert.Throws<ArgumentOutOfRangeException>(() => new ConjectureSettings { MaxStrategyRejections = value });
     }
 
-    [Theory]
-    [InlineData(-1)]
-    [InlineData(int.MinValue)]
+    [Property]
+    [Sample(-1)]
+    [Sample(int.MinValue)]
     public void MaxUnsatisfiedRatio_NegativeValue_Throws(int value)
     {
+        Assume.That(value < 0);
         Assert.Throws<ArgumentOutOfRangeException>(() => new ConjectureSettings { MaxUnsatisfiedRatio = value });
     }
 }
