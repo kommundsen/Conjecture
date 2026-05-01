@@ -9,14 +9,18 @@ namespace Conjecture.Analyzers.Tests;
 
 public sealed class CON103Tests
 {
-    // --- Integers: inverted bounds ---
+    // --- Inverted bounds → CON103 ---
 
-    [Fact]
-    public async Task Integers_InvertedConstantBounds_EmitsCon103()
+    [Theory]
+    [InlineData("{|CON103:Strategy.Integers(10, 5)|}")]
+    [InlineData("{|CON103:Strategy.Doubles(1.0, 0.5)|}")]
+    [InlineData("{|CON103:Strategy.Floats(1f, 0f)|}")]
+    [InlineData("{|CON103:Strategy.Strings(minLength: 10, maxLength: 5)|}")]
+    public async Task InvertedBounds_EmitsCon103(string callExpr)
     {
-        await VerifyAnalyzerAsync("""
+        await VerifyAnalyzerAsync($$"""
             using Conjecture.Core;
-            class Test { void M() { var s = {|CON103:Strategy.Integers(10, 5)|}; } }
+            class Test { void M() { var s = {{callExpr}}; } }
             """);
     }
 
@@ -30,6 +34,8 @@ public sealed class CON103Tests
             """,
             new DiagnosticResult("CON103", DiagnosticSeverity.Error).WithLocation(0));
     }
+
+    // --- Valid bounds → no diagnostic ---
 
     [Fact]
     public async Task Integers_ValidBounds_NoCon103()
@@ -49,39 +55,6 @@ public sealed class CON103Tests
             """);
     }
 
-    // --- Doubles: inverted bounds ---
-
-    [Fact]
-    public async Task Doubles_InvertedConstantBounds_EmitsCon103()
-    {
-        await VerifyAnalyzerAsync("""
-            using Conjecture.Core;
-            class Test { void M() { var s = {|CON103:Strategy.Doubles(1.0, 0.5)|}; } }
-            """);
-    }
-
-    // --- Floats: inverted bounds ---
-
-    [Fact]
-    public async Task Floats_InvertedConstantBounds_EmitsCon103()
-    {
-        await VerifyAnalyzerAsync("""
-            using Conjecture.Core;
-            class Test { void M() { var s = {|CON103:Strategy.Floats(1f, 0f)|}; } }
-            """);
-    }
-
-    // --- Strings: inverted bounds (named parameters) ---
-
-    [Fact]
-    public async Task Strings_InvertedNamedBounds_EmitsCon103()
-    {
-        await VerifyAnalyzerAsync("""
-            using Conjecture.Core;
-            class Test { void M() { var s = {|CON103:Strategy.Strings(minLength: 10, maxLength: 5)|}; } }
-            """);
-    }
-
     [Fact]
     public async Task Strings_ValidBounds_NoCon103()
     {
@@ -93,45 +66,22 @@ public sealed class CON103Tests
 
     // --- Code fix: swaps arguments ---
 
-    [Fact]
-    public async Task CodeFix_SwapsArguments_ForIntegers()
+    [Theory]
+    [InlineData("{|CON103:Strategy.Integers(10, 5)|}", "Strategy.Integers(5, 10)")]
+    [InlineData("{|CON103:Strategy.Doubles(1.0, 0.5)|}", "Strategy.Doubles(0.5, 1.0)")]
+    [InlineData(
+        "{|CON103:Strategy.Strings(minLength: 10, maxLength: 5)|}",
+        "Strategy.Strings(minLength: 5, maxLength: 10)")]
+    public async Task CodeFix_InvertedBounds_SwapsArguments(string sourceExpr, string fixedExpr)
     {
         await VerifyCodeFixAsync(
-            """
+            $$"""
             using Conjecture.Core;
-            class Test { void M() { var s = {|CON103:Strategy.Integers(10, 5)|}; } }
+            class Test { void M() { var s = {{sourceExpr}}; } }
             """,
-            """
+            $$"""
             using Conjecture.Core;
-            class Test { void M() { var s = Strategy.Integers(5, 10); } }
-            """);
-    }
-
-    [Fact]
-    public async Task CodeFix_SwapsArguments_ForDoubles()
-    {
-        await VerifyCodeFixAsync(
-            """
-            using Conjecture.Core;
-            class Test { void M() { var s = {|CON103:Strategy.Doubles(1.0, 0.5)|}; } }
-            """,
-            """
-            using Conjecture.Core;
-            class Test { void M() { var s = Strategy.Doubles(0.5, 1.0); } }
-            """);
-    }
-
-    [Fact]
-    public async Task CodeFix_SwapsArguments_ForStringsWithNamedParams()
-    {
-        await VerifyCodeFixAsync(
-            """
-            using Conjecture.Core;
-            class Test { void M() { var s = {|CON103:Strategy.Strings(minLength: 10, maxLength: 5)|}; } }
-            """,
-            """
-            using Conjecture.Core;
-            class Test { void M() { var s = Strategy.Strings(minLength: 5, maxLength: 10); } }
+            class Test { void M() { var s = {{fixedExpr}}; } }
             """);
     }
 
