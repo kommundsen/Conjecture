@@ -6,6 +6,8 @@ using Conjecture.Core.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
+using Conjecture.Abstractions.Testing;
+
 namespace Conjecture.Core.Tests.Internal;
 
 public class TestOutputHelperLoggerTests

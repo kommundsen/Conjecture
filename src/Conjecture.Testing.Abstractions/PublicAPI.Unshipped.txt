@@ -10,3 +10,9 @@ Conjecture.Abstractions.Testing.IPropertyTest.TargetingProportion.get -> double
 Conjecture.Abstractions.Testing.IReproductionExport
 Conjecture.Abstractions.Testing.IReproductionExport.ExportReproductionOnFailure.get -> bool
 Conjecture.Abstractions.Testing.IReproductionExport.ReproductionOutputPath.get -> string!
+Conjecture.Abstractions.Testing.TestOutputHelperLogger
+Conjecture.Abstractions.Testing.TestOutputHelperLogger.TestOutputHelperLogger(System.Action<string!>! writeLine, Microsoft.Extensions.Logging.LogLevel minLevel = Microsoft.Extensions.Logging.LogLevel.Information) -> void
+Conjecture.Abstractions.Testing.TestOutputHelperLogger.IsEnabled(Microsoft.Extensions.Logging.LogLevel logLevel) -> bool
+Conjecture.Abstractions.Testing.TestOutputHelperLogger.Log<TState>(Microsoft.Extensions.Logging.LogLevel logLevel, Microsoft.Extensions.Logging.EventId eventId, TState state, System.Exception? exception, System.Func<TState, System.Exception?, string!>! formatter) -> void
+Conjecture.Abstractions.Testing.TestOutputHelperLogger.BeginScope<TState>(TState state) -> System.IDisposable!
+static Conjecture.Abstractions.Testing.TestOutputHelperLogger.FromWriteLine(System.Action<string!>? writeLine, Microsoft.Extensions.Logging.LogLevel minLevel = Microsoft.Extensions.Logging.LogLevel.Information) -> Microsoft.Extensions.Logging.ILogger!
