@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json;
 
+using Conjecture.Abstractions.JsonSchema;
 using Conjecture.Core;
 using Conjecture.JsonSchema;
 
@@ -29,7 +30,7 @@ internal sealed class OpenApiSchemaAdapter(MsOpenApiDocument document)
             ?? throw new KeyNotFoundException($"No request body for {method} {path}");
         OpenApiSchema schema = GetJsonSchema(requestBody.Content);
         JsonSchemaNode node = ConvertSchema(schema, document.Components?.Schemas);
-        return new JsonSchemaStrategy(node, maxDepth);
+        return Strategy.FromJsonSchema(node, maxDepth);
     }
 
     internal Strategy<JsonElement> ResponseBody(string method, string path, int statusCode, int maxDepth = 5)
@@ -63,7 +64,7 @@ internal sealed class OpenApiSchemaAdapter(MsOpenApiDocument document)
         OpenApiSchema schema = media.Schema
             ?? throw new KeyNotFoundException($"No schema in response {statusCode} for {method} {path}");
         JsonSchemaNode node = ConvertSchema(schema, document.Components?.Schemas);
-        return new JsonSchemaStrategy(node, maxDepth);
+        return Strategy.FromJsonSchema(node, maxDepth);
     }
 
     internal Strategy<JsonElement> PathParameter(string method, string path, string parameterName, int maxDepth = 5)
@@ -91,7 +92,7 @@ internal sealed class OpenApiSchemaAdapter(MsOpenApiDocument document)
                 OpenApiSchema schema = param.Schema
                     ?? throw new KeyNotFoundException($"No schema for parameter {parameterName} in {method} {path}");
                 JsonSchemaNode node = ConvertSchema(schema, document.Components?.Schemas);
-                return new JsonSchemaStrategy(node, maxDepth);
+                return Strategy.FromJsonSchema(node, maxDepth);
             }
         }
 

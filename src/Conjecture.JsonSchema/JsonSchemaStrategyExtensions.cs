@@ -4,6 +4,7 @@
 using System.IO;
 using System.Text.Json;
 
+using Conjecture.Abstractions.JsonSchema;
 using Conjecture.Core;
 
 namespace Conjecture.JsonSchema;
@@ -19,14 +20,14 @@ public static class JsonSchemaStrategyExtensions
         {
             using JsonDocument doc = JsonDocument.Parse(jsonSchemaText);
             JsonSchemaNode node = JsonSchemaParser.Parse(doc.RootElement);
-            return new JsonSchemaStrategy(node);
+            return JsonSchemaStrategyBuilder.Build(node);
         }
 
         /// <summary>Returns a <see cref="Strategy{T}"/> that generates <see cref="JsonElement"/> values conforming to <paramref name="root"/>.</summary>
         public static Strategy<JsonElement> FromJsonSchema(JsonElement root)
         {
             JsonSchemaNode node = JsonSchemaParser.Parse(root);
-            return new JsonSchemaStrategy(node);
+            return JsonSchemaStrategyBuilder.Build(node);
         }
 
         /// <summary>Returns a <see cref="Strategy{T}"/> that generates <see cref="JsonElement"/> values conforming to the schema in <paramref name="schemaFile"/>.</summary>
@@ -36,7 +37,13 @@ public static class JsonSchemaStrategyExtensions
             string text = File.ReadAllText(schemaFile.FullName);
             using JsonDocument doc = JsonDocument.Parse(text);
             JsonSchemaNode node = JsonSchemaParser.Parse(doc.RootElement);
-            return new JsonSchemaStrategy(node);
+            return JsonSchemaStrategyBuilder.Build(node);
+        }
+
+        /// <summary>Returns a <see cref="Strategy{T}"/> that generates <see cref="JsonElement"/> values conforming to <paramref name="node"/>.</summary>
+        public static Strategy<JsonElement> FromJsonSchema(JsonSchemaNode node, int maxDepth = 5)
+        {
+            return JsonSchemaStrategyBuilder.Build(node, maxDepth);
         }
     }
 }

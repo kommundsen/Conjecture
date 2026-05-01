@@ -2,11 +2,14 @@
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text.Json;
 
-namespace Conjecture.JsonSchema;
+namespace Conjecture.Abstractions.JsonSchema;
 
-internal sealed record JsonSchemaNode(
+/// <summary>Immutable representation of a parsed JSON Schema node.</summary>
+[EditorBrowsable(EditorBrowsableState.Never)]
+public sealed record JsonSchemaNode(
     JsonSchemaType Type,
     IReadOnlyList<JsonSchemaNode>? OneOf,
     IReadOnlyList<JsonSchemaNode>? AnyOf,
@@ -30,5 +33,6 @@ internal sealed record JsonSchemaNode(
     string? Ref,
     string? Format)
 {
-    internal IReadOnlyDictionary<string, JsonSchemaNode>? Defs { get; init; }
+    /// <summary>Schema definitions ($defs or definitions), or null if none.</summary>
+    public IReadOnlyDictionary<string, JsonSchemaNode>? Defs { get; init; }
 }
