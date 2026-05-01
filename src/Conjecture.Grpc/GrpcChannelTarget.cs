@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Grpc.Core;
 using Grpc.Net.Client;
 
+using Conjecture.Abstractions.Interactions;
+
 namespace Conjecture.Grpc;
 
 /// <summary>gRPC target wrapping a <see cref="GrpcChannel"/> for external or containerised services.</summary>
@@ -35,7 +37,7 @@ public sealed class GrpcChannelTarget(string resourceName, GrpcChannel channel) 
 
     /// <inheritdoc/>
     public Task<object?> ExecuteAsync(
-        Conjecture.Interactions.IInteraction interaction,
+        Conjecture.Abstractions.Interactions.IInteraction interaction,
         CancellationToken ct)
     {
         throw new NotImplementedException(

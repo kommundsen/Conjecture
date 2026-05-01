@@ -11,6 +11,8 @@ using Conjecture.Interactions;
 
 using Microsoft.Extensions.Hosting;
 
+using Conjecture.Abstractions.Interactions;
+
 namespace Conjecture.Http.Tests;
 
 public class HostHttpTargetTests

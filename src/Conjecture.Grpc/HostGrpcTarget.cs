@@ -11,6 +11,8 @@ using Grpc.Net.Client;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Hosting;
 
+using Conjecture.Abstractions.Interactions;
+
 namespace Conjecture.Grpc;
 
 /// <summary>gRPC target wrapping an <see cref="IHost"/> for in-process testing.</summary>
@@ -41,7 +43,7 @@ public sealed class HostGrpcTarget(string resourceName, IHost host) : IGrpcTarge
 
     /// <inheritdoc/>
     public Task<object?> ExecuteAsync(
-        Conjecture.Interactions.IInteraction interaction,
+        Conjecture.Abstractions.Interactions.IInteraction interaction,
         CancellationToken ct)
     {
         throw new NotImplementedException(

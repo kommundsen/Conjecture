@@ -6,6 +6,8 @@ using System.Collections.Generic;
 
 using Conjecture.Interactions;
 
+using Conjecture.Abstractions.Interactions;
+
 namespace Conjecture.Messaging;
 
 /// <summary>Immutable record representing a single message interaction with a message bus.</summary>

@@ -12,6 +12,8 @@ using Azure.Messaging.ServiceBus;
 using Conjecture.Interactions;
 using Conjecture.Messaging;
 
+using Conjecture.Abstractions.Interactions;
+
 namespace Conjecture.Messaging.AzureServiceBus;
 
 /// <summary>Azure Service Bus adapter implementing <see cref="IMessageBusTarget"/>.</summary>

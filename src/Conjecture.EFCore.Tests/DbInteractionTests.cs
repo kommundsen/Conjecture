@@ -7,6 +7,8 @@ using System.Linq;
 using Conjecture.EFCore;
 using Conjecture.Interactions;
 
+using Conjecture.Abstractions.Interactions;
+
 namespace Conjecture.EFCore.Tests;
 
 public class DbInteractionTests

@@ -5,6 +5,8 @@ using Conjecture.Interactions;
 
 using Grpc.Core;
 
+using Conjecture.Abstractions.Interactions;
+
 namespace Conjecture.Grpc;
 
 /// <summary>gRPC-specific interaction target exposing the underlying call invoker.</summary>
