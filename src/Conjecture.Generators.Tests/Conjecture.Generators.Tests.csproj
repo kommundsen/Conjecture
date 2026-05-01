@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Conjecture.Core\Conjecture.Core.csproj" />
+    <ProjectReference Include="..\Conjecture.Testing.Abstractions\Conjecture.Testing.Abstractions.csproj" />
     <ProjectReference Include="..\Conjecture.Time\Conjecture.Time.csproj" />
     <ProjectReference Include="..\Conjecture.Generators\Conjecture.Generators.csproj"
                       OutputItemType="Analyzer"

@@ -9,6 +9,8 @@ using Microsoft.Testing.Platform.Extensions;
 using Microsoft.Testing.Platform.Extensions.TestHost;
 using Microsoft.Testing.Platform.TestHost;
 
+using Conjecture.Abstractions.Aspire;
+
 namespace Conjecture.Aspire;
 
 /// <summary>

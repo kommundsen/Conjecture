@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 
 using Aspire.Hosting;
 
+using Conjecture.Abstractions.Aspire;
+
 namespace Conjecture.Aspire;
 
 /// <summary>Records interaction steps and snapshot observations for failure trace reports.</summary>

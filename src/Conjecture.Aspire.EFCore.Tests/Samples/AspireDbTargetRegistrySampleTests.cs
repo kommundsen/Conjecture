@@ -17,6 +17,8 @@ using Microsoft.EntityFrameworkCore;
 
 using Conjecture.Abstractions.Interactions;
 
+using Conjecture.Abstractions.Aspire;
+
 namespace Conjecture.Aspire.EFCore.Tests.Samples;
 
 /// <summary>

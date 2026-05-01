@@ -13,6 +13,8 @@ using Aspire.Hosting;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
 
+using Conjecture.Abstractions.Aspire;
+
 namespace Conjecture.Aspire;
 
 internal static class AspirePropertyRunner

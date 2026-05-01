@@ -3,14 +3,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Aspire.Hosting;
 
-namespace Conjecture.Aspire;
+namespace Conjecture.Abstractions.Aspire;
 
 /// <summary>Provides lifecycle management for an Aspire distributed application under test.</summary>
+[EditorBrowsable(EditorBrowsableState.Never)]
 public abstract class IAspireAppFixture : IAsyncDisposable
 {
     /// <summary>Maximum number of retry attempts for health-check polling. Default is 3.</summary>

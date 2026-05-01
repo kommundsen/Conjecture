@@ -18,6 +18,8 @@ using Aspire.Hosting;
 using Conjecture.Aspire;
 using Conjecture.Core;
 
+using Conjecture.Abstractions.Aspire;
+
 namespace Conjecture.Aspire.Tests.Samples;
 
 public sealed class SampleAspireAssemblyFixture : IAspireAppFixture
