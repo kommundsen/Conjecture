@@ -3,6 +3,8 @@
 
 using Conjecture.Core;
 
+using Conjecture.Abstractions.Testing;
+
 namespace Conjecture.TestingPlatform;
 
 /// <summary>Marks a method as a Conjecture property-based test.</summary>

@@ -1,1 +1,9 @@
 #nullable enable
+Conjecture.Abstractions.Testing.IPropertyTest
+Conjecture.Abstractions.Testing.IPropertyTest.Database.get -> bool
+Conjecture.Abstractions.Testing.IPropertyTest.DeadlineMs.get -> int
+Conjecture.Abstractions.Testing.IPropertyTest.MaxExamples.get -> int
+Conjecture.Abstractions.Testing.IPropertyTest.MaxStrategyRejections.get -> int
+Conjecture.Abstractions.Testing.IPropertyTest.Seed.get -> ulong
+Conjecture.Abstractions.Testing.IPropertyTest.Targeting.get -> bool
+Conjecture.Abstractions.Testing.IPropertyTest.TargetingProportion.get -> double

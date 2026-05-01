@@ -101,9 +101,17 @@ Conjecture.Core.ConjectureSettings.ExportReproductionOnFailure.get -> bool
 Conjecture.Core.ConjectureSettings.ExportReproductionOnFailure.init -> void
 Conjecture.Core.ConjectureSettings.ReproductionOutputPath.get -> string!
 Conjecture.Core.ConjectureSettings.ReproductionOutputPath.init -> void
-Conjecture.Core.IPropertyTest.Database.get -> bool
 Conjecture.Core.IReproductionExport.ExportReproductionOnFailure.get -> bool
 Conjecture.Core.IReproductionExport.ReproductionOutputPath.get -> string!
+*REMOVED*Conjecture.Core.IPropertyTest
+*REMOVED*Conjecture.Core.IPropertyTest.DeadlineMs.get -> int
+*REMOVED*Conjecture.Core.IPropertyTest.MaxExamples.get -> int
+*REMOVED*Conjecture.Core.IPropertyTest.MaxStrategyRejections.get -> int
+*REMOVED*Conjecture.Core.IPropertyTest.Seed.get -> ulong
+*REMOVED*Conjecture.Core.IPropertyTest.Targeting.get -> bool
+*REMOVED*Conjecture.Core.IPropertyTest.TargetingProportion.get -> double
+*REMOVED*static Conjecture.Core.ConjectureSettings.From(Conjecture.Core.IPropertyTest! attr, Microsoft.Extensions.Logging.ILogger? logger = null) -> Conjecture.Core.ConjectureSettings!
+static Conjecture.Core.ConjectureSettings.From(Conjecture.Abstractions.Testing.IPropertyTest! attr, Microsoft.Extensions.Logging.ILogger? logger = null) -> Conjecture.Core.ConjectureSettings!
 *REMOVED*Conjecture.Core.IStrategyFormatter<T>
 *REMOVED*Conjecture.Core.IStrategyFormatter<T>.Format(T value) -> string!
 *REMOVED*static Conjecture.Core.FormatterRegistry.Get<T>() -> Conjecture.Core.IStrategyFormatter<T>?

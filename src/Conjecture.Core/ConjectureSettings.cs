@@ -7,6 +7,8 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
+using Conjecture.Abstractions.Testing;
+
 namespace Conjecture.Core;
 
 /// <summary>Immutable configuration settings for a Conjecture property test.</summary>

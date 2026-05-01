@@ -1,13 +1,16 @@
 // Copyright (c) 2026 Kim Ommundsen. Licensed under the MPL-2.0.
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
-namespace Conjecture.Core;
+using System.ComponentModel;
+
+namespace Conjecture.Abstractions.Testing;
 
 /// <summary>
 /// Implemented by all framework-specific <c>[Property]</c> attributes.
 /// Allows tooling to detect property-based test methods and read common
 /// test configuration without depending on framework-specific types.
 /// </summary>
+[EditorBrowsable(EditorBrowsableState.Never)]
 public interface IPropertyTest
 {
     /// <summary>Maximum number of examples to generate.</summary>

@@ -8,6 +8,8 @@ using Conjecture.Core;
 using Xunit;
 using Xunit.v3;
 
+using Conjecture.Abstractions.Testing;
+
 namespace Conjecture.Xunit.V3;
 
 /// <summary>Marks a method as a Conjecture property-based test (xUnit v3).</summary>
