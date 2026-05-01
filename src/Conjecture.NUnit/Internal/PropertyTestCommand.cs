@@ -14,6 +14,8 @@ using NUnit.Framework.Internal.Commands;
 
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
+using Conjecture.Abstractions.Testing;
+
 namespace Conjecture.NUnit.Internal;
 
 internal sealed class PropertyTestCommand(TestCommand innerCommand, IPropertyTest attr)

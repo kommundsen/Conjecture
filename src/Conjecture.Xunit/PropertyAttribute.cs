@@ -6,6 +6,8 @@ using Conjecture.Core;
 using Xunit;
 using Xunit.Sdk;
 
+using Conjecture.Abstractions.Testing;
+
 namespace Conjecture.Xunit;
 
 /// <summary>Marks a method as a Conjecture property-based test.</summary>

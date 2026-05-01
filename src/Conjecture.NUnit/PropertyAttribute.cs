@@ -9,6 +9,8 @@ using NUnit.Framework.Internal;
 using NUnit.Framework.Internal.Builders;
 using NUnit.Framework.Internal.Commands;
 
+using Conjecture.Abstractions.Testing;
+
 namespace Conjecture.NUnit;
 
 /// <summary>Marks a method as a Conjecture property-based test (NUnit).</summary>

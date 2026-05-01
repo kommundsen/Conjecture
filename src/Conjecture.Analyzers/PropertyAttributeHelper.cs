@@ -13,7 +13,7 @@ internal static class PropertyAttributeHelper
     internal static bool HasPropertyAttribute(MethodDeclarationSyntax method, SemanticModel model)
     {
         INamedTypeSymbol? markerInterface =
-            model.Compilation.GetTypeByMetadataName("Conjecture.Core.IPropertyTest");
+            model.Compilation.GetTypeByMetadataName("Conjecture.Abstractions.Testing.IPropertyTest");
 
         foreach (AttributeListSyntax attrList in method.AttributeLists)
         {

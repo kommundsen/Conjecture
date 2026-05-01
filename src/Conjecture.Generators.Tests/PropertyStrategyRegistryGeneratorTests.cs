@@ -9,6 +9,8 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
+using Conjecture.Abstractions.Testing;
+
 namespace Conjecture.Generators.Tests;
 
 /// <summary>
