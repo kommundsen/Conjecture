@@ -3,6 +3,7 @@
 
 using BenchmarkDotNet.Attributes;
 
+using Conjecture.Abstractions.Strategies;
 using Conjecture.Core;
 using Conjecture.Core.Internal;
 

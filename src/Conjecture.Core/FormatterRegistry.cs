@@ -3,6 +3,8 @@
 
 using System.Collections.Concurrent;
 
+using Conjecture.Abstractions.Strategies;
+
 namespace Conjecture.Core;
 
 /// <summary>Global registry mapping types to their <see cref="IStrategyFormatter{T}"/> instances.</summary>
