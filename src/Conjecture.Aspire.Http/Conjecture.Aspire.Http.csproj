@@ -9,6 +9,7 @@
   <ItemGroup>
     <None Include="PublicAPI.Shipped.txt" />
     <None Include="PublicAPI.Unshipped.txt" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
