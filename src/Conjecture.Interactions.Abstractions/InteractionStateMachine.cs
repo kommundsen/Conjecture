@@ -2,12 +2,13 @@
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Conjecture.Core;
 
-namespace Conjecture.Interactions;
+namespace Conjecture.Abstractions.Interactions;
 
 /// <summary>
 /// Base class for stateful interaction-based property tests.
@@ -16,6 +17,7 @@ namespace Conjecture.Interactions;
 /// and <see cref="Invariant"/> to describe the system under test.
 /// </summary>
 /// <typeparam name="TState">The type representing the system's state.</typeparam>
+[EditorBrowsable(EditorBrowsableState.Never)]
 public abstract class InteractionStateMachine<TState> : IStateMachine<TState, IInteraction>
 {
     /// <inheritdoc />

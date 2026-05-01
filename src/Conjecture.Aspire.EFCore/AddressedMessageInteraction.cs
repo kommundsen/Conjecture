@@ -4,6 +4,8 @@
 using Conjecture.Interactions;
 using Conjecture.Messaging;
 
+using Conjecture.Abstractions.Interactions;
+
 namespace Conjecture.Aspire.EFCore;
 
 /// <summary>Wraps a <see cref="MessageInteraction"/> as an <see cref="IAddressedInteraction"/> with a given resource name.</summary>

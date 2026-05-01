@@ -14,6 +14,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using Conjecture.Abstractions.Interactions;
+
 namespace Conjecture.AspNetCore.EFCore.Tests;
 
 public sealed class TestApp

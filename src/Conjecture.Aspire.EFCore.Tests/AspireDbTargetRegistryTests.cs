@@ -12,6 +12,8 @@ using Conjecture.Interactions;
 
 using Microsoft.EntityFrameworkCore;
 
+using Conjecture.Abstractions.Interactions;
+
 namespace Conjecture.Aspire.EFCore.Tests;
 
 /// <summary>Tests for <see cref="AspireDbTargetRegistry"/>.</summary>

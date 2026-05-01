@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 using Conjecture.Interactions;
 
+using Conjecture.Abstractions.Interactions;
+
 namespace Conjecture.Messaging;
 
 /// <summary>Pull-based message bus target for publishing and consuming messages.</summary>

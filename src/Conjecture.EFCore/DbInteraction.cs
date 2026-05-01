@@ -3,6 +3,8 @@
 
 using Conjecture.Interactions;
 
+using Conjecture.Abstractions.Interactions;
+
 namespace Conjecture.EFCore;
 
 /// <summary>Represents a database operation flowing through the Layer 1 interactions framework.</summary>

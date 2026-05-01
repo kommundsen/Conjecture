@@ -12,6 +12,8 @@ using Conjecture.Messaging;
 
 using Microsoft.EntityFrameworkCore;
 
+using Conjecture.Abstractions.Interactions;
+
 namespace Conjecture.Aspire.EFCore;
 
 /// <summary>

@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using Conjecture.Interactions;
 using Conjecture.Messaging;
 
+using Conjecture.Abstractions.Interactions;
+
 namespace Conjecture.Messaging.Tests;
 
 public class InMemoryMessageBusTargetTests

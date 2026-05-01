@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Conjecture.Core\Conjecture.Core.csproj" />
+    <ProjectReference Include="..\Conjecture.Interactions.Abstractions\Conjecture.Interactions.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

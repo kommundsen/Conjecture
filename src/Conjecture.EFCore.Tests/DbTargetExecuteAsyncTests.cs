@@ -11,6 +11,8 @@ using Conjecture.Interactions;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
+using Conjecture.Abstractions.Interactions;
+
 namespace Conjecture.EFCore.Tests;
 
 public class DbTargetExecuteAsyncTests

@@ -26,3 +26,7 @@ Conjecture.EFCore.DbStrategies.Sequence(string! resourceName, Microsoft.EntityFr
 Conjecture.EFCore.DbInteractionSequenceBuilder
 Conjecture.EFCore.DbInteractionSequenceBuilder.WithLength(int min, int max) -> Conjecture.EFCore.DbInteractionSequenceBuilder!
 Conjecture.EFCore.DbInteractionSequenceBuilder.Build() -> Conjecture.Core.Strategy<System.Collections.Generic.IReadOnlyList<Conjecture.EFCore.DbInteraction!>!>!
+*REMOVED*Conjecture.EFCore.InMemoryDbTarget.ExecuteAsync(Conjecture.Interactions.IInteraction! interaction, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<object?>!
+Conjecture.EFCore.InMemoryDbTarget.ExecuteAsync(Conjecture.Abstractions.Interactions.IInteraction! interaction, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<object?>!
+*REMOVED*Conjecture.EFCore.SqliteDbTarget.ExecuteAsync(Conjecture.Interactions.IInteraction! interaction, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<object?>!
+Conjecture.EFCore.SqliteDbTarget.ExecuteAsync(Conjecture.Abstractions.Interactions.IInteraction! interaction, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<object?>!

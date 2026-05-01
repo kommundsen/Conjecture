@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 
 using Conjecture.Interactions;
 
+using Conjecture.Abstractions.Interactions;
+
 namespace Conjecture.Messaging;
 
 /// <summary>In-memory reference adapter for <see cref="IMessageBusTarget"/>.</summary>

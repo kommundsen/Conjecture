@@ -9,6 +9,8 @@ using Conjecture.Interactions;
 
 using Microsoft.EntityFrameworkCore;
 
+using Conjecture.Abstractions.Interactions;
+
 namespace Conjecture.EFCore;
 
 /// <summary>EF Core InMemory-backed interaction target, keyed by a single resource name.</summary>

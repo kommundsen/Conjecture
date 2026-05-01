@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Conjecture.Core.Internal;
 using Conjecture.Interactions;
 
+using Conjecture.Abstractions.Interactions;
+
 namespace Conjecture.Core;
 
 /// <summary>

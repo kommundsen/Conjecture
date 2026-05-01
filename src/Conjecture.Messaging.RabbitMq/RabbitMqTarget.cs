@@ -14,6 +14,8 @@ using Conjecture.Messaging;
 
 using RabbitMQ.Client;
 
+using Conjecture.Abstractions.Interactions;
+
 namespace Conjecture.Messaging.RabbitMq;
 
 /// <summary>RabbitMQ adapter implementing <see cref="IMessageBusTarget"/>.</summary>
