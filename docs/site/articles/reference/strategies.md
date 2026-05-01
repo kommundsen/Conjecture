@@ -146,6 +146,14 @@ Replays a value of type `T` from a fixed byte buffer using the default strategy 
 
 ## Collection strategies
 
+### `Strategy.Arrays<T>(Strategy<T> inner, int minSize = 0, int maxSize = 100)`
+
+```csharp
+Strategy<T[]> Strategy.Arrays<T>(Strategy<T> inner, int minSize = 0, int maxSize = 100)
+```
+
+Generates `T[]` with length in `[minSize, maxSize]`. `minSize` must be ≥ 0 and ≤ `maxSize`. For a fixed-size array, set `minSize == maxSize`.
+
 ### `Strategy.Lists<T>(Strategy<T> inner, int minSize = 0, int maxSize = 100)`
 
 ```csharp
