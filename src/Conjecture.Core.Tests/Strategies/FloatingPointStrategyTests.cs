@@ -1,128 +1,79 @@
 // Copyright (c) 2026 Kim Ommundsen. Licensed under the MPL-2.0.
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
+using System.Collections.Generic;
+using System.Linq;
+
 using Conjecture.Core;
-using Conjecture.Core.Internal;
 
 namespace Conjecture.Core.Tests.Strategies;
 
 public class FloatingPointStrategyTests
 {
-    private static ConjectureData MakeData(ulong seed = 42UL) =>
-        ConjectureData.ForGeneration(new SplittableRandom(seed));
-
     [Fact]
     public void Doubles_GeneratesFiniteAndNonFiniteValues_WithinDoubleRange()
     {
-        var strategy = Strategy.Doubles();
-        var data = MakeData();
-
-        for (var i = 0; i < 100; i++)
-        {
-            var value = strategy.Generate(data);
-            Assert.True(!double.IsNaN(value) || double.IsNaN(value)); // any double bit pattern is valid
-            Assert.True(value >= double.MinValue || double.IsNaN(value) || double.IsInfinity(value));
-        }
+        Strategy<double> strategy = Strategy.Doubles();
+        Assert.All(strategy.WithSeed(42UL).Sample(100), v =>
+            Assert.True(!double.IsNaN(v) || double.IsNaN(v)));
     }
 
     [Fact]
     public void Doubles_IncludesPositiveAndNegativeValues()
     {
-        var strategy = Strategy.Doubles();
-        var data = MakeData();
-        var hasPositive = false;
-        var hasNegative = false;
-
-        for (var i = 0; i < 1000; i++)
-        {
-            var value = strategy.Generate(data);
-            if (value > 0) { hasPositive = true; }
-            if (value < 0) { hasNegative = true; }
-            if (hasPositive && hasNegative) { break; }
-        }
-
-        Assert.True(hasPositive, "Expected at least one positive double");
-        Assert.True(hasNegative, "Expected at least one negative double");
+        Strategy<double> strategy = Strategy.Doubles();
+        IReadOnlyList<double> samples = strategy.WithSeed(0UL).Sample(1000);
+        Assert.Contains(samples, v => v > 0);
+        Assert.Contains(samples, v => v < 0);
     }
 
     [Fact]
     public void Doubles_DeterministicWithSeed()
     {
-        var strategy = Strategy.Doubles();
-
-        var results1 = Enumerable.Range(0, 20)
-            .Select(_ => strategy.Generate(MakeData(77UL)))
-            .ToList();
-        var results2 = Enumerable.Range(0, 20)
-            .Select(_ => strategy.Generate(MakeData(77UL)))
-            .ToList();
-
+        Strategy<double> strategy = Strategy.Doubles();
+        IReadOnlyList<double> results1 = strategy.WithSeed(77UL).Sample(20);
+        IReadOnlyList<double> results2 = strategy.WithSeed(77UL).Sample(20);
         Assert.Equal(results1, results2);
     }
 
     [Fact]
     public void Floats_GeneratesFloatValues()
     {
-        var strategy = Strategy.Floats();
-        var data = MakeData();
-
-        for (var i = 0; i < 100; i++)
-        {
-            var value = strategy.Generate(data);
-            Assert.IsType<float>(value);
-        }
+        Strategy<float> strategy = Strategy.Floats();
+        Assert.All(strategy.WithSeed(42UL).Sample(100), v => Assert.IsType<float>(v));
     }
 
     [Fact]
     public void Floats_IncludesPositiveAndNegativeValues()
     {
-        var strategy = Strategy.Floats();
-        var data = MakeData();
-        var hasPositive = false;
-        var hasNegative = false;
-
-        for (var i = 0; i < 1000; i++)
-        {
-            var value = strategy.Generate(data);
-            if (value > 0) { hasPositive = true; }
-            if (value < 0) { hasNegative = true; }
-            if (hasPositive && hasNegative) { break; }
-        }
-
-        Assert.True(hasPositive, "Expected at least one positive float");
-        Assert.True(hasNegative, "Expected at least one negative float");
+        Strategy<float> strategy = Strategy.Floats();
+        IReadOnlyList<float> samples = strategy.WithSeed(0UL).Sample(1000);
+        Assert.Contains(samples, v => v > 0);
+        Assert.Contains(samples, v => v < 0);
     }
 
     [Fact]
     public void Floats_DeterministicWithSeed()
     {
-        var strategy = Strategy.Floats();
-
-        var results1 = Enumerable.Range(0, 20)
-            .Select(_ => strategy.Generate(MakeData(77UL)))
-            .ToList();
-        var results2 = Enumerable.Range(0, 20)
-            .Select(_ => strategy.Generate(MakeData(77UL)))
-            .ToList();
-
+        Strategy<float> strategy = Strategy.Floats();
+        IReadOnlyList<float> results1 = strategy.WithSeed(77UL).Sample(20);
+        IReadOnlyList<float> results2 = strategy.WithSeed(77UL).Sample(20);
         Assert.Equal(results1, results2);
     }
 
     [Fact]
     public void Doubles_ProducesDistinctValues()
     {
-        var strategy = Strategy.Doubles();
-        var data = MakeData();
-        var values = Enumerable.Range(0, 50).Select(_ => strategy.Generate(data)).ToList();
+        Strategy<double> strategy = Strategy.Doubles();
+        IReadOnlyList<double> values = strategy.WithSeed(42UL).Sample(50);
         Assert.True(values.Distinct().Count() > 1, "Expected multiple distinct doubles");
     }
 
     [Fact]
     public void Floats_ProducesDistinctValues()
     {
-        var strategy = Strategy.Floats();
-        var data = MakeData();
-        var values = Enumerable.Range(0, 50).Select(_ => strategy.Generate(data)).ToList();
+        Strategy<float> strategy = Strategy.Floats();
+        IReadOnlyList<float> values = strategy.WithSeed(42UL).Sample(50);
         Assert.True(values.Distinct().Count() > 1, "Expected multiple distinct floats");
     }
 }
