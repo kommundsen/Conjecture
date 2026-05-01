@@ -7,6 +7,8 @@
 using System.Collections.Generic;
 using System.Text;
 
+using Conjecture.Abstractions.Strategies;
+
 namespace Conjecture.Core.Internal;
 
 internal static class StateMachineRunner
