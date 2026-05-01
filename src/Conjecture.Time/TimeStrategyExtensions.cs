@@ -54,7 +54,7 @@ public static class TimeStrategyExtensions
 
         /// <summary>
         /// Returns a strategy that generates an array of <paramref name="nodeCount"/> independent
-        /// <see cref="FakeTimeProvider"/> instances, each with a clock skew drawn from
+        /// <see cref="FakeTimeProvider"/> instances, each with a clock skew generated from
         /// [<c>-maxSkew/2</c>, <c>+maxSkew/2</c>] relative to <see cref="DateTimeOffset.UtcNow"/>.
         /// </summary>
         /// <param name="nodeCount">Number of clocks to generate. Must be at least 2.</param>

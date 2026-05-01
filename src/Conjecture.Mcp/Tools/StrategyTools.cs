@@ -468,7 +468,7 @@ internal static class StrategyTools
             using Conjecture.EFCore;
 
             Strategy.Entity<Order>(db)
-            // → Strategy<Order> drawing entities tracked by the DbContext
+            // → Strategy<Order> generating entities tracked by the DbContext
             ```
 
             Add the NuGet package: `Conjecture.EFCore`
@@ -476,7 +476,7 @@ internal static class StrategyTools
 
             "EntitySet" =>
                 """
-            This type appears to be an EF Core entity. Use `Strategy.EntitySet<T>(context)` from `Conjecture.EFCore` to draw from the full set persisted in the database:
+            This type appears to be an EF Core entity. Use `Strategy.EntitySet<T>(context)` from `Conjecture.EFCore` to generate from the full set persisted in the database:
 
             ```csharp
             using Conjecture.EFCore;
@@ -495,7 +495,7 @@ internal static class StrategyTools
 
             _ when typeName.StartsWith("DbSet<", StringComparison.Ordinal) =>
                 """
-            This type appears to be an EF Core entity. Use `Strategy.EntitySet<T>(context)` from `Conjecture.EFCore` to draw from the full set persisted in the database:
+            This type appears to be an EF Core entity. Use `Strategy.EntitySet<T>(context)` from `Conjecture.EFCore` to generate from the full set persisted in the database:
 
             ```csharp
             using Conjecture.EFCore;
@@ -557,7 +557,7 @@ internal static class StrategyTools
             Strategy.Compose(ctx => new {{typeName}}(
                 ctx.Generate(Strategy.Integers<int>()),
                 ctx.Generate(Strategy.Strings())
-                // draw each field from ctx
+                // generate each field from ctx
             ))
             ```
 

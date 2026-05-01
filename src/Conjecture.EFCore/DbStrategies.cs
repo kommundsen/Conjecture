@@ -56,7 +56,7 @@ public sealed class DbStrategies
 
     /// <summary>
     /// Returns a fluent <see cref="DbInteractionSequenceBuilder"/> for composing a sequence of
-    /// <see cref="DbInteraction"/> records drawn uniformly from Add, Update, Remove, and SaveChanges
+    /// <see cref="DbInteraction"/> records generated uniformly from Add, Update, Remove, and SaveChanges
     /// across all entity types in <paramref name="model"/>.
     /// </summary>
     public DbInteractionSequenceBuilder Sequence(string resourceName, IModel model)

@@ -66,7 +66,7 @@ internal sealed class ConjectureData
             if (node.Kind != IRNodeKind.Boolean)
             {
                 Status = Status.Overrun;
-                throw new InvalidOperationException("Replay node misaligned with requested Boolean draw.");
+                throw new InvalidOperationException("Replay node misaligned with requested Boolean generation.");
             }
             nodes.Add(node);
             return node.Value == 1UL;
@@ -116,7 +116,7 @@ internal sealed class ConjectureData
             if (node.Kind != IRNodeKind.Bytes || (int)node.Value != length)
             {
                 Status = Status.Overrun;
-                throw new InvalidOperationException("Replay node misaligned with requested Bytes draw.");
+                throw new InvalidOperationException("Replay node misaligned with requested Bytes generation.");
             }
             nodes.Add(node);
             return node.RawBytes ?? new byte[(int)node.Value];

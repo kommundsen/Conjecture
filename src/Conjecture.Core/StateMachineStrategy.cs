@@ -26,7 +26,7 @@ internal sealed class StateMachineStrategy<TMachine, TState, TCommand>(int maxSt
         TMachine machine = new();
         TState state = machine.InitialState();
         int length = (int)data.NextInteger(0, (ulong)maxSteps);
-        List<TCommand> drawn = new(length);
+        List<TCommand> generated = new(length);
 
         for (int i = 0; i < length; i++)
         {
@@ -38,11 +38,11 @@ internal sealed class StateMachineStrategy<TMachine, TState, TCommand>(int maxSt
 
             data.InsertCommandStart();
             TCommand command = new OneOfStrategy<TCommand>(commands).Generate(data);
-            drawn.Add(command);
+            generated.Add(command);
             state = machine.RunCommand(state, command);
         }
 
-        (StateMachineRun<TState> run, Exception? invariantException) = StateMachineRunner.Execute(machine, drawn);
+        (StateMachineRun<TState> run, Exception? invariantException) = StateMachineRunner.Execute(machine, generated);
         if (!run.Passed)
         {
             string message = StateMachineRunner.FormatSteps(run.Steps, run.FailureStepIndex);
