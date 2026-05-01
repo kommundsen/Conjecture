@@ -11,5 +11,5 @@ public sealed class UnsatisfiedAssumptionException : Exception
 {
     /// <summary>Initializes a new instance of <see cref="UnsatisfiedAssumptionException"/>.</summary>
     public UnsatisfiedAssumptionException()
-        : base("Filter budget exhausted — Where() predicate rejected too many drawn values.") { }
+        : base("Filter budget exhausted — Where() predicate rejected too many generated values.") { }
 }

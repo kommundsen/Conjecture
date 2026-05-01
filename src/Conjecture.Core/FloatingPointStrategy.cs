@@ -14,7 +14,7 @@ namespace Conjecture.Core;
 internal sealed class FloatingPointStrategy<T> : Strategy<T>
     where T : struct, IBinaryFloatingPointIeee754<T>
 {
-    // Cached once per T instantiation; avoids recomputing on every bounded draw.
+    // Cached once per T instantiation; avoids recomputing on every bounded generation.
     private static readonly T MaxUlong = T.CreateSaturating(ulong.MaxValue);
 
     private static readonly ulong[] DoubleSpecialBits =
