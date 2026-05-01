@@ -266,7 +266,7 @@ public class AspirePropertyRunnerTests
         public override IEnumerable<Strategy<IInteraction>> Commands(string state)
             => [Strategy.Just<IInteraction>(new HttpInteraction("svc", "GET", "/", null, null))];
 
-        public override string RunCommand(string state, IInteraction interaction, IInteractionTarget target, CancellationToken ct)
+        public override ValueTask<string> RunCommand(string state, IInteraction interaction, IInteractionTarget target, CancellationToken ct)
         {
             if (!firstExampleSeen)
             {
@@ -274,7 +274,7 @@ public class AspirePropertyRunnerTests
                 firstExampleSeen = true;
             }
 
-            return state;
+            return ValueTask.FromResult(state);
         }
 
         public override void Invariant(string state) { }
@@ -328,8 +328,7 @@ public class AspirePropertyRunnerTests
         public override IEnumerable<Strategy<IInteraction>> Commands(string state)
             => [Strategy.Just<IInteraction>(new HttpInteraction("svc", "GET", "/", null, null))];
 
-        public override string RunCommand(string state, IInteraction interaction, IInteractionTarget target, CancellationToken ct)
-            => throw new InvalidOperationException("example failure");
+        public override ValueTask<string> RunCommand(string state, IInteraction interaction, IInteractionTarget target, CancellationToken ct) => throw new InvalidOperationException("example failure");
 
         public override void Invariant(string state) { }
     }
@@ -341,8 +340,7 @@ public class AspirePropertyRunnerTests
         public override IEnumerable<Strategy<IInteraction>> Commands(string state)
             => [Strategy.Just<IInteraction>(new HttpInteraction("svc", "GET", "/", null, null))];
 
-        public override string RunCommand(string state, IInteraction interaction, IInteractionTarget target, CancellationToken ct)
-            => state;
+        public override ValueTask<string> RunCommand(string state, IInteraction interaction, IInteractionTarget target, CancellationToken ct) => ValueTask.FromResult<string>(state);
 
         public override void Invariant(string state) { }
     }
