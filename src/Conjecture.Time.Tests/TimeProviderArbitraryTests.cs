@@ -5,7 +5,7 @@ using System.Collections.Concurrent;
 
 using Conjecture.Core;
 using Conjecture.Time;
-using Conjecture.Xunit;
+using Conjecture.Xunit.V3;
 
 using Microsoft.Extensions.Time.Testing;
 
