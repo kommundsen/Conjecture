@@ -27,6 +27,9 @@ internal sealed class PropertyTestCaseDiscoverer : IXunitTestCaseDiscoverer
         int deadlineMs = propTest.DeadlineMs;
         bool targeting = propTest.Targeting;
         double targetingProportion = propTest.TargetingProportion;
+        IReproductionExport? reproExport = factAttribute as IReproductionExport;
+        bool exportReproductionOnFailure = reproExport?.ExportReproductionOnFailure ?? false;
+        string reproductionOutputPath = reproExport?.ReproductionOutputPath ?? ".conjecture/repros/";
 
         string displayName = testMethod.GetDisplayName(attr.DisplayName ?? testMethod.Method.Name, null, null, null);
         string uniqueID = testMethod.UniqueID;
@@ -51,7 +54,9 @@ internal sealed class PropertyTestCaseDiscoverer : IXunitTestCaseDiscoverer
             maxStrategyRejections,
             deadlineMs,
             targeting,
-            targetingProportion)];
+            targetingProportion,
+            exportReproductionOnFailure,
+            reproductionOutputPath)];
 
         return ValueTask.FromResult(testCases);
     }
