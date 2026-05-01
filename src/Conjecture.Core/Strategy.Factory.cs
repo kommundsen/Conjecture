@@ -32,6 +32,13 @@ public static class Strategy
     /// <summary>Returns a strategy that generates random byte arrays of length <paramref name="size"/>.</summary>
     public static Strategy<byte[]> Bytes(int size) => new BytesStrategy(size);
 
+    /// <summary>Returns a strategy that generates <typeparamref name="T"/> arrays with length in [<paramref name="minSize"/>, <paramref name="maxSize"/>] and elements drawn from <paramref name="inner"/>.</summary>
+    public static Strategy<T[]> Arrays<T>(Strategy<T> inner, int minSize = 0, int maxSize = 100)
+    {
+        ArgumentNullException.ThrowIfNull(inner);
+        return new ArrayStrategy<T>(inner, minSize, maxSize);
+    }
+
     /// <summary>Returns a strategy that always produces <paramref name="value"/>.</summary>
     public static Strategy<T> Just<T>(T value) => new JustStrategy<T>(value);
 
