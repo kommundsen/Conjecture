@@ -23,8 +23,8 @@ Create a class that implements `IStrategyProvider<T>`:
 public class EmailAddress : IStrategyProvider<string>
 {
     public Strategy<string> Create() =>
-        from local in Generate.Strings(minLength: 1, maxLength: 20)
-        from domain in Generate.SampledFrom(new[] { "example.com", "test.org", "mail.net" })
+        from local in Strategy.Strings(minLength: 1, maxLength: 20)
+        from domain in Strategy.SampledFrom(new[] { "example.com", "test.org", "mail.net" })
         select $"{local}@{domain}";
 }
 ```
@@ -49,8 +49,8 @@ public record Money(decimal Amount, string Currency);
 public class MoneyStrategy : IStrategyProvider<Money>
 {
     public Strategy<Money> Create() =>
-        from amount in Generate.Integers<int>(0, 100_000).Select(x => (decimal)x / 100)
-        from currency in Generate.SampledFrom(new[] { "USD", "EUR", "GBP", "NOK" })
+        from amount in Strategy.Integers<int>(0, 100_000).Select(x => (decimal)x / 100)
+        from currency in Strategy.SampledFrom(new[] { "USD", "EUR", "GBP", "NOK" })
         select new Money(amount, currency);
 }
 
@@ -69,8 +69,8 @@ If you prefer keeping the strategy close to the test, use a static factory metho
 public class PaymentTests
 {
     static Strategy<Money> PositiveMoney() =>
-        from amount in Generate.Integers<int>(1, 100_000).Select(x => (decimal)x / 100)
-        from currency in Generate.SampledFrom(new[] { "USD", "EUR" })
+        from amount in Strategy.Integers<int>(1, 100_000).Select(x => (decimal)x / 100)
+        from currency in Strategy.SampledFrom(new[] { "USD", "EUR" })
         select new Money(amount, currency);
 
     [Property]
@@ -115,7 +115,7 @@ Providers can use other strategies internally:
 public class NonEmptyListOfMoney : IStrategyProvider<List<Money>>
 {
     public Strategy<List<Money>> Create() =>
-        Generate.Lists(new MoneyStrategy().Create(), minSize: 1, maxSize: 20);
+        Strategy.Lists(new MoneyStrategy().Create(), minSize: 1, maxSize: 20);
 }
 ```
 

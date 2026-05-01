@@ -17,7 +17,7 @@ using Conjecture.Time;
 public bool Repository_RoundtripsDateTimeOffset(int x)
 {
     DateTimeOffset value = DataGen.SampleOne(
-        Generate.DateTimeOffsets().WithPrecision(TimeSpan.FromMilliseconds(1)));
+        Strategy.DateTimeOffsets().WithPrecision(TimeSpan.FromMilliseconds(1)));
 
     using TestDbContext db = new();
     db.Orders.Add(new Order { PlacedAt = value });
@@ -44,7 +44,7 @@ public bool Repository_RoundtripsDateTimeOffset(int x)
 public bool AuditLog_PreservesUtcTimeAfterNormalisation(int x)
 {
     (DateTimeOffset original, DateTimeOffset stripped) = DataGen.SampleOne(
-        Generate.DateTimeOffsets().WithStrippedOffset());
+        Strategy.DateTimeOffsets().WithStrippedOffset());
 
     // stripped == original converted to UTC (Offset = Zero, Ticks unchanged)
     AuditEntry entry = AuditLog.Record(original);
@@ -62,9 +62,9 @@ public bool AuditLog_PreservesUtcTimeAfterNormalisation(int x)
 [Property]
 public bool Cache_ReconstructsCorrectLocalTime_AroundDst(int x)
 {
-    TimeZoneInfo zone = DataGen.SampleOne(Generate.TimeZone(preferDst: true));
+    TimeZoneInfo zone = DataGen.SampleOne(Strategy.TimeZone(preferDst: true));
     DateTimeOffset value = DataGen.SampleOne(
-        Generate.DateTimeOffsets().NearDstTransition(zone));
+        Strategy.DateTimeOffsets().NearDstTransition(zone));
 
     CacheEntry cached = Cache.Store(value, zone);
     DateTimeOffset reconstructed = Cache.Load(cached.Key, zone);

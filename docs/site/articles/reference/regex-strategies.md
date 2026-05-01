@@ -12,11 +12,11 @@ Namespace: `Conjecture.Regex`
 
 ---
 
-## `Generate.Matching`
+## `Strategy.Matching`
 
 ```csharp
-Strategy<string> Generate.Matching(string pattern, RegexGenOptions? options = null)
-Strategy<string> Generate.Matching(Regex regex,   RegexGenOptions? options = null)
+Strategy<string> Strategy.Matching(string pattern, RegexGenOptions? options = null)
+Strategy<string> Strategy.Matching(Regex regex,   RegexGenOptions? options = null)
 ```
 
 Returns a strategy that generates strings that match `pattern` or `regex`.
@@ -33,11 +33,11 @@ counts and character indices shrink automatically alongside the generated value.
 
 ---
 
-## `Generate.NotMatching`
+## `Strategy.NotMatching`
 
 ```csharp
-Strategy<string> Generate.NotMatching(string pattern, RegexGenOptions? options = null)
-Strategy<string> Generate.NotMatching(Regex regex,   RegexGenOptions? options = null)
+Strategy<string> Strategy.NotMatching(string pattern, RegexGenOptions? options = null)
+Strategy<string> Strategy.NotMatching(Regex regex,   RegexGenOptions? options = null)
 ```
 
 Returns a strategy that generates strings that do **not** match `pattern` or `regex`.
@@ -53,11 +53,11 @@ Convenience factories for common formats. Each has a `Not*` variant.
 
 | Method | Pattern description | Counterpart |
 |---|---|---|
-| `Generate.Email()` | RFC-5322 simplified address | `Generate.NotEmail()` |
-| `Generate.Url()` | HTTP/HTTPS URL | `Generate.NotUrl()` |
-| `Generate.Uuid()` | UUID v4 hyphenated lowercase | `Generate.NotUuid()` |
-| `Generate.IsoDate()` | ISO 8601 date (`YYYY-MM-DD`) | `Generate.NotIsoDate()` |
-| `Generate.CreditCard()` | 13–19 digit Luhn-valid number | `Generate.NotCreditCard()` |
+| `Strategy.Email()` | RFC-5322 simplified address | `Strategy.NotEmail()` |
+| `Strategy.Url()` | HTTP/HTTPS URL | `Strategy.NotUrl()` |
+| `Strategy.Uuid()` | UUID v4 hyphenated lowercase | `Strategy.NotUuid()` |
+| `Strategy.IsoDate()` | ISO 8601 date (`YYYY-MM-DD`) | `Strategy.NotIsoDate()` |
+| `Strategy.CreditCard()` | 13–19 digit Luhn-valid number | `Strategy.NotCreditCard()` |
 
 The underlying patterns are exposed on `KnownRegex` as compiled `Regex` instances:
 
@@ -96,10 +96,10 @@ public sealed class RegexGenOptions
 
 ```csharp
 // Default: ASCII only
-Strategy<string> s1 = Generate.Matching(@"\p{L}+");
+Strategy<string> s1 = Strategy.Matching(@"\p{L}+");
 
 // Opt in to full Unicode range
-Strategy<string> s2 = Generate.Matching(
+Strategy<string> s2 = Strategy.Matching(
     @"\p{L}+",
     new RegexGenOptions { UnicodeCategories = UnicodeCoverage.Full });
 ```
@@ -138,11 +138,11 @@ are not recognised.
 
 ---
 
-## `Generate.ReDoSHunter`
+## `Strategy.ReDoSHunter`
 
 ```csharp
-Strategy<string> Generate.ReDoSHunter(string pattern, int maxMatchMs = 5)
-Strategy<string> Generate.ReDoSHunter(Regex regex,   int maxMatchMs = 5)
+Strategy<string> Strategy.ReDoSHunter(string pattern, int maxMatchMs = 5)
+Strategy<string> Strategy.ReDoSHunter(Regex regex,   int maxMatchMs = 5)
 ```
 
 Returns a strategy that generates adversarial strings designed to trigger catastrophic
@@ -178,14 +178,14 @@ The `Label` property reflects which code path was taken:
 | Label | Meaning |
 |---|---|
 | `"redos:hunter"` | Adversarial synthesis active — nested quantifiers found. |
-| `"redos:no-nested-quantifiers"` | No nested quantifiers detected; falls back to `Generate.Matching`. |
-| `"redos:non-backtracking"` | `RegexOptions.NonBacktracking` detected; falls back to `Generate.Matching`. The NFA engine cannot exhibit catastrophic backtracking by design. |
+| `"redos:no-nested-quantifiers"` | No nested quantifiers detected; falls back to `Strategy.Matching`. |
+| `"redos:non-backtracking"` | `RegexOptions.NonBacktracking` detected; falls back to `Strategy.Matching`. The NFA engine cannot exhibit catastrophic backtracking by design. |
 
 ### `RegexOptions` handling
 
 | Option | Behaviour |
 |---|---|
-| `NonBacktracking` | Falls back to `Generate.Matching` with label `"redos:non-backtracking"`. |
+| `NonBacktracking` | Falls back to `Strategy.Matching` with label `"redos:non-backtracking"`. |
 | `Compiled` | No special handling — compiled regexes use the same backtracking engine. |
 | All others | Passed through unchanged. |
 
@@ -200,7 +200,7 @@ using Conjecture.Regex;
 [Property]
 public bool UserInput_RegexIsNotVulnerableToReDoS()
 {
-    string input = DataGen.SampleOne(Generate.ReDoSHunter(@"(a+)+$", maxMatchMs: 25));
+    string input = DataGen.SampleOne(Strategy.ReDoSHunter(@"(a+)+$", maxMatchMs: 25));
 
     Stopwatch sw = Stopwatch.StartNew();
     Regex.IsMatch(input, @"(a+)+$");

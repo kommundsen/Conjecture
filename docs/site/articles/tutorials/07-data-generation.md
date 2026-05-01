@@ -22,8 +22,8 @@ We'll generate people with names and ages:
 using Conjecture.Core;
 
 Strategy<Person> personStrategy =
-    from name in Generate.Strings(minLength: 2, maxLength: 30)
-    from age in Generate.Integers<int>(18, 99)
+    from name in Strategy.Strings(minLength: 2, maxLength: 30)
+    from age in Strategy.Integers<int>(18, 99)
     select new Person(name, age);
 
 public record Person(string Name, int Age);
@@ -130,5 +130,5 @@ foreach (Person person in stream)
 ## Next
 
 - [How to use DataGen outside tests](../how-to/use-data-gen.md) — quick reference
-- [Reference: Strategies](../reference/strategies.md) — all `Generate.*` methods
+- [Reference: Strategies](../reference/strategies.md) — all `Strategy.*` methods
 - [Reference: Formatters](../reference/formatters.md) — JSON and JSONL options

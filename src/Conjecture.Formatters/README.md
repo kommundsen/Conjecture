@@ -19,7 +19,7 @@ using Conjecture.Formatters;
 
 // Generate 100 integers and write them as a JSON array
 IOutputFormatter formatter = new JsonOutputFormatter();
-IReadOnlyList<int> values = Strategy.Integer().Sample(100);
+IReadOnlyList<int> values = Strategy.Integers<int>().Sample(100);
 await formatter.WriteAsync(values, File.OpenWrite("data.json"));
 
 // Or as newline-delimited JSON (NDJSON)

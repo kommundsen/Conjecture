@@ -9,7 +9,7 @@ This how-to uses xUnit v3. The same shape works under any test runner that lets 
 ```xml
 <PackageReference Include="Conjecture.Grpc" />
 <PackageReference Include="Conjecture.Xunit.V3" />
-<PackageReference Include="Conjecture.Protobuf" />        <!-- for Generate.FromProtobuf<T>() -->
+<PackageReference Include="Conjecture.Protobuf" />        <!-- for Strategy.FromProtobuf<T>() -->
 <PackageReference Include="Grpc.AspNetCore" />            <!-- when using HostGrpcTarget -->
 <PackageReference Include="Microsoft.AspNetCore.TestHost" /><!-- ditto -->
 ```
@@ -62,10 +62,10 @@ public class GreeterProperties : IAsyncLifetime
     [Property]
     public async Task SayHello_ReturnsOk(CancellationToken ct)
     {
-        Strategy<GrpcInteraction> calls = Generate.Grpc.Unary(
+        Strategy<GrpcInteraction> calls = Strategy.Grpc.Unary(
             resourceName: "greeter",
             method: Greeter.Descriptor.FindMethodByName("SayHello").ToGrpcMethod<HelloRequest, HelloReply>(),
-            requestStrategy: Generate.FromProtobuf<HelloRequest>());
+            requestStrategy: Strategy.FromProtobuf<HelloRequest>());
 
         await Property.ForAll(target, calls, async (t, call) =>
         {
@@ -76,7 +76,7 @@ public class GreeterProperties : IAsyncLifetime
 }
 ```
 
-`Generate.FromProtobuf<HelloRequest>()` (from `Conjecture.Protobuf`) generates the protobuf request from its descriptor. `Greeter.Descriptor` is the static descriptor on the generated `Greeter` base class.
+`Strategy.FromProtobuf<HelloRequest>()` (from `Conjecture.Protobuf`) generates the protobuf request from its descriptor. `Greeter.Descriptor` is the static descriptor on the generated `Greeter` base class.
 
 ## Test a server-streaming call
 
@@ -86,10 +86,10 @@ Server-stream calls send one request and receive a stream of responses. The full
 [Property]
 public async Task ListItems_NeverReturnsUnknown(CancellationToken ct)
 {
-    Strategy<GrpcInteraction> calls = Generate.Grpc.ServerStream(
+    Strategy<GrpcInteraction> calls = Strategy.Grpc.ServerStream(
         resourceName: "greeter",
         method: ItemServiceDescriptors.ListItemsMethod,
-        requestStrategy: Generate.FromProtobuf<ListItemsRequest>());
+        requestStrategy: Strategy.FromProtobuf<ListItemsRequest>());
 
     await Property.ForAll(target, calls, async (t, call) =>
     {
@@ -110,9 +110,9 @@ Client-stream calls send N requests and receive one response. Pass a `Strategy<I
 public async Task UploadBatch_AcceptsAnySequence(CancellationToken ct)
 {
     Strategy<IReadOnlyList<UploadChunk>> chunks =
-        Generate.List(Generate.FromProtobuf<UploadChunk>(), minLength: 0, maxLength: 100);
+        Strategy.List(Strategy.FromProtobuf<UploadChunk>(), minLength: 0, maxLength: 100);
 
-    Strategy<GrpcInteraction> calls = Generate.Grpc.ClientStream(
+    Strategy<GrpcInteraction> calls = Strategy.Grpc.ClientStream(
         resourceName: "greeter",
         method: UploadServiceDescriptors.UploadBatchMethod,
         requestsStrategy: chunks);
@@ -136,9 +136,9 @@ Bidi calls interleave N requests and N responses. The strategy shape is the same
 public async Task EchoStream_PreservesOrder(CancellationToken ct)
 {
     Strategy<IReadOnlyList<EchoRequest>> messages =
-        Generate.List(Generate.FromProtobuf<EchoRequest>(), minLength: 1, maxLength: 16);
+        Strategy.List(Strategy.FromProtobuf<EchoRequest>(), minLength: 1, maxLength: 16);
 
-    Strategy<GrpcInteraction> calls = Generate.Grpc.BidiStream(
+    Strategy<GrpcInteraction> calls = Strategy.Grpc.BidiStream(
         resourceName: "greeter",
         method: EchoServiceDescriptors.EchoMethod,
         requestsStrategy: messages);

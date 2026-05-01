@@ -151,7 +151,7 @@ When the property runs, Conjecture draws a fresh `Order` per example, saves it, 
 
 ## Step 4: Bind the strategy from the model
 
-The `Strategy<Order>` parameter above is resolved from the registered `Generate.For<Order>()` provider. Wire it from your `DbContext` model:
+The `Strategy<Order>` parameter above is resolved from the registered `Strategy.For<Order>()` provider. Wire it from your `DbContext` model:
 
 ```csharp
 [ConjectureSettings]
@@ -168,7 +168,7 @@ public class AssemblyFixture
 
 internal sealed class ModelStrategyProvider(IModel model) : IStrategyProvider
 {
-    public Strategy<T> Get<T>() where T : class => Generate.Entity<T>(() =>
+    public Strategy<T> Get<T>() where T : class => Strategy.Entity<T>(() =>
     {
         // Build from the cached IModel without instantiating a real context per draw
         DbContextOptions opts = new DbContextOptionsBuilder().UseSqlite("DataSource=:memory:").Options;
@@ -177,13 +177,13 @@ internal sealed class ModelStrategyProvider(IModel model) : IStrategyProvider
 }
 ```
 
-For the simpler case — explicit factory inside the test method — call `Generate.Entity<Order>(factory.Create)` directly:
+For the simpler case — explicit factory inside the test method — call `Strategy.Entity<Order>(factory.Create)` directly:
 
 ```csharp
 [Property]
 public async Task Order_Roundtrips_Without_Loss()
 {
-    Strategy<Order> orders = Generate.Entity<Order>(factory.Create);
+    Strategy<Order> orders = Strategy.Entity<Order>(factory.Create);
     Order order = orders.Sample();
     await RoundtripAsserter.AssertRoundtripAsync(factory.Create, order);
 }

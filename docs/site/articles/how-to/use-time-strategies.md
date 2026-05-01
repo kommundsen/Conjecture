@@ -10,7 +10,7 @@ dotnet add package Conjecture.Time
 
 ## Generate boundary dates
 
-Chain extension methods on `Generate.DateTimeOffsets()` to target problematic time regions:
+Chain extension methods on `Strategy.DateTimeOffsets()` to target problematic time regions:
 
 ```csharp
 using Conjecture.Core;
@@ -19,7 +19,7 @@ using Conjecture.Time;
 [Property]
 public bool MidnightRollover_HandledCorrectly(int x)
 {
-    DateTimeOffset dt = DataGen.SampleOne(Generate.DateTimeOffsets().NearMidnight());
+    DateTimeOffset dt = DataGen.SampleOne(Strategy.DateTimeOffsets().NearMidnight());
     return FormatDate(dt).Contains(dt.Year.ToString());
 }
 ```
@@ -42,7 +42,7 @@ Generate a cluster of `FakeTimeProvider` instances with bounded skew for distrib
 public bool LeaderElection_ConvergesUnderSkew(int x)
 {
     FakeTimeProvider[] clocks = DataGen.SampleOne(
-        Generate.ClockSet(nodeCount: 3, maxSkew: TimeSpan.FromSeconds(5)));
+        Strategy.ClockSet(nodeCount: 3, maxSkew: TimeSpan.FromSeconds(5)));
 
     Cluster cluster = new(clocks);
     cluster.RunElection();
@@ -68,4 +68,4 @@ public bool Scheduler_FiresOnTime([From<TimeProviderArbitrary>] TimeProvider clo
 ## See also
 
 - [Reference: Time strategies](../reference/time-strategies.md) — full API surface
-- [Reference: Strategies](../reference/strategies.md) — core `Generate.DateTimeOffsets()`, `Generate.TimeSpans()`, etc.
+- [Reference: Strategies](../reference/strategies.md) — core `Strategy.DateTimeOffsets()`, `Strategy.TimeSpans()`, etc.

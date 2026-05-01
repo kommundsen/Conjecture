@@ -33,10 +33,10 @@ High rejection rates cause poor performance and risk `UnsatisfiedAssumptionExcep
 
 ```csharp
 // Triggers CON101:
-var primes = Generate.Integers<int>(0, 1_000_000).Where(IsPrime);
+var primes = Strategy.Integers<int>(0, 1_000_000).Where(IsPrime);
 
 // Better: generate from a small known set
-var primes = Generate.SampledFrom(new[] { 2, 3, 5, 7, 11, 13 });
+var primes = Strategy.SampledFrom(new[] { 2, 3, 5, 7, 11, 13 });
 ```
 
 ### CON102: Sync-over-async inside `[Property]`
@@ -71,10 +71,10 @@ public async Task<bool> Good(int id)
 
 ```csharp
 // Triggers CON103:
-Generate.Integers<int>(100, 0)  // min (100) > max (0)
+Strategy.Integers<int>(100, 0)  // min (100) > max (0)
 
 // Fix:
-Generate.Integers<int>(0, 100)
+Strategy.Integers<int>(0, 100)
 ```
 
 ### CON104: `Assume.That(false)` always skips
@@ -207,10 +207,10 @@ A code fix is available.
 
 ```csharp
 // Triggers CJ0050:
-var pos = Generate.Integers<int>().Where(x => x > 0);  // CJ0050
+var pos = Strategy.Integers<int>().Where(x => x > 0);  // CJ0050
 
 // Fix: use the extension property
-var pos = Generate.Integers<int>().Positive;
+var pos = Strategy.Integers<int>().Positive;
 ```
 
 ## Source generator diagnostics
@@ -225,15 +225,15 @@ The `[Arbitrary]` source generator reports its own set of diagnostics:
 | CON201 | Error | `[Arbitrary]` type is not `partial` |
 | CON202 | Warning | Constructor parameter type has no resolvable strategy |
 
-### `Generate.For<T>()` call-site diagnostics (CON310–CON313)
+### `Strategy.For<T>()` call-site diagnostics (CON310–CON313)
 
-These fire at `Generate.For<T>()` or `[From<T>]` call sites. See [Reference: Generate.For&lt;T&gt;()](generate-for.md#generatefort-call-site-diagnostics) for resolution steps.
+These fire at `Strategy.For<T>()` or `[From<T>]` call sites. See [Reference: Strategy.For&lt;T&gt;()](generate-for.md#strategyfort-call-site-diagnostics) for resolution steps.
 
 | ID | Severity | Description |
 |---|---|---|
-| CON310 | Error | `Generate.For<T>()` target is an interface |
-| CON311 | Error | `Generate.For<T>()` target is abstract with no `[Arbitrary]` subtypes |
-| CON312 | Error | `Generate.For<T>()` has no registered provider — type lacks `[Arbitrary]` |
+| CON310 | Error | `Strategy.For<T>()` target is an interface |
+| CON311 | Error | `Strategy.For<T>()` target is abstract with no `[Arbitrary]` subtypes |
+| CON312 | Error | `Strategy.For<T>()` has no registered provider — type lacks `[Arbitrary]` |
 | CON313 | Warning | Mutually recursive `[Arbitrary]` types without `[StrategyMaxDepth]` |
 
 ### Sealed hierarchy diagnostics (CON205, CON300–CON302)

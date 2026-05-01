@@ -35,8 +35,8 @@ conjecture generate \
 public sealed class PersonProvider : IStrategyProvider<Person>
 {
     public Strategy<Person> Create() =>
-        from name in Generate.Strings(minLength: 1, maxLength: 50)
-        from age in Generate.Integers<int>(18, 99)
+        from name in Strategy.Strings(minLength: 1, maxLength: 50)
+        from age in Strategy.Integers<int>(18, 99)
         select new Person(name, age);
 }
 ```
@@ -90,7 +90,7 @@ public record Location(int CityCode);
 public sealed class LocationProvider : IStrategyProvider<Location>
 {
     public Strategy<Location> Create() =>
-        Generate.Integers<int>(1, 999).Select(static code => new Location(code));
+        Strategy.Integers<int>(1, 999).Select(static code => new Location(code));
 }
 ```
 

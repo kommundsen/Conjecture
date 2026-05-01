@@ -9,7 +9,7 @@ items:
     href: extension-properties.md
   - name: Attributes
     href: attributes.md
-  - name: Generate.For&lt;T&gt;()
+  - name: Strategy.For&lt;T&gt;()
     href: generate-for.md
   - name: Analyzers
     href: analyzers.md

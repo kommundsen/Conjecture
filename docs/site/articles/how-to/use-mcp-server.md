@@ -25,18 +25,18 @@ Add it to your `.mcp.json`:
 
 ### `suggest-strategy`
 
-Recommends the right `Generate.*` factory for a given C# type name.
+Recommends the right `Strategy.*` factory for a given C# type name.
 
 | Input | Suggestion |
 |---|---|
-| `int` | `Generate.Integers<int>()` |
-| `string` | `Generate.Strings()` |
-| `List<bool>` | `Generate.Lists(Generate.Booleans())` |
-| `IReadOnlySet<int>` | `Generate.Sets(Generate.Integers<int>())` |
-| `IReadOnlyDictionary<string, int>` | `Generate.Dictionaries(Generate.Strings(), Generate.Integers<int>())` |
-| `int?` | `Generate.Nullable(Generate.Integers<int>())` |
-| `(int, string)` | `Generate.Tuples(Generate.Integers<int>(), Generate.Strings())` |
-| `MyRecord` | Options: `Generate.Compose`, `[Arbitrary]`, `Generate.Enums`, `Generate.SampledFrom`, `.Select` |
+| `int` | `Strategy.Integers<int>()` |
+| `string` | `Strategy.Strings()` |
+| `List<bool>` | `Strategy.Lists(Strategy.Booleans())` |
+| `IReadOnlySet<int>` | `Strategy.Sets(Strategy.Integers<int>())` |
+| `IReadOnlyDictionary<string, int>` | `Strategy.Dictionaries(Strategy.Strings(), Strategy.Integers<int>())` |
+| `int?` | `Strategy.Nullable(Strategy.Integers<int>())` |
+| `(int, string)` | `Strategy.Tuples(Strategy.Integers<int>(), Strategy.Strings())` |
+| `MyRecord` | Options: `Strategy.Compose`, `[Arbitrary]`, `Strategy.Enums`, `Strategy.SampledFrom`, `.Select` |
 
 ### `scaffold-property-test`
 
@@ -146,11 +146,11 @@ Eight read-only resources are available at `conjecture://api/*`:
 
 | URI | Contents |
 |---|---|
-| `conjecture://api/strategies` | All `Generate.*` factory methods and LINQ combinators |
+| `conjecture://api/strategies` | All `Strategy.*` factory methods and LINQ combinators |
 | `conjecture://api/settings` | `ConjectureSettings`, `ConjectureSettingsAttribute`, and configuration options |
-| `conjecture://api/state-machines` | `IStateMachine<TState,TCommand>`, `StateMachineRun`, and `Generate.StateMachine` |
+| `conjecture://api/state-machines` | `IStateMachine<TState,TCommand>`, `StateMachineRun`, and `Strategy.StateMachine` |
 | `conjecture://api/shrinking` | How Conjecture finds minimal counterexamples |
 | `conjecture://api/assumptions` | `Assume.That()`, `IGeneratorContext.Assume()`, and `UnsatisfiedAssumptionException` |
 | `conjecture://api/attributes` | `[Property]`, `[Example]`, `[From<T>]`, `[FromMethod]`, `[ConjectureSettings]` |
 | `conjecture://api/targeted-testing` | `Target.Maximize`, `Target.Minimize`, `IGeneratorContext.Target`, and targeting settings |
-| `conjecture://api/recursive-strategies` | `Generate.Recursive<T>` for tree-shaped and self-referential types |
+| `conjecture://api/recursive-strategies` | `Strategy.Recursive<T>` for tree-shaped and self-referential types |

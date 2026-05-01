@@ -32,9 +32,9 @@ EF Core's `IModel` carries every type-system constraint the framework itself enf
 
 ADR 0065 lists what's in and out for v1. The short version: type-system constraints in, behavioural constraints out, LINQ query-shape fuzzing deferred to a future `Conjecture.EFCore.Linq`.
 
-## Bounded navigation depth, aligned with `Generate.Recursive`
+## Bounded navigation depth, aligned with `Strategy.Recursive`
 
-Cyclic navigations (`Customer ↔ Orders`) terminate at `maxDepth = 2` by default. The depth bound mirrors `Generate.Recursive()` so users carry a single mental model across primitive recursion and entity-graph recursion. At the bound: required reference navigations reuse the first generated parent of the same target type; optional reference navigations are set to `null`; collection navigations are emitted empty. Owned types — entities with no independent identity — are generated inline regardless of depth, matching EF's own modelling semantics.
+Cyclic navigations (`Customer ↔ Orders`) terminate at `maxDepth = 2` by default. The depth bound mirrors `Strategy.Recursive()` so users carry a single mental model across primitive recursion and entity-graph recursion. At the bound: required reference navigations reuse the first generated parent of the same target type; optional reference navigations are set to `null`; collection navigations are emitted empty. Owned types — entities with no independent identity — are generated inline regardless of depth, matching EF's own modelling semantics.
 
 The depth bound exists for a practical reason: without it, generation diverges on any model with a cycle. With it, generation is deterministic and shrinks predictably. Users who want larger graphs can override per-build via `EntityStrategyBuilder.WithMaxDepth`.
 
@@ -56,7 +56,7 @@ The trade-off: SQLite has gaps in DDL (notably column rebuild) that real product
 
 ## What a passing property test buys you
 
-A property test that runs `RoundtripAsserter.AssertRoundtripAsync` over `Generate.Entity<T>(db)` for every aggregate root in your domain answers a hard question precisely: *for the entire space of structurally-valid entities the model claims, can I save and reload without observable change?* If the answer is yes, you've ruled out an entire class of value-converter, model-mismatch, and tracking-edge bugs in tens of seconds. If the answer is no, you have a shrunk counterexample — typically a single-field divergence — that goes straight into a regression test.
+A property test that runs `RoundtripAsserter.AssertRoundtripAsync` over `Strategy.Entity<T>(db)` for every aggregate root in your domain answers a hard question precisely: *for the entire space of structurally-valid entities the model claims, can I save and reload without observable change?* If the answer is yes, you've ruled out an entire class of value-converter, model-mismatch, and tracking-edge bugs in tens of seconds. If the answer is no, you have a shrunk counterexample — typically a single-field divergence — that goes straight into a regression test.
 
 That ratio of cost to coverage is what property-based testing optimises for. EF Core's metadata-rich surface makes it one of the highest-leverage targets in the .NET ecosystem.
 

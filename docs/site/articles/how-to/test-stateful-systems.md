@@ -9,7 +9,7 @@ Conjecture's stateful testing engine models your system as a state machine and a
 
 ## When to use stateful testing
 
-Use `Generate.StateMachine<>` when:
+Use `Strategy.StateMachine<>` when:
 
 - Your system is **stateful** and correctness depends on the order of operations.
 - You want to verify a **safety invariant** holds across all reachable states.
@@ -50,9 +50,9 @@ public sealed class StackMachine : IStateMachine<StackState, StackCommand>
 
     public IEnumerable<Strategy<StackCommand>> Commands(StackState state)
     {
-        yield return Generate.Integers<int>(0, 9)
+        yield return Strategy.Integers<int>(0, 9)
             .Select(n => (StackCommand)new StackCommand.Push(n));
-        yield return Generate.Just((StackCommand)new StackCommand.Pop());
+        yield return Strategy.Just((StackCommand)new StackCommand.Pop());
     }
 
     public StackState RunCommand(StackState state, StackCommand cmd)
@@ -93,7 +93,7 @@ Expose the machine as an `IStrategyProvider<T>` and use `[From<T>]`:
 public sealed class StackMachineProvider : IStrategyProvider<StateMachineRun<StackState>>
 {
     public Strategy<StateMachineRun<StackState>> Create()
-        => Generate.StateMachine<StackMachine, StackState, StackCommand>(maxSteps: 100);
+        => Strategy.StateMachine<StackMachine, StackState, StackCommand>(maxSteps: 100);
 }
 
 [Property]
@@ -115,13 +115,13 @@ The engine generates random command sequences (up to `maxSteps`), calls `RunComm
 public IEnumerable<Strategy<StackCommand>> Commands(StackState state)
 {
     // Push is always available
-    yield return Generate.Integers<int>(0, 9)
+    yield return Strategy.Integers<int>(0, 9)
         .Select(n => (StackCommand)new StackCommand.Push(n));
 
     // Pop is only offered when the stack is non-empty
     if (state.Items.Count > 0)
     {
-        yield return Generate.Just((StackCommand)new StackCommand.Pop());
+        yield return Strategy.Just((StackCommand)new StackCommand.Pop());
     }
 }
 ```

@@ -28,7 +28,7 @@ public class ApiSafetyTests : IClassFixture<WebApplicationFactory<Program>>
     public async Task NeverReturns5xx(HttpInteraction request)
     {
         HttpClient client = this.factory.CreateClient();
-        Strategy<HttpInteraction> strategy = Generate
+        Strategy<HttpInteraction> strategy = Strategy
             .AspNetCoreRequests(this.factory.Services.GetRequiredService<IHost>(), client)
             .Build();
 

@@ -1,6 +1,6 @@
 # How to audit a regex for catastrophic backtracking
 
-Use `Generate.ReDoSHunter` to generate adversarial strings that expose
+Use `Strategy.ReDoSHunter` to generate adversarial strings that expose
 [catastrophic backtracking](../explanation/regex-catastrophic-backtracking.md) in a regex — then
 shrink the failure to the smallest possible pathological input.
 
@@ -12,7 +12,7 @@ dotnet add package Conjecture.Regex
 
 ## Write the property
 
-Wrap `Generate.ReDoSHunter` in a property that measures how long the regex takes on each
+Wrap `Strategy.ReDoSHunter` in a property that measures how long the regex takes on each
 generated string:
 
 ```csharp
@@ -24,7 +24,7 @@ using Conjecture.Regex;
 [Property]
 public bool UserInputPattern_DoesNotBacktrackCatastrophically()
 {
-    string input = DataGen.SampleOne(Generate.ReDoSHunter(@"(a+)+$", maxMatchMs: 50));
+    string input = DataGen.SampleOne(Strategy.ReDoSHunter(@"(a+)+$", maxMatchMs: 50));
 
     Stopwatch sw = Stopwatch.StartNew();
     Regex.IsMatch(input, @"(a+)+$");
@@ -107,7 +107,7 @@ private static partial Regex HostnamePattern();
 public bool HostnamePattern_IsNotVulnerableToReDoS()
 {
     string input = DataGen.SampleOne(
-        Generate.ReDoSHunter(HostnamePattern(), maxMatchMs: 25));
+        Strategy.ReDoSHunter(HostnamePattern(), maxMatchMs: 25));
 
     Stopwatch sw = Stopwatch.StartNew();
     HostnamePattern().IsMatch(input);
@@ -119,20 +119,20 @@ public bool HostnamePattern_IsNotVulnerableToReDoS()
 
 ## Handle `RegexOptions.NonBacktracking`
 
-When the regex uses `RegexOptions.NonBacktracking`, `Generate.ReDoSHunter` automatically falls
-back to `Generate.Matching` with the diagnostic label `"redos:non-backtracking"`. The property
+When the regex uses `RegexOptions.NonBacktracking`, `Strategy.ReDoSHunter` automatically falls
+back to `Strategy.Matching` with the diagnostic label `"redos:non-backtracking"`. The property
 will still run but will never find a catastrophic input — which is the correct result, since the
 NFA engine cannot exhibit catastrophic backtracking by design:
 
 ```csharp
 Regex safe = new(@"(a+)+$", RegexOptions.NonBacktracking);
-Strategy<string> strategy = Generate.ReDoSHunter(safe, maxMatchMs: 5);
+Strategy<string> strategy = Strategy.ReDoSHunter(safe, maxMatchMs: 5);
 
 Console.WriteLine(strategy.Label); // "redos:non-backtracking"
 ```
 
 ## See also
 
-- [Reference: `Generate.ReDoSHunter`](../reference/regex-strategies.md#generateredoshunter)
+- [Reference: `Strategy.ReDoSHunter`](../reference/regex-strategies.md#strategyredoshunter)
 - [Explanation: Why nested quantifiers cause catastrophic backtracking](../explanation/regex-catastrophic-backtracking.md)
 - [How to test a regex validator](test-regex-validator.md)

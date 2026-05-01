@@ -19,7 +19,7 @@ You need a Swagger/OpenAPI spec file (`.json` or `.yaml`) or a URL pointing to o
 ```csharp
 using Conjecture.OpenApi;
 
-OpenApiDocument doc = await Generate.FromOpenApi("swagger.json");
+OpenApiDocument doc = await Strategy.FromOpenApi("swagger.json");
 ```
 
 `FromOpenApi` accepts a file path (`string`), a `FileInfo`, or a `Uri` (for remote specs).
@@ -50,7 +50,7 @@ public class OrderApiTests(HttpClient client) : IClassFixture<ApiFactory>
     private static OpenApiDocument? _doc;
 
     private static async Task<OpenApiDocument> GetDoc() =>
-        _doc ??= await Generate.FromOpenApi("swagger.json");
+        _doc ??= await Strategy.FromOpenApi("swagger.json");
 
     [Property]
     public async Task CreateOrder_ValidRequest_Returns2xx(JsonElement body)
@@ -80,7 +80,7 @@ public class OrderApiTests(HttpClient client) : IClassFixture<ApiFactory>
     [Property]
     public async Task CreateOrder_ValidRequest_Returns2xx()
     {
-        OpenApiDocument doc = await Generate.FromOpenApi("swagger.json");
+        OpenApiDocument doc = await Strategy.FromOpenApi("swagger.json");
         Strategy<JsonElement> strategy = doc.RequestBody("POST", "/api/orders");
         IReadOnlyList<JsonElement> samples = DataGen.Sample(strategy, 20);
         foreach (JsonElement body in samples)
@@ -115,7 +115,7 @@ public class OrderApiTests
     [Property]
     public async Task CreateOrder_ValidRequest_Returns2xx()
     {
-        OpenApiDocument doc = await Generate.FromOpenApi("swagger.json");
+        OpenApiDocument doc = await Strategy.FromOpenApi("swagger.json");
         Strategy<JsonElement> strategy = doc.RequestBody("POST", "/api/orders");
         IReadOnlyList<JsonElement> samples = DataGen.Sample(strategy, 20);
         foreach (JsonElement body in samples)
@@ -147,7 +147,7 @@ public class OrderApiTests
     [Property]
     public async Task CreateOrder_ValidRequest_Returns2xx()
     {
-        OpenApiDocument doc = await Generate.FromOpenApi("swagger.json");
+        OpenApiDocument doc = await Strategy.FromOpenApi("swagger.json");
         Strategy<JsonElement> strategy = doc.RequestBody("POST", "/api/orders");
         IReadOnlyList<JsonElement> samples = DataGen.Sample(strategy, 20);
         foreach (JsonElement body in samples)

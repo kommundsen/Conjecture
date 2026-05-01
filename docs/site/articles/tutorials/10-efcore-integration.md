@@ -111,7 +111,7 @@ public class OrderRoundtripTests : IAsyncDisposable
     [Property]
     public async Task Order_Saves_And_Reloads_Without_Loss()
     {
-        Strategy<Order> orders = Generate.Entity<Order>(factory.Create);
+        Strategy<Order> orders = Strategy.Entity<Order>(factory.Create);
         Order order = orders.Sample();
 
         await RoundtripAsserter.AssertRoundtripAsync(factory.Create, order);
@@ -138,7 +138,7 @@ public class OrderRoundtripTests
     [Property]
     public async Task Order_Saves_And_Reloads_Without_Loss()
     {
-        Strategy<Order> orders = Generate.Entity<Order>(factory.Create);
+        Strategy<Order> orders = Strategy.Entity<Order>(factory.Create);
         Order order = orders.Sample();
 
         await RoundtripAsserter.AssertRoundtripAsync(factory.Create, order);
@@ -164,7 +164,7 @@ public class OrderRoundtripTests
     [Property]
     public async Task Order_Saves_And_Reloads_Without_Loss()
     {
-        Strategy<Order> orders = Generate.Entity<Order>(factory.Create);
+        Strategy<Order> orders = Strategy.Entity<Order>(factory.Create);
         Order order = orders.Sample();
 
         await RoundtripAsserter.AssertRoundtripAsync(factory.Create, order);
@@ -226,7 +226,7 @@ EntityStrategyBuilder b = new EntityStrategyBuilder(db.Model)
 Strategy<Order> minimalOrders = b.Build<Order>();
 ```
 
-`Generate.Entity<T>` is a thin wrapper over `EntityStrategyBuilder`; reach for the builder when you need `WithoutNavigation` or a non-default `WithMaxDepth`. See [customise entity generation](../how-to/customise-efcore-entity-generation.md) for the broader pattern.
+`Strategy.Entity<T>` is a thin wrapper over `EntityStrategyBuilder`; reach for the builder when you need `WithoutNavigation` or a non-default `WithMaxDepth`. See [customise entity generation](../how-to/customise-efcore-entity-generation.md) for the broader pattern.
 
 ## What you have now
 

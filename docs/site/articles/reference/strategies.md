@@ -4,68 +4,68 @@ All factory methods on the `Generate` static class, plus LINQ combinators from `
 
 ## Numeric strategies
 
-### `Generate.Integers<T>()`
+### `Strategy.Integers<T>()`
 
 ```csharp
-Strategy<T> Generate.Integers<T>()
+Strategy<T> Strategy.Integers<T>()
     where T : IBinaryInteger<T>
 ```
 
 Generates values across the full range of `T`. Works with `int`, `long`, `byte`, `short`, `uint`, `ulong`, `sbyte`, `ushort`, `nint`, `nuint`.
 
-### `Generate.Integers<T>(T min, T max)`
+### `Strategy.Integers<T>(T min, T max)`
 
 ```csharp
-Strategy<T> Generate.Integers<T>(T min, T max)
+Strategy<T> Strategy.Integers<T>(T min, T max)
     where T : IBinaryInteger<T>
 ```
 
 Generates values in `[min, max]` inclusive. `min` must be ≤ `max`.
 
-### `Generate.Doubles()`
+### `Strategy.Doubles()`
 
 ```csharp
-Strategy<double> Generate.Doubles()
+Strategy<double> Strategy.Doubles()
 ```
 
 Generates any `double`, including `NaN`, `+Infinity`, `-Infinity`, and denormals.
 
-### `Generate.Doubles(double min, double max)`
+### `Strategy.Doubles(double min, double max)`
 
 ```csharp
-Strategy<double> Generate.Doubles(double min, double max)
+Strategy<double> Strategy.Doubles(double min, double max)
 ```
 
 Generates `double` values in `[min, max]`. Neither bound may be `NaN`.
 
-### `Generate.Floats()`
+### `Strategy.Floats()`
 
 ```csharp
-Strategy<float> Generate.Floats()
+Strategy<float> Strategy.Floats()
 ```
 
 Generates any `float`, including `NaN`, `+Infinity`, `-Infinity`, and denormals.
 
-### `Generate.Floats(float min, float max)`
+### `Strategy.Floats(float min, float max)`
 
 ```csharp
-Strategy<float> Generate.Floats(float min, float max)
+Strategy<float> Strategy.Floats(float min, float max)
 ```
 
 Generates `float` values in `[min, max]`. Neither bound may be `NaN`.
 
-### `Generate.Booleans()`
+### `Strategy.Booleans()`
 
 ```csharp
-Strategy<bool> Generate.Booleans()
+Strategy<bool> Strategy.Booleans()
 ```
 
 Generates `true` and `false` with equal probability.
 
-### `Generate.Bytes(int size)`
+### `Strategy.Bytes(int size)`
 
 ```csharp
-Strategy<byte[]> Generate.Bytes(int size)
+Strategy<byte[]> Strategy.Bytes(int size)
 ```
 
 Generates a `byte[]` of exactly `size` bytes. `size` must be ≥ 0.
@@ -76,104 +76,104 @@ See [String strategies reference](string-strategies.md) for `Strings`, `Text`, `
 
 ## Date and time strategies
 
-### `Generate.DateTimeOffsets()`
+### `Strategy.DateTimeOffsets()`
 
 ```csharp
-Strategy<DateTimeOffset> Generate.DateTimeOffsets()
+Strategy<DateTimeOffset> Strategy.DateTimeOffsets()
 ```
 
 Generates `DateTimeOffset` values across the full range.
 
-### `Generate.DateTimeOffsets(DateTimeOffset min, DateTimeOffset max)`
+### `Strategy.DateTimeOffsets(DateTimeOffset min, DateTimeOffset max)`
 
 ```csharp
-Strategy<DateTimeOffset> Generate.DateTimeOffsets(DateTimeOffset min, DateTimeOffset max)
+Strategy<DateTimeOffset> Strategy.DateTimeOffsets(DateTimeOffset min, DateTimeOffset max)
 ```
 
 Generates `DateTimeOffset` values in `[min, max]`.
 
-### `Generate.TimeSpans()`
+### `Strategy.TimeSpans()`
 
 ```csharp
-Strategy<TimeSpan> Generate.TimeSpans()
+Strategy<TimeSpan> Strategy.TimeSpans()
 ```
 
 Generates `TimeSpan` values across the full range.
 
-### `Generate.TimeSpans(TimeSpan min, TimeSpan max)`
+### `Strategy.TimeSpans(TimeSpan min, TimeSpan max)`
 
 ```csharp
-Strategy<TimeSpan> Generate.TimeSpans(TimeSpan min, TimeSpan max)
+Strategy<TimeSpan> Strategy.TimeSpans(TimeSpan min, TimeSpan max)
 ```
 
 Generates `TimeSpan` values in `[min, max]`.
 
-### `Generate.DateOnlyValues()`
+### `Strategy.DateOnlyValues()`
 
 ```csharp
-Strategy<DateOnly> Generate.DateOnlyValues()
+Strategy<DateOnly> Strategy.DateOnlyValues()
 ```
 
 Generates `DateOnly` values across the full range.
 
-### `Generate.DateOnlyValues(DateOnly min, DateOnly max)`
+### `Strategy.DateOnlyValues(DateOnly min, DateOnly max)`
 
 ```csharp
-Strategy<DateOnly> Generate.DateOnlyValues(DateOnly min, DateOnly max)
+Strategy<DateOnly> Strategy.DateOnlyValues(DateOnly min, DateOnly max)
 ```
 
 Generates `DateOnly` values in `[min, max]`.
 
-### `Generate.TimeOnlyValues()`
+### `Strategy.TimeOnlyValues()`
 
 ```csharp
-Strategy<TimeOnly> Generate.TimeOnlyValues()
+Strategy<TimeOnly> Strategy.TimeOnlyValues()
 ```
 
 Generates `TimeOnly` values across the full range.
 
-### `Generate.TimeOnlyValues(TimeOnly min, TimeOnly max)`
+### `Strategy.TimeOnlyValues(TimeOnly min, TimeOnly max)`
 
 ```csharp
-Strategy<TimeOnly> Generate.TimeOnlyValues(TimeOnly min, TimeOnly max)
+Strategy<TimeOnly> Strategy.TimeOnlyValues(TimeOnly min, TimeOnly max)
 ```
 
 Generates `TimeOnly` values in `[min, max]`.
 
-For boundary-focused extensions (`.NearMidnight()`, `.NearDstTransition()`, etc.) and `Generate.TimeZones`/`Generate.ClockSet` factory methods, see [Time strategies reference](time-strategies.md).
+For boundary-focused extensions (`.NearMidnight()`, `.NearDstTransition()`, etc.) and `Strategy.TimeZones`/`Strategy.ClockSet` factory methods, see [Time strategies reference](time-strategies.md).
 
 ## Byte buffer strategies
 
-### `Generate.FromBytes<T>(ReadOnlySpan<byte> buffer)`
+### `Strategy.FromBytes<T>(ReadOnlySpan<byte> buffer)`
 
 ```csharp
-Strategy<T> Generate.FromBytes<T>(ReadOnlySpan<byte> buffer)
+Strategy<T> Strategy.FromBytes<T>(ReadOnlySpan<byte> buffer)
 ```
 
 Replays a value of type `T` from a fixed byte buffer using the default strategy for `T`. The buffer is the same format stored by the example database. Useful for deterministic replay and round-trip testing.
 
 ## Collection strategies
 
-### `Generate.Lists<T>(Strategy<T> inner, int minSize = 0, int maxSize = 100)`
+### `Strategy.Lists<T>(Strategy<T> inner, int minSize = 0, int maxSize = 100)`
 
 ```csharp
-Strategy<List<T>> Generate.Lists<T>(Strategy<T> inner, int minSize = 0, int maxSize = 100)
+Strategy<List<T>> Strategy.Lists<T>(Strategy<T> inner, int minSize = 0, int maxSize = 100)
 ```
 
 Generates `List<T>` with length in `[minSize, maxSize]`. `minSize` must be ≥ 0 and ≤ `maxSize`.
 
-### `Generate.Sets<T>(Strategy<T> inner, int minSize = 0, int maxSize = 100)`
+### `Strategy.Sets<T>(Strategy<T> inner, int minSize = 0, int maxSize = 100)`
 
 ```csharp
-Strategy<IReadOnlySet<T>> Generate.Sets<T>(Strategy<T> inner, int minSize = 0, int maxSize = 100)
+Strategy<IReadOnlySet<T>> Strategy.Sets<T>(Strategy<T> inner, int minSize = 0, int maxSize = 100)
 ```
 
 Generates `IReadOnlySet<T>` (backed by `HashSet<T>`) with cardinality in `[minSize, maxSize]`.
 
-### `Generate.Dictionaries<TKey, TValue>(Strategy<TKey> keys, Strategy<TValue> values, int minSize = 0, int maxSize = 100)`
+### `Strategy.Dictionaries<TKey, TValue>(Strategy<TKey> keys, Strategy<TValue> values, int minSize = 0, int maxSize = 100)`
 
 ```csharp
-Strategy<IReadOnlyDictionary<TKey, TValue>> Generate.Dictionaries<TKey, TValue>(
+Strategy<IReadOnlyDictionary<TKey, TValue>> Strategy.Dictionaries<TKey, TValue>(
     Strategy<TKey> keys,
     Strategy<TValue> values,
     int minSize = 0,
@@ -184,43 +184,43 @@ Generates `IReadOnlyDictionary<TKey, TValue>` with entry count in `[minSize, max
 
 ## Choice strategies
 
-### `Generate.Just<T>(T value)`
+### `Strategy.Just<T>(T value)`
 
 ```csharp
-Strategy<T> Generate.Just<T>(T value)
+Strategy<T> Strategy.Just<T>(T value)
 ```
 
 Always produces the same `value`. Useful as a degenerate case in `OneOf` or `Recursive`.
 
-### `Generate.OneOf<T>(params Strategy<T>[] strategies)`
+### `Strategy.OneOf<T>(params Strategy<T>[] strategies)`
 
 ```csharp
-Strategy<T> Generate.OneOf<T>(params Strategy<T>[] strategies)
+Strategy<T> Strategy.OneOf<T>(params Strategy<T>[] strategies)
 ```
 
 Picks one strategy per example uniformly at random, then generates a value from it.
 
-### `Generate.SampledFrom<T>(IReadOnlyList<T> values)`
+### `Strategy.SampledFrom<T>(IReadOnlyList<T> values)`
 
 ```csharp
-Strategy<T> Generate.SampledFrom<T>(IReadOnlyList<T> values)
+Strategy<T> Strategy.SampledFrom<T>(IReadOnlyList<T> values)
 ```
 
 Picks one element from `values` uniformly at random. `values` must be non-empty.
 
-### `Generate.Enums<T>()`
+### `Strategy.Enums<T>()`
 
 ```csharp
-Strategy<T> Generate.Enums<T>()
+Strategy<T> Strategy.Enums<T>()
     where T : struct, Enum
 ```
 
 Picks one declared value from `T` uniformly at random.
 
-### `Generate.Nullable<T>(Strategy<T> inner)`
+### `Strategy.Nullable<T>(Strategy<T> inner)`
 
 ```csharp
-Strategy<T?> Generate.Nullable<T>(Strategy<T> inner)
+Strategy<T?> Strategy.Nullable<T>(Strategy<T> inner)
     where T : struct
 ```
 
@@ -228,31 +228,31 @@ Returns `null` approximately 10% of the time; otherwise generates a value from `
 
 ## Tuple strategies
 
-### `Generate.Tuples<T1, T2>`
+### `Strategy.Tuples<T1, T2>`
 
 ```csharp
-Strategy<(T1, T2)> Generate.Tuples<T1, T2>(Strategy<T1> first, Strategy<T2> second)
-Strategy<(T1, T2, T3)> Generate.Tuples<T1, T2, T3>(Strategy<T1>, Strategy<T2>, Strategy<T3>)
-Strategy<(T1, T2, T3, T4)> Generate.Tuples<T1, T2, T3, T4>(Strategy<T1>, Strategy<T2>, Strategy<T3>, Strategy<T4>)
+Strategy<(T1, T2)> Strategy.Tuples<T1, T2>(Strategy<T1> first, Strategy<T2> second)
+Strategy<(T1, T2, T3)> Strategy.Tuples<T1, T2, T3>(Strategy<T1>, Strategy<T2>, Strategy<T3>)
+Strategy<(T1, T2, T3, T4)> Strategy.Tuples<T1, T2, T3, T4>(Strategy<T1>, Strategy<T2>, Strategy<T3>, Strategy<T4>)
 ```
 
 Generates value tuples from independent strategies. Each element is drawn independently.
 
 ## Composition strategies
 
-### `Generate.Compose<T>(Func<IGeneratorContext, T> factory)`
+### `Strategy.Compose<T>(Func<IGeneratorContext, T> factory)`
 
 ```csharp
-Strategy<T> Generate.Compose<T>(Func<IGeneratorContext, T> factory)
+Strategy<T> Strategy.Compose<T>(Func<IGeneratorContext, T> factory)
 ```
 
 Imperative strategy builder. The `factory` receives an `IGeneratorContext` and calls `ctx.Generate(strategy)` to draw values.
 
 ```csharp
-var strategy = Generate.Compose<Person>(ctx =>
+var strategy = Strategy.Compose<Person>(ctx =>
 {
-    string name = ctx.Generate(Generate.Strings(1, 50));
-    int age = ctx.Generate(Generate.Integers<int>(0, 150));
+    string name = ctx.Generate(Strategy.Strings(1, 50));
+    int age = ctx.Generate(Strategy.Integers<int>(0, 150));
     return new Person(name, age);
 });
 ```
@@ -262,11 +262,11 @@ var strategy = Generate.Compose<Person>(ctx =>
 - `void Assume(bool condition)` — skip current example if false
 - `void Target(double observation, string label = "default")` — record a targeting score
 
-### `Generate.Recursive<T>(Strategy<T> baseCase, Func<Strategy<T>, Strategy<T>> recursive, int maxDepth = 5)`
+### `Strategy.Recursive<T>(Strategy<T> baseCase, Func<Strategy<T>, Strategy<T>> recursive, int maxDepth = 5)`
 
 See [How to generate recursive structures](../how-to/generate-recursive-structures.md).
 
-### `Generate.StateMachine<TMachine, TState, TCommand>(int maxSteps = 50)`
+### `Strategy.StateMachine<TMachine, TState, TCommand>(int maxSteps = 50)`
 
 See [How to test stateful systems](../how-to/test-stateful-systems.md).
 
@@ -279,7 +279,7 @@ All combinators are extension methods on `Strategy<T>`.
 Maps each generated value. Equivalent to `strategy.map(f)` in Hypothesis.
 
 ```csharp
-Strategy<string> upperStrings = Generate.Strings().Select(s => s.ToUpperInvariant());
+Strategy<string> upperStrings = Strategy.Strings().Select(s => s.ToUpperInvariant());
 ```
 
 ### `Where<T>(Func<T, bool> predicate)`
@@ -287,7 +287,7 @@ Strategy<string> upperStrings = Generate.Strings().Select(s => s.ToUpperInvarian
 Filters generated values. Use sparingly — see CON101.
 
 ```csharp
-Strategy<int> evens = Generate.Integers<int>(0, 1000).Where(n => n % 2 == 0);
+Strategy<int> evens = Strategy.Integers<int>(0, 1000).Where(n => n % 2 == 0);
 ```
 
 ### `SelectMany<TSource, TResult>(Func<TSource, Strategy<TResult>> selector)`
@@ -296,9 +296,9 @@ Generates a value, then uses it to create another strategy. Enables dependent ge
 
 ```csharp
 Strategy<(List<int>, int)> listWithElement =
-    Generate.Lists(Generate.Integers<int>(), minSize: 1)
+    Strategy.Lists(Strategy.Integers<int>(), minSize: 1)
         .SelectMany(list =>
-            Generate.SampledFrom(list).Select(elem => (list, elem)));
+            Strategy.SampledFrom(list).Select(elem => (list, elem)));
 ```
 
 ### `Zip<TFirst, TSecond>(Strategy<TSecond> second)`

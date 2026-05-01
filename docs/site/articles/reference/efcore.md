@@ -13,7 +13,7 @@ API reference for the `Conjecture.EFCore` package. Install via:
 
 ---
 
-## `Generate.Entity<T>` — extension methods on `Generate`
+## `Strategy.Entity<T>` — extension methods on `Generate`
 
 ```csharp
 namespace Conjecture.EFCore;
@@ -42,7 +42,7 @@ using Conjecture.Core;
 using Conjecture.EFCore;
 
 await using AppDbContext db = CreateContext();
-Strategy<Order> orders = Generate.Entity<Order>(db);
+Strategy<Order> orders = Strategy.Entity<Order>(db);
 Order example = orders.Sample();
 ```
 

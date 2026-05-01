@@ -7,7 +7,7 @@ Month-end rollovers, leap days, and midnight/noon transitions are persistent sou
 
 ## DateOnly boundary extensions
 
-Chain extensions after `Generate.DateOnlyValues()`.
+Chain extensions after `Strategy.DateOnlyValues()`.
 
 ### `.NearMonthBoundary()`
 
@@ -20,7 +20,7 @@ using Conjecture.Time;
 [Property]
 public bool BillingCycle_HasCorrectDayCount(int x)
 {
-    DateOnly start = DataGen.SampleOne(Generate.DateOnlyValues().NearMonthBoundary());
+    DateOnly start = DataGen.SampleOne(Strategy.DateOnlyValues().NearMonthBoundary());
     int days = BillingCycle.DaysInPeriod(start, start.AddMonths(1));
     return days is >= 28 and <= 31;
 }
@@ -34,7 +34,7 @@ Generates dates within ±1 day of February 29 in a leap year (years 1970–2400)
 [Property]
 public bool AgeCalculator_HandlesLeapBirthdays(int x)
 {
-    DateOnly birthday = DataGen.SampleOne(Generate.DateOnlyValues().NearLeapDay());
+    DateOnly birthday = DataGen.SampleOne(Strategy.DateOnlyValues().NearLeapDay());
     DateOnly today = DateOnly.FromDateTime(DateTime.UtcNow);
     int age = AgeCalculator.ComputeAge(birthday, today);
     return age >= 0;
@@ -43,7 +43,7 @@ public bool AgeCalculator_HandlesLeapBirthdays(int x)
 
 ## TimeOnly boundary extensions
 
-Chain extensions after `Generate.TimeOnlyValues()`.
+Chain extensions after `Strategy.TimeOnlyValues()`.
 
 ### `.NearMidnight()`
 
@@ -53,7 +53,7 @@ Generates times within 30 seconds of midnight, covering both ends of the day: `[
 [Property]
 public bool Scheduler_HandlesNearMidnight(int x)
 {
-    TimeOnly trigger = DataGen.SampleOne(Generate.TimeOnlyValues().NearMidnight());
+    TimeOnly trigger = DataGen.SampleOne(Strategy.TimeOnlyValues().NearMidnight());
     return Scheduler.IsValidTriggerTime(trigger);
 }
 ```
@@ -66,7 +66,7 @@ Generates times within 30 seconds of 12:00:00. Useful for systems that treat noo
 [Property]
 public bool ShiftHandover_AtNoon_IsComplete(int x)
 {
-    TimeOnly handover = DataGen.SampleOne(Generate.TimeOnlyValues().NearNoon());
+    TimeOnly handover = DataGen.SampleOne(Strategy.TimeOnlyValues().NearNoon());
     ShiftHandoverResult result = ShiftManager.ComputeHandover(handover);
     return result is not null;
 }
@@ -80,7 +80,7 @@ Generates times within 30 seconds of 23:59:59:
 [Property]
 public bool DailyReport_IncludesEndOfDayEntries(int x)
 {
-    TimeOnly entryTime = DataGen.SampleOne(Generate.TimeOnlyValues().NearEndOfDay());
+    TimeOnly entryTime = DataGen.SampleOne(Strategy.TimeOnlyValues().NearEndOfDay());
     DateOnly date = DateOnly.FromDateTime(DateTime.UtcNow);
     DailyReport report = ReportBuilder.Build(date);
     return report.Includes(date, entryTime);
