@@ -7,4 +7,5 @@ open Expecto
 
 [<EntryPoint>]
 let main argv =
-    runTestsWithCLIArgs [] argv ExpectoPropertyTests.tests
+    let combined = testList "all" [ ExpectoPropertyTests.tests; ReproExportIntegrationTests.tests ]
+    runTestsWithCLIArgs [] argv combined

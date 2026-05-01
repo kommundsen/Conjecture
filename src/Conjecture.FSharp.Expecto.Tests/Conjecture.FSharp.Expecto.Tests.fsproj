@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Compile Include="ExpectoPropertyTests.fs" />
+    <Compile Include="ReproExportIntegrationTests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
