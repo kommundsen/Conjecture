@@ -15,6 +15,7 @@ public class StrategyToolsTests
     [InlineData("double", "Strategy.Doubles()")]
     [InlineData("string", "Strategy.Strings()")]
     [InlineData("byte[]", "Strategy.Bytes(size)")]
+    [InlineData("Guid", "Strategy.Guids")]
     public void SuggestForType_KnownPrimitive_ContainsExpectedCall(string typeName, string expectedCall)
     {
         var result = StrategyTools.SuggestForType(typeName);
