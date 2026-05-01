@@ -29,9 +29,6 @@ public static class Strategy
     public static Strategy<T> Integers<T>(T min, T max) where T : IBinaryInteger<T>
         => new IntegerStrategy<T>(min, max);
 
-    /// <summary>Returns a strategy that generates random byte arrays of length <paramref name="size"/>.</summary>
-    public static Strategy<byte[]> Bytes(int size) => new BytesStrategy(size);
-
     /// <summary>Returns a strategy that generates <typeparamref name="T"/> arrays with length in [<paramref name="minSize"/>, <paramref name="maxSize"/>] and elements drawn from <paramref name="inner"/>.</summary>
     public static Strategy<T[]> Arrays<T>(Strategy<T> inner, int minSize = 0, int maxSize = 100)
     {
