@@ -16,124 +16,29 @@ public sealed class CON107Tests
 
         """;
 
-    // --- Fires on Guid.NewGuid() inside [Property] ---
+    // --- Any non-deterministic call inside [Property] → CON107 ---
 
-    [Fact]
-    public async Task GuidNewGuid_InsidePropertyMethod_EmitsCon107()
+    [Theory]
+    [InlineData("Guid g = {|CON107:Guid.NewGuid()|};")]
+    [InlineData("DateTime d = {|CON107:DateTime.Now|};")]
+    [InlineData("DateTime d = {|CON107:DateTime.UtcNow|};")]
+    [InlineData("Random r = {|CON107:new Random()|};")]
+    [InlineData("Random r = {|CON107:Random.Shared|};")]
+    [InlineData("DateTimeOffset d = {|CON107:DateTimeOffset.Now|};")]
+    [InlineData("DateTimeOffset d = {|CON107:DateTimeOffset.UtcNow|};")]
+    [InlineData("int t = {|CON107:Environment.TickCount|};")]
+    [InlineData("long t = {|CON107:Environment.TickCount64|};")]
+    public async Task NonDeterministicCall_InsidePropertyMethod_EmitsCon107(string statement)
     {
-        await VerifyAsync(Preamble + """
+        await VerifyAsync(Preamble + $$"""
             class Tests {
                 [Property]
-                public void Foo() { Guid g = {|CON107:Guid.NewGuid()|}; }
+                public void Foo() { {{statement}} }
             }
             """);
     }
 
-    // --- Fires on DateTime.Now inside [Property] ---
-
-    [Fact]
-    public async Task DateTimeNow_InsidePropertyMethod_EmitsCon107()
-    {
-        await VerifyAsync(Preamble + """
-            class Tests {
-                [Property]
-                public void Foo() { DateTime d = {|CON107:DateTime.Now|}; }
-            }
-            """);
-    }
-
-    // --- Fires on DateTime.UtcNow inside [Property] ---
-
-    [Fact]
-    public async Task DateTimeUtcNow_InsidePropertyMethod_EmitsCon107()
-    {
-        await VerifyAsync(Preamble + """
-            class Tests {
-                [Property]
-                public void Foo() { DateTime d = {|CON107:DateTime.UtcNow|}; }
-            }
-            """);
-    }
-
-    // --- Fires on new Random() inside [Property] ---
-
-    [Fact]
-    public async Task NewRandom_InsidePropertyMethod_EmitsCon107()
-    {
-        await VerifyAsync(Preamble + """
-            class Tests {
-                [Property]
-                public void Foo() { Random r = {|CON107:new Random()|}; }
-            }
-            """);
-    }
-
-    // --- Fires on Random.Shared inside [Property] ---
-
-    [Fact]
-    public async Task RandomShared_InsidePropertyMethod_EmitsCon107()
-    {
-        await VerifyAsync(Preamble + """
-            class Tests {
-                [Property]
-                public void Foo() { Random r = {|CON107:Random.Shared|}; }
-            }
-            """);
-    }
-
-    // --- Fires on DateTimeOffset.Now inside [Property] ---
-
-    [Fact]
-    public async Task DateTimeOffsetNow_InsidePropertyMethod_EmitsCon107()
-    {
-        await VerifyAsync(Preamble + """
-            class Tests {
-                [Property]
-                public void Foo() { DateTimeOffset d = {|CON107:DateTimeOffset.Now|}; }
-            }
-            """);
-    }
-
-    // --- Fires on DateTimeOffset.UtcNow inside [Property] ---
-
-    [Fact]
-    public async Task DateTimeOffsetUtcNow_InsidePropertyMethod_EmitsCon107()
-    {
-        await VerifyAsync(Preamble + """
-            class Tests {
-                [Property]
-                public void Foo() { DateTimeOffset d = {|CON107:DateTimeOffset.UtcNow|}; }
-            }
-            """);
-    }
-
-    // --- Fires on Environment.TickCount inside [Property] ---
-
-    [Fact]
-    public async Task EnvironmentTickCount_InsidePropertyMethod_EmitsCon107()
-    {
-        await VerifyAsync(Preamble + """
-            class Tests {
-                [Property]
-                public void Foo() { int t = {|CON107:Environment.TickCount|}; }
-            }
-            """);
-    }
-
-    // --- Fires on Environment.TickCount64 inside [Property] ---
-
-    [Fact]
-    public async Task EnvironmentTickCount64_InsidePropertyMethod_EmitsCon107()
-    {
-        await VerifyAsync(Preamble + """
-            class Tests {
-                [Property]
-                public void Foo() { long t = {|CON107:Environment.TickCount64|}; }
-            }
-            """);
-    }
-
-    // --- Silent when same calls appear outside a [Property] method ---
+    // --- Same calls outside [Property] → no diagnostic ---
 
     [Fact]
     public async Task NonDeterministicCalls_OutsidePropertyMethod_NoCon107()
@@ -151,7 +56,7 @@ public sealed class CON107Tests
             """);
     }
 
-    // --- Silent when [Property] method has no non-deterministic calls ---
+    // --- [Property] method with no non-deterministic calls → no diagnostic ---
 
     [Fact]
     public async Task PropertyMethod_WithNonDeterministicCalls_NoCon107()
