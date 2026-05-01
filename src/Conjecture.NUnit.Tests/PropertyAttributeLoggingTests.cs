@@ -8,6 +8,8 @@ using Microsoft.Extensions.Logging;
 
 using NUnit.Framework;
 
+using Conjecture.Abstractions.Testing;
+
 namespace Conjecture.NUnit.Tests;
 
 /// <summary>

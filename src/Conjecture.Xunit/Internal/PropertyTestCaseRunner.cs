@@ -13,6 +13,8 @@ using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
+using Conjecture.Abstractions.Testing;
+
 namespace Conjecture.Xunit.Internal;
 
 internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
