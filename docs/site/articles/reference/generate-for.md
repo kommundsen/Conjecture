@@ -1,8 +1,8 @@
-# Generate.For&lt;T&gt;() reference
+# Strategy.For&lt;T&gt;() reference
 
-API surface, attribute reference, primitive mapping, and diagnostic codes for `Generate.For<T>()` and the constraint attributes.
+API surface, attribute reference, primitive mapping, and diagnostic codes for `Strategy.For<T>()` and the constraint attributes.
 
-## `Generate.For<T>()`
+## `Strategy.For<T>()`
 
 **Namespace:** `Conjecture.Core`  
 **Package:** `Conjecture.Core` (bundled — no extra NuGet package)
@@ -19,7 +19,7 @@ public static Strategy<T> For<T>(Action<ForConfiguration<T>> configure);
 
 ## `ForConfiguration<T>`
 
-Passed to the `configure` callback in `Generate.For<T>(cfg => ...)`.
+Passed to the `configure` callback in `Strategy.For<T>(cfg => ...)`.
 
 ### `Override<TProp>`
 
@@ -32,9 +32,9 @@ public ForConfiguration<T> Override<TProp>(
 Replaces the strategy for the property identified by `selector` with `strategy`. Multiple overrides can be chained; all other properties use their generated defaults.
 
 ```csharp
-Strategy<Order> orders = Generate.For<Order>(cfg => cfg
-    .Override(o => o.Total, Generate.Decimals(0m, 999.99m))
-    .Override(o => o.Customer, Generate.Strings(minLength: 1)));
+Strategy<Order> orders = Strategy.For<Order>(cfg => cfg
+    .Override(o => o.Total, Strategy.Decimals(0m, 999.99m))
+    .Override(o => o.Customer, Strategy.Strings(minLength: 1)));
 ```
 
 **Constraints:**
@@ -120,24 +120,24 @@ Default depth when the attribute is absent: **5**.
 
 | Parameter type | Generated strategy |
 |---|---|
-| `bool` | `Generate.Booleans()` |
-| `byte`, `short`, `int`, `long` | `Generate.Integers<T>()` (full range) |
-| `uint`, `ulong`, `ushort`, `sbyte` | `Generate.Integers<T>()` (full range) |
-| `float` | `Generate.Floats()` |
-| `double` | `Generate.Doubles()` |
-| `decimal` | `Generate.Decimals()` |
-| `string` | `Generate.Strings()` (length 0–20, printable ASCII) |
-| `char` | `Generate.Chars()` |
-| `Guid` | `Generate.Guids()` |
-| `DateTime` | `Generate.DateTimes()` |
-| `DateTimeOffset` | `Generate.DateTimeOffsets()` |
-| `DateOnly` | `Generate.DateOnlyValues()` |
-| `TimeOnly` | `Generate.TimeOnlyValues()` |
-| `TimeSpan` | `Generate.TimeSpans()` |
-| `T?` (value type) | `Generate.Nullable(inner)` |
+| `bool` | `Strategy.Booleans()` |
+| `byte`, `short`, `int`, `long` | `Strategy.Integers<T>()` (full range) |
+| `uint`, `ulong`, `ushort`, `sbyte` | `Strategy.Integers<T>()` (full range) |
+| `float` | `Strategy.Floats()` |
+| `double` | `Strategy.Doubles()` |
+| `decimal` | `Strategy.Decimals()` |
+| `string` | `Strategy.Strings()` (length 0–20, printable ASCII) |
+| `char` | `Strategy.Chars()` |
+| `Guid` | `Strategy.Guids()` |
+| `DateTime` | `Strategy.DateTimes()` |
+| `DateTimeOffset` | `Strategy.DateTimeOffsets()` |
+| `DateOnly` | `Strategy.DateOnlyValues()` |
+| `TimeOnly` | `Strategy.TimeOnlyValues()` |
+| `TimeSpan` | `Strategy.TimeSpans()` |
+| `T?` (value type) | `Strategy.Nullable(inner)` |
 | `T?` (reference type) | `inner.OrNull()` (~10% null probability) |
-| Enum `T` | `Generate.Enums<T>()` |
-| `[Arbitrary]` type | `Generate.For<T>()` (nested) |
+| Enum `T` | `Strategy.Enums<T>()` |
+| `[Arbitrary]` type | `Strategy.For<T>()` (nested) |
 
 `[StrategyRange]`, `[StrategyStringLength]`, and `[StrategyRegex]` override the defaults for the individual parameter they are applied to.
 
@@ -145,34 +145,34 @@ Default depth when the attribute is absent: **5**.
 
 | Parameter type | Generated strategy |
 |---|---|
-| `List<T>` | `Generate.Lists(inner)` |
-| `IReadOnlyList<T>` | `Generate.Lists(inner)` |
-| `IList<T>` | `Generate.Lists(inner)` |
-| `IEnumerable<T>` | `Generate.Lists(inner)` |
-| `T[]` | `Generate.Lists(inner).Select(l => l.ToArray())` |
-| `IReadOnlySet<T>`, `HashSet<T>` | `Generate.Sets(inner)` |
-| `IReadOnlyDictionary<K,V>`, `Dictionary<K,V>` | `Generate.Dictionaries(keyInner, valueInner)` |
+| `List<T>` | `Strategy.Lists(inner)` |
+| `IReadOnlyList<T>` | `Strategy.Lists(inner)` |
+| `IList<T>` | `Strategy.Lists(inner)` |
+| `IEnumerable<T>` | `Strategy.Lists(inner)` |
+| `T[]` | `Strategy.Lists(inner).Select(l => l.ToArray())` |
+| `IReadOnlySet<T>`, `HashSet<T>` | `Strategy.Sets(inner)` |
+| `IReadOnlyDictionary<K,V>`, `Dictionary<K,V>` | `Strategy.Dictionaries(keyInner, valueInner)` |
 
 Collection size defaults to 0–100 elements. Apply `[StrategyRange]` to a `List<T>` parameter to constrain the element count.
 
-## `Generate.For<T>()` call-site diagnostics
+## `Strategy.For<T>()` call-site diagnostics
 
-These diagnostics fire at the `Generate.For<T>()` or `[From<T>]` call site, not on the type declaration.
+These diagnostics fire at the `Strategy.For<T>()` or `[From<T>]` call site, not on the type declaration.
 
 ### CON310 — target is an interface
 
 **Severity:** Error
 
-`Generate.For<T>()` cannot generate a strategy for an interface type. Apply `[Arbitrary]` to each concrete implementation and use `Generate.OneOf(...)` to combine them.
+`Strategy.For<T>()` cannot generate a strategy for an interface type. Apply `[Arbitrary]` to each concrete implementation and use `Strategy.OneOf(...)` to combine them.
 
 ```csharp
 // Error:
-Strategy<IShape> shapes = Generate.For<IShape>();  // CON310
+Strategy<IShape> shapes = Strategy.For<IShape>();  // CON310
 
 // Fix: use concrete types
-Strategy<IShape> shapes = Generate.OneOf(
-    Generate.For<Circle>().Select(c => (IShape)c),
-    Generate.For<Rectangle>().Select(r => (IShape)r));
+Strategy<IShape> shapes = Strategy.OneOf(
+    Strategy.For<Circle>().Select(c => (IShape)c),
+    Strategy.For<Rectangle>().Select(r => (IShape)r));
 ```
 
 ### CON311 — abstract type with no `[Arbitrary]` subtypes
@@ -186,7 +186,7 @@ The type is abstract but has no concrete subtypes decorated with `[Arbitrary]` i
 [Arbitrary]
 public abstract partial class Animal { }
 
-Strategy<Animal> animals = Generate.For<Animal>();  // CON311
+Strategy<Animal> animals = Strategy.For<Animal>();  // CON311
 
 // Fix: add [Arbitrary] to at least one concrete subtype
 [Arbitrary]
@@ -197,12 +197,12 @@ public partial class Dog : Animal { }
 
 **Severity:** Error
 
-`Generate.For<T>()` was called for a type that has no `[Arbitrary]` attribute and therefore no registered `IStrategyProvider<T>`.
+`Strategy.For<T>()` was called for a type that has no `[Arbitrary]` attribute and therefore no registered `IStrategyProvider<T>`.
 
 ```csharp
 // Error:
 public class Widget { }
-Strategy<Widget> widgets = Generate.For<Widget>();  // CON312
+Strategy<Widget> widgets = Strategy.For<Widget>();  // CON312
 
 // Fix: add [Arbitrary] and make the type partial
 [Arbitrary]
@@ -231,7 +231,7 @@ public partial record Parent(Child? Child);
 
 ## See also
 
-- [How to use Generate.For&lt;T&gt;()](../how-to/use-generate-for.md) — step-by-step recipes
-- [Understanding Generate.For&lt;T&gt;() source generation](../explanation/generate-for-source-generator.md) — design rationale and registry mechanics
+- [How to use Strategy.For&lt;T&gt;()](../how-to/use-generate-for.md) — step-by-step recipes
+- [Understanding Strategy.For&lt;T&gt;() source generation](../explanation/generate-for-source-generator.md) — design rationale and registry mechanics
 - [Reference: Analyzers](analyzers.md) — CON200–CON202, CON205, CON300–CON302 (type-declaration diagnostics)
 - [Reference: Attributes](attributes.md) — `[Arbitrary]`, `[From<T>]`, `[FromMethod]`

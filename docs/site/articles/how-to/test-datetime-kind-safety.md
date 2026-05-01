@@ -17,7 +17,7 @@ using Conjecture.Time;
 public bool Serializer_PreservesKind(int x)
 {
     (DateTime value, DateTimeKind kind) = DataGen.SampleOne(
-        Generate.DateTimes().WithKinds());
+        Strategy.DateTimes().WithKinds());
 
     string json = JsonSerializer.Serialize(new { Timestamp = value });
     DateTime roundtripped = JsonSerializer.Deserialize<TimestampDto>(json)!.Timestamp;
@@ -36,7 +36,7 @@ Many ORMs coerce `Unspecified` to `Utc` without warning. A property that exposes
 public bool DbContext_DoesNotSilentlyCoerceKind(int x)
 {
     (DateTime value, DateTimeKind kind) = DataGen.SampleOne(
-        Generate.DateTimes().WithKinds());
+        Strategy.DateTimes().WithKinds());
 
     using TestDbContext db = new();
     db.Events.Add(new Event { OccurredAt = value });
@@ -53,7 +53,7 @@ When this fails, Conjecture will shrink to the minimal `DateTimeKind` and simple
 > [!TIP]
 > If you only care about one kind, filter with `Where`:
 > ```csharp
-> Generate.DateTimes().WithKinds()
+> Strategy.DateTimes().WithKinds()
 >     .Where(static t => t.Kind == DateTimeKind.Unspecified)
 > ```
 

@@ -3,7 +3,7 @@
 `Conjecture.AspNetCore`'s public surface accepts `IHost` and `HttpClient` separately:
 
 ```csharp
-Generate.AspNetCoreRequests(host, client);
+Strategy.AspNetCoreRequests(host, client);
 ```
 
 It does not depend on `Microsoft.AspNetCore.Mvc.Testing.WebApplicationFactory<TEntryPoint>`, even though every realistic test caller in 2026 *does* construct one. This page explains the trade.
@@ -13,7 +13,7 @@ It does not depend on `Microsoft.AspNetCore.Mvc.Testing.WebApplicationFactory<TE
 A direct dependency on `Microsoft.AspNetCore.Mvc.Testing` would have collapsed the call site to one argument:
 
 ```csharp
-Generate.AspNetCoreRequests(factory);   // hypothetical
+Strategy.AspNetCoreRequests(factory);   // hypothetical
 ```
 
 The library could call `factory.Server.Host` to get the `IHost` and `factory.CreateClient()` to get the `HttpClient` itself. Two lines saved per test class. Convenient.
@@ -47,7 +47,7 @@ A satellite package — `Conjecture.AspNetCore.Mvc.Testing` — could provide:
 
 ```csharp
 public static AspNetCoreRequestBuilder AspNetCoreRequests<T>(this Generate _, WebApplicationFactory<T> factory) where T : class
-    => Generate.AspNetCoreRequests(factory.Services.GetRequiredService<IHost>(), factory.CreateClient());
+    => Strategy.AspNetCoreRequests(factory.Services.GetRequiredService<IHost>(), factory.CreateClient());
 ```
 
 We did not ship that satellite for v1 — it's a one-line convenience and the upstream call site is hardly painful. If users routinely write the same six-line wrapper in every test class, a future enhancement can promote it. The architectural shape stays the same.

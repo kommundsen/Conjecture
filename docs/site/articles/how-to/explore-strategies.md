@@ -19,13 +19,13 @@ Or in a [file-based app](https://learn.microsoft.com/en-us/dotnet/core/sdk/file-
 Call `.Preview()` on any strategy to see a comma-separated list of samples:
 
 ```csharp
-Console.WriteLine(Generate.Integers<int>(0, 100).Preview());
+Console.WriteLine(Strategy.Integers<int>(0, 100).Preview());
 ```
 
 Pass `count` (default 20, max 100) and `seed` for reproducibility:
 
 ```csharp
-Console.WriteLine(Generate.Strings(5, 20).Preview(count: 10, seed: 42));
+Console.WriteLine(Strategy.Strings(5, 20).Preview(count: 10, seed: 42));
 ```
 
 ## Show an indexed sample table
@@ -33,7 +33,7 @@ Console.WriteLine(Generate.Strings(5, 20).Preview(count: 10, seed: 42));
 `.SampleTable()` renders a two-column index/value text table:
 
 ```csharp
-Console.WriteLine(Generate.Doubles(-1, 1).SampleTable(count: 5));
+Console.WriteLine(Strategy.Doubles(-1, 1).SampleTable(count: 5));
 ```
 
 ## Plot a distribution histogram
@@ -41,13 +41,13 @@ Console.WriteLine(Generate.Doubles(-1, 1).SampleTable(count: 5));
 `.Histogram()` returns a text bar chart. Works on any `IConvertible` strategy:
 
 ```csharp
-Console.WriteLine(Generate.Integers<int>(0, 1000).Histogram());
+Console.WriteLine(Strategy.Integers<int>(0, 1000).Histogram());
 ```
 
 Use the `selector` overload for non-numeric strategies:
 
 ```csharp
-Console.WriteLine(Generate.Strings(0, 50).Histogram(s => s.Length));
+Console.WriteLine(Strategy.Strings(0, 50).Histogram(s => s.Length));
 ```
 
 Tweak `sampleSize` (default 1000) and `bucketCount` (default 20) for resolution.
@@ -57,7 +57,7 @@ Tweak `sampleSize` (default 1000) and `bucketCount` (default 20) for resolution.
 `.ShrinkTrace()` shows step-by-step minimisation toward a counterexample:
 
 ```csharp
-ShrinkTraceResult<int> trace = Generate.Integers<int>().ShrinkTrace(seed: 42, x => x < 1000);
+ShrinkTraceResult<int> trace = Strategy.Integers<int>().ShrinkTrace(seed: 42, x => x < 1000);
 Console.WriteLine(trace.Text);
 ```
 

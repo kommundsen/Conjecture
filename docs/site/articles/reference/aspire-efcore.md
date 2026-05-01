@@ -262,7 +262,7 @@ Fluent builder that accumulates step strategies and produces a `Strategy<IReadOn
 ```csharp
 Strategy<IReadOnlyList<IAddressedInteraction>> sequenceStrategy =
     new AspireInteractionSequenceBuilder()
-        .Http("api", Generate.Just(new HttpInteraction("POST", "/orders", order)))
+        .Http("api", Strategy.Just(new HttpInteraction("POST", "/orders", order)))
         .DbSnapshot("orders-db", "after-place",
             ctx => ctx.Set<Order>().CountAsync().ContinueWith(t => (object?)t.Result))
         .Build(minSize: 1, maxSize: 10);

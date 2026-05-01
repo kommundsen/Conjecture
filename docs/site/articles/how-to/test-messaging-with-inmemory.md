@@ -28,7 +28,7 @@ public class OrderConsumerProperties
         InMemoryMessageBusTarget bus = new();
 
         Strategy<MessageInteraction> publishStrategy =
-            Generate.Messaging.Publish("orders", Generate.Bytes(0, 1024));
+            Strategy.Messaging.Publish("orders", Strategy.Bytes(0, 1024));
 
         await Property.ForAll(bus, publishStrategy, async (target, sent) =>
         {
@@ -44,7 +44,7 @@ public class OrderConsumerProperties
 }
 ```
 
-The strategy generates the body bytes; `MessageId` is generated deterministically by `Generate.Messaging.Publish` (so failed runs reproduce byte-for-byte under the same seed).
+The strategy generates the body bytes; `MessageId` is generated deterministically by `Strategy.Messaging.Publish` (so failed runs reproduce byte-for-byte under the same seed).
 
 ## Test the redelivery path
 
@@ -56,7 +56,7 @@ public async Task RejectedMessage_IsAvailableAgain(CancellationToken ct)
 {
     InMemoryMessageBusTarget bus = new();
     Strategy<MessageInteraction> publishStrategy =
-        Generate.Messaging.Publish("retries", Generate.Bytes(0, 256));
+        Strategy.Messaging.Publish("retries", Strategy.Bytes(0, 256));
 
     await Property.ForAll(bus, publishStrategy, async (target, sent) =>
     {
@@ -81,16 +81,16 @@ public async Task RejectedMessage_IsAvailableAgain(CancellationToken ct)
 `Body` is `ReadOnlyMemory<byte>` so any byte-producing strategy composes:
 
 ```csharp
-// Protobuf payloads — the byte strategy comes from Generate.FromProtobuf<T>().
+// Protobuf payloads — the byte strategy comes from Strategy.FromProtobuf<T>().
 Strategy<MessageInteraction> protoMessages =
-    Generate.Messaging.Publish("events", Generate.FromProtobuf<UserCreated>());
+    Strategy.Messaging.Publish("events", Strategy.FromProtobuf<UserCreated>());
 
 // JSON-Schema-driven bodies.
 JsonDocument schema = JsonDocument.Parse(/* ... */);
 Strategy<MessageInteraction> jsonMessages =
-    Generate.Messaging.Publish(
+    Strategy.Messaging.Publish(
         "events",
-        Generate.FromJsonSchema(schema).Select(json => new ReadOnlyMemory<byte>(Encoding.UTF8.GetBytes(json))));
+        Strategy.FromJsonSchema(schema).Select(json => new ReadOnlyMemory<byte>(Encoding.UTF8.GetBytes(json))));
 ```
 
 ## Cross-destination property tests
@@ -102,10 +102,10 @@ Two destinations on the same `InMemoryMessageBusTarget` are isolated — a publi
 public async Task RoutesByDestination(CancellationToken ct)
 {
     InMemoryMessageBusTarget bus = new();
-    Strategy<MessageInteraction> aStrategy = Generate.Messaging.Publish("a", Generate.Bytes(0, 64));
-    Strategy<MessageInteraction> bStrategy = Generate.Messaging.Publish("b", Generate.Bytes(0, 64));
+    Strategy<MessageInteraction> aStrategy = Strategy.Messaging.Publish("a", Strategy.Bytes(0, 64));
+    Strategy<MessageInteraction> bStrategy = Strategy.Messaging.Publish("b", Strategy.Bytes(0, 64));
 
-    await Property.ForAll(bus, Generate.Tuple(aStrategy, bStrategy), async (target, pair) =>
+    await Property.ForAll(bus, Strategy.Tuple(aStrategy, bStrategy), async (target, pair) =>
     {
         (MessageInteraction toA, MessageInteraction toB) = pair;
         await target.ExecuteAsync(toA, ct);

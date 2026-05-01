@@ -22,7 +22,7 @@ Now the bug is obvious — the code fails on any single-element list.
 
 ## How byte-stream shrinking works
 
-Conjecture's engine is built around a key insight: instead of generating values directly, every generated value is read from a **byte buffer**. The strategy for `int` reads some bytes and interprets them as an integer. The strategy for `List<int>` reads a length, then reads that many integers. The strategy for a custom type composed with `Generate.Compose` reads bytes in whatever order the factory function draws them.
+Conjecture's engine is built around a key insight: instead of generating values directly, every generated value is read from a **byte buffer**. The strategy for `int` reads some bytes and interprets them as an integer. The strategy for `List<int>` reads a length, then reads that many integers. The strategy for a custom type composed with `Strategy.Compose` reads bytes in whatever order the factory function draws them.
 
 This means:
 - Every generated value has a corresponding byte buffer
@@ -56,9 +56,9 @@ Earlier property testing frameworks (QuickCheck, FsCheck) use type-directed shri
 
 This works well for simple types but breaks down for complex ones. If you build a custom generator by composing simpler generators, you have to write a custom shrinker that understands your composition — and the composition of shrinkers is fragile.
 
-Conjecture avoids this entirely. Because shrinking operates on the byte buffer, any value that can be generated can be shrunk — including types composed with `Generate.Compose`, types involving `SelectMany`, and custom `IStrategyProvider<T>` implementations. The quality of shrinking depends only on how well the byte passes reduce the buffer, not on the complexity of the type.
+Conjecture avoids this entirely. Because shrinking operates on the byte buffer, any value that can be generated can be shrunk — including types composed with `Strategy.Compose`, types involving `SelectMany`, and custom `IStrategyProvider<T>` implementations. The quality of shrinking depends only on how well the byte passes reduce the buffer, not on the complexity of the type.
 
-The practical result: a deeply nested custom object type built from a `Generate.Compose` factory shrinks just as well as a plain integer.
+The practical result: a deeply nested custom object type built from a `Strategy.Compose` factory shrinks just as well as a plain integer.
 
 ## What shrinking produces
 

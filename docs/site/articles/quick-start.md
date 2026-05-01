@@ -295,7 +295,7 @@ Control how parameters are generated with `[From<T>]`:
 ```csharp
 public class PositiveInts : IStrategyProvider<int>
 {
-    public Strategy<int> Create() => Generate.Integers<int>(1, int.MaxValue);
+    public Strategy<int> Create() => Strategy.Integers<int>(1, int.MaxValue);
 }
 
 [Property]

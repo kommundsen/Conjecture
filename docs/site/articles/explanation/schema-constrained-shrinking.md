@@ -14,19 +14,19 @@ Schema-driven strategies in Conjecture are _generative_, not _filterable_. Inste
 
 ```csharp
 // NOT how it works — this breaks shrinking
-Generate.Integers<int>().Where(x => x >= 0 && x <= 150)
+Strategy.Integers<int>().Where(x => x >= 0 && x <= 150)
 ```
 
 …the strategy draws _directly within the constrained range_:
 
 ```csharp
 // How it actually works
-Generate.Integers(0L, 150L)
+Strategy.Integers(0L, 150L)
 ```
 
 Because the bounds are baked into the draw call, every buffer — including the shrunken ones — produces a value inside the valid range. The shrinker moves toward smaller buffers, which map to values closer to the minimum of the range, but never outside it.
 
-The same principle applies to every constraint the parser handles: `minLength`/`maxLength` become the bounds passed to `Generate.Strings`; `enum` becomes `Generate.SampledFrom`; `pattern` becomes `Generate.Matching`. No filtering, no post-generation rejection.
+The same principle applies to every constraint the parser handles: `minLength`/`maxLength` become the bounds passed to `Strategy.Strings`; `enum` becomes `Strategy.SampledFrom`; `pattern` becomes `Strategy.Matching`. No filtering, no post-generation rejection.
 
 ## The shrinking guarantee
 

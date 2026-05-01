@@ -70,8 +70,8 @@ Counterexample: `[1, 0]` — the shortest list that isn't sorted, with the small
 Use `WithLabel` to name strategy outputs in failure messages:
 
 ```csharp
-var ageStrategy = Generate.Integers<int>(0, 150).WithLabel("age");
-var nameStrategy = Generate.Strings(minLength: 1).WithLabel("name");
+var ageStrategy = Strategy.Integers<int>(0, 150).WithLabel("age");
+var nameStrategy = Strategy.Strings(minLength: 1).WithLabel("name");
 ```
 
 When a failure occurs, the output shows which value is which:

@@ -11,8 +11,8 @@ These properties are available on `Strategy<int>` (and other signed integer stra
 Filters to values ≥ 0.
 
 ```csharp
-Strategy<int> positiveInts = Generate.Integers<int>().Positive;
-// Equivalent to: Generate.Integers<int>().Where(x => x >= 0)
+Strategy<int> positiveInts = Strategy.Integers<int>().Positive;
+// Equivalent to: Strategy.Integers<int>().Where(x => x >= 0)
 ```
 
 ### `.Negative`
@@ -20,8 +20,8 @@ Strategy<int> positiveInts = Generate.Integers<int>().Positive;
 Filters to values < 0.
 
 ```csharp
-Strategy<int> negativeInts = Generate.Integers<int>().Negative;
-// Equivalent to: Generate.Integers<int>().Where(x => x < 0)
+Strategy<int> negativeInts = Strategy.Integers<int>().Negative;
+// Equivalent to: Strategy.Integers<int>().Where(x => x < 0)
 ```
 
 ### `.NonZero`
@@ -29,12 +29,12 @@ Strategy<int> negativeInts = Generate.Integers<int>().Negative;
 Filters to values ≠ 0.
 
 ```csharp
-Strategy<int> nonZeroInts = Generate.Integers<int>().NonZero;
-// Equivalent to: Generate.Integers<int>().Where(x => x != 0)
+Strategy<int> nonZeroInts = Strategy.Integers<int>().NonZero;
+// Equivalent to: Strategy.Integers<int>().Where(x => x != 0)
 ```
 
 > [!TIP]
-> For `Positive` and `NonZero`, prefer `Generate.Integers<int>(1, int.MaxValue)` or similar bounded ranges — they generate more efficiently than filtering the full range.
+> For `Positive` and `NonZero`, prefer `Strategy.Integers<int>(1, int.MaxValue)` or similar bounded ranges — they generate more efficiently than filtering the full range.
 
 ## String extension properties
 
@@ -43,13 +43,13 @@ Strategy<int> nonZeroInts = Generate.Integers<int>().NonZero;
 Filters to non-empty strings.
 
 ```csharp
-Strategy<string> nonEmpty = Generate.Strings().NonEmpty;
-// Equivalent to: Generate.Strings().Where(s => s.Length > 0)
-// Better alternative: Generate.Strings(minLength: 1)
+Strategy<string> nonEmpty = Strategy.Strings().NonEmpty;
+// Equivalent to: Strategy.Strings().Where(s => s.Length > 0)
+// Better alternative: Strategy.Strings(minLength: 1)
 ```
 
 > [!TIP]
-> `Generate.Strings(minLength: 1)` is more efficient than `.NonEmpty` because it never generates empty strings in the first place.
+> `Strategy.Strings(minLength: 1)` is more efficient than `.NonEmpty` because it never generates empty strings in the first place.
 
 ## Collection extension properties
 
@@ -58,9 +58,9 @@ Strategy<string> nonEmpty = Generate.Strings().NonEmpty;
 Filters to non-empty lists.
 
 ```csharp
-Strategy<List<int>> nonEmptyList = Generate.Lists(Generate.Integers<int>()).NonEmpty;
-// Equivalent to: Generate.Lists(...).Where(xs => xs.Count > 0)
-// Better alternative: Generate.Lists(Generate.Integers<int>(), minSize: 1)
+Strategy<List<int>> nonEmptyList = Strategy.Lists(Strategy.Integers<int>()).NonEmpty;
+// Equivalent to: Strategy.Lists(...).Where(xs => xs.Count > 0)
+// Better alternative: Strategy.Lists(Strategy.Integers<int>(), minSize: 1)
 ```
 
 ## `|` operator — inline `OneOf`
@@ -68,18 +68,18 @@ Strategy<List<int>> nonEmptyList = Generate.Lists(Generate.Integers<int>()).NonE
 The `|` operator combines two strategies into a `OneOf`, picking one at random per example:
 
 ```csharp
-Strategy<int> smallOrLarge = Generate.Integers<int>(0, 10) | Generate.Integers<int>(990, 1000);
-// Equivalent to: Generate.OneOf(Generate.Integers<int>(0, 10), Generate.Integers<int>(990, 1000))
+Strategy<int> smallOrLarge = Strategy.Integers<int>(0, 10) | Strategy.Integers<int>(990, 1000);
+// Equivalent to: Strategy.OneOf(Strategy.Integers<int>(0, 10), Strategy.Integers<int>(990, 1000))
 ```
 
 Chain for more alternatives:
 
 ```csharp
 Strategy<string> keywords =
-    Generate.Just("true") |
-    Generate.Just("false") |
-    Generate.Just("null");
+    Strategy.Just("true") |
+    Strategy.Just("false") |
+    Strategy.Just("null");
 ```
 
 > [!NOTE]
-> The `|` operator always gives equal probability to each operand, regardless of how many alternatives are chained. This is the same semantics as `Generate.OneOf`.
+> The `|` operator always gives equal probability to each operand, regardless of how many alternatives are chained. This is the same semantics as `Strategy.OneOf`.

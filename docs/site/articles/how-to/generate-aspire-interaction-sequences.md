@@ -44,7 +44,7 @@ The builder produces a `Strategy<IReadOnlyList<IAddressedInteraction>>` that gen
 ```csharp
 builder.Http(
     resourceName: "orders-api",
-    step: Generate.From<Order>().Select(o => new HttpInteraction(
+    step: Strategy.From<Order>().Select(o => new HttpInteraction(
         ResourceName: "orders-api",
         Method: "POST",
         Path: "/orders",
@@ -59,7 +59,7 @@ builder.Http(
 ```csharp
 builder.Message(
     resourceName: "orders",
-    step: Generate.From<ShipCommand>().Select(cmd => new MessageInteraction(
+    step: Strategy.From<ShipCommand>().Select(cmd => new MessageInteraction(
         Destination: "orders",
         Body: JsonSerializer.SerializeToUtf8Bytes(cmd),
         Headers: ReadOnlyDictionary<string, string>.Empty,

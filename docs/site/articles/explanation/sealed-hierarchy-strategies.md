@@ -1,6 +1,6 @@
 # Understanding sealed hierarchy strategies
 
-C# developers model discriminated union-like types with a sealed abstract base class and a closed set of concrete subtypes. Conjecture's source generator recognizes this pattern and derives a `Generate.OneOf` strategy automatically.
+C# developers model discriminated union-like types with a sealed abstract base class and a closed set of concrete subtypes. Conjecture's source generator recognizes this pattern and derives a `Strategy.OneOf` strategy automatically.
 
 ## The pattern
 
@@ -14,7 +14,7 @@ public class Rectangle : Shape { }
 
 Pattern matching over such a hierarchy is exhaustive when the hierarchy is sealed — the compiler can verify you've handled every case. C# 14 formalized this with sealed class modifiers and `switch` exhaustiveness checks.
 
-When generating `Shape` values for property tests you want every subtype represented, not just one. `Generate.OneOf` is the right combinator: it picks uniformly among a set of strategies. Writing this by hand is mechanical repetition — exactly what a source generator should eliminate.
+When generating `Shape` values for property tests you want every subtype represented, not just one. `Strategy.OneOf` is the right combinator: it picks uniformly among a set of strategies. Writing this by hand is mechanical repetition — exactly what a source generator should eliminate.
 
 ## How the generator works
 
@@ -22,7 +22,7 @@ When `[Arbitrary]` is applied to an abstract class, the generator switches to hi
 
 1. It walks the entire compilation looking for concrete classes that inherit (directly or indirectly) from the base.
 2. For each concrete subtype decorated with `[Arbitrary]`, it collects the subtype's own generated `IStrategyProvider<T>`.
-3. It emits a provider for the base type that calls `Generate.OneOf` over all the collected subtype strategies, casting each result up to the base type.
+3. It emits a provider for the base type that calls `Strategy.OneOf` over all the collected subtype strategies, casting each result up to the base type.
 
 The output for `Shape` / `Circle` / `Rectangle` looks like:
 
@@ -30,14 +30,14 @@ The output for `Shape` / `Circle` / `Rectangle` looks like:
 public sealed class ShapeArbitrary : IStrategyProvider<Shape>
 {
     public Strategy<Shape> Create() =>
-        Generate.OneOf(
+        Strategy.OneOf(
             new CircleArbitrary().Create().Select(static x => (Shape)x),
             new RectangleArbitrary().Create().Select(static x => (Shape)x)
         );
 }
 ```
 
-Each subtype appears with equal probability. Shrinking works correctly because `Generate.OneOf` delegates shrinking to whichever branch was chosen.
+Each subtype appears with equal probability. Shrinking works correctly because `Strategy.OneOf` delegates shrinking to whichever branch was chosen.
 
 ## The same-compilation constraint
 

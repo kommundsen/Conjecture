@@ -2,7 +2,7 @@
 
 Catastrophic backtracking is a class of ReDoS (Regular Expression Denial of Service)
 vulnerability where a regex engine takes exponential time on certain inputs. Understanding why
-it happens explains why `Generate.ReDoSHunter` generates the strings it does.
+it happens explains why `Strategy.ReDoSHunter` generates the strings it does.
 
 ## How backtracking engines work
 
@@ -47,7 +47,7 @@ Manual auditing requires the developer to construct the worst-case input by hand
 patterns this is non-trivial — the pathological input depends on the specific ambiguity structure
 of the pattern, which is hard to reason about directly.
 
-`Generate.ReDoSHunter` automates this by:
+`Strategy.ReDoSHunter` automates this by:
 
 1. **Walking the AST** to find nested-quantifier sub-trees.
 2. **Biasing repetition counts** toward their maximum, generating longer strings with more
@@ -74,5 +74,5 @@ not hours of manual analysis.
 ## See also
 
 - [How to audit a regex for catastrophic backtracking](../how-to/audit-regex-for-redos.md)
-- [Reference: `Generate.ReDoSHunter`](../reference/regex-strategies.md#generateredoshunter)
+- [Reference: `Strategy.ReDoSHunter`](../reference/regex-strategies.md#strategyredoshunter)
 - [How Conjecture.Regex works](regex-engine.md)

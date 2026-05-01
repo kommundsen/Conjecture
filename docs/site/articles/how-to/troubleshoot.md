@@ -8,10 +8,10 @@
 
 ```csharp
 // Problematic — most ints aren't prime:
-Generate.Integers<int>(2, 1_000_000).Where(IsPrime)
+Strategy.Integers<int>(2, 1_000_000).Where(IsPrime)
 
 // Better — generate only from a small known set:
-Generate.SampledFrom(new[] { 2, 3, 5, 7, 11, 13 })
+Strategy.SampledFrom(new[] { 2, 3, 5, 7, 11, 13 })
 ```
 
 If filtering is unavoidable, raise the budget:

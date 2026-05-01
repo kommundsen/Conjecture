@@ -16,23 +16,23 @@ This guide maps Python Hypothesis concepts to their Conjecture equivalents. If y
 
 | Hypothesis | Conjecture | Notes |
 |---|---|---|
-| `st.integers()` | `Generate.Integers<T>()` | Generic over `IBinaryInteger<T>` — works for `int`, `long`, `byte`, etc. |
-| `st.integers(min_value=0, max_value=100)` | `Generate.Integers<int>(0, 100)` | |
-| `st.floats()` | `Generate.Doubles()` / `Generate.Floats()` | Separate methods for `double` and `float` |
-| `st.booleans()` | `Generate.Booleans()` | |
-| `st.text()` | `Generate.Strings()` | `.NET uses `string`, not `text` |
-| `st.text(min_size=1, max_size=50)` | `Generate.Strings(minLength: 1, maxLength: 50)` | `size` → `length` |
-| `st.binary(min_size=n, max_size=n)` | `Generate.Bytes(size)` | Fixed size only |
-| `st.just(value)` | `Generate.Just(value)` | |
-| `st.sampled_from([a, b, c])` | `Generate.SampledFrom([a, b, c])` | Accepts `IReadOnlyList<T>` |
-| `st.from_type(MyEnum)` | `Generate.Enums<MyEnum>()` | |
-| `st.none_of()` | `Generate.Nullable(inner)` | Wraps a `Strategy<T>` where `T : struct` |
-| `st.tuples(st.integers(), st.text())` | `Generate.Tuples(Generate.Integers<int>(), Generate.Strings())` | Up to 4 elements |
-| `st.lists(st.integers())` | `Generate.Lists(Generate.Integers<int>())` | Returns `Strategy<List<T>>` |
-| `st.lists(st.integers(), min_size=1, max_size=10)` | `Generate.Lists(Generate.Integers<int>(), minSize: 1, maxSize: 10)` | |
-| `st.frozensets(st.integers())` | `Generate.Sets(Generate.Integers<int>())` | Returns `Strategy<IReadOnlySet<T>>` |
-| `st.dictionaries(st.text(), st.integers())` | `Generate.Dictionaries(Generate.Strings(), Generate.Integers<int>())` | Returns `Strategy<IReadOnlyDictionary<TKey, TValue>>` |
-| `st.one_of(st_a, st_b)` | `Generate.OneOf(stratA, stratB)` | |
+| `st.integers()` | `Strategy.Integers<T>()` | Generic over `IBinaryInteger<T>` — works for `int`, `long`, `byte`, etc. |
+| `st.integers(min_value=0, max_value=100)` | `Strategy.Integers<int>(0, 100)` | |
+| `st.floats()` | `Strategy.Doubles()` / `Strategy.Floats()` | Separate methods for `double` and `float` |
+| `st.booleans()` | `Strategy.Booleans()` | |
+| `st.text()` | `Strategy.Strings()` | `.NET uses `string`, not `text` |
+| `st.text(min_size=1, max_size=50)` | `Strategy.Strings(minLength: 1, maxLength: 50)` | `size` → `length` |
+| `st.binary(min_size=n, max_size=n)` | `Strategy.Bytes(size)` | Fixed size only |
+| `st.just(value)` | `Strategy.Just(value)` | |
+| `st.sampled_from([a, b, c])` | `Strategy.SampledFrom([a, b, c])` | Accepts `IReadOnlyList<T>` |
+| `st.from_type(MyEnum)` | `Strategy.Enums<MyEnum>()` | |
+| `st.none_of()` | `Strategy.Nullable(inner)` | Wraps a `Strategy<T>` where `T : struct` |
+| `st.tuples(st.integers(), st.text())` | `Strategy.Tuples(Strategy.Integers<int>(), Strategy.Strings())` | Up to 4 elements |
+| `st.lists(st.integers())` | `Strategy.Lists(Strategy.Integers<int>())` | Returns `Strategy<List<T>>` |
+| `st.lists(st.integers(), min_size=1, max_size=10)` | `Strategy.Lists(Strategy.Integers<int>(), minSize: 1, maxSize: 10)` | |
+| `st.frozensets(st.integers())` | `Strategy.Sets(Strategy.Integers<int>())` | Returns `Strategy<IReadOnlySet<T>>` |
+| `st.dictionaries(st.text(), st.integers())` | `Strategy.Dictionaries(Strategy.Strings(), Strategy.Integers<int>())` | Returns `Strategy<IReadOnlyDictionary<TKey, TValue>>` |
+| `st.one_of(st_a, st_b)` | `Strategy.OneOf(stratA, stratB)` | |
 | `st.builds(MyClass, ...)` | `[Arbitrary]` source generator | Compile-time code generation; see [Source Generators](how-to/use-source-generators.md) |
 
 ## Combinators
@@ -62,15 +62,15 @@ Conjecture's LINQ support enables query syntax for composing strategies:
 
 // Conjecture — LINQ query:
 var personStrategy =
-    from name in Generate.Strings(minLength: 1, maxLength: 50)
-    from age in Generate.Integers<int>(0, 150)
+    from name in Strategy.Strings(minLength: 1, maxLength: 50)
+    from age in Strategy.Integers<int>(0, 150)
     select new Person(name, age);
 
 // Conjecture — imperative (like @st.composite):
-var personStrategy = Generate.Compose<Person>(ctx =>
+var personStrategy = Strategy.Compose<Person>(ctx =>
 {
-    var name = ctx.Generate(Generate.Strings(minLength: 1, maxLength: 50));
-    var age = ctx.Generate(Generate.Integers<int>(0, 150));
+    var name = ctx.Generate(Strategy.Strings(minLength: 1, maxLength: 50));
+    var age = ctx.Generate(Strategy.Integers<int>(0, 150));
     return new Person(name, age);
 });
 ```

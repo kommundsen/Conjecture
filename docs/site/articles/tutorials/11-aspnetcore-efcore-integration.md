@@ -236,7 +236,7 @@ public async Task PostOrders_NeverPartialWritesOnError(Strategy<Order> orders)
 }
 ```
 
-`Generate.Entity<Order>(db.Resolve)` is registered via the `Conjecture.EFCore` strategy provider; the bound `Strategy<Order>` honours the `IModel`'s nullability and `MaxLength`/`Precision`/`Scale` constraints.
+`Strategy.Entity<Order>(db.Resolve)` is registered via the `Conjecture.EFCore` strategy provider; the bound `Strategy<Order>` honours the `IModel`'s nullability and `MaxLength`/`Precision`/`Scale` constraints.
 
 ## Step 5: Read the failure
 

@@ -86,7 +86,7 @@ Specifies a custom `IStrategyProvider<T>` for a parameter.
 ```csharp
 public sealed class PositiveInts : IStrategyProvider<int>
 {
-    public Strategy<int> Create() => Generate.Integers<int>(1, int.MaxValue);
+    public Strategy<int> Create() => Strategy.Integers<int>(1, int.MaxValue);
 }
 
 [Property]
@@ -109,8 +109,8 @@ public bool Orders_have_items([FromMethod(nameof(CreateOrderStrategy))] Order or
 }
 
 private static Strategy<Order> CreateOrderStrategy() =>
-    from customerId in Generate.Integers<int>(1, 10_000)
-    from items in Generate.Lists(Generate.Strings(1, 30), minSize: 1)
+    from customerId in Strategy.Integers<int>(1, 10_000)
+    from items in Strategy.Lists(Strategy.Strings(1, 30), minSize: 1)
     select new Order(customerId, items);
 ```
 
@@ -168,9 +168,9 @@ Requirements:
 
 See [How to use source generators](../how-to/use-source-generators.md) for full usage and supported types.
 
-## Generate.For&lt;T&gt;() constraint attributes
+## Strategy.For&lt;T&gt;() constraint attributes
 
-Applied to constructor parameters or `init` properties of `[Arbitrary]` types to constrain what the source generator produces. See [Reference: Generate.For&lt;T&gt;()](generate-for.md) for the full attribute reference.
+Applied to constructor parameters or `init` properties of `[Arbitrary]` types to constrain what the source generator produces. See [Reference: Strategy.For&lt;T&gt;()](generate-for.md) for the full attribute reference.
 
 | Attribute | Target | Effect |
 |---|---|---|

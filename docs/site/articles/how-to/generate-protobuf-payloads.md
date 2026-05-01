@@ -1,6 +1,6 @@
 # How to generate Protobuf message payloads
 
-Use `Generate.FromProtobuf<T>()` or `Generate.FromProtobuf(descriptor)` to produce `JsonElement` values shaped by a Protobuf message descriptor.
+Use `Strategy.FromProtobuf<T>()` or `Strategy.FromProtobuf(descriptor)` to produce `JsonElement` values shaped by a Protobuf message descriptor.
 
 ## Prerequisites
 
@@ -22,7 +22,7 @@ using Conjecture.Core;
 using Conjecture.Protobuf;
 using MyApp.Protos; // generated from your .proto file
 
-Strategy<JsonElement> strategy = Generate.FromProtobuf<CreateOrderRequest>();
+Strategy<JsonElement> strategy = Strategy.FromProtobuf<CreateOrderRequest>();
 ```
 
 Each generated `JsonElement` is a JSON object whose fields match the Protobuf message fields.
@@ -66,7 +66,7 @@ public class OrderRequestTests
     [Property]
     public void CreateOrderRequest_GeneratesValidPayload()
     {
-        Strategy<JsonElement> strategy = Generate.FromProtobuf<CreateOrderRequest>();
+        Strategy<JsonElement> strategy = Strategy.FromProtobuf<CreateOrderRequest>();
         foreach (JsonElement payload in DataGen.Sample(strategy, 50))
         {
             Assert.Equal(JsonValueKind.Object, payload.ValueKind);
@@ -91,7 +91,7 @@ public class OrderRequestTests
     [Property]
     public void CreateOrderRequest_GeneratesValidPayload()
     {
-        Strategy<JsonElement> strategy = Generate.FromProtobuf<CreateOrderRequest>();
+        Strategy<JsonElement> strategy = Strategy.FromProtobuf<CreateOrderRequest>();
         foreach (JsonElement payload in DataGen.Sample(strategy, 50))
         {
             Assert.That(payload.ValueKind, Is.EqualTo(JsonValueKind.Object));
@@ -116,7 +116,7 @@ public class OrderRequestTests
     [Property]
     public void CreateOrderRequest_GeneratesValidPayload()
     {
-        Strategy<JsonElement> strategy = Generate.FromProtobuf<CreateOrderRequest>();
+        Strategy<JsonElement> strategy = Strategy.FromProtobuf<CreateOrderRequest>();
         foreach (JsonElement payload in DataGen.Sample(strategy, 50))
         {
             Assert.AreEqual(JsonValueKind.Object, payload.ValueKind);
@@ -135,7 +135,7 @@ When you don't have a compile-time type reference, pass a `MessageDescriptor` di
 using Google.Protobuf.Reflection;
 
 MessageDescriptor descriptor = MyMessage.Descriptor;
-Strategy<JsonElement> strategy = Generate.FromProtobuf(descriptor);
+Strategy<JsonElement> strategy = Strategy.FromProtobuf(descriptor);
 ```
 
 ## Control recursion depth
@@ -143,7 +143,7 @@ Strategy<JsonElement> strategy = Generate.FromProtobuf(descriptor);
 Protobuf messages can be self-referential (e.g., a `Node` message with a `Node child` field). Conjecture limits recursion to a configurable depth:
 
 ```csharp
-Strategy<JsonElement> strategy = Generate.FromProtobuf<TreeNode>(maxDepth: 3);
+Strategy<JsonElement> strategy = Strategy.FromProtobuf<TreeNode>(maxDepth: 3);
 ```
 
 The default depth is 5. Recursive fields beyond the limit generate a null JSON value.

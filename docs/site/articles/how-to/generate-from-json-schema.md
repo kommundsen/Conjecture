@@ -1,6 +1,6 @@
 # How to generate data from a JSON Schema definition
 
-Use `Generate.FromJsonSchema` to build a `Strategy<JsonElement>` from an inline schema, a file, or a parsed `JsonElement`.
+Use `Strategy.FromJsonSchema` to build a `Strategy<JsonElement>` from an inline schema, a file, or a parsed `JsonElement`.
 
 ## Prerequisites
 
@@ -22,7 +22,7 @@ using Conjecture.Core;
 using Conjecture.JsonSchema;
 
 // Inline string
-Strategy<JsonElement> strategy = Generate.FromJsonSchema("""
+Strategy<JsonElement> strategy = Strategy.FromJsonSchema("""
     {
       "type": "object",
       "properties": {
@@ -35,7 +35,7 @@ Strategy<JsonElement> strategy = Generate.FromJsonSchema("""
     """);
 
 // From a file
-Strategy<JsonElement> fromFile = Generate.FromJsonSchema(new FileInfo("person.schema.json"));
+Strategy<JsonElement> fromFile = Strategy.FromJsonSchema(new FileInfo("person.schema.json"));
 ```
 
 ### 2. Use the strategy in a property test
@@ -51,7 +51,7 @@ using Xunit;
 
 public class PersonSchemaTests
 {
-    private static readonly Strategy<JsonElement> PersonStrategy = Generate.FromJsonSchema("""
+    private static readonly Strategy<JsonElement> PersonStrategy = Strategy.FromJsonSchema("""
         {
           "type": "object",
           "properties": {
@@ -87,7 +87,7 @@ public class PersonSchemaTests
     [Property]
     public void Person_AlwaysHasNameAndAge()
     {
-        Strategy<JsonElement> strategy = Generate.FromJsonSchema("""
+        Strategy<JsonElement> strategy = Strategy.FromJsonSchema("""
             { "type": "object", "properties": { "name": { "type": "string" }, "age": { "type": "integer" } }, "required": ["name", "age"] }
             """);
         IReadOnlyList<JsonElement> samples = DataGen.Sample(strategy, 50);
@@ -115,7 +115,7 @@ public class PersonSchemaTests
     [Property]
     public void Person_AlwaysHasNameAndAge()
     {
-        Strategy<JsonElement> strategy = Generate.FromJsonSchema("""
+        Strategy<JsonElement> strategy = Strategy.FromJsonSchema("""
             { "type": "object", "properties": { "name": { "type": "string" }, "age": { "type": "integer" } }, "required": ["name", "age"] }
             """);
         foreach (JsonElement person in DataGen.Sample(strategy, 50))
@@ -142,7 +142,7 @@ public class PersonSchemaTests
     [Property]
     public void Person_AlwaysHasNameAndAge()
     {
-        Strategy<JsonElement> strategy = Generate.FromJsonSchema("""
+        Strategy<JsonElement> strategy = Strategy.FromJsonSchema("""
             { "type": "object", "properties": { "name": { "type": "string" }, "age": { "type": "integer" } }, "required": ["name", "age"] }
             """);
         foreach (JsonElement person in DataGen.Sample(strategy, 50))
@@ -161,7 +161,7 @@ public class PersonSchemaTests
 Schemas with `$ref` and `$defs` are resolved automatically:
 
 ```csharp
-Strategy<JsonElement> strategy = Generate.FromJsonSchema("""
+Strategy<JsonElement> strategy = Strategy.FromJsonSchema("""
     {
       "$defs": {
         "Address": {
@@ -185,4 +185,4 @@ Strategy<JsonElement> strategy = Generate.FromJsonSchema("""
 Circular `$ref` chains are handled with a depth limit (default: 5). See [Schema strategies reference](../reference/schema-strategies.md) for supported keywords.
 
 > [!NOTE]
-> `Generate.FromJsonSchema` throws `JsonException` at construction time if the input is not valid JSON.
+> `Strategy.FromJsonSchema` throws `JsonException` at construction time if the input is not valid JSON.

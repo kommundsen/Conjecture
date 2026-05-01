@@ -1,23 +1,23 @@
 # Customise EF Core entity generation
 
-`Generate.Entity<T>` produces structurally-valid entities from your `IModel` out of the box. This guide covers the three customisations you'll reach for first: bounding navigation depth, excluding specific navigations, and overriding individual property strategies.
+`Strategy.Entity<T>` produces structurally-valid entities from your `IModel` out of the box. This guide covers the three customisations you'll reach for first: bounding navigation depth, excluding specific navigations, and overriding individual property strategies.
 
 ## Adjust navigation depth
 
 Navigation cycles (`Customer → Orders → Customer → …`) are bounded by `maxDepth`, default `2`. Beyond the bound: required reference navigations are populated by reusing the first generated parent of the same target type; optional reference navigations are set to `null`; collection navigations are emitted empty.
 
-Pass `maxDepth` directly to `Generate.Entity<T>`:
+Pass `maxDepth` directly to `Strategy.Entity<T>`:
 
 ```csharp
-Strategy<Customer> shallow = Generate.Entity<Customer>(db, maxDepth: 0);
-Strategy<Customer> deep    = Generate.Entity<Customer>(db, maxDepth: 4);
+Strategy<Customer> shallow = Strategy.Entity<Customer>(db, maxDepth: 0);
+Strategy<Customer> deep    = Strategy.Entity<Customer>(db, maxDepth: 4);
 ```
 
 | `maxDepth` | What you get |
 |---|---|
 | `0` | Scalars only. All navigations terminated at the root. Fast. |
 | `1` | Direct navigations populated; second-level navigations terminated. Default for "small graphs." |
-| `2` (default) | Two-level chains. Aligns with [`Generate.Recursive()`](../tutorials/06-advanced-patterns.md#recursive-strategies) defaults. |
+| `2` (default) | Two-level chains. Aligns with [`Strategy.Recursive()`](../tutorials/06-advanced-patterns.md#recursive-strategies) defaults. |
 | `>3` | Larger graphs. Cost grows roughly linearly per added level for tree-shaped models, faster for highly-connected ones. |
 
 > [!WARNING]
@@ -53,7 +53,7 @@ Use this when:
 `PropertyStrategyBuilder.Build(IProperty)` honours the v1 type-system constraint scope (CLR type, nullability, `MaxLength`, `Precision`/`Scale`, `ValueGenerated`). For domain rules outside that scope — e.g. "`Customer.Email` must contain `@`" — wrap the strategy with `.Filter` or compose a domain-specific strategy:
 
 ```csharp
-Strategy<Customer> domain = Generate.Entity<Customer>(db)
+Strategy<Customer> domain = Strategy.Entity<Customer>(db)
     .Filter(c => c.Email.Contains('@'))
     .Map(c => c with { Email = c.Email.ToLowerInvariant() });
 ```
@@ -63,16 +63,16 @@ Strategy<Customer> domain = Generate.Entity<Customer>(db)
 For per-property strategies, build the entity manually and inject your strategy at the field site:
 
 ```csharp
-Strategy<string> emails = Generate.For<string>().Where(s => s.Contains('@'));
+Strategy<string> emails = Strategy.For<string>().Where(s => s.Contains('@'));
 
 Strategy<Customer> customers = Generate
     .Object(() => new Customer())
-    .With(c => c.Id, Generate.Guid())
-    .With(c => c.Name, Generate.For<string>())
+    .With(c => c.Id, Strategy.Guid())
+    .With(c => c.Name, Strategy.For<string>())
     .With(c => c.Email, emails);
 ```
 
-(`Generate.Object().With(...)` is the existing builder in `Conjecture.Core`. It bypasses `IModel`-driven generation entirely — you lose `MaxLength` and friends but gain full control.)
+(`Strategy.Object().With(...)` is the existing builder in `Conjecture.Core`. It bypasses `IModel`-driven generation entirely — you lose `MaxLength` and friends but gain full control.)
 
 ## Combining customisations
 
@@ -80,7 +80,7 @@ The three patterns compose. A common shape:
 
 1. Use `EntityStrategyBuilder` for the entity-level shape (depth, dropped navigations).
 2. Use `.Filter`/`.Map` at the strategy site for cross-field rules.
-3. Drop to `Generate.Object().With(...)` for individual properties that need bespoke generation.
+3. Drop to `Strategy.Object().With(...)` for individual properties that need bespoke generation.
 
 ```csharp
 Strategy<Customer> baseStrategy = new EntityStrategyBuilder(db.Model)
@@ -95,5 +95,5 @@ Strategy<Customer> tailored = baseStrategy
 ## See also
 
 - [Reference: Conjecture.EFCore](../reference/efcore.md)
-- [Reference: Generate.For&lt;T&gt;()](../reference/generate-for.md)
+- [Reference: Strategy.For&lt;T&gt;()](../reference/generate-for.md)
 - [Tutorial: Custom strategies](../tutorials/03-custom-strategies.md)
