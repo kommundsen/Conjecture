@@ -11,6 +11,7 @@
     <Compile Include="GenFSharpTypesTests.fs" />
     <Compile Include="GenAutoTests.fs" />
     <Compile Include="FSharpPropertyTests.fs" />
+    <Compile Include="ReproExportIntegrationTests.fs" />
   </ItemGroup>
 
   <ItemGroup>
