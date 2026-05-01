@@ -44,15 +44,6 @@ public class AspireTypesTests
         Assert.Empty(fixture.HealthCheckedResources);
     }
 
-    // ── InteractionStateMachine implements IStateMachine ──────────────────────
-
-    [Fact]
-    public void InteractionStateMachine_ImplementsIStateMachine()
-    {
-        Assert.True(typeof(IStateMachine<string, IInteraction>)
-            .IsAssignableFrom(typeof(StubStateMachine)));
-    }
-
     // ── Concrete stub implementations ─────────────────────────────────────────
 
     private sealed class StubFixture : IAspireAppFixture
@@ -71,8 +62,7 @@ public class AspireTypesTests
         public override IEnumerable<Strategy<IInteraction>> Commands(string state)
             => [];
 
-        public override string RunCommand(string state, IInteraction interaction, IInteractionTarget target, CancellationToken ct)
-            => state;
+        public override ValueTask<string> RunCommand(string state, IInteraction interaction, IInteractionTarget target, CancellationToken ct) => ValueTask.FromResult<string>(state);
 
         public override void Invariant(string state) { }
     }

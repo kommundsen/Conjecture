@@ -129,8 +129,7 @@ public sealed class PropertyForAllTests
             yield return Strategy.Just<IInteraction>(new IncrementInteraction());
         }
 
-        public override int RunCommand(int state, IInteraction interaction, IInteractionTarget target, CancellationToken ct) =>
-            state + 1;
+        public override ValueTask<int> RunCommand(int state, IInteraction interaction, IInteractionTarget target, CancellationToken ct) => ValueTask.FromResult<int>(state + 1);
 
         public override void Invariant(int state)
         {
@@ -152,8 +151,7 @@ public sealed class PropertyForAllTests
             yield return Strategy.Just<IInteraction>(new IncrementInteraction());
         }
 
-        public override int RunCommand(int state, IInteraction interaction, IInteractionTarget target, CancellationToken ct) =>
-            state + 1;
+        public override ValueTask<int> RunCommand(int state, IInteraction interaction, IInteractionTarget target, CancellationToken ct) => ValueTask.FromResult<int>(state + 1);
 
         public override void Invariant(int state)
         {

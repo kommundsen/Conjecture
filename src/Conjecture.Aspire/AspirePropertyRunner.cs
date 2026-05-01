@@ -43,7 +43,7 @@ internal static class AspirePropertyRunner
                 }
 
                 IInteractionTarget target = targetFactory(app);
-                RunExample(machine, target, rng, cancellationToken);
+                await RunExampleAsync(machine, target, rng, cancellationToken);
             }
         }
         finally
@@ -82,7 +82,7 @@ internal static class AspirePropertyRunner
         }
     }
 
-    private static void RunExample<TState>(
+    private static async Task RunExampleAsync<TState>(
         InteractionStateMachine<TState> machine,
         IInteractionTarget target,
         SplittableRandom rng,
@@ -102,7 +102,7 @@ internal static class AspirePropertyRunner
             }
 
             IInteraction cmd = new OneOfStrategy<IInteraction>(commands).Generate(data);
-            state = machine.RunCommand(state, cmd, target, ct);
+            state = await machine.RunCommand(state, cmd, target, ct);
             machine.Invariant(state);
         }
     }
