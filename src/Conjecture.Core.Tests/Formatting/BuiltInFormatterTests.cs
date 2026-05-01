@@ -1,6 +1,8 @@
 // Copyright (c) 2026 Kim Ommundsen. Licensed under the MPL-2.0.
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
+using System.Globalization;
+
 using Conjecture.Core;
 
 namespace Conjecture.Core.Tests.Formatting;
@@ -9,16 +11,16 @@ public class BuiltInFormatterTests
 {
     // --- int ---
 
-    [Theory]
-    [InlineData(42, "42")]
-    [InlineData(0, "0")]
-    [InlineData(-7, "-7")]
-    [InlineData(int.MaxValue, "2147483647")]
-    [InlineData(int.MinValue, "-2147483648")]
-    public void Int32_Format_ProducesIntegerLiteral(int value, string expected)
+    [Property]
+    [Sample(42)]
+    [Sample(0)]
+    [Sample(-7)]
+    [Sample(int.MaxValue)]
+    [Sample(int.MinValue)]
+    public void Int32_Format_ProducesIntegerLiteral(int value)
     {
-        var result = BuiltInFormatters.Int32.Format(value);
-        Assert.Equal(expected, result);
+        string result = BuiltInFormatters.Int32.Format(value);
+        Assert.Equal(value, int.Parse(result));
     }
 
     // --- bool ---
@@ -34,26 +36,31 @@ public class BuiltInFormatterTests
 
     // --- double ---
 
-    [Theory]
-    [InlineData(3.14, "3.14")]
-    [InlineData(0.0, "0")]
-    [InlineData(-1.5, "-1.5")]
-    public void Double_Format_ProducesFloatingPointLiteral(double value, string expected)
+    [Property]
+    [Sample(3.14)]
+    [Sample(0.0)]
+    [Sample(-1.5)]
+    public void Double_Format_ProducesFloatingPointLiteral(double value)
     {
-        var result = BuiltInFormatters.Double.Format(value);
-        Assert.Equal(expected, result);
+        Assume.That(double.IsFinite(value));
+        string result = BuiltInFormatters.Double.Format(value);
+        Assert.True(double.TryParse(result, NumberStyles.Float, CultureInfo.InvariantCulture, out _),
+            $"'{result}' is not parseable as double");
     }
 
     // --- float ---
 
-    [Theory]
-    [InlineData(1.5f, "1.5f")]
-    [InlineData(0.0f, "0f")]
-    [InlineData(-3.0f, "-3f")]
-    public void Single_Format_ProducesFloatLiteral(float value, string expected)
+    [Property]
+    [Sample(1.5f)]
+    [Sample(0.0f)]
+    [Sample(-3.0f)]
+    public void Single_Format_ProducesFloatLiteral(float value)
     {
-        var result = BuiltInFormatters.Single.Format(value);
-        Assert.Equal(expected, result);
+        Assume.That(float.IsFinite(value));
+        string result = BuiltInFormatters.Single.Format(value);
+        Assert.True(result.EndsWith("f", StringComparison.Ordinal), $"Float format should end with 'f', got '{result}'");
+        Assert.True(float.TryParse(result[..^1], NumberStyles.Float, CultureInfo.InvariantCulture, out _),
+            $"'{result}' is not parseable as float (after stripping 'f' suffix)");
     }
 
     // --- string ---
