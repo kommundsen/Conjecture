@@ -17,7 +17,7 @@ namespace Conjecture.Xunit.V3;
 [XunitTestCaseDiscovererAttribute(typeof(Internal.PropertyTestCaseDiscoverer))]
 public sealed class PropertyAttribute(
     [CallerFilePath] string? sourceFilePath = null,
-    [CallerLineNumber] int sourceLineNumber = -1) : FactAttribute(sourceFilePath, sourceLineNumber), IPropertyTest
+    [CallerLineNumber] int sourceLineNumber = -1) : FactAttribute(sourceFilePath, sourceLineNumber), IPropertyTest, IReproductionExport
 {
     /// <summary>Maximum number of examples to generate. Defaults to 100.</summary>
     public int MaxExamples { get; set; } = 100;
@@ -39,4 +39,10 @@ public sealed class PropertyAttribute(
 
     /// <summary>Fraction of MaxExamples budget allocated to the targeting phase. Defaults to 0.5.</summary>
     public double TargetingProportion { get; set; } = 0.5;
+
+    /// <summary>Whether to export a reproduction file on test failure. Defaults to <see langword="false"/>.</summary>
+    public bool ExportReproductionOnFailure { get; set; } = false;
+
+    /// <summary>Output path for exported reproduction files. Defaults to <c>.conjecture/repros/</c>.</summary>
+    public string ReproductionOutputPath { get; set; } = ".conjecture/repros/";
 }
