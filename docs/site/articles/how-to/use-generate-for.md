@@ -1,6 +1,6 @@
-# How to use Generate.For&lt;T&gt;()
+# How to use Strategy.For&lt;T&gt;()
 
-Use `Generate.For<T>()` to get a `Strategy<T>` for any type decorated with `[Arbitrary]`. The source generator emits the strategy at compile time — no runtime reflection, no manual composition.
+Use `Strategy.For<T>()` to get a `Strategy<T>` for any type decorated with `[Arbitrary]`. The source generator emits the strategy at compile time — no runtime reflection, no manual composition.
 
 ## Prerequisites
 
@@ -20,7 +20,7 @@ using Conjecture.Core;
 public partial record Order(Guid Id, string Customer, decimal Total, DateOnly PlacedOn);
 ```
 
-### 2. Use `Generate.For<T>()` in a property test
+### 2. Use `Strategy.For<T>()` in a property test
 
 # [xUnit v2](#tab/xunit-v2)
 
@@ -28,7 +28,7 @@ public partial record Order(Guid Id, string Customer, decimal Total, DateOnly Pl
 [Property]
 public bool Orders_always_have_a_customer(Order order)
 {
-    Strategy<Order> orders = Generate.For<Order>();
+    Strategy<Order> orders = Strategy.For<Order>();
     // or inline:
     // [From<OrderArbitrary>] Order order
     return order.Customer.Length > 0;
@@ -41,7 +41,7 @@ public bool Orders_always_have_a_customer(Order order)
 [Property]
 public bool Orders_always_have_a_customer(Order order)
 {
-    Strategy<Order> orders = Generate.For<Order>();
+    Strategy<Order> orders = Strategy.For<Order>();
     return order.Customer.Length > 0;
 }
 ```
@@ -52,7 +52,7 @@ public bool Orders_always_have_a_customer(Order order)
 [Property]
 public bool Orders_always_have_a_customer(Order order)
 {
-    Strategy<Order> orders = Generate.For<Order>();
+    Strategy<Order> orders = Strategy.For<Order>();
     return order.Customer.Length > 0;
 }
 ```
@@ -63,23 +63,23 @@ public bool Orders_always_have_a_customer(Order order)
 [Property]
 public bool Orders_always_have_a_customer(Order order)
 {
-    Strategy<Order> orders = Generate.For<Order>();
+    Strategy<Order> orders = Strategy.For<Order>();
     return order.Customer.Length > 0;
 }
 ```
 
 ***
 
-`Generate.For<Order>()` resolves the registered strategy. Use `[From<OrderArbitrary>]` on a parameter to feed generated `Order` values directly into the test.
+`Strategy.For<Order>()` resolves the registered strategy. Use `[From<OrderArbitrary>]` on a parameter to feed generated `Order` values directly into the test.
 
 ## Override specific properties at the call site
 
-Use `Generate.For<T>(cfg => cfg.Override(...))` to substitute a different strategy for one or more properties without creating a new provider class.
+Use `Strategy.For<T>(cfg => cfg.Override(...))` to substitute a different strategy for one or more properties without creating a new provider class.
 
 ```csharp
-Strategy<Order> highValueOrders = Generate.For<Order>(cfg => cfg
-    .Override(o => o.Total, Generate.Decimals(1_000m, 100_000m))
-    .Override(o => o.PlacedOn, Generate.DateOnlyValues(
+Strategy<Order> highValueOrders = Strategy.For<Order>(cfg => cfg
+    .Override(o => o.Total, Strategy.Decimals(1_000m, 100_000m))
+    .Override(o => o.PlacedOn, Strategy.DateOnlyValues(
         new DateOnly(2020, 1, 1),
         DateOnly.FromDateTime(DateTime.Today))));
 ```
@@ -147,7 +147,7 @@ Without `[StrategyMaxDepth]` on a self-referential type, the generator emits a *
 
 ## See also
 
-- [Reference: Generate.For&lt;T&gt;()](../reference/generate-for.md) — attribute table, primitive mapping, diagnostics
-- [Understanding Generate.For&lt;T&gt;() source generation](../explanation/generate-for-source-generator.md) — why source generation and how the registry works
+- [Reference: Strategy.For&lt;T&gt;()](../reference/generate-for.md) — attribute table, primitive mapping, diagnostics
+- [Understanding Strategy.For&lt;T&gt;() source generation](../explanation/generate-for-source-generator.md) — why source generation and how the registry works
 - [How to use source generators](use-source-generators.md) — `[Arbitrary]` basics and supported types
 - [How to generate sealed class hierarchies](use-sealed-hierarchy-strategies.md) — abstract base + subtypes pattern

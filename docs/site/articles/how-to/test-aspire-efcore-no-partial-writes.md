@@ -92,7 +92,7 @@ public class OrderInvariantTests(StoreFixture fixture)
 Read operations (`GET /…`) cannot leave partial writes, so filtering keeps the property focused:
 
 ```csharp
-Strategy<HttpInteraction> writeOperations = Generate.OneOf(
+Strategy<HttpInteraction> writeOperations = Strategy.OneOf(
     postOrders,
     putOrders,
     deleteOrders);

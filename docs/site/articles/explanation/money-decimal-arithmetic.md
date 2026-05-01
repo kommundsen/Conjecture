@@ -35,10 +35,10 @@ The trade-off is that the snapshot must be updated when ISO 4217 changes. Curren
 
 `Conjecture.Money` does not implement a custom shrinker. Instead, it relies on the Core engine's `NumericAwareShrinkPass`, which manipulates the **choice-sequence IR** — the sequence of integer draws made during generation.
 
-When `Generate.Amounts("USD")` generates a value, it internally:
+When `Strategy.Amounts("USD")` generates a value, it internally:
 
 1. Scales the `[0, 10000]` range to integer space: `[0, 1_000_000]` (scale 2 → ×100).
-2. Draws a `long` from `Generate.Integers<long>(0, 1_000_000)`.
+2. Draws a `long` from `Strategy.Integers<long>(0, 1_000_000)`.
 3. Divides the drawn integer by `100m` to recover the decimal.
 
 The shrink pass sees the `long` draw and reduces it toward `0` by the standard integer shrink rules. Dividing a smaller integer by `100m` produces a smaller decimal. No money-specific shrinker is needed.

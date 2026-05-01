@@ -10,7 +10,7 @@ C# APIs reflect C# idioms: `Func<T, TResult>`, fluent extension methods, mutable
 // C# API, called from F#
 let s : Strategy<int> =
     StrategyExtensions.Select(
-        Generate.Integers(0, 100),
+        Strategy.Integers(0, 100),
         System.Func<_, _>(fun x -> x * 2))
 ```
 
@@ -32,7 +32,7 @@ Both do the same thing. The second one looks like F#.
 type Gen<'a> = internal Gen of Strategy: Strategy<'a>
 ```
 
-The `Gen` module is a hand-curated F# surface over `Generate.*` and `StrategyExtensions.*`, with:
+The `Gen` module is a hand-curated F# surface over `Strategy.*` and `StrategyExtensions.*`, with:
 
 - Tuples for ranges (`int * int`) instead of positional overloads
 - F# collection types as outputs (`'a list`, `'a option`, `Set<'a>`)

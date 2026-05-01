@@ -17,7 +17,7 @@ items:
     href: manage-example-database.md
   - name: Use source generators
     href: use-source-generators.md
-  - name: Use Generate.For&lt;T&gt;()
+  - name: Use Strategy.For&lt;T&gt;()
     href: use-generate-for.md
   - name: Use sealed hierarchy strategies
     href: use-sealed-hierarchy-strategies.md

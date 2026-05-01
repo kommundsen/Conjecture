@@ -26,7 +26,7 @@ public sealed record GrpcInteraction(
 - `ResourceName` is the logical channel name routed by `CompositeInteractionTarget`. Use it to fan one test across multiple gRPC channels.
 - `FullMethodName` is the gRPC `/package.Service/Method` string used by `CallInvoker`. Kept separate from `ResourceName` so a single channel can carry multiple methods.
 - `Mode` is one of `Unary`, `ServerStream`, `ClientStream`, `Bidi`. The mode dictates how `RequestMessages` and the response are interpreted.
-- `RequestMessages` is `IReadOnlyList<ReadOnlyMemory<byte>>`. Bytes — not typed messages — keep the shape uniform across protobuf, JSON-transcoded, and arbitrary-payload tests, mirroring `MessageInteraction.Body`. Typed serialisation lives in `Generate.Grpc.*`, not on the interaction itself. Unary and server-stream calls always carry exactly one element; client-stream and bidi accept any non-negative count (the shrinker reduces it).
+- `RequestMessages` is `IReadOnlyList<ReadOnlyMemory<byte>>`. Bytes — not typed messages — keep the shape uniform across protobuf, JSON-transcoded, and arbitrary-payload tests, mirroring `MessageInteraction.Body`. Typed serialisation lives in `Strategy.Grpc.*`, not on the interaction itself. Unary and server-stream calls always carry exactly one element; client-stream and bidi accept any non-negative count (the shrinker reduces it).
 - `Metadata` is the gRPC metadata dictionary. Lower-case ASCII keys per gRPC convention; the package does not normalise — incorrect keys surface as runtime errors in the target, matching how HTTP headers are handled.
 - `Deadline` is nullable. When set, the target wires it through `CallOptions.WithDeadline(...)`.
 
@@ -37,10 +37,10 @@ public sealed record GrpcInteraction(
 The cost is that unary and server-stream callers wrap a single message in a one-element list. That is paid once in the strategy builder and disappears at the call site:
 
 ```csharp
-Strategy<GrpcInteraction> unary = Generate.Grpc.Unary(
+Strategy<GrpcInteraction> unary = Strategy.Grpc.Unary(
     resourceName: "greeter",
     method: GreeterService.SayHelloMethod,
-    requestStrategy: Generate.FromProtobuf<HelloRequest>());
+    requestStrategy: Strategy.FromProtobuf<HelloRequest>());
 ```
 
 ## In-stream sequence shrinking
@@ -62,7 +62,7 @@ Strategy<IReadOnlyList<TReq>>            (length + per-element shrinking from Co
 
 ## How dispatch works
 
-Both `GrpcChannelTarget` and `HostGrpcTarget` dispatch via `Grpc.Net.Client.CallInvoker` — the abstract base type that `GrpcChannel.CreateCallInvoker()` returns. The legacy `Grpc.Core` native binding is deprecated by Google as of 2024 and not used. Method descriptors come from generated `Grpc.Tools` clients (`Method<TReq, TResp>` instances exposed as static fields on the generated base type) — the property test passes the descriptor into `Generate.Grpc.*`, and the strategy serialises requests through the descriptor's `RequestMarshaller`.
+Both `GrpcChannelTarget` and `HostGrpcTarget` dispatch via `Grpc.Net.Client.CallInvoker` — the abstract base type that `GrpcChannel.CreateCallInvoker()` returns. The legacy `Grpc.Core` native binding is deprecated by Google as of 2024 and not used. Method descriptors come from generated `Grpc.Tools` clients (`Method<TReq, TResp>` instances exposed as static fields on the generated base type) — the property test passes the descriptor into `Strategy.Grpc.*`, and the strategy serialises requests through the descriptor's `RequestMarshaller`.
 
 Server-stream and bidi responses are materialised in full before `ExecuteAsync` returns, so assertions run against the complete response after the call. This is a deliberate trade-off: streaming-as-iteration would require re-running the call to replay a shrunk interaction, which breaks deterministic shrinking when the server has side effects. A `MaxResponseMessages` setting on each target (default 1024) prevents runaway streams from exhausting memory.
 

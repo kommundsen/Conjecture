@@ -11,7 +11,7 @@ Twice a year, most time zones perform a Daylight Saving Time (DST) adjustment:
 
 The impact is concrete: a nightly billing job scheduled for 02:30 local time will skip its execution during spring-forward and run twice during fall-back. A cron-based reminder will fire at the wrong UTC time for all users in the affected zone.
 
-Standard unit tests almost never cover this because developers write tests against `DateTime.UtcNow` and specific dates, not against the ±1-hour window around the transition. Conjecture's `.NearDstTransition()` and `Generate.TimeZone(preferDst: true)` target exactly this region.
+Standard unit tests almost never cover this because developers write tests against `DateTime.UtcNow` and specific dates, not against the ±1-hour window around the transition. Conjecture's `.NearDstTransition()` and `Strategy.TimeZone(preferDst: true)` target exactly this region.
 
 ## `DateTime.Kind` silently redefines semantics
 
@@ -23,7 +23,7 @@ Standard unit tests almost never cover this because developers write tests again
 
 The `Unspecified` kind is the most dangerous: it is the default when parsing without explicit format information and is also the value returned by many date arithmetic operations. Teams discover these bugs months later when a server is moved to a different time zone.
 
-`Generate.DateTimes().WithKinds()` generates all three kinds in a single property, making it impossible to accidentally test only `Utc`.
+`Strategy.DateTimes().WithKinds()` generates all three kinds in a single property, making it impossible to accidentally test only `Utc`.
 
 ## Database providers strip or round time values
 
@@ -49,7 +49,7 @@ In distributed systems, each node's `DateTimeOffset.UtcNow` is not identical. NT
 - Token expiry checks that rely on clock monotonicity.
 - Rate limiters that bucket requests by minute and silently allow extra requests at minute boundaries.
 
-These bugs are untestable with `DateTime.UtcNow` because the test process has a single clock. `Generate.ClockSet(nodeCount, maxSkew)` generates a cluster of `FakeTimeProvider` instances with bounded pairwise skew, and `Generate.ClockWithAdvances(advanceCount, maxJump, allowBackward: true)` generates adversarial clock sequences including backward jumps.
+These bugs are untestable with `DateTime.UtcNow` because the test process has a single clock. `Strategy.ClockSet(nodeCount, maxSkew)` generates a cluster of `FakeTimeProvider` instances with bounded pairwise skew, and `Strategy.ClockWithAdvances(advanceCount, maxJump, allowBackward: true)` generates adversarial clock sequences including backward jumps.
 
 ## Historical note on scope
 

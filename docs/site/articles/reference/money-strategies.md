@@ -5,20 +5,20 @@ Strategies in the `Conjecture.Money` package for generating currency codes, scal
 > [!NOTE]
 > Requires the `Conjecture.Money` NuGet package. The `using Conjecture.Money;` import activates the extension methods on `Generate`.
 
-## `Generate.Iso4217Codes()`
+## `Strategy.Iso4217Codes()`
 
 ```csharp
-Strategy<string> Generate.Iso4217Codes()
+Strategy<string> Strategy.Iso4217Codes()
 ```
 
 Samples uniformly from all 141 active ISO 4217 alphabetic currency codes (e.g. `"USD"`, `"EUR"`, `"JPY"`, `"BHD"`). Shrinks toward `"AED"` (lexicographically first active code).
 
 Withdrawn codes (e.g. `DEM`, `FRF`, `ITL`) are excluded. The list is an embedded snapshot; it does not change at runtime.
 
-## `Generate.Amounts(string currencyCode, decimal min = 0m, decimal max = 10_000m)`
+## `Strategy.Amounts(string currencyCode, decimal min = 0m, decimal max = 10_000m)`
 
 ```csharp
-Strategy<decimal> Generate.Amounts(string currencyCode, decimal min = 0m, decimal max = 10_000m)
+Strategy<decimal> Strategy.Amounts(string currencyCode, decimal min = 0m, decimal max = 10_000m)
 ```
 
 Generates decimal amounts within `[min, max]`, scaled to the minor-unit decimal places for the given ISO 4217 currency:
@@ -31,10 +31,10 @@ Generates decimal amounts within `[min, max]`, scaled to the minor-unit decimal 
 
 Throws `ArgumentException` if `currencyCode` is not an active ISO 4217 code.
 
-## `Generate.Decimal(decimal min, decimal max, int? scale = null)`
+## `Strategy.Decimal(decimal min, decimal max, int? scale = null)`
 
 ```csharp
-Strategy<decimal> Generate.Decimal(decimal min, decimal max, int? scale = null)
+Strategy<decimal> Strategy.Decimal(decimal min, decimal max, int? scale = null)
 ```
 
 Generates `decimal` values within `[min, max]`, optionally rounded to `scale` decimal places (0–28).
@@ -43,10 +43,10 @@ When `scale` is null the default precision of 6 decimal places is used. Shrinks 
 
 Throws `ArgumentException` if `min > max`. Throws `ArgumentOutOfRangeException` if `scale` is outside `[0, 28]` or if the combination of range and scale exceeds `long` precision.
 
-## `Generate.RoundingModes()`
+## `Strategy.RoundingModes()`
 
 ```csharp
-Strategy<MidpointRounding> Generate.RoundingModes()
+Strategy<MidpointRounding> Strategy.RoundingModes()
 ```
 
 Samples uniformly from all `System.MidpointRounding` enum values:

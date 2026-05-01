@@ -1,6 +1,6 @@
 # How to generate sealed class hierarchies
 
-Annotate an abstract base class and each concrete subtype with `[Arbitrary]` to get a `Generate.OneOf` strategy that picks uniformly among all subtypes.
+Annotate an abstract base class and each concrete subtype with `[Arbitrary]` to get a `Strategy.OneOf` strategy that picks uniformly among all subtypes.
 
 ## Requirements
 
@@ -42,7 +42,7 @@ The generator emits `ShapeArbitrary` that picks uniformly across all decorated s
 public sealed class ShapeArbitrary : IStrategyProvider<Shape>
 {
     public Strategy<Shape> Create() =>
-        Generate.OneOf(
+        Strategy.OneOf(
             new CircleArbitrary().Create().Select(static x => (Shape)x),
             new RectangleArbitrary().Create().Select(static x => (Shape)x)
         );

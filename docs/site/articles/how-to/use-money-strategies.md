@@ -20,8 +20,8 @@ using Conjecture.Money;
 public bool TaxCalculation_SameResultRegardlessOfRoundingMode(decimal gross)
 {
     // Arrange
-    decimal grossAmount = DataGen.SampleOne(Generate.Amounts("USD", min: 0m, max: 100_000m));
-    MidpointRounding mode = DataGen.SampleOne(Generate.RoundingModes());
+    decimal grossAmount = DataGen.SampleOne(Strategy.Amounts("USD", min: 0m, max: 100_000m));
+    MidpointRounding mode = DataGen.SampleOne(Strategy.RoundingModes());
 
     // Act
     decimal tax = CalculateTax(grossAmount, mode);
@@ -31,7 +31,7 @@ public bool TaxCalculation_SameResultRegardlessOfRoundingMode(decimal gross)
 }
 ```
 
-`Generate.RoundingModes()` samples all six `MidpointRounding` enum values uniformly, so a single property run exercises every rounding mode.
+`Strategy.RoundingModes()` samples all six `MidpointRounding` enum values uniformly, so a single property run exercises every rounding mode.
 
 ## Test currency-aware amount generation
 
@@ -44,8 +44,8 @@ using Conjecture.Money;
 [Property]
 public bool Formatter_NeverThrowsForAnyActiveCurrency()
 {
-    string code = DataGen.SampleOne(Generate.Iso4217Codes());
-    decimal amount = DataGen.SampleOne(Generate.Amounts(code));
+    string code = DataGen.SampleOne(Strategy.Iso4217Codes());
+    decimal amount = DataGen.SampleOne(Strategy.Amounts(code));
 
     // Act — should not throw
     string formatted = MoneyFormatter.Format(amount, code);
@@ -54,11 +54,11 @@ public bool Formatter_NeverThrowsForAnyActiveCurrency()
 }
 ```
 
-`Generate.Amounts(code)` automatically uses the correct minor-unit scale for the currency (0 for JPY, 2 for USD, 3 for BHD), so generated amounts are always representable.
+`Strategy.Amounts(code)` automatically uses the correct minor-unit scale for the currency (0 for JPY, 2 for USD, 3 for BHD), so generated amounts are always representable.
 
 ## Test an allocator's invariants
 
-Use `Generate.Decimal` with `Generate.Integers` to verify that an allocation algorithm sums correctly:
+Use `Strategy.Decimal` with `Strategy.Integers` to verify that an allocation algorithm sums correctly:
 
 ```csharp
 using Conjecture.Core;
@@ -67,8 +67,8 @@ using Conjecture.Money;
 [Property]
 public bool Allocator_SumsToOriginalAmount()
 {
-    decimal total = DataGen.SampleOne(Generate.Amounts("USD", min: 1m, max: 10_000m));
-    int parts = DataGen.SampleOne(Generate.Integers<int>(2, 10));
+    decimal total = DataGen.SampleOne(Strategy.Amounts("USD", min: 1m, max: 10_000m));
+    int parts = DataGen.SampleOne(Strategy.Integers<int>(2, 10));
 
     decimal[] allocated = Allocator.Split(total, parts);
 

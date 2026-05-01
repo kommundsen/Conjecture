@@ -2,10 +2,10 @@
 
 All string generation factory methods on `Generate`.
 
-## `Generate.Strings`
+## `Strategy.Strings`
 
 ```csharp
-Strategy<string> Generate.Strings(
+Strategy<string> Strategy.Strings(
     int minLength = 0,
     int maxLength = 20,
     int minCodepoint = 32,
@@ -25,30 +25,30 @@ Generates strings with length in `[minLength, maxLength]`.
 
 ```csharp
 // Printable ASCII, 0–20 chars (default)
-Generate.Strings()
+Strategy.Strings()
 
 // 1–50 chars, printable ASCII
-Generate.Strings(minLength: 1, maxLength: 50)
+Strategy.Strings(minLength: 1, maxLength: 50)
 
 // Letters only
-Generate.Strings(alphabet: "abcdefghijklmnopqrstuvwxyz")
+Strategy.Strings(alphabet: "abcdefghijklmnopqrstuvwxyz")
 
 // Unicode range
-Generate.Strings(minCodepoint: 0, maxCodepoint: 0x10FFFF)
+Strategy.Strings(minCodepoint: 0, maxCodepoint: 0x10FFFF)
 ```
 
-## `Generate.Text`
+## `Strategy.Text`
 
 ```csharp
-Strategy<string> Generate.Text(int minLength = 0, int maxLength = 20)
+Strategy<string> Strategy.Text(int minLength = 0, int maxLength = 20)
 ```
 
-Alias for `Generate.Strings(minLength, maxLength)` with default codepoint range.
+Alias for `Strategy.Strings(minLength, maxLength)` with default codepoint range.
 
-## `Generate.Identifiers`
+## `Strategy.Identifiers`
 
 ```csharp
-Strategy<string> Generate.Identifiers(
+Strategy<string> Strategy.Identifiers(
     int minPrefixLength = 1,
     int maxPrefixLength = 6,
     int minDigits = 1,
@@ -65,16 +65,16 @@ Generates identifier-like strings of the form `[a-z]+\d+` — a lowercase alphab
 | `maxDigits` | `4` | Maximum number of digits in the numeric suffix. |
 
 ```csharp
-Generate.Identifiers()           // e.g. "abc123", "x9", "hello4567"
-Generate.Identifiers(1, 3, 1, 2) // e.g. "ab12", "z7"
+Strategy.Identifiers()           // e.g. "abc123", "x9", "hello4567"
+Strategy.Identifiers(1, 3, 1, 2) // e.g. "ab12", "z7"
 ```
 
 The numeric suffix shrinks toward smaller numbers, and the prefix shrinks toward shorter strings — so failing identifiers reduce to minimal forms like `"a1"`.
 
-## `Generate.NumericStrings`
+## `Strategy.NumericStrings`
 
 ```csharp
-Strategy<string> Generate.NumericStrings(
+Strategy<string> Strategy.NumericStrings(
     int minDigits = 1,
     int maxDigits = 6,
     string? prefix = null,
@@ -91,18 +91,18 @@ Generates strings consisting entirely of digits, optionally wrapped with a fixed
 | `suffix` | `null` | Fixed string appended to the digits (e.g. `"-US"`). |
 
 ```csharp
-Generate.NumericStrings()              // e.g. "4", "10293", "7"
-Generate.NumericStrings(4, 4)          // exactly 4 digits, e.g. "0042"
-Generate.NumericStrings(prefix: "ORD-") // e.g. "ORD-123", "ORD-4"
-Generate.NumericStrings(prefix: "#", suffix: "!")  // e.g. "#42!"
+Strategy.NumericStrings()              // e.g. "4", "10293", "7"
+Strategy.NumericStrings(4, 4)          // exactly 4 digits, e.g. "0042"
+Strategy.NumericStrings(prefix: "ORD-") // e.g. "ORD-123", "ORD-4"
+Strategy.NumericStrings(prefix: "#", suffix: "!")  // e.g. "#42!"
 ```
 
 The digit portion uses numeric-aware shrinking: it shrinks numerically (toward zero) rather than lexicographically. This means `"100"` shrinks to `"99"`, `"50"`, ..., `"1"`, `"0"` — not `"00"`, `"0"`.
 
-## `Generate.VersionStrings`
+## `Strategy.VersionStrings`
 
 ```csharp
-Strategy<string> Generate.VersionStrings(
+Strategy<string> Strategy.VersionStrings(
     int maxMajor = 9,
     int maxMinor = 9,
     int maxPatch = 9)
@@ -117,8 +117,8 @@ Generates semantic version strings in `MAJOR.MINOR.PATCH` format.
 | `maxPatch` | `9` | Maximum value for the patch version component. Must be ≥ 0. |
 
 ```csharp
-Generate.VersionStrings()            // e.g. "1.2.3", "0.0.1", "9.4.0"
-Generate.VersionStrings(99, 99, 99)  // e.g. "12.0.47"
+Strategy.VersionStrings()            // e.g. "1.2.3", "0.0.1", "9.4.0"
+Strategy.VersionStrings(99, 99, 99)  // e.g. "12.0.47"
 ```
 
 Each component shrinks independently toward zero. Failing cases reduce to `"0.0.1"` or similar minimal forms.
@@ -127,8 +127,8 @@ Each component shrinks independently toward zero. Failing cases reduce to `"0.0.
 
 | Need | Strategy |
 |---|---|
-| Arbitrary text input | `Generate.Strings()` |
-| Domain-specific character set | `Generate.Strings(alphabet: "...")` |
-| Code identifiers, variable names | `Generate.Identifiers()` |
-| IDs, invoice numbers, codes | `Generate.NumericStrings(prefix: "INV-")` |
-| Version fields, semver parsing | `Generate.VersionStrings()` |
+| Arbitrary text input | `Strategy.Strings()` |
+| Domain-specific character set | `Strategy.Strings(alphabet: "...")` |
+| Code identifiers, variable names | `Strategy.Identifiers()` |
+| IDs, invoice numbers, codes | `Strategy.NumericStrings(prefix: "INV-")` |
+| Version fields, semver parsing | `Strategy.VersionStrings()` |

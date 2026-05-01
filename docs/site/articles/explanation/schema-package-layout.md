@@ -18,7 +18,7 @@ This follows the same principle behind Conjecture's other optional packages: `Co
 
 ## The API surface is independent
 
-The three entry points — `Generate.FromJsonSchema`, `Generate.FromOpenApi`, and `Generate.FromProtobuf` — each extend the same `Generate` class via C# extension methods. Adding one package to a project enables its entry point without touching the others. The extension method pattern means there's no base class or shared abstraction that would force a coupled release cycle.
+The three entry points — `Strategy.FromJsonSchema`, `Strategy.FromOpenApi`, and `Strategy.FromProtobuf` — each extend the same `Generate` class via C# extension methods. Adding one package to a project enables its entry point without touching the others. The extension method pattern means there's no base class or shared abstraction that would force a coupled release cycle.
 
 ## `Conjecture.JsonSchema` is the foundation
 

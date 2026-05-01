@@ -1,6 +1,6 @@
 # `AspNetCoreRequestBuilder` reference
 
-Fluent builder over a discovered ASP.NET Core endpoint surface. Produced by `Generate.AspNetCoreRequests(IHost, HttpClient)`; consumed via `.Build()` to materialise a `Strategy<HttpInteraction>`.
+Fluent builder over a discovered ASP.NET Core endpoint surface. Produced by `Strategy.AspNetCoreRequests(IHost, HttpClient)`; consumed via `.Build()` to materialise a `Strategy<HttpInteraction>`.
 
 ## Construction
 
@@ -30,7 +30,7 @@ Installs an async setup delegate that runs before each generated example. Use fo
 
 ### `ValidRequestsOnly() → AspNetCoreRequestBuilder`
 
-Restricts synthesis to the **valid** flavour: every required parameter populated from `Generate.For<T>()`, valid `Content-Type` / `Accept` headers, well-formed body. Suppresses the malformed flavour.
+Restricts synthesis to the **valid** flavour: every required parameter populated from `Strategy.For<T>()`, valid `Content-Type` / `Accept` headers, well-formed body. Suppresses the malformed flavour.
 
 ### `MalformedRequestsOnly() → AspNetCoreRequestBuilder`
 
@@ -60,14 +60,14 @@ The `ExcludeEndpoints` predicate receives a `DiscoveredEndpoint` per route:
 | Property | Type | Meaning |
 |---|---|---|
 | `Name` | `string` | Parameter name as bound by the route / model binder. |
-| `ClrType` | `Type` | Runtime type used to select a generation strategy via `Generate.For<T>()`. |
+| `ClrType` | `Type` | Runtime type used to select a generation strategy via `Strategy.For<T>()`. |
 | `Source` | `BindingSource` | `Path`, `Query`, `Header`, `Body`, `Form`, `Services`, etc. |
 | `IsRequired` | `bool` | `true` when the parameter must be present in the request. |
 
 ## Errors
 
 - **No endpoints remain after applying exclusion predicates** (`InvalidOperationException`) — every endpoint is filtered out. Loosen the predicates.
-- **No `Generate.For<T>()` strategy registered** (thrown at `.Build()` time) — a route requires a parameter of type `T` that has no registered arbitrary. Add `[Arbitrary]` to `T` (and its `Conjecture.Generators` source generator runs), or register manually via `GenerateForRegistry.Register<T>(...)`.
+- **No `Strategy.For<T>()` strategy registered** (thrown at `.Build()` time) — a route requires a parameter of type `T` that has no registered arbitrary. Add `[Arbitrary]` to `T` (and its `Conjecture.Generators` source generator runs), or register manually via `GenerateForRegistry.Register<T>(...)`.
 
 ## See also
 

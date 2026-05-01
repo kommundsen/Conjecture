@@ -47,7 +47,7 @@ public class OrdersQueueProperties : IAsyncLifetime
     public async Task RoundTrip(CancellationToken ct)
     {
         Strategy<MessageInteraction> publishStrategy =
-            Generate.Messaging.Publish("orders", Generate.Bytes(0, 1024));
+            Strategy.Messaging.Publish("orders", Strategy.Bytes(0, 1024));
 
         await Property.ForAll(target, publishStrategy, async (bus, sent) =>
         {

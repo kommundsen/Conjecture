@@ -1,6 +1,6 @@
 # How to test a regex validator with property-based tests
 
-Use `Generate.Matching` and `Generate.NotMatching` to prove that a validator accepts
+Use `Strategy.Matching` and `Strategy.NotMatching` to prove that a validator accepts
 every well-formed input and rejects every ill-formed one — without hand-writing examples.
 
 ## Install
@@ -31,7 +31,7 @@ using System.ComponentModel.DataAnnotations;
 [Property]
 public bool ProductCode_AcceptsAllMatchingValues()
 {
-    string value = DataGen.SampleOne(Generate.Matching(@"^[A-Z]{3}-\d{4}$"));
+    string value = DataGen.SampleOne(Strategy.Matching(@"^[A-Z]{3}-\d{4}$"));
     IList<ValidationResult> results = [];
     bool isValid = Validator.TryValidateObject(
         new ProductCode(value),
@@ -53,7 +53,7 @@ A negative property proves the validator never accepts what the regex disallows:
 [Property]
 public bool ProductCode_RejectsAllNonMatchingValues()
 {
-    string value = DataGen.SampleOne(Generate.NotMatching(@"^[A-Z]{3}-\d{4}$"));
+    string value = DataGen.SampleOne(Strategy.NotMatching(@"^[A-Z]{3}-\d{4}$"));
     IList<ValidationResult> results = [];
     bool isValid = Validator.TryValidateObject(
         new ProductCode(value),
@@ -82,7 +82,7 @@ private static partial Regex ProductCodeRegex();
 [Property]
 public bool ProductCode_AcceptsMatchingValues()
 {
-    string value = DataGen.SampleOne(Generate.Matching(ProductCodeRegex()));
+    string value = DataGen.SampleOne(Strategy.Matching(ProductCodeRegex()));
     return ProductCodeRegex().IsMatch(value);
 }
 ```
@@ -98,14 +98,14 @@ For common formats, skip the raw pattern and call the named factory method direc
 [Property]
 public bool EmailService_SendsToMatchingAddresses()
 {
-    string address = DataGen.SampleOne(Generate.Email());
+    string address = DataGen.SampleOne(Strategy.Email());
     return new MailAddress(address) is not null;
 }
 
 [Property]
 public bool OrderId_MustBeUuid()
 {
-    string id = DataGen.SampleOne(Generate.Uuid());
+    string id = DataGen.SampleOne(Strategy.Uuid());
     return Guid.TryParse(id, out _);
 }
 ```

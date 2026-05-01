@@ -8,17 +8,17 @@
 using Conjecture.Core;
 
 // 100 random integers
-List<int> ints = DataGen.Sample(Generate.Integers<int>(1, 1000), count: 100);
+List<int> ints = DataGen.Sample(Strategy.Integers<int>(1, 1000), count: 100);
 
 // 50 random strings
-List<string> names = DataGen.Sample(Generate.Strings(minLength: 3, maxLength: 20), count: 50);
+List<string> names = DataGen.Sample(Strategy.Strings(minLength: 3, maxLength: 20), count: 50);
 ```
 
 ## Generate a single value
 
 ```csharp
-int value = DataGen.SampleOne(Generate.Integers<int>(0, int.MaxValue));
-string name = DataGen.SampleOne(Generate.Strings(minLength: 1, maxLength: 50));
+int value = DataGen.SampleOne(Strategy.Integers<int>(0, int.MaxValue));
+string name = DataGen.SampleOne(Strategy.Strings(minLength: 1, maxLength: 50));
 ```
 
 ## Pin the seed for reproducibility
@@ -28,7 +28,7 @@ Every method accepts an optional `seed` parameter:
 ```csharp
 // Always produces the same 100 integers
 List<int> reproducible = DataGen.Sample(
-    Generate.Integers<int>(1, 1000),
+    Strategy.Integers<int>(1, 1000),
     count: 100,
     seed: 0xDEADBEEF);
 ```
@@ -39,7 +39,7 @@ List<int> reproducible = DataGen.Sample(
 
 ```csharp
 IEnumerable<string> emails = DataGen.Stream(
-    Generate.Strings(5, 30),
+    Strategy.Strings(5, 30),
     count: 10_000);
 
 foreach (string email in emails)
@@ -54,8 +54,8 @@ foreach (string email in emails)
 
 ```csharp
 Strategy<Person> personStrategy =
-    from name in Generate.Strings(minLength: 1, maxLength: 50)
-    from age in Generate.Integers<int>(18, 99)
+    from name in Strategy.Strings(minLength: 1, maxLength: 50)
+    from age in Strategy.Integers<int>(18, 99)
     select new Person(name, age);
 
 List<Person> people = DataGen.Sample(personStrategy, count: 500);
@@ -88,4 +88,4 @@ await formatter.WriteAsync(people, file, CancellationToken.None);
 
 - [Tutorial 7: Data Generation](../tutorials/07-data-generation.md) — walkthrough with a complete example
 - [Reference: Formatters](../reference/formatters.md) — `JsonOutputFormatter`, `JsonLinesOutputFormatter`
-- [Reference: Strategies](../reference/strategies.md) — all `Generate.*` factory methods
+- [Reference: Strategies](../reference/strategies.md) — all `Strategy.*` factory methods

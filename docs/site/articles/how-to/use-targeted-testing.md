@@ -65,14 +65,14 @@ public bool Graph_traversal_visits_all_nodes(int[,] adjacency)
 
 The targeting budget is divided evenly across all labels observed during the generation phase.
 
-## Use targeting inside `Generate.Compose`
+## Use targeting inside `Strategy.Compose`
 
-If you build strategies from `Generate.Compose`, record observations via `ctx.Target`:
+If you build strategies from `Strategy.Compose`, record observations via `ctx.Target`:
 
 ```csharp
-Strategy<List<int>> longListStrategy = Generate.Compose(ctx =>
+Strategy<List<int>> longListStrategy = Strategy.Compose(ctx =>
 {
-    List<int> xs = ctx.Generate(Generate.Lists(Generate.Integers<int>(), 0, 1000));
+    List<int> xs = ctx.Generate(Strategy.Lists(Strategy.Integers<int>(), 0, 1000));
     ctx.Target(xs.Count, "size");
     return xs;
 });

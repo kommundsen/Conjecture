@@ -5,7 +5,7 @@ items:
     href: shrinking.md
   - name: Sealed hierarchy strategies
     href: sealed-hierarchy-strategies.md
-  - name: Generate.For&lt;T&gt;() source generation
+  - name: Strategy.For&lt;T&gt;() source generation
     href: generate-for-source-generator.md
   - name: Targeted testing
     href: targeted-testing.md

@@ -8,7 +8,7 @@ Conjecture's time strategies let you reproduce these conditions deterministicall
 
 ## Generate DST-heavy time zones
 
-`Generate.TimeZone(preferDst: true)` biases zone sampling toward zones with active DST rules:
+`Strategy.TimeZone(preferDst: true)` biases zone sampling toward zones with active DST rules:
 
 ```csharp
 using Conjecture.Core;
@@ -17,9 +17,9 @@ using Conjecture.Time;
 [Property]
 public bool DailyJob_FiresExactlyOnce(int x)
 {
-    TimeZoneInfo zone = DataGen.SampleOne(Generate.TimeZone(preferDst: true));
+    TimeZoneInfo zone = DataGen.SampleOne(Strategy.TimeZone(preferDst: true));
     DateTimeOffset trigger = DataGen.SampleOne(
-        Generate.DateTimeOffsets().NearDstTransition(zone));
+        Strategy.DateTimeOffsets().NearDstTransition(zone));
 
     DailyJob job = new(zone);
     int fires = job.CountFirings(trigger, trigger.AddDays(1));
@@ -35,9 +35,9 @@ public bool DailyJob_FiresExactlyOnce(int x)
 [Property]
 public bool LocalTimeConversion_Roundtrips(int x)
 {
-    TimeZoneInfo zone = DataGen.SampleOne(Generate.TimeZone(preferDst: true));
+    TimeZoneInfo zone = DataGen.SampleOne(Strategy.TimeZone(preferDst: true));
     DateTimeOffset utc = DataGen.SampleOne(
-        Generate.DateTimeOffsets().NearDstTransition(zone));
+        Strategy.DateTimeOffsets().NearDstTransition(zone));
 
     DateTimeOffset local = TimeZoneInfo.ConvertTime(utc, zone);
     DateTimeOffset backToUtc = TimeZoneInfo.ConvertTimeToUtc(local.DateTime, zone);
@@ -49,26 +49,26 @@ If `zone` is `null`, a random DST-having zone from the system list is chosen aut
 
 ## Use IANA zone IDs for cross-platform tests
 
-`Generate.IanaZoneIds()` samples from a curated ~20-ID cross-platform-safe subset verified to resolve on .NET 8+ on Windows, Linux, and macOS:
+`Strategy.IanaZoneIds()` samples from a curated ~20-ID cross-platform-safe subset verified to resolve on .NET 8+ on Windows, Linux, and macOS:
 
 ```csharp
 [Property]
 public bool ZoneConversion_WorksAcrossPlatforms(int x)
 {
-    string ianaId = DataGen.SampleOne(Generate.IanaZoneIds());
+    string ianaId = DataGen.SampleOne(Strategy.IanaZoneIds());
     TimeZoneInfo zone = TimeZoneInfo.FindSystemTimeZoneById(ianaId);
     return zone is not null;
 }
 ```
 
-For Windows timezone IDs, use `Generate.WindowsZoneIds()`. For DST-heavy IDs specifically, pass `preferDst: true`:
+For Windows timezone IDs, use `Strategy.WindowsZoneIds()`. For DST-heavy IDs specifically, pass `preferDst: true`:
 
 ```csharp
-string dstIanaId = DataGen.SampleOne(Generate.IanaZoneIds(preferDst: true));
+string dstIanaId = DataGen.SampleOne(Strategy.IanaZoneIds(preferDst: true));
 ```
 
 > [!NOTE]
-> The curated IANA subset covers common enterprise zones. For exhaustive coverage, use `Generate.TimeZones()` which calls `TimeZoneInfo.GetSystemTimeZones()`, but note that available IDs differ across operating systems.
+> The curated IANA subset covers common enterprise zones. For exhaustive coverage, use `Strategy.TimeZones()` which calls `TimeZoneInfo.GetSystemTimeZones()`, but note that available IDs differ across operating systems.
 
 ## See also
 

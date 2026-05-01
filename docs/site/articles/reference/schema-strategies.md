@@ -24,13 +24,13 @@ How JSON Schema keywords map to Conjecture generation behavior.
 | `"exclusiveMinimum": true` | Increments the lower bound by 1 (integer) |
 | `"exclusiveMaximum": true` | Decrements the upper bound by 1 (integer) |
 | `"minLength"` / `"maxLength"` | Inclusive string length bounds |
-| `"pattern"` | String matching the regex via `Generate.Matching` |
+| `"pattern"` | String matching the regex via `Strategy.Matching` |
 | `"minItems"` / `"maxItems"` | Inclusive array length bounds |
 | `"required"` | Listed properties always appear in generated objects |
-| `"format": "email"` | Email address via `Generate.Email()` |
-| `"format": "uri"` | URI via `Generate.Url()` |
-| `"format": "uuid"` | UUID via `Generate.Uuid()` |
-| `"format": "date-time"` | ISO 8601 date-time string via `Generate.IsoDate()` |
+| `"format": "email"` | Email address via `Strategy.Email()` |
+| `"format": "uri"` | URI via `Strategy.Url()` |
+| `"format": "uuid"` | UUID via `Strategy.Uuid()` |
+| `"format": "date-time"` | ISO 8601 date-time string via `Strategy.IsoDate()` |
 | `"format": "ipv4"` | IPv4 address string |
 | `"format": "ipv6"` | IPv6 address string |
 | `"format": "date"` | ISO 8601 date string |
@@ -45,19 +45,19 @@ The following keywords are parsed but do not constrain generation in the current
 `not`, `contains`, `minContains`, `maxContains`, `uniqueItems`, `dependentSchemas`,
 `dependentRequired`, `propertyNames`, `multipleOf`.
 
-## `Generate.FromJsonSchema` overloads
+## `Strategy.FromJsonSchema` overloads
 
 **Package:** `Conjecture.JsonSchema`
 
 ```csharp
 // From a JSON string
-Strategy<JsonElement> Generate.FromJsonSchema(string jsonSchemaText)
+Strategy<JsonElement> Strategy.FromJsonSchema(string jsonSchemaText)
 
 // From a parsed JsonElement
-Strategy<JsonElement> Generate.FromJsonSchema(JsonElement root)
+Strategy<JsonElement> Strategy.FromJsonSchema(JsonElement root)
 
 // From a file
-Strategy<JsonElement> Generate.FromJsonSchema(FileInfo schemaFile)
+Strategy<JsonElement> Strategy.FromJsonSchema(FileInfo schemaFile)
 ```
 
 Throws `JsonException` (or a derived type) at construction time if the input is not valid JSON.
@@ -66,12 +66,12 @@ Throws `JsonException` (or a derived type) at construction time if the input is 
 
 **Package:** `Conjecture.OpenApi`
 
-### `Generate.FromOpenApi` overloads
+### `Strategy.FromOpenApi` overloads
 
 ```csharp
-Task<OpenApiDocument> Generate.FromOpenApi(string filePath)
-Task<OpenApiDocument> Generate.FromOpenApi(FileInfo file)
-Task<OpenApiDocument> Generate.FromOpenApi(Uri url)
+Task<OpenApiDocument> Strategy.FromOpenApi(string filePath)
+Task<OpenApiDocument> Strategy.FromOpenApi(FileInfo file)
+Task<OpenApiDocument> Strategy.FromOpenApi(Uri url)
 ```
 
 Loads and parses an OpenAPI 3.x document. Accepts JSON or YAML. For `Uri`, file URIs and HTTP/HTTPS are both supported.
@@ -110,17 +110,17 @@ Strategy<JsonElement> QueryParameter(string method, string path, string name, in
 
 Returns a strategy for a named query parameter.
 
-## `Generate.FromProtobuf` overloads
+## `Strategy.FromProtobuf` overloads
 
 **Package:** `Conjecture.Protobuf`
 
 ```csharp
 // From a compiled message type
-Strategy<JsonElement> Generate.FromProtobuf<T>(int maxDepth = 5)
+Strategy<JsonElement> Strategy.FromProtobuf<T>(int maxDepth = 5)
     where T : IMessage<T>, new()
 
 // From a runtime descriptor
-Strategy<JsonElement> Generate.FromProtobuf(MessageDescriptor descriptor, int maxDepth = 5)
+Strategy<JsonElement> Strategy.FromProtobuf(MessageDescriptor descriptor, int maxDepth = 5)
 ```
 
 `maxDepth` controls recursion depth for self-referential message types. Recursive fields beyond the limit produce a null JSON value.
