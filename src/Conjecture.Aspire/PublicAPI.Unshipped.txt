@@ -33,3 +33,5 @@ Conjecture.Aspire.AspireSessionLifetimeHandler.Fixture.get -> Conjecture.Abstrac
 *REMOVED*Conjecture.Aspire.AspireStateMachine<TState>.GetClient(string! resourceName) -> System.Net.Http.HttpClient!
 *REMOVED*static Conjecture.Aspire.AspireProperty.RunAsync<TState>(Conjecture.Abstractions.Aspire.IAspireAppFixture! fixture, Conjecture.Aspire.AspireStateMachine<TState>! machine, Conjecture.Core.ConjectureSettings! settings, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task!
 static Conjecture.Aspire.AspireProperty.RunAsync<TState>(Conjecture.Abstractions.Aspire.IAspireAppFixture! fixture, Conjecture.Abstractions.Interactions.InteractionStateMachine<TState>! machine, System.Func<Aspire.Hosting.DistributedApplication!, Conjecture.Abstractions.Interactions.IInteractionTarget!>! targetFactory, Conjecture.Core.ConjectureSettings! settings, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task!
+Conjecture.Aspire.AppLogTailFormatter
+static Conjecture.Aspire.AppLogTailFormatter.Format(Aspire.Hosting.DistributedApplication? app) -> string!
