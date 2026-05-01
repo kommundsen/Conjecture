@@ -10,8 +10,6 @@ using Conjecture.Core;
 using Google.Protobuf;
 using Google.Protobuf.Reflection;
 
-using Gen = Conjecture.Core.Strategy;
-
 using FieldType = Google.Protobuf.Reflection.FieldType;
 
 namespace Conjecture.Protobuf;
@@ -79,10 +77,10 @@ public static class ProtobufStrategyExtensions
                 armStrategies[i] = armFieldStrategy.Select(v => SerializeSingleField(jsonName, v));
             }
 
-            oneofArmStrategies.Add(Gen.OneOf(armStrategies));
+            oneofArmStrategies.Add(Strategy.OneOf(armStrategies));
         }
 
-        return Gen.Compose(ctx =>
+        return Strategy.Compose(ctx =>
         {
             Dictionary<string, JsonElement> obj = [];
 
@@ -109,7 +107,7 @@ public static class ProtobufStrategyExtensions
         Strategy<JsonElement> scalarStrategy = BuildScalarStrategy(field, depth);
 
         return field.IsRepeated
-            ? Gen.Lists(scalarStrategy, maxSize: 3).Select(static items => SerializeArray(items))
+            ? Strategy.Lists(scalarStrategy, maxSize: 3).Select(static items => SerializeArray(items))
             : scalarStrategy;
     }
 
@@ -118,29 +116,29 @@ public static class ProtobufStrategyExtensions
         return field.FieldType switch
         {
             FieldType.Int32 or FieldType.SInt32 or FieldType.SFixed32 =>
-                Gen.Integers<int>().Select(static v => JsonSerializer.SerializeToElement(v)),
+                Strategy.Integers<int>().Select(static v => JsonSerializer.SerializeToElement(v)),
             FieldType.Int64 or FieldType.SInt64 or FieldType.SFixed64 =>
-                Gen.Integers<long>().Select(static v => JsonSerializer.SerializeToElement(v)),
+                Strategy.Integers<long>().Select(static v => JsonSerializer.SerializeToElement(v)),
             FieldType.UInt32 or FieldType.Fixed32 =>
-                Gen.Integers<uint>().Select(static v => JsonSerializer.SerializeToElement(v)),
+                Strategy.Integers<uint>().Select(static v => JsonSerializer.SerializeToElement(v)),
             FieldType.UInt64 or FieldType.Fixed64 =>
-                Gen.Integers<ulong>().Select(static v => JsonSerializer.SerializeToElement(v)),
+                Strategy.Integers<ulong>().Select(static v => JsonSerializer.SerializeToElement(v)),
             FieldType.Float =>
-                Gen.Floats(-1e10f, 1e10f).Select(static v => JsonSerializer.SerializeToElement(v)),
+                Strategy.Floats(-1e10f, 1e10f).Select(static v => JsonSerializer.SerializeToElement(v)),
             FieldType.Double =>
-                Gen.Doubles(-1e10, 1e10).Select(static v => JsonSerializer.SerializeToElement(v)),
+                Strategy.Doubles(-1e10, 1e10).Select(static v => JsonSerializer.SerializeToElement(v)),
             FieldType.Bool =>
-                Gen.Booleans().Select(static v => JsonSerializer.SerializeToElement(v)),
+                Strategy.Booleans().Select(static v => JsonSerializer.SerializeToElement(v)),
             FieldType.String =>
-                Gen.Strings().Select(static v => JsonSerializer.SerializeToElement(v)),
+                Strategy.Strings().Select(static v => JsonSerializer.SerializeToElement(v)),
             FieldType.Bytes =>
-                Gen.Bytes(16).Select(static v => JsonSerializer.SerializeToElement(Convert.ToBase64String(v))),
+                Strategy.Bytes(16).Select(static v => JsonSerializer.SerializeToElement(Convert.ToBase64String(v))),
             FieldType.Enum =>
                 BuildEnumStrategy(field),
             FieldType.Message =>
                 BuildMessageFieldStrategy(field, depth),
             _ =>
-                Gen.Just(JsonSerializer.SerializeToElement(string.Empty)),
+                Strategy.Just(JsonSerializer.SerializeToElement(string.Empty)),
         };
     }
 
@@ -154,7 +152,7 @@ public static class ProtobufStrategyExtensions
             numbers[i] = values[i].Number;
         }
 
-        return Gen.SampledFrom(numbers).Select(static n => JsonSerializer.SerializeToElement(n));
+        return Strategy.SampledFrom(numbers).Select(static n => JsonSerializer.SerializeToElement(n));
     }
 
     private static Strategy<JsonElement> BuildMessageFieldStrategy(FieldDescriptor field, int depth)
@@ -164,12 +162,12 @@ public static class ProtobufStrategyExtensions
         string fullName = nestedDescriptor.FullName;
         if (fullName is "google.protobuf.Timestamp" or "google.protobuf.Duration")
         {
-            return Gen.Strings().Select(static v => JsonSerializer.SerializeToElement(v));
+            return Strategy.Strings().Select(static v => JsonSerializer.SerializeToElement(v));
         }
 
         if (fullName is "google.protobuf.Any")
         {
-            return Gen.Just(JsonSerializer.SerializeToElement(new Dictionary<string, string>
+            return Strategy.Just(JsonSerializer.SerializeToElement(new Dictionary<string, string>
             {
                 ["@type"] = "type.googleapis.com/google.protobuf.Empty",
             }));
@@ -177,7 +175,7 @@ public static class ProtobufStrategyExtensions
 
         if (depth <= 0)
         {
-            return Gen.Just(SerializeObject([]));
+            return Strategy.Just(SerializeObject([]));
         }
 
         return BuildMessageStrategy(nestedDescriptor, depth - 1);
