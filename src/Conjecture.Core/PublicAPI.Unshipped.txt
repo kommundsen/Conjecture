@@ -101,8 +101,7 @@ Conjecture.Core.ConjectureSettings.ExportReproductionOnFailure.get -> bool
 Conjecture.Core.ConjectureSettings.ExportReproductionOnFailure.init -> void
 Conjecture.Core.ConjectureSettings.ReproductionOutputPath.get -> string!
 Conjecture.Core.ConjectureSettings.ReproductionOutputPath.init -> void
-Conjecture.Core.IReproductionExport.ExportReproductionOnFailure.get -> bool
-Conjecture.Core.IReproductionExport.ReproductionOutputPath.get -> string!
+*REMOVED*Conjecture.Core.IReproductionExport
 *REMOVED*Conjecture.Core.IPropertyTest
 *REMOVED*Conjecture.Core.IPropertyTest.DeadlineMs.get -> int
 *REMOVED*Conjecture.Core.IPropertyTest.MaxExamples.get -> int
