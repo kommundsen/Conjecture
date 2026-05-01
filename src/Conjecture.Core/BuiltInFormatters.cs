@@ -4,6 +4,8 @@
 using System.Globalization;
 using System.Text;
 
+using Conjecture.Abstractions.Strategies;
+
 namespace Conjecture.Core;
 
 /// <summary>Built-in <see cref="IStrategyFormatter{T}"/> instances for common primitive types.</summary>

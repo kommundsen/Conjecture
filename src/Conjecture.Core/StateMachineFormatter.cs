@@ -6,6 +6,8 @@
 
 using System.Text;
 
+using Conjecture.Abstractions.Strategies;
+
 namespace Conjecture.Core;
 
 /// <summary>

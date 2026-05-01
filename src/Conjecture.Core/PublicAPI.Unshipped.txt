@@ -104,3 +104,21 @@ Conjecture.Core.ConjectureSettings.ReproductionOutputPath.init -> void
 Conjecture.Core.IPropertyTest.Database.get -> bool
 Conjecture.Core.IReproductionExport.ExportReproductionOnFailure.get -> bool
 Conjecture.Core.IReproductionExport.ReproductionOutputPath.get -> string!
+*REMOVED*Conjecture.Core.IStrategyFormatter<T>
+*REMOVED*Conjecture.Core.IStrategyFormatter<T>.Format(T value) -> string!
+*REMOVED*static Conjecture.Core.FormatterRegistry.Get<T>() -> Conjecture.Core.IStrategyFormatter<T>?
+*REMOVED*static Conjecture.Core.FormatterRegistry.Register<T>(Conjecture.Core.IStrategyFormatter<T>? formatter) -> void
+*REMOVED*static Conjecture.Core.BuiltInFormatters.Int32.get -> Conjecture.Core.IStrategyFormatter<int>!
+*REMOVED*static Conjecture.Core.BuiltInFormatters.Boolean.get -> Conjecture.Core.IStrategyFormatter<bool>!
+*REMOVED*static Conjecture.Core.BuiltInFormatters.Double.get -> Conjecture.Core.IStrategyFormatter<double>!
+*REMOVED*static Conjecture.Core.BuiltInFormatters.Single.get -> Conjecture.Core.IStrategyFormatter<float>!
+*REMOVED*static Conjecture.Core.BuiltInFormatters.String.get -> Conjecture.Core.IStrategyFormatter<string!>!
+*REMOVED*static Conjecture.Core.BuiltInFormatters.ByteArray.get -> Conjecture.Core.IStrategyFormatter<byte[]!>!
+static Conjecture.Core.FormatterRegistry.Get<T>() -> Conjecture.Abstractions.Strategies.IStrategyFormatter<T>?
+static Conjecture.Core.FormatterRegistry.Register<T>(Conjecture.Abstractions.Strategies.IStrategyFormatter<T>? formatter) -> void
+static Conjecture.Core.BuiltInFormatters.Int32.get -> Conjecture.Abstractions.Strategies.IStrategyFormatter<int>!
+static Conjecture.Core.BuiltInFormatters.Boolean.get -> Conjecture.Abstractions.Strategies.IStrategyFormatter<bool>!
+static Conjecture.Core.BuiltInFormatters.Double.get -> Conjecture.Abstractions.Strategies.IStrategyFormatter<double>!
+static Conjecture.Core.BuiltInFormatters.Single.get -> Conjecture.Abstractions.Strategies.IStrategyFormatter<float>!
+static Conjecture.Core.BuiltInFormatters.String.get -> Conjecture.Abstractions.Strategies.IStrategyFormatter<string!>!
+static Conjecture.Core.BuiltInFormatters.ByteArray.get -> Conjecture.Abstractions.Strategies.IStrategyFormatter<byte[]!>!
