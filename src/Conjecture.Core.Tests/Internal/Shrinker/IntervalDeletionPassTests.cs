@@ -1,6 +1,7 @@
 // Copyright (c) 2026 Kim Ommundsen. Licensed under the MPL-2.0.
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
+using Conjecture.Core;
 using Conjecture.Core.Internal;
 
 namespace Conjecture.Core.Tests.Internal.Shrinker;
@@ -90,12 +91,13 @@ public class IntervalDeletionPassTests
         Assert.Equal(5, state.Nodes.Count);
     }
 
-    [Theory]
-    [InlineData(2)]
-    [InlineData(4)]
-    [InlineData(8)]
+    [Property]
+    [Sample(2)]
+    [Sample(4)]
+    [Sample(8)]
     public async Task TryReduce_HandlesIntervalSize(int intervalSize)
     {
+        Assume.That(intervalSize >= 1 && intervalSize <= 100);
         // Build a list that is exactly intervalSize+1 long.
         // Predicate: interesting only when 1 node remains, so only deleting `intervalSize`
         // nodes at once (the maximum matching interval) succeeds.
