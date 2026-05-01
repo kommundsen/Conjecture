@@ -27,7 +27,7 @@ public sealed class AspireEFCoreInvariantsTests : IAsyncLifetime
 {
     private SqliteConnection connection = null!;
 
-    public async Task InitializeAsync()
+    public async ValueTask InitializeAsync()
     {
         connection = new("DataSource=:memory:");
         await connection.OpenAsync();
@@ -37,7 +37,7 @@ public sealed class AspireEFCoreInvariantsTests : IAsyncLifetime
         await seed.Database.EnsureCreatedAsync();
     }
 
-    public async Task DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
         await connection.DisposeAsync();
     }
