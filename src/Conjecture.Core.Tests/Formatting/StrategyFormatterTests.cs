@@ -48,17 +48,17 @@ public class StrategyFormatterTests
         Assert.Equal("0", result);
     }
 
-    [Theory]
-    [InlineData(1, "<1>")]
-    [InlineData(42, "<42>")]
-    [InlineData(-3, "<-3>")]
-    public void Format_WithTaggedFormatter_WrapsValueInAngledBrackets(int value, string expected)
+    [Property]
+    [Sample(1)]
+    [Sample(42)]
+    [Sample(-3)]
+    public void Format_WithTaggedFormatter_WrapsValueInAngledBrackets(int value)
     {
         IStrategyFormatter<int> formatter = new TaggedFormatter();
 
-        var result = formatter.Format(value);
+        string result = formatter.Format(value);
 
-        Assert.Equal(expected, result);
+        Assert.Equal($"<{value}>", result);
     }
 
     [Fact]
