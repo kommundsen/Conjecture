@@ -3,6 +3,7 @@
 
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
 
@@ -15,7 +16,11 @@ internal static class SharedParameterStrategyResolver
     private static readonly MethodInfo GenerateFromProviderOpenMethod =
         typeof(SharedParameterStrategyResolver)
             .GetMethod(nameof(GenerateFromProvider), BindingFlags.NonPublic | BindingFlags.Static)!;
+    private static readonly MethodInfo GenerateBinaryIntegerOpenMethod =
+        typeof(SharedParameterStrategyResolver)
+            .GetMethod(nameof(GenerateBinaryInteger), BindingFlags.NonPublic | BindingFlags.Static)!;
     private static readonly ConcurrentDictionary<Type, MethodInfo?> ArbitraryProviderCache = new();
+    private static readonly ConcurrentDictionary<Type, MethodInfo?> BinaryIntegerCache = new();
 
     [RequiresUnreferencedCode("Accesses parameter type metadata via reflection; not trim-safe.")]
     [RequiresDynamicCode("Uses MakeGenericMethod for typed strategy dispatch; not NativeAOT-safe.")]
@@ -174,6 +179,11 @@ internal static class SharedParameterStrategyResolver
             _ when type == typeof(int) => Strategy.Integers<int>().Generate(data),
             _ when type == typeof(long) => Strategy.Integers<long>().Generate(data),
             _ when type == typeof(byte) => Strategy.Integers<byte>().Generate(data),
+            _ when type == typeof(uint) => Strategy.Integers<uint>().Generate(data),
+            _ when type == typeof(ulong) => Strategy.Integers<ulong>().Generate(data),
+            _ when type == typeof(ushort) => Strategy.Integers<ushort>().Generate(data),
+            _ when type == typeof(short) => Strategy.Integers<short>().Generate(data),
+            _ when type == typeof(sbyte) => Strategy.Integers<sbyte>().Generate(data),
             _ when type == typeof(bool) => Strategy.Booleans().Generate(data),
             _ when type == typeof(string) => Strategy.Strings().Generate(data),
             _ when type == typeof(float) => Strategy.Floats().Generate(data),
@@ -186,8 +196,54 @@ internal static class SharedParameterStrategyResolver
             { IsEnum: true } => GenerateEnum(type, data),
             _ when Nullable.GetUnderlyingType(type) is { } u
                                              => data.NextInteger(0, 9) == 0 ? null! : GenerateValue(u, data),
+            _ when TryGenerateBinaryInteger(type, data) is { } v => v,
             _ => throw new NotSupportedException($"No strategy registered for parameter type '{type.FullName}'.")
         };
+    }
+
+    private static object? TryGenerateBinaryInteger(Type type, ConjectureData data)
+    {
+        MethodInfo? method = BinaryIntegerCache.GetOrAdd(type, FindBinaryIntegerGenerator);
+        if (method is null)
+        {
+            return null;
+        }
+
+        try
+        {
+            return method.Invoke(null, [data]);
+        }
+        catch (TargetInvocationException ex) when (ex.InnerException is not null)
+        {
+            ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
+            return null;
+        }
+    }
+
+    [UnconditionalSuppressMessage("Trimming", "IL2055", Justification = "Reflective IBinaryInteger fallback is annotated as not trim-safe at the entry point.")]
+    [UnconditionalSuppressMessage("Trimming", "IL2060", Justification = "Reflective IBinaryInteger fallback is annotated as not trim-safe at the entry point.")]
+    [UnconditionalSuppressMessage("Trimming", "IL3050", Justification = "Reflective IBinaryInteger fallback is annotated as not AOT-safe at the entry point.")]
+    private static MethodInfo? FindBinaryIntegerGenerator(Type type)
+    {
+        if (!type.IsValueType)
+        {
+            return null;
+        }
+
+        Type binaryInteger = typeof(IBinaryInteger<>).MakeGenericType(type);
+        Type minMax = typeof(IMinMaxValue<>).MakeGenericType(type);
+        if (!binaryInteger.IsAssignableFrom(type) || !minMax.IsAssignableFrom(type))
+        {
+            return null;
+        }
+
+        return GenerateBinaryIntegerOpenMethod.MakeGenericMethod(type);
+    }
+
+    private static object GenerateBinaryInteger<T>(ConjectureData data)
+        where T : IBinaryInteger<T>, IMinMaxValue<T>
+    {
+        return Strategy.Integers<T>().Generate(data)!;
     }
 
     private static object GenerateEnum(Type type, ConjectureData data)
