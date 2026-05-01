@@ -7,8 +7,6 @@ using System.Text.Json;
 using Conjecture.Abstractions.JsonSchema;
 using Conjecture.Core;
 
-using Gen = Conjecture.Core.Strategy;
-
 namespace Conjecture.JsonSchema;
 
 internal static class JsonSchemaStrategyBuilder
@@ -32,13 +30,13 @@ internal static class JsonSchemaStrategyBuilder
         if (node.Const.HasValue)
         {
             JsonElement constValue = node.Const.Value;
-            return Gen.Just(constValue);
+            return Strategy.Just(constValue);
         }
 
         if (node.Enum is not null && node.Enum.Count > 0)
         {
             IReadOnlyList<JsonElement> enumValues = node.Enum;
-            return Gen.SampledFrom(enumValues);
+            return Strategy.SampledFrom(enumValues);
         }
 
         return node.OneOf is not null && node.OneOf.Count > 0
@@ -92,7 +90,7 @@ internal static class JsonSchemaStrategyBuilder
             strategies[i] = BuildStrategy(subSchemas[i], defs, depth, visiting);
         }
 
-        return Gen.OneOf(strategies);
+        return Strategy.OneOf(strategies);
     }
 
     private static Strategy<JsonElement> BuildAllOfStrategy(
@@ -141,7 +139,7 @@ internal static class JsonSchemaStrategyBuilder
 
     private static Strategy<JsonElement> BuildBooleanStrategy()
     {
-        return Gen.Booleans().Select(static b => b
+        return Strategy.Booleans().Select(static b => b
             ? JsonSchemaRefResolver.TrueElement
             : JsonSchemaRefResolver.FalseElement);
     }
@@ -160,14 +158,14 @@ internal static class JsonSchemaStrategyBuilder
             max--;
         }
 
-        return Gen.Integers(min, max).Select(static v => ParseLong(v));
+        return Strategy.Integers(min, max).Select(static v => ParseLong(v));
     }
 
     private static Strategy<JsonElement> BuildNumberStrategy(JsonSchemaNode node)
     {
         double min = node.MinimumDouble ?? 0.0;
         double max = node.MaximumDouble ?? 1000.0;
-        return Gen.Doubles(min, max).Select(static d => ParseDouble(d));
+        return Strategy.Doubles(min, max).Select(static d => ParseDouble(d));
     }
 
     private static Strategy<JsonElement> BuildStringStrategy(JsonSchemaNode node)
@@ -175,20 +173,20 @@ internal static class JsonSchemaStrategyBuilder
         if (node.Pattern is not null)
         {
             string pattern = node.Pattern;
-            return Gen.Matching(pattern).Select(static s => ParseString(s));
+            return Strategy.Matching(pattern).Select(static s => ParseString(s));
         }
 
         return node.Format is not null
             ? node.Format switch
             {
-                "email" => Gen.Email().Select(static s => ParseString(s)),
-                "uri" => Gen.Url().Select(static s => ParseString(s)),
-                "uuid" => Gen.Uuid().Select(static s => ParseString(s)),
-                "date-time" => Gen.IsoDate().Select(static s => ParseString(s)),
-                "ipv4" => Gen.Ipv4().Select(static s => ParseString(s)),
-                "ipv6" => Gen.Ipv6().Select(static s => ParseString(s)),
-                "date" => Gen.Date().Select(static s => ParseString(s)),
-                "time" => Gen.Time().Select(static s => ParseString(s)),
+                "email" => Strategy.Email().Select(static s => ParseString(s)),
+                "uri" => Strategy.Url().Select(static s => ParseString(s)),
+                "uuid" => Strategy.Uuid().Select(static s => ParseString(s)),
+                "date-time" => Strategy.IsoDate().Select(static s => ParseString(s)),
+                "ipv4" => Strategy.Ipv4().Select(static s => ParseString(s)),
+                "ipv6" => Strategy.Ipv6().Select(static s => ParseString(s)),
+                "date" => Strategy.Date().Select(static s => ParseString(s)),
+                "time" => Strategy.Time().Select(static s => ParseString(s)),
                 _ => BuildPlainStringStrategy(node),
             }
             : BuildPlainStringStrategy(node);
@@ -198,7 +196,7 @@ internal static class JsonSchemaStrategyBuilder
     {
         int minLen = node.MinLength ?? 0;
         int maxLen = node.MaxLength ?? 20;
-        return Gen.Strings(minLen, maxLen).Select(static s => ParseString(s));
+        return Strategy.Strings(minLen, maxLen).Select(static s => ParseString(s));
     }
 
     private static Strategy<JsonElement> BuildArrayStrategy(
@@ -213,7 +211,7 @@ internal static class JsonSchemaStrategyBuilder
             ? BuildStrategy(node.Items, defs, depth, visiting)
             : BuildBooleanStrategy();
 
-        return Gen.Lists(itemStrategy, minItems, maxItems).Select(static items =>
+        return Strategy.Lists(itemStrategy, minItems, maxItems).Select(static items =>
             JsonSerializer.SerializeToElement(items));
     }
 
@@ -235,12 +233,12 @@ internal static class JsonSchemaStrategyBuilder
             propStrategies.Add((kv.Key, propStrategy, isRequired));
         }
 
-        return Gen.Compose(ctx =>
+        return Strategy.Compose(ctx =>
         {
             Dictionary<string, JsonElement> obj = [];
             foreach ((string name, Strategy<JsonElement> strategy, bool isRequired) in propStrategies)
             {
-                bool include = isRequired || ctx.Generate(Gen.Booleans());
+                bool include = isRequired || ctx.Generate(Strategy.Booleans());
                 if (include)
                 {
                     obj[name] = ctx.Generate(strategy);
@@ -276,7 +274,7 @@ internal static class JsonSchemaStrategyBuilder
             propStrategies.Add((kv.Key, propStrategy));
         }
 
-        return Gen.Compose(ctx =>
+        return Strategy.Compose(ctx =>
         {
             Dictionary<string, JsonElement> obj = [];
             foreach ((string name, Strategy<JsonElement> strategy) in propStrategies)
@@ -300,13 +298,13 @@ internal static class JsonSchemaStrategyBuilder
             string refValue = node.Ref;
             if (visiting.Contains(refValue) || depth <= 0)
             {
-                return Gen.Just(JsonSchemaRefResolver.NullElement);
+                return Strategy.Just(JsonSchemaRefResolver.NullElement);
             }
 
             HashSet<string> newVisiting = [.. visiting, refValue];
             JsonSchemaNode? resolved = JsonSchemaRefResolver.ResolveRef(refValue, defs);
             return resolved is null
-                ? Gen.Just(JsonSchemaRefResolver.NullElement)
+                ? Strategy.Just(JsonSchemaRefResolver.NullElement)
                 : BuildStrategy(resolved, defs ?? resolved.Defs, depth - 1, newVisiting);
         }
 
