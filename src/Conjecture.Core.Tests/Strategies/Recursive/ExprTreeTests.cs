@@ -74,26 +74,17 @@ public class ExprTreeTests
             maxDepth);
     }
 
-    [Theory]
-    [InlineData(0)]
-    [InlineData(1)]
-    [InlineData(5)]
-    public async Task ExprTree_AllGeneratedTrees_HaveDepthAtMostMaxDepth(int maxDepth)
+    [Property]
+    [Sample(0)]
+    [Sample(1)]
+    [Sample(5)]
+    public void ExprTree_AllGeneratedTrees_HaveDepthAtMostMaxDepth(int maxDepth)
     {
-        ConjectureSettings settings = new() { MaxExamples = 200, Seed = 1UL };
+        Assume.That(maxDepth >= 0 && maxDepth <= 10);
         Strategy<Expr> strategy = ExprStrategy(maxDepth);
-
-        TestRunResult result = await TestRunner.Run(settings, data =>
-        {
-            Expr expr = strategy.Generate(data);
-            int depth = ExprDepth(expr);
-            if (depth > maxDepth)
-            {
-                throw new InvalidOperationException($"Generated tree depth {depth} exceeds maxDepth {maxDepth}");
-            }
-        });
-
-        Assert.True(result.Passed);
+        Assert.All(strategy.WithSeed(1UL).Sample(200), expr =>
+            Assert.True(ExprDepth(expr) <= maxDepth,
+                $"Generated tree depth {ExprDepth(expr)} exceeds maxDepth {maxDepth}"));
     }
 
     [Fact]
