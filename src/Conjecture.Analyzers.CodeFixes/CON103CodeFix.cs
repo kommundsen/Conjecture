@@ -64,7 +64,7 @@ internal sealed class CON103CodeFix : CodeFixProvider
             return document;
         }
 
-        if (!GenBoundsHelper.TryFindMinMaxArgIndices(invocation, method, out int minArgPos, out int maxArgPos))
+        if (!StrategyBoundsHelper.TryFindMinMaxArgIndices(invocation, method, out int minArgPos, out int maxArgPos))
         {
             return document;
         }
