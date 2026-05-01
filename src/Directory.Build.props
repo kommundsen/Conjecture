@@ -5,6 +5,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <NoWarn>$(NoWarn);CS1573</NoWarn> <!-- Allow undocumented params on overrides -->
+    <NoWarn>$(NoWarn);xUnit1051</NoWarn> <!-- xUnit v3: don't enforce TestContext.Current.CancellationToken -->
 
     <!-- Nullability -->
     <Nullable>enable</Nullable>
