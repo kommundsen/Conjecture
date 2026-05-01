@@ -36,6 +36,7 @@ Recommends the right `Strategy.*` factory for a given C# type name.
 | `IReadOnlyDictionary<string, int>` | `Strategy.Dictionaries(Strategy.Strings(), Strategy.Integers<int>())` |
 | `int?` | `Strategy.Nullable(Strategy.Integers<int>())` |
 | `(int, string)` | `Strategy.Tuples(Strategy.Integers<int>(), Strategy.Strings())` |
+| `Guid` | `Strategy.Guids()` |
 | `MyRecord` | Options: `Strategy.Compose`, `[Arbitrary]`, `Strategy.Enums`, `Strategy.SampledFrom`, `.Select` |
 
 ### `scaffold-property-test`

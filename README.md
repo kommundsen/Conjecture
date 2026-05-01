@@ -59,6 +59,7 @@ Run with `dotnet test`. Conjecture generates random lists, runs the property 100
 - **Targeted testing** — steer generation toward extremes with `Target.Maximize` / `Target.Minimize`
 - **Recursive strategies** — generate bounded-depth trees and self-referential types
 - **Example database** — persist failing inputs for automatic regression prevention
+- **Reproduction export** — write a runnable `.cs` repro of any failing input via `ExportReproductionOnFailure`
 - **Structured logging** — structured events for generation, shrinking, and targeting phases
 - **HTTP / gRPC / messaging / EF Core / ASP.NET Core / Aspire integrations** — model real distributed systems as `IInteractionTarget`s and dispatch composed interactions through one state machine
 - **MCP server + dotnet tool** — generate strategies and standalone test data from the CLI or AI assistants

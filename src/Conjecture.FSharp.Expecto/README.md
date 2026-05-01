@@ -32,6 +32,8 @@ let main argv =
 
 The `property` function accepts any `'a -> bool` (false → failure) or `'a -> unit` (exception → failure). The argument type drives `Gen.auto<'a> ()`, so any record / DU built from primitives, options, results, lists, sets, sequences, and tuples is covered out of the box.
 
+Pass a `ConjectureSettings` record with `ExportReproductionOnFailure = true` to write a runnable `.cs` repro alongside any failure. See [Export reproductions](https://ommundsen.dev/Conjecture/articles/how-to/export-repros.html).
+
 ## API
 
 | Function | Returns | Notes |
