@@ -7,6 +7,8 @@ using Conjecture.Core.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+using Conjecture.Abstractions.Testing;
+
 namespace Conjecture.MSTest.Tests;
 
 /// <summary>

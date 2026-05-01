@@ -9,6 +9,8 @@ using Microsoft.Extensions.Logging;
 using Xunit;
 using Xunit.v3;
 
+using Conjecture.Abstractions.Testing;
+
 namespace Conjecture.Xunit.V3.Tests;
 
 /// <summary>
