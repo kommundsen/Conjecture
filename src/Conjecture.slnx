@@ -4,6 +4,7 @@
   <Project Path="Conjecture.Testing.Abstractions/Conjecture.Testing.Abstractions.csproj" />
   <Project Path="Conjecture.Interactions.Abstractions/Conjecture.Interactions.Abstractions.csproj" />
   <Project Path="Conjecture.Aspire.Abstractions/Conjecture.Aspire.Abstractions.csproj" />
+  <Project Path="Conjecture.JsonSchema.Abstractions/Conjecture.JsonSchema.Abstractions.csproj" />
   <Project Path="Conjecture.Xunit/Conjecture.Xunit.csproj" />
   <Project Path="Conjecture.Core.Tests/Conjecture.Core.Tests.csproj" />
   <Project Path="Conjecture.Xunit.Tests/Conjecture.Xunit.Tests.csproj" />
