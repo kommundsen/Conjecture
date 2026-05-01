@@ -225,6 +225,7 @@ internal static class SharedParameterStrategyResolver
 
     [UnconditionalSuppressMessage("Trimming", "IL2055", Justification = "Reflective IBinaryInteger fallback is annotated as not trim-safe at the entry point.")]
     [UnconditionalSuppressMessage("Trimming", "IL2060", Justification = "Reflective IBinaryInteger fallback is annotated as not trim-safe at the entry point.")]
+    [UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Reflective IBinaryInteger fallback is annotated as not trim-safe at the entry point.")]
     [UnconditionalSuppressMessage("Trimming", "IL3050", Justification = "Reflective IBinaryInteger fallback is annotated as not AOT-safe at the entry point.")]
     private static MethodInfo? FindBinaryIntegerGenerator(Type type)
     {
@@ -233,9 +234,23 @@ internal static class SharedParameterStrategyResolver
             return null;
         }
 
-        Type binaryInteger = typeof(IBinaryInteger<>).MakeGenericType(type);
-        Type minMax = typeof(IMinMaxValue<>).MakeGenericType(type);
-        if (!binaryInteger.IsAssignableFrom(type) || !minMax.IsAssignableFrom(type))
+        bool implementsBinaryInteger = false;
+        bool implementsMinMaxValue = false;
+        foreach (Type iface in type.GetInterfaces())
+        {
+            if (!iface.IsGenericType) { continue; }
+            Type def = iface.GetGenericTypeDefinition();
+            if (def == typeof(IBinaryInteger<>) && iface.GetGenericArguments()[0] == type)
+            {
+                implementsBinaryInteger = true;
+            }
+            else if (def == typeof(IMinMaxValue<>) && iface.GetGenericArguments()[0] == type)
+            {
+                implementsMinMaxValue = true;
+            }
+        }
+
+        if (!implementsBinaryInteger || !implementsMinMaxValue)
         {
             return null;
         }
