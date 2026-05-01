@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 using Conjecture.Core.Internal;
 
@@ -14,6 +15,7 @@ namespace Conjecture.Core;
 /// <c>GenerateForGenerator</c> source generator via <c>[ModuleInitializer]</c>.
 /// Must be <see langword="public"/> so generated code in user assemblies can register types.
 /// </summary>
+[EditorBrowsable(EditorBrowsableState.Never)]
 public static class GenerateForRegistry
 {
     private static readonly ConcurrentDictionary<Type, Func<IStrategyProvider>> Providers = new();
