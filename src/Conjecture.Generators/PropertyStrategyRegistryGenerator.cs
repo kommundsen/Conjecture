@@ -97,7 +97,7 @@ public sealed class PropertyStrategyRegistryGenerator : IIncrementalGenerator
     private static IMethodSymbol? TryGetPropertyMethodSymbol(GeneratorSyntaxContext ctx)
     {
         INamedTypeSymbol? markerInterface =
-            ctx.SemanticModel.Compilation.GetTypeByMetadataName("Conjecture.Core.IPropertyTest");
+            ctx.SemanticModel.Compilation.GetTypeByMetadataName("Conjecture.Abstractions.Testing.IPropertyTest");
 
         MethodDeclarationSyntax method = (MethodDeclarationSyntax)ctx.Node;
         foreach (AttributeListSyntax attrList in method.AttributeLists)

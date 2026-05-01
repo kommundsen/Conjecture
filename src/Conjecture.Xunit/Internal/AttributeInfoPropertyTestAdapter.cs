@@ -5,6 +5,8 @@ using Conjecture.Core;
 
 using Xunit.Abstractions;
 
+using Conjecture.Abstractions.Testing;
+
 namespace Conjecture.Xunit.Internal;
 
 /// <summary>

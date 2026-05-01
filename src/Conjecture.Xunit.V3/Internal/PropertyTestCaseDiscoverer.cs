@@ -6,6 +6,8 @@ using Conjecture.Core;
 using Xunit.Sdk;
 using Xunit.v3;
 
+using Conjecture.Abstractions.Testing;
+
 namespace Conjecture.Xunit.V3.Internal;
 
 internal sealed class PropertyTestCaseDiscoverer : IXunitTestCaseDiscoverer
