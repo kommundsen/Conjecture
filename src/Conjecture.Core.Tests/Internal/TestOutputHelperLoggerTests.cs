@@ -10,7 +10,7 @@ using Conjecture.Abstractions.Testing;
 
 namespace Conjecture.Core.Tests.Internal;
 
-public class TestOutputHelperLoggerTests
+public class TestOutputLoggerTests
 {
     private sealed class CapturingWriteLine
     {
@@ -30,7 +30,7 @@ public class TestOutputHelperLoggerTests
     public void IsEnabled_DefaultMinLevel_ReturnsTrueAtOrAboveInformation(LogLevel level, bool expected)
     {
         CapturingWriteLine capture = new();
-        TestOutputHelperLogger logger = new(capture.Action);
+        TestOutputLogger logger = new(capture.Action);
 
         Assert.Equal(expected, logger.IsEnabled(level));
     }
@@ -39,7 +39,7 @@ public class TestOutputHelperLoggerTests
     public void IsEnabled_CustomMinLevel_ReturnsCorrectly()
     {
         CapturingWriteLine capture = new();
-        TestOutputHelperLogger logger = new(capture.Action, LogLevel.Debug);
+        TestOutputLogger logger = new(capture.Action, LogLevel.Debug);
 
         Assert.True(logger.IsEnabled(LogLevel.Debug));
         Assert.False(logger.IsEnabled(LogLevel.Trace));
@@ -51,7 +51,7 @@ public class TestOutputHelperLoggerTests
     public void Log_AtEnabledLevel_FormatsAndCallsWriteLine()
     {
         CapturingWriteLine capture = new();
-        TestOutputHelperLogger logger = new(capture.Action);
+        TestOutputLogger logger = new(capture.Action);
 
         logger.Log(LogLevel.Information, new EventId(1), "hello world", null,
             (state, _) => state);
@@ -66,7 +66,7 @@ public class TestOutputHelperLoggerTests
     public void Log_AtDisabledLevel_DoesNotCallWriteLine()
     {
         CapturingWriteLine capture = new();
-        TestOutputHelperLogger logger = new(capture.Action);
+        TestOutputLogger logger = new(capture.Action);
 
         logger.Log(LogLevel.Debug, new EventId(10), "debug msg", null,
             (state, _) => state);
@@ -81,7 +81,7 @@ public class TestOutputHelperLoggerTests
     public void Log_IncludesLevelInBrackets(LogLevel level, string expectedFragment)
     {
         CapturingWriteLine capture = new();
-        TestOutputHelperLogger logger = new(capture.Action);
+        TestOutputLogger logger = new(capture.Action);
 
         logger.Log(level, new EventId(1), "msg", null, (state, _) => state);
 
@@ -94,7 +94,7 @@ public class TestOutputHelperLoggerTests
     public void BeginScope_ReturnsNonNullDisposable()
     {
         CapturingWriteLine capture = new();
-        TestOutputHelperLogger logger = new(capture.Action);
+        TestOutputLogger logger = new(capture.Action);
 
         IDisposable? scope = logger.BeginScope("scope state");
 
@@ -107,26 +107,26 @@ public class TestOutputHelperLoggerTests
     [Fact]
     public void FromWriteLine_WithNullAction_ReturnsNullLoggerInstance()
     {
-        ILogger logger = TestOutputHelperLogger.FromWriteLine(null);
+        ILogger logger = TestOutputLogger.FromWriteLine(null);
 
         Assert.IsType<NullLogger>(logger);
     }
 
     [Fact]
-    public void FromWriteLine_WithAction_ReturnsTestOutputHelperLogger()
+    public void FromWriteLine_WithAction_ReturnsTestOutputLogger()
     {
         CapturingWriteLine capture = new();
 
-        ILogger logger = TestOutputHelperLogger.FromWriteLine(capture.Action);
+        ILogger logger = TestOutputLogger.FromWriteLine(capture.Action);
 
-        Assert.IsType<TestOutputHelperLogger>(logger);
+        Assert.IsType<TestOutputLogger>(logger);
     }
 
     [Fact]
     public void FromWriteLine_WithCustomMinLevel_HonorsLevel()
     {
         CapturingWriteLine capture = new();
-        ILogger logger = TestOutputHelperLogger.FromWriteLine(capture.Action, LogLevel.Debug);
+        ILogger logger = TestOutputLogger.FromWriteLine(capture.Action, LogLevel.Debug);
 
         Assert.True(logger.IsEnabled(LogLevel.Debug));
     }

@@ -46,7 +46,7 @@ public sealed class AspireInteractionSequenceBuilder
     {
         ArgumentNullException.ThrowIfNull(resourceName);
         ArgumentNullException.ThrowIfNull(step);
-        steps.Add(step.Select(msg => (IAddressedInteraction)new AddressedMessageInteraction(resourceName, msg)));
+        steps.Add(step.Select(msg => (IAddressedInteraction)new Conjecture.Messaging.AddressedMessageInteraction(resourceName, msg)));
         return this;
     }
 
