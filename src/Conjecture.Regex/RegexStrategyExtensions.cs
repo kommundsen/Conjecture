@@ -61,7 +61,7 @@ public static class RegexStrategyExtensions
         {
             if (regex.Options.HasFlag(RegexOptions.NonBacktracking))
             {
-                return new DelegatingStrategy<string>(Strategy.Matching(regex), "redos:non-backtracking");
+                return Strategy.Matching(regex).WithLabel("redos:non-backtracking");
             }
 
             RegexNode root = RegexParser.Parse(regex.ToString(), regex.Options);
