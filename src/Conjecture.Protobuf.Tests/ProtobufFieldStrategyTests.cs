@@ -139,7 +139,7 @@ public sealed class ProtobufFieldStrategyTests
     public void Generate_PersonDescriptor_ProducesObjectValueKind()
     {
         MessageDescriptor descriptor = BuildPersonDescriptor();
-        ProtobufFieldStrategy strategy = new(descriptor);
+        Strategy<JsonElement> strategy = Strategy.FromProtobuf(descriptor);
         IReadOnlyList<JsonElement> samples = strategy.WithSeed(42UL).Sample(10);
         foreach (JsonElement element in samples)
         {
@@ -151,7 +151,7 @@ public sealed class ProtobufFieldStrategyTests
     public void Generate_PersonDescriptor_ObjectContainsNameAsString()
     {
         MessageDescriptor descriptor = BuildPersonDescriptor();
-        ProtobufFieldStrategy strategy = new(descriptor);
+        Strategy<JsonElement> strategy = Strategy.FromProtobuf(descriptor);
         IReadOnlyList<JsonElement> samples = strategy.WithSeed(42UL).Sample(10);
         foreach (JsonElement element in samples)
         {
@@ -164,7 +164,7 @@ public sealed class ProtobufFieldStrategyTests
     public void Generate_PersonDescriptor_ObjectContainsAgeAsNumber()
     {
         MessageDescriptor descriptor = BuildPersonDescriptor();
-        ProtobufFieldStrategy strategy = new(descriptor);
+        Strategy<JsonElement> strategy = Strategy.FromProtobuf(descriptor);
         IReadOnlyList<JsonElement> samples = strategy.WithSeed(42UL).Sample(10);
         foreach (JsonElement element in samples)
         {
@@ -177,7 +177,7 @@ public sealed class ProtobufFieldStrategyTests
     public void Generate_PersonDescriptor_ObjectContainsEmailsAsArray()
     {
         MessageDescriptor descriptor = BuildPersonDescriptor();
-        ProtobufFieldStrategy strategy = new(descriptor);
+        Strategy<JsonElement> strategy = Strategy.FromProtobuf(descriptor);
         IReadOnlyList<JsonElement> samples = strategy.WithSeed(42UL).Sample(10);
         foreach (JsonElement element in samples)
         {
@@ -190,7 +190,7 @@ public sealed class ProtobufFieldStrategyTests
     public void Generate_PersonDescriptor_EmailsArrayContainsOnlyStrings()
     {
         MessageDescriptor descriptor = BuildPersonDescriptor();
-        ProtobufFieldStrategy strategy = new(descriptor);
+        Strategy<JsonElement> strategy = Strategy.FromProtobuf(descriptor);
         IReadOnlyList<JsonElement> samples = strategy.WithSeed(99UL).Sample(20);
         foreach (JsonElement element in samples)
         {
@@ -206,7 +206,7 @@ public sealed class ProtobufFieldStrategyTests
     public void Generate_NodeDescriptor_DoesNotThrowWithDefaultMaxDepth()
     {
         MessageDescriptor descriptor = BuildNodeDescriptor();
-        ProtobufFieldStrategy strategy = new(descriptor);
+        Strategy<JsonElement> strategy = Strategy.FromProtobuf(descriptor);
         Exception? caught = Record.Exception(() =>
         {
             IReadOnlyList<JsonElement> _ = strategy.WithSeed(1UL).Sample(5);
@@ -218,7 +218,7 @@ public sealed class ProtobufFieldStrategyTests
     public void Generate_NodeDescriptor_DoesNotThrowWithMaxDepthOne()
     {
         MessageDescriptor descriptor = BuildNodeDescriptor();
-        ProtobufFieldStrategy strategy = new(descriptor, maxDepth: 1);
+        Strategy<JsonElement> strategy = Strategy.FromProtobuf(descriptor, maxDepth: 1);
         Exception? caught = Record.Exception(() =>
         {
             IReadOnlyList<JsonElement> _ = strategy.WithSeed(1UL).Sample(5);
@@ -230,7 +230,7 @@ public sealed class ProtobufFieldStrategyTests
     public void Generate_OneofDescriptor_ProducesObjectValueKind()
     {
         MessageDescriptor descriptor = BuildOneofDescriptor();
-        ProtobufFieldStrategy strategy = new(descriptor);
+        Strategy<JsonElement> strategy = Strategy.FromProtobuf(descriptor);
         IReadOnlyList<JsonElement> samples = strategy.WithSeed(7UL).Sample(20);
         foreach (JsonElement element in samples)
         {
@@ -242,7 +242,7 @@ public sealed class ProtobufFieldStrategyTests
     public void Generate_OneofDescriptor_ExactlyOneOneofFieldPresentPerSample()
     {
         MessageDescriptor descriptor = BuildOneofDescriptor();
-        ProtobufFieldStrategy strategy = new(descriptor);
+        Strategy<JsonElement> strategy = Strategy.FromProtobuf(descriptor);
         IReadOnlyList<JsonElement> samples = strategy.WithSeed(7UL).Sample(50);
         foreach (JsonElement element in samples)
         {
