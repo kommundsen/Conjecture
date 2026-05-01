@@ -2,7 +2,6 @@
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Threading;
@@ -14,6 +13,7 @@ using Conjecture.Core;
 using Conjecture.Core.Internal;
 
 using Conjecture.Abstractions.Aspire;
+using Conjecture.Abstractions.Interactions;
 
 namespace Conjecture.Aspire;
 
@@ -21,7 +21,8 @@ internal static class AspirePropertyRunner
 {
     internal static async Task RunAsync<TState>(
         IAspireAppFixture fixture,
-        AspireStateMachine<TState> machine,
+        InteractionStateMachine<TState> machine,
+        Func<DistributedApplication, IInteractionTarget> targetFactory,
         ConjectureSettings settings,
         CancellationToken cancellationToken)
     {
@@ -41,15 +42,8 @@ internal static class AspirePropertyRunner
                     await WaitForHealthChecksAsync(fixture, app, cancellationToken);
                 }
 
-                machine.App = app;
-                try
-                {
-                    RunExample(machine, rng);
-                }
-                finally
-                {
-                    machine.App = null;
-                }
+                IInteractionTarget target = targetFactory(app);
+                RunExample(machine, target, rng, cancellationToken);
             }
         }
         finally
@@ -88,7 +82,11 @@ internal static class AspirePropertyRunner
         }
     }
 
-    private static void RunExample<TState>(AspireStateMachine<TState> machine, SplittableRandom rng)
+    private static void RunExample<TState>(
+        InteractionStateMachine<TState> machine,
+        IInteractionTarget target,
+        SplittableRandom rng,
+        CancellationToken ct)
     {
         ConjectureData data = ConjectureData.ForGeneration(rng.Split());
         int commandCount = (int)data.NextInteger(1, 20);
@@ -97,14 +95,14 @@ internal static class AspirePropertyRunner
 
         for (int i = 0; i < commandCount; i++)
         {
-            Strategy<Interaction>[] commands = [.. machine.Commands(state)];
+            Strategy<IInteraction>[] commands = [.. machine.Commands(state)];
             if (commands.Length == 0)
             {
                 break;
             }
 
-            Interaction cmd = new OneOfStrategy<Interaction>(commands).Generate(data);
-            state = machine.RunCommand(state, cmd);
+            IInteraction cmd = new OneOfStrategy<IInteraction>(commands).Generate(data);
+            state = machine.RunCommand(state, cmd, target, ct);
             machine.Invariant(state);
         }
     }

@@ -7,30 +7,34 @@ using System.Threading.Tasks;
 
 using Aspire.Hosting;
 
+using Conjecture.Aspire;
 using Conjecture.Core;
 
 using Conjecture.Abstractions.Aspire;
 using Conjecture.Abstractions.Interactions;
 
-namespace Conjecture.Aspire;
+namespace Conjecture.Aspire.Http;
 
-/// <summary>Entry point for running Aspire stateful property tests.</summary>
-public static class AspireProperty
+/// <summary>Convenience entry point for running HTTP-based Aspire stateful property tests.</summary>
+public static class AspireHttpProperty
 {
     /// <summary>
-    /// Runs a stateful property test against an Aspire distributed application.
+    /// Runs a stateful property test against an Aspire distributed application using HTTP interactions.
     /// </summary>
     /// <typeparam name="TState">The state type used by the state machine.</typeparam>
     /// <param name="fixture">The fixture that owns the distributed application lifecycle.</param>
     /// <param name="machine">The state machine describing commands and invariants.</param>
-    /// <param name="targetFactory">Factory that creates the <see cref="IInteractionTarget"/> for a given application instance.</param>
     /// <param name="settings">Settings controlling example count and seed.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     public static Task RunAsync<TState>(
         IAspireAppFixture fixture,
         InteractionStateMachine<TState> machine,
-        Func<DistributedApplication, IInteractionTarget> targetFactory,
         ConjectureSettings settings,
         CancellationToken cancellationToken)
-        => AspirePropertyRunner.RunAsync(fixture, machine, targetFactory, settings, cancellationToken);
+        => AspireProperty.RunAsync(
+            fixture,
+            machine,
+            static app => new DistributedApplicationHttpTarget(app),
+            settings,
+            cancellationToken);
 }
