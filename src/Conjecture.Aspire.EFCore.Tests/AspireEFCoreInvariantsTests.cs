@@ -25,12 +25,16 @@ namespace Conjecture.Aspire.EFCore.Tests;
 /// </summary>
 public sealed class AspireEFCoreInvariantsTests : IAsyncLifetime
 {
-    private SqliteConnection connection = null!;
+    private SqliteConnection keepalive = null!;
+    private string connectionString = null!;
 
     public async ValueTask InitializeAsync()
     {
-        connection = new("DataSource=:memory:");
-        await connection.OpenAsync();
+        string dbName = $"invariants-{Guid.NewGuid():N}";
+        connectionString = $"Data Source=file:{dbName}?mode=memory&cache=shared";
+
+        keepalive = new(connectionString);
+        await keepalive.OpenAsync();
 
         DbContextOptions<InvariantsDbContext> opts = SharedOpts();
         await using InvariantsDbContext seed = new(opts);
@@ -39,16 +43,16 @@ public sealed class AspireEFCoreInvariantsTests : IAsyncLifetime
 
     public async ValueTask DisposeAsync()
     {
-        await connection.DisposeAsync();
+        await keepalive.DisposeAsync();
     }
 
     private DbContextOptions<InvariantsDbContext> SharedOpts() =>
-        new DbContextOptionsBuilder<InvariantsDbContext>().UseSqlite(connection).Options;
+        new DbContextOptionsBuilder<InvariantsDbContext>().UseSqlite(connectionString).Options;
 
     private async Task<AspireDbTarget<InvariantsDbContext>> CreateDbTargetAsync()
     {
         return await AspireDbTarget<InvariantsDbContext>.CreateAsync(
-            (_, _) => Task.FromResult<string?>(connection.ConnectionString),
+            (_, _) => Task.FromResult<string?>(connectionString),
             "invariants-db",
             _ => new InvariantsDbContext(SharedOpts()));
     }
