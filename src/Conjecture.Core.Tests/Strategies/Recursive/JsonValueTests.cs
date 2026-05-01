@@ -98,26 +98,17 @@ public class JsonValueTests
         Assert.True(result.Passed);
     }
 
-    [Theory]
-    [InlineData(0)]
-    [InlineData(3)]
-    [InlineData(7)]
-    public async Task JsonValue_GenerationRespectsMaxDepth(int maxDepth)
+    [Property]
+    [Sample(0)]
+    [Sample(3)]
+    [Sample(7)]
+    public void JsonValue_GenerationRespectsMaxDepth(int maxDepth)
     {
-        ConjectureSettings settings = new() { MaxExamples = 200, Seed = 1UL };
+        Assume.That(maxDepth >= 0 && maxDepth <= 10);
         Strategy<JsonValue> strategy = JsonStrategy(maxDepth);
-
-        TestRunResult result = await TestRunner.Run(settings, data =>
-        {
-            JsonValue value = strategy.Generate(data);
-            int depth = JsonDepth(value);
-            if (depth > maxDepth)
-            {
-                throw new InvalidOperationException($"JSON depth {depth} exceeds maxDepth {maxDepth}");
-            }
-        });
-
-        Assert.True(result.Passed);
+        Assert.All(strategy.WithSeed(1UL).Sample(200), value =>
+            Assert.True(JsonDepth(value) <= maxDepth,
+                $"JSON depth {JsonDepth(value)} exceeds maxDepth {maxDepth}"));
     }
 
     [Fact]
