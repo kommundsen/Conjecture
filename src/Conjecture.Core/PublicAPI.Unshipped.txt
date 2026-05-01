@@ -26,7 +26,6 @@ static Conjecture.Core.Strategy.Doubles(double min, double max) -> Conjecture.Co
 static Conjecture.Core.Strategy.Floats() -> Conjecture.Core.Strategy<float>!
 static Conjecture.Core.Strategy.Floats(float min, float max) -> Conjecture.Core.Strategy<float>!
 static Conjecture.Core.Strategy.Strings(int minLength = 0, int maxLength = 20, int minCodepoint = 32, int maxCodepoint = 126, string? alphabet = null) -> Conjecture.Core.Strategy<string!>!
-static Conjecture.Core.Strategy.Text(int minLength = 0, int maxLength = 20) -> Conjecture.Core.Strategy<string!>!
 static Conjecture.Core.Strategy.Nullable<T>(Conjecture.Core.Strategy<T>! inner) -> Conjecture.Core.Strategy<T?>!
 static Conjecture.Core.Strategy.Tuples<T1, T2>(Conjecture.Core.Strategy<T1>! first, Conjecture.Core.Strategy<T2>! second) -> Conjecture.Core.Strategy<(T1, T2)>!
 static Conjecture.Core.Strategy.Tuples<T1, T2, T3>(Conjecture.Core.Strategy<T1>! first, Conjecture.Core.Strategy<T2>! second, Conjecture.Core.Strategy<T3>! third) -> Conjecture.Core.Strategy<(T1, T2, T3)>!
