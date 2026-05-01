@@ -15,7 +15,7 @@ namespace Conjecture.NUnit;
 
 /// <summary>Marks a method as a Conjecture property-based test (NUnit).</summary>
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-public sealed class PropertyAttribute : global::NUnit.Framework.NUnitAttribute, ITestBuilder, IWrapTestMethod, IPropertyTest
+public sealed class PropertyAttribute : global::NUnit.Framework.NUnitAttribute, ITestBuilder, IWrapTestMethod, IPropertyTest, IReproductionExport
 {
     /// <summary>Maximum number of examples to generate. Defaults to 100.</summary>
     public int MaxExamples { get; set; } = 100;
@@ -37,6 +37,12 @@ public sealed class PropertyAttribute : global::NUnit.Framework.NUnitAttribute, 
 
     /// <summary>Fraction of MaxExamples budget allocated to the targeting phase. Defaults to 0.5.</summary>
     public double TargetingProportion { get; set; } = 0.5;
+
+    /// <summary>Whether to export a reproduction file on test failure. Defaults to <see langword="false"/>.</summary>
+    public bool ExportReproductionOnFailure { get; set; } = false;
+
+    /// <summary>Output path for exported reproduction files. Defaults to <c>.conjecture/repros/</c>.</summary>
+    public string ReproductionOutputPath { get; set; } = ".conjecture/repros/";
 
     /// <inheritdoc/>
     IEnumerable<TestMethod> ITestBuilder.BuildFrom(IMethodInfo method, Test? suite)

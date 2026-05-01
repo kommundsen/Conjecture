@@ -105,6 +105,32 @@ internal sealed class PropertyTestCommand(TestCommand innerCommand, IPropertyTes
             }
             else
             {
+                if (settings.ExportReproductionOnFailure && result.Counterexample is not null)
+                {
+                    try
+                    {
+                        ConjectureData replay = ConjectureData.ForRecord(result.Counterexample);
+                        object[] values = SharedParameterStrategyResolver.Resolve(methodParams, replay);
+                        IEnumerable<(string Name, object? Value, Type Type)> reproParams = methodParams.Zip(values,
+                            static (p, v) => (p.Name!, (object?)v, p.ParameterType));
+                        ReproContext reproContext = new(
+                            methodInfo.DeclaringType?.Name ?? "UnknownClass",
+                            methodInfo.Name,
+                            isAsync,
+                            reproParams,
+                            result.Seed!.Value,
+                            result.ExampleCount,
+                            result.ShrinkCount,
+                            Conjecture.Core.Internal.TestFramework.NUnit,
+                            DateTimeOffset.UtcNow);
+                        ReproFileBuilder.WriteToFile(reproContext, settings.ReproductionOutputPath);
+                    }
+                    catch (Exception)
+                    {
+                        // Repro export must not propagate.
+                    }
+                }
+
                 context.CurrentResult.SetResult(
                     ResultState.Failure,
                     TestCaseHelper.BuildFailureMessage(result, methodParams));
