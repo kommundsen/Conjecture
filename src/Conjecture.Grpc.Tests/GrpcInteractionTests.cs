@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 
 using Conjecture.Grpc;
-using Conjecture.Interactions;
 
 using Grpc.Core;
 

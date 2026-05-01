@@ -19,6 +19,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Conjecture.AspNetCore\Conjecture.AspNetCore.csproj" />
+    <ProjectReference Include="..\Conjecture.Interactions\Conjecture.Interactions.csproj" />
     <ProjectReference Include="..\Conjecture.Xunit\Conjecture.Xunit.csproj" />
   </ItemGroup>
   <ItemGroup>

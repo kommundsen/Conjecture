@@ -11,7 +11,6 @@ using Aspire.Hosting;
 using Conjecture.Aspire;
 using Conjecture.Aspire.EFCore;
 using Conjecture.EFCore;
-using Conjecture.Interactions;
 
 using Microsoft.EntityFrameworkCore;
 

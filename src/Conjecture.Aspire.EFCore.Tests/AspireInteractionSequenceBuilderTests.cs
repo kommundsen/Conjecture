@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 using Conjecture.Aspire.EFCore;
 using Conjecture.Core;
 using Conjecture.Http;
-using Conjecture.Interactions;
 using Conjecture.Messaging;
 
 using Microsoft.EntityFrameworkCore;
 
+using Conjecture.Interactions;
 using Conjecture.Abstractions.Interactions;
 
 namespace Conjecture.Aspire.EFCore.Tests;

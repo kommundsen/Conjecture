@@ -4,7 +4,6 @@
 using System;
 using System.Threading.Tasks;
 
-using Conjecture.Interactions;
 
 using Microsoft.EntityFrameworkCore;
 

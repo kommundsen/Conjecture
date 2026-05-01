@@ -8,7 +8,6 @@ using Conjecture.AspNetCore;
 using Conjecture.AspNetCore.Tests.TestSupport;
 using Conjecture.Core;
 using Conjecture.Http;
-using Conjecture.Interactions;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

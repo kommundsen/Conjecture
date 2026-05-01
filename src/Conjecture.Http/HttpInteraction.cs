@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 
-using Conjecture.Interactions;
 
 using Conjecture.Abstractions.Interactions;
 

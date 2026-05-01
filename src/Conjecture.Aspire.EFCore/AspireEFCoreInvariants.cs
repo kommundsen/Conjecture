@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Conjecture.EFCore;
-using Conjecture.Interactions;
 
 using Microsoft.EntityFrameworkCore;
 

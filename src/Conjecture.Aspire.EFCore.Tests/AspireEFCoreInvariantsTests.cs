@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using Conjecture.Aspire.EFCore;
 using Conjecture.EFCore;
 using Conjecture.Http;
-using Conjecture.Interactions;
 using Conjecture.Messaging;
 
 using Microsoft.Data.Sqlite;

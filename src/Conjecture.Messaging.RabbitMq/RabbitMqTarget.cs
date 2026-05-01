@@ -9,7 +9,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Conjecture.Interactions;
 using Conjecture.Messaging;
 
 using RabbitMQ.Client;

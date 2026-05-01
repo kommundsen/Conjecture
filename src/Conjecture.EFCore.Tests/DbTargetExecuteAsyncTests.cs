@@ -6,11 +6,11 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Conjecture.EFCore;
-using Conjecture.Interactions;
 
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
+using Conjecture.Interactions;
 using Conjecture.Abstractions.Interactions;
 
 namespace Conjecture.EFCore.Tests;
