@@ -1,6 +1,7 @@
 <Solution>
   <Project Path="Conjecture.Core/Conjecture.Core.csproj" />
   <Project Path="Conjecture.Core.Abstractions/Conjecture.Core.Abstractions.csproj" />
+  <Project Path="Conjecture.Testing.Abstractions/Conjecture.Testing.Abstractions.csproj" />
   <Project Path="Conjecture.Xunit/Conjecture.Xunit.csproj" />
   <Project Path="Conjecture.Core.Tests/Conjecture.Core.Tests.csproj" />
   <Project Path="Conjecture.Xunit.Tests/Conjecture.Xunit.Tests.csproj" />
