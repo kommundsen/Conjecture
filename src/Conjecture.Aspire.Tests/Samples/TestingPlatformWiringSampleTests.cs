@@ -116,7 +116,7 @@ public sealed class TestingPlatformWiringSampleTests
         public override IEnumerable<Strategy<IInteraction>> Commands(string state)
             => [Strategy.Just<IInteraction>(new HttpInteraction("svc", "GET", "/health", null, null))];
 
-        public override string RunCommand(string state, IInteraction interaction, IInteractionTarget target, CancellationToken ct) => state;
+        public override ValueTask<string> RunCommand(string state, IInteraction interaction, IInteractionTarget target, CancellationToken ct) => ValueTask.FromResult<string>(state);
 
         public override void Invariant(string state) { }
     }

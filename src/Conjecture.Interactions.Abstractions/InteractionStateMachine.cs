@@ -2,7 +2,6 @@
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,13 +16,12 @@ namespace Conjecture.Abstractions.Interactions;
 /// and <see cref="Invariant"/> to describe the system under test.
 /// </summary>
 /// <typeparam name="TState">The type representing the system's state.</typeparam>
-[EditorBrowsable(EditorBrowsableState.Never)]
-public abstract class InteractionStateMachine<TState> : IStateMachine<TState, IInteraction>
+public abstract class InteractionStateMachine<TState>
 {
-    /// <inheritdoc />
+    /// <summary>Returns the starting state for a fresh property example.</summary>
     public abstract TState InitialState();
 
-    /// <inheritdoc />
+    /// <summary>Returns the set of command strategies available from <paramref name="state"/>.</summary>
     public abstract IEnumerable<Strategy<IInteraction>> Commands(TState state);
 
     /// <summary>
@@ -34,27 +32,12 @@ public abstract class InteractionStateMachine<TState> : IStateMachine<TState, II
     /// <param name="interaction">The interaction to dispatch.</param>
     /// <param name="target">The target that executes the interaction.</param>
     /// <param name="ct">Cancellation token propagated to <see cref="IInteractionTarget.ExecuteAsync"/>.</param>
-    public abstract TState RunCommand(
+    public abstract ValueTask<TState> RunCommand(
         TState state,
         IInteraction interaction,
         IInteractionTarget target,
         CancellationToken ct);
 
-    /// <inheritdoc />
+    /// <summary>Asserts a state-based invariant after each command. Throws to fail the example.</summary>
     public abstract void Invariant(TState state);
-
-    TState IStateMachine<TState, IInteraction>.RunCommand(TState state, IInteraction command)
-    {
-        return RunCommand(state, command, NoOpInteractionTarget.Instance, CancellationToken.None);
-    }
-
-    private sealed class NoOpInteractionTarget : IInteractionTarget
-    {
-        internal static readonly NoOpInteractionTarget Instance = new();
-
-        public Task<object?> ExecuteAsync(IInteraction interaction, CancellationToken ct)
-        {
-            return Task.FromResult<object?>(null);
-        }
-    }
 }

@@ -9,4 +9,4 @@ Conjecture.Abstractions.Interactions.InteractionStateMachine<TState>.Interaction
 abstract Conjecture.Abstractions.Interactions.InteractionStateMachine<TState>.Commands(TState state) -> System.Collections.Generic.IEnumerable<Conjecture.Core.Strategy<Conjecture.Abstractions.Interactions.IInteraction!>!>!
 abstract Conjecture.Abstractions.Interactions.InteractionStateMachine<TState>.InitialState() -> TState
 abstract Conjecture.Abstractions.Interactions.InteractionStateMachine<TState>.Invariant(TState state) -> void
-abstract Conjecture.Abstractions.Interactions.InteractionStateMachine<TState>.RunCommand(TState state, Conjecture.Abstractions.Interactions.IInteraction! interaction, Conjecture.Abstractions.Interactions.IInteractionTarget! target, System.Threading.CancellationToken ct) -> TState
+abstract Conjecture.Abstractions.Interactions.InteractionStateMachine<TState>.RunCommand(TState state, Conjecture.Abstractions.Interactions.IInteraction! interaction, Conjecture.Abstractions.Interactions.IInteractionTarget! target, System.Threading.CancellationToken ct) -> System.Threading.Tasks.ValueTask<TState>

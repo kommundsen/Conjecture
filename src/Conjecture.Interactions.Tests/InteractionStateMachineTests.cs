@@ -55,13 +55,13 @@ public class InteractionStateMachineTests
             yield return Strategy.Just<IInteraction>(new PongInteraction());
         }
 
-        public override int RunCommand(
+        public override async ValueTask<int> RunCommand(
             int state,
             IInteraction interaction,
             IInteractionTarget target,
             CancellationToken ct)
         {
-            target.ExecuteAsync(interaction, ct).GetAwaiter().GetResult();
+            await target.ExecuteAsync(interaction, ct);
             return state + 1;
         }
 
@@ -85,109 +85,40 @@ public class InteractionStateMachineTests
         Assert.Equal(0, machine.InitialState());
     }
 
-    [Fact]
-    public void Generate_StateMachine_ProducesRun()
-    {
-        Strategy<StateMachineRun<int>> strategy =
-            Strategy.StateMachine<CountingMachine, int, IInteraction>(maxSteps: 5);
-        StateMachineRun<int> run = strategy.WithSeed(42UL).Sample();
-        Assert.NotNull(run);
-    }
-
-    [Fact]
-    public void Generate_StateMachine_RunPasses()
-    {
-        Strategy<StateMachineRun<int>> strategy =
-            Strategy.StateMachine<CountingMachine, int, IInteraction>(maxSteps: 5);
-        StateMachineRun<int> run = strategy.WithSeed(42UL).Sample();
-        Assert.True(run.Passed);
-    }
-
-    [Fact]
-    public void Generate_StateMachine_StepCountMatchesFinalState()
-    {
-        Strategy<StateMachineRun<int>> strategy =
-            Strategy.StateMachine<CountingMachine, int, IInteraction>(maxSteps: 10);
-        StateMachineRun<int> run = strategy.WithSeed(1UL).Sample();
-        Assert.Equal(run.Steps.Count, run.FinalState);
-    }
-
-    // ─── Shrink stability tests ───────────────────────────────────────────────
-
-    // Verifying shrink stability is observable via the public API: generate many
-    // samples and confirm the machine can produce runs of varying lengths, which
-    // requires that CommandStart sentinels are written (used by CommandSequenceShrinkPass).
-    [Fact]
-    public void Generate_StateMachine_ProducesVariableLengthRuns()
-    {
-        Strategy<StateMachineRun<int>> strategy =
-            Strategy.StateMachine<CountingMachine, int, IInteraction>(maxSteps: 10);
-        IReadOnlyList<StateMachineRun<int>> runs = strategy.WithSeed(7UL).Sample(20);
-        int minSteps = runs.Min(r => r.Steps.Count);
-        int maxSteps = runs.Max(r => r.Steps.Count);
-        // Variable-length sequences confirm CommandStart sentinels are present for shrinking
-        Assert.True(maxSteps > minSteps,
-            $"Expected variable-length runs but got uniform {minSteps} steps across all samples.");
-    }
-
-    [Fact]
-    public void Generate_StateMachine_MaxStepsZero_ReturnsEmptyRun()
-    {
-        Strategy<StateMachineRun<int>> strategy =
-            Strategy.StateMachine<CountingMachine, int, IInteraction>(maxSteps: 0);
-        StateMachineRun<int> run = strategy.WithSeed(1UL).Sample();
-        Assert.Empty(run.Steps);
-    }
-
     // ─── Cancellation tests ───────────────────────────────────────────────────
 
     [Fact]
-    public void RunCommand_WithCancelledToken_ThrowsOperationCanceledException()
+    public async Task RunCommand_WithCancelledToken_ThrowsOperationCanceledException()
     {
         CountingMachine machine = new();
         AlwaysCancellingTarget target = new();
         using CancellationTokenSource cts = new();
         cts.Cancel();
 
-        Assert.Throws<OperationCanceledException>(
-            () => machine.RunCommand(0, new PingInteraction(), target, cts.Token));
-    }
-
-    [Fact]
-    public async Task RunCommand_WithCancelledToken_Async_ThrowsOperationCanceledException()
-    {
-        CountingMachine machine = new();
-        using CancellationTokenSource cts = new();
-        cts.Cancel();
-
-        TrackingTarget target = new();
-
         await Assert.ThrowsAsync<OperationCanceledException>(
-            () => Task.Run(
-                () => machine.RunCommand(0, new PingInteraction(), target, cts.Token),
-                CancellationToken.None));
+            async () => await machine.RunCommand(0, new PingInteraction(), target, cts.Token));
     }
 
     [Fact]
-    public void RunCommand_WithLiveToken_DispatchesToTarget()
+    public async Task RunCommand_WithLiveToken_DispatchesToTarget()
     {
         CountingMachine machine = new();
         TrackingTarget target = new();
         PingInteraction interaction = new();
 
-        machine.RunCommand(0, interaction, target, CancellationToken.None);
+        await machine.RunCommand(0, interaction, target, CancellationToken.None);
 
         IInteraction received = Assert.Single(target.Received);
         Assert.Same(interaction, received);
     }
 
     [Fact]
-    public void RunCommand_WithLiveToken_ReturnsIncrementedState()
+    public async Task RunCommand_WithLiveToken_ReturnsIncrementedState()
     {
         CountingMachine machine = new();
         TrackingTarget target = new();
 
-        int result = machine.RunCommand(5, new PingInteraction(), target, CancellationToken.None);
+        int result = await machine.RunCommand(5, new PingInteraction(), target, CancellationToken.None);
 
         Assert.Equal(6, result);
     }

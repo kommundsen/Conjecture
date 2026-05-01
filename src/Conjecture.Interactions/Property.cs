@@ -81,7 +81,7 @@ public static class Property
 
         ConjectureSettings resolved = settings ?? new ConjectureSettings();
 
-        TestRunResult result = await TestRunner.RunAsync(resolved, data =>
+        TestRunResult result = await TestRunner.RunAsync(resolved, async data =>
         {
             ct.ThrowIfCancellationRequested();
 
@@ -98,11 +98,9 @@ public static class Property
 
                 data.InsertCommandStart();
                 IInteraction command = new OneOfStrategy<IInteraction>(commands).Generate(data);
-                state = machine.RunCommand(state, command, target, ct);
+                state = await machine.RunCommand(state, command, target, ct);
                 machine.Invariant(state);
             }
-
-            return Task.CompletedTask;
         });
 
         if (!result.Passed)
