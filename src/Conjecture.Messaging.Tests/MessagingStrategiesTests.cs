@@ -28,7 +28,7 @@ public class MessagingStrategiesTests
     {
         Strategy<MessageInteraction> strategy = Strategy.Messaging.Publish(
             "orders",
-            Strategy.Bytes(8).Select(static b => (ReadOnlyMemory<byte>)b));
+            Strategy.Arrays(Strategy.Integers<byte>(), 8, 8).Select(static b => (ReadOnlyMemory<byte>)b));
 
         Assert.NotNull(strategy);
     }
@@ -38,7 +38,7 @@ public class MessagingStrategiesTests
     {
         Strategy<MessageInteraction> strategy = Strategy.Messaging.Publish(
             "orders",
-            Strategy.Bytes(4).Select(static b => (ReadOnlyMemory<byte>)b));
+            Strategy.Arrays(Strategy.Integers<byte>(), 4, 4).Select(static b => (ReadOnlyMemory<byte>)b));
 
         MessageInteraction sample = strategy.WithSeed(1UL).Sample();
 
@@ -50,7 +50,7 @@ public class MessagingStrategiesTests
     {
         Strategy<MessageInteraction> strategy = Strategy.Messaging.Publish(
             "orders",
-            Strategy.Bytes(4).Select(static b => (ReadOnlyMemory<byte>)b));
+            Strategy.Arrays(Strategy.Integers<byte>(), 4, 4).Select(static b => (ReadOnlyMemory<byte>)b));
 
         MessageInteraction sample = strategy.WithSeed(1UL).Sample();
 
@@ -62,7 +62,7 @@ public class MessagingStrategiesTests
     {
         Strategy<MessageInteraction> strategy = Strategy.Messaging.Publish(
             "invoices",
-            Strategy.Bytes(4).Select(static b => (ReadOnlyMemory<byte>)b));
+            Strategy.Arrays(Strategy.Integers<byte>(), 4, 4).Select(static b => (ReadOnlyMemory<byte>)b));
 
         MessageInteraction first = strategy.WithSeed(42UL).Sample();
         MessageInteraction second = strategy.WithSeed(42UL).Sample();
@@ -75,7 +75,7 @@ public class MessagingStrategiesTests
     {
         Strategy<MessageInteraction> strategy = Strategy.Messaging.Publish(
             "invoices",
-            Strategy.Bytes(4).Select(static b => (ReadOnlyMemory<byte>)b));
+            Strategy.Arrays(Strategy.Integers<byte>(), 4, 4).Select(static b => (ReadOnlyMemory<byte>)b));
 
         MessageInteraction first = strategy.WithSeed(1UL).Sample();
         MessageInteraction second = strategy.WithSeed(2UL).Sample();
@@ -88,7 +88,7 @@ public class MessagingStrategiesTests
     {
         Strategy<MessageInteraction> strategy = Strategy.Messaging.Publish(
             "orders",
-            Strategy.Bytes(4).Select(static b => (ReadOnlyMemory<byte>)b));
+            Strategy.Arrays(Strategy.Integers<byte>(), 4, 4).Select(static b => (ReadOnlyMemory<byte>)b));
 
         MessageInteraction sample = strategy.WithSeed(1UL).Sample();
 
@@ -100,7 +100,7 @@ public class MessagingStrategiesTests
     {
         Strategy<MessageInteraction> strategy = Strategy.Messaging.Publish(
             "orders",
-            Strategy.Bytes(4).Select(static b => (ReadOnlyMemory<byte>)b));
+            Strategy.Arrays(Strategy.Integers<byte>(), 4, 4).Select(static b => (ReadOnlyMemory<byte>)b));
 
         MessageInteraction sample = strategy.WithSeed(1UL).Sample();
 
@@ -143,7 +143,7 @@ public class MessagingStrategiesTests
     {
         Strategy<MessageInteraction> strategy = Strategy.Messaging.Publish(
             destination,
-            Strategy.Bytes(2).Select(static b => (ReadOnlyMemory<byte>)b));
+            Strategy.Arrays(Strategy.Integers<byte>(), 2, 2).Select(static b => (ReadOnlyMemory<byte>)b));
 
         MessageInteraction sample = strategy.WithSeed(1UL).Sample();
 
@@ -168,7 +168,7 @@ public class MessagingStrategiesTests
     {
         Strategy<MessageInteraction> strategy = Strategy.Messaging.Publish(
             "orders",
-            Strategy.Bytes(8).Select(static b => (ReadOnlyMemory<byte>)b));
+            Strategy.Arrays(Strategy.Integers<byte>(), 8, 8).Select(static b => (ReadOnlyMemory<byte>)b));
 
         MessageInteraction sent = strategy.WithSeed(77UL).Sample();
         InMemoryMessageBusTarget target = new();
@@ -189,7 +189,7 @@ public class MessagingStrategiesTests
 
         Strategy<MessageInteraction> strategy = Strategy.Messaging.Publish(
             "events",
-            Strategy.Bytes(4).Select(static b => (ReadOnlyMemory<byte>)b),
+            Strategy.Arrays(Strategy.Integers<byte>(), 4, 4).Select(static b => (ReadOnlyMemory<byte>)b),
             headersStrategy,
             correlationStrategy);
 
