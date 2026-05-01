@@ -234,7 +234,7 @@ public class MessagingScaffoldingToolTests
             framework: "xunit",
             broker: "inmemory");
 
-        Assert.Contains("Strategy.Bytes(", result);
+        Assert.Contains("Strategy.Arrays(Strategy.Integers<byte>()", result);
     }
 
     [Fact]

@@ -14,7 +14,7 @@ public class StrategyToolsTests
     [InlineData("float", "Strategy.Floats()")]
     [InlineData("double", "Strategy.Doubles()")]
     [InlineData("string", "Strategy.Strings()")]
-    [InlineData("byte[]", "Strategy.Bytes(size)")]
+    [InlineData("byte[]", "Strategy.Arrays(Strategy.Integers<byte>()")]
     [InlineData("Guid", "Strategy.Guids")]
     public void SuggestForType_KnownPrimitive_ContainsExpectedCall(string typeName, string expectedCall)
     {
