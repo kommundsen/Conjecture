@@ -4,25 +4,19 @@
 using System.Collections.Generic;
 using System.Text.Json;
 
+using Conjecture.Abstractions.JsonSchema;
 using Conjecture.Core;
-using Conjecture.Core.Internal;
 
-// Local alias: this class extends Strategy<T> and inherits a Generate(ConjectureData) method,
-// so unqualified static-class access needs a non-conflicting alias.
 using Gen = Conjecture.Core.Strategy;
 
 namespace Conjecture.JsonSchema;
 
-internal sealed class JsonSchemaStrategy : Strategy<JsonElement>
+internal static class JsonSchemaStrategyBuilder
 {
-    private readonly Strategy<JsonElement> inner;
-
-    internal JsonSchemaStrategy(JsonSchemaNode node, int maxDepth = 5)
+    internal static Strategy<JsonElement> Build(JsonSchemaNode node, int maxDepth = 5)
     {
-        inner = BuildStrategy(node, node.Defs, maxDepth, []);
+        return BuildStrategy(node, node.Defs, maxDepth, []);
     }
-
-    internal override JsonElement Generate(ConjectureData data) => inner.Generate(data);
 
     private static Strategy<JsonElement> BuildStrategy(
         JsonSchemaNode node,

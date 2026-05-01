@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
+using Conjecture.Abstractions.JsonSchema;
 using Conjecture.Core;
 using Conjecture.JsonSchema;
 using Conjecture.Regex;
@@ -16,14 +17,14 @@ namespace Conjecture.JsonSchema.Tests;
 
 public sealed class JsonSchemaStrategyTests
 {
-    private static JsonSchemaStrategy ParseStrategy(string schemaJson, int maxDepth = 5)
+    private static Strategy<JsonElement> ParseStrategy(string schemaJson, int maxDepth = 5)
     {
         using JsonDocument doc = JsonDocument.Parse(schemaJson);
         JsonSchemaNode node = JsonSchemaParser.Parse(doc.RootElement);
-        return new(node, maxDepth);
+        return Strategy.FromJsonSchema(node, maxDepth);
     }
 
-    private static IReadOnlyList<JsonElement> Sample(JsonSchemaStrategy strategy, int count = 50, ulong seed = 42UL)
+    private static IReadOnlyList<JsonElement> Sample(Strategy<JsonElement> strategy, int count = 50, ulong seed = 42UL)
     {
         return strategy.WithSeed(seed).Sample(count);
     }
@@ -31,7 +32,7 @@ public sealed class JsonSchemaStrategyTests
     [Fact]
     public void Generate_BooleanSchema_ProducesOnlyBooleans()
     {
-        JsonSchemaStrategy strategy = ParseStrategy("""{"type": "boolean"}""");
+        Strategy<JsonElement> strategy = ParseStrategy("""{"type": "boolean"}""");
         IReadOnlyList<JsonElement> samples = Sample(strategy);
         foreach (JsonElement element in samples)
         {
@@ -44,7 +45,7 @@ public sealed class JsonSchemaStrategyTests
     [Fact]
     public void Generate_IntegerSchemaWithBounds_ProducesValuesWithinRange()
     {
-        JsonSchemaStrategy strategy = ParseStrategy("""{"type": "integer", "minimum": 10, "maximum": 20}""");
+        Strategy<JsonElement> strategy = ParseStrategy("""{"type": "integer", "minimum": 10, "maximum": 20}""");
         IReadOnlyList<JsonElement> samples = Sample(strategy);
         foreach (JsonElement element in samples)
         {
@@ -57,7 +58,7 @@ public sealed class JsonSchemaStrategyTests
     [Fact]
     public void Generate_StringSchemaWithLengthBounds_ProducesStringsWithinLengthRange()
     {
-        JsonSchemaStrategy strategy = ParseStrategy("""{"type": "string", "minLength": 3, "maxLength": 8}""");
+        Strategy<JsonElement> strategy = ParseStrategy("""{"type": "string", "minLength": 3, "maxLength": 8}""");
         IReadOnlyList<JsonElement> samples = Sample(strategy);
         foreach (JsonElement element in samples)
         {
@@ -70,7 +71,7 @@ public sealed class JsonSchemaStrategyTests
     [Fact]
     public void Generate_StringSchemaWithPattern_ProducesMatchingStrings()
     {
-        JsonSchemaStrategy strategy = ParseStrategy("""{"type": "string", "pattern": "^[0-9]{4}$"}""");
+        Strategy<JsonElement> strategy = ParseStrategy("""{"type": "string", "pattern": "^[0-9]{4}$"}""");
         IReadOnlyList<JsonElement> samples = Sample(strategy);
         DotNetRegex pattern = new(@"^[0-9]{4}$");
         foreach (JsonElement element in samples)
@@ -83,7 +84,7 @@ public sealed class JsonSchemaStrategyTests
     [Fact]
     public void Generate_StringSchemaWithFormatEmail_ProducesEmailAddresses()
     {
-        JsonSchemaStrategy strategy = ParseStrategy("""{"type": "string", "format": "email"}""");
+        Strategy<JsonElement> strategy = ParseStrategy("""{"type": "string", "format": "email"}""");
         IReadOnlyList<JsonElement> samples = Sample(strategy);
         foreach (JsonElement element in samples)
         {
@@ -95,7 +96,7 @@ public sealed class JsonSchemaStrategyTests
     [Fact]
     public void Generate_StringSchemaWithFormatUri_ProducesUrls()
     {
-        JsonSchemaStrategy strategy = ParseStrategy("""{"type": "string", "format": "uri"}""");
+        Strategy<JsonElement> strategy = ParseStrategy("""{"type": "string", "format": "uri"}""");
         IReadOnlyList<JsonElement> samples = Sample(strategy);
         foreach (JsonElement element in samples)
         {
@@ -107,7 +108,7 @@ public sealed class JsonSchemaStrategyTests
     [Fact]
     public void Generate_StringSchemaWithFormatUuid_ProducesUuids()
     {
-        JsonSchemaStrategy strategy = ParseStrategy("""{"type": "string", "format": "uuid"}""");
+        Strategy<JsonElement> strategy = ParseStrategy("""{"type": "string", "format": "uuid"}""");
         IReadOnlyList<JsonElement> samples = Sample(strategy);
         foreach (JsonElement element in samples)
         {
@@ -119,7 +120,7 @@ public sealed class JsonSchemaStrategyTests
     [Fact]
     public void Generate_StringSchemaWithFormatDateTime_ProducesIsoDateStrings()
     {
-        JsonSchemaStrategy strategy = ParseStrategy("""{"type": "string", "format": "date-time"}""");
+        Strategy<JsonElement> strategy = ParseStrategy("""{"type": "string", "format": "date-time"}""");
         IReadOnlyList<JsonElement> samples = Sample(strategy);
         foreach (JsonElement element in samples)
         {
@@ -131,7 +132,7 @@ public sealed class JsonSchemaStrategyTests
     [Fact]
     public void Generate_EnumSchema_ProducesOnlyEnumValues()
     {
-        JsonSchemaStrategy strategy = ParseStrategy("""{"enum": ["red", "green", "blue"]}""");
+        Strategy<JsonElement> strategy = ParseStrategy("""{"enum": ["red", "green", "blue"]}""");
         IReadOnlyList<JsonElement> samples = Sample(strategy);
         HashSet<string> allowed = ["red", "green", "blue"];
         foreach (JsonElement element in samples)
@@ -144,7 +145,7 @@ public sealed class JsonSchemaStrategyTests
     [Fact]
     public void Generate_ConstSchema_AlwaysProducesConstValue()
     {
-        JsonSchemaStrategy strategy = ParseStrategy("""{"const": 42}""");
+        Strategy<JsonElement> strategy = ParseStrategy("""{"const": 42}""");
         IReadOnlyList<JsonElement> samples = Sample(strategy);
         foreach (JsonElement element in samples)
         {
@@ -156,7 +157,7 @@ public sealed class JsonSchemaStrategyTests
     [Fact]
     public void Generate_ObjectSchemaWithRequired_AlwaysIncludesRequiredFields()
     {
-        JsonSchemaStrategy strategy = ParseStrategy("""
+        Strategy<JsonElement> strategy = ParseStrategy("""
             {
               "type": "object",
               "properties": {
@@ -179,7 +180,7 @@ public sealed class JsonSchemaStrategyTests
     [Fact]
     public void Generate_ObjectSchemaWithOptional_SometimesOmitsOptionalFields()
     {
-        JsonSchemaStrategy strategy = ParseStrategy("""
+        Strategy<JsonElement> strategy = ParseStrategy("""
             {
               "type": "object",
               "properties": {
@@ -201,7 +202,7 @@ public sealed class JsonSchemaStrategyTests
     [Fact]
     public void Generate_ArraySchema_ProducesArraysWithinItemBounds()
     {
-        JsonSchemaStrategy strategy = ParseStrategy("""
+        Strategy<JsonElement> strategy = ParseStrategy("""
             {
               "type": "array",
               "items": {"type": "integer", "minimum": 0, "maximum": 100},
@@ -226,7 +227,7 @@ public sealed class JsonSchemaStrategyTests
     [Fact]
     public void Generate_RecursiveRefSchema_DoesNotStackOverflow()
     {
-        JsonSchemaStrategy strategy = ParseStrategy(
+        Strategy<JsonElement> strategy = ParseStrategy(
             """
             {
               "$defs": {
@@ -250,7 +251,7 @@ public sealed class JsonSchemaStrategyTests
     [Fact]
     public void Generate_IntegerSchema_ShrinksToBoundaryMinimum()
     {
-        JsonSchemaStrategy strategy = ParseStrategy("""{"type": "integer", "minimum": 5, "maximum": 100}""");
+        Strategy<JsonElement> strategy = ParseStrategy("""{"type": "integer", "minimum": 5, "maximum": 100}""");
         IReadOnlyList<JsonElement> samples = Sample(strategy, count: 200);
         bool foundMinimum = samples.Any(e => e.ValueKind == JsonValueKind.Number && e.GetInt64() == 5L);
         Assert.True(foundMinimum, "Expected minimum boundary value 5 to appear in samples");
@@ -259,7 +260,7 @@ public sealed class JsonSchemaStrategyTests
     [Fact]
     public void Generate_IntegerSchema_NeverProducesValueBelowMinimum()
     {
-        JsonSchemaStrategy strategy = ParseStrategy("""{"type": "integer", "minimum": 5, "maximum": 100}""");
+        Strategy<JsonElement> strategy = ParseStrategy("""{"type": "integer", "minimum": 5, "maximum": 100}""");
         IReadOnlyList<JsonElement> samples = Sample(strategy, count: 200);
         foreach (JsonElement element in samples)
         {
@@ -270,7 +271,7 @@ public sealed class JsonSchemaStrategyTests
     [Fact]
     public void Generate_StringSchemaWithFormatIpv4_ProducesIpv4Addresses()
     {
-        JsonSchemaStrategy strategy = ParseStrategy("""{"type": "string", "format": "ipv4"}""");
+        Strategy<JsonElement> strategy = ParseStrategy("""{"type": "string", "format": "ipv4"}""");
         IReadOnlyList<JsonElement> samples = Sample(strategy);
         foreach (JsonElement element in samples)
         {
@@ -282,7 +283,7 @@ public sealed class JsonSchemaStrategyTests
     [Fact]
     public void Generate_StringSchemaWithFormatIpv6_ProducesIpv6Addresses()
     {
-        JsonSchemaStrategy strategy = ParseStrategy("""{"type": "string", "format": "ipv6"}""");
+        Strategy<JsonElement> strategy = ParseStrategy("""{"type": "string", "format": "ipv6"}""");
         IReadOnlyList<JsonElement> samples = Sample(strategy);
         foreach (JsonElement element in samples)
         {
@@ -294,7 +295,7 @@ public sealed class JsonSchemaStrategyTests
     [Fact]
     public void Generate_StringSchemaWithFormatDate_ProducesRfc3339DateStrings()
     {
-        JsonSchemaStrategy strategy = ParseStrategy("""{"type": "string", "format": "date"}""");
+        Strategy<JsonElement> strategy = ParseStrategy("""{"type": "string", "format": "date"}""");
         IReadOnlyList<JsonElement> samples = Sample(strategy);
         foreach (JsonElement element in samples)
         {
@@ -306,7 +307,7 @@ public sealed class JsonSchemaStrategyTests
     [Fact]
     public void Generate_StringSchemaWithFormatTime_ProducesRfc3339TimeStrings()
     {
-        JsonSchemaStrategy strategy = ParseStrategy("""{"type": "string", "format": "time"}""");
+        Strategy<JsonElement> strategy = ParseStrategy("""{"type": "string", "format": "time"}""");
         IReadOnlyList<JsonElement> samples = Sample(strategy);
         foreach (JsonElement element in samples)
         {

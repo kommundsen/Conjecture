@@ -16,15 +16,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Conjecture.Core\Conjecture.Core.csproj" />
+    <ProjectReference Include="..\Conjecture.JsonSchema.Abstractions\Conjecture.JsonSchema.Abstractions.csproj" />
     <ProjectReference Include="..\Conjecture.Regex\Conjecture.Regex.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>Conjecture.JsonSchema.Tests</_Parameter1>
-    </AssemblyAttribute>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Conjecture.OpenApi</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
 

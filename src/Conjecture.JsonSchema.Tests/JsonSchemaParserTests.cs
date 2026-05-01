@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Text.Json;
 
+using Conjecture.Abstractions.JsonSchema;
 using Conjecture.JsonSchema;
 
 namespace Conjecture.JsonSchema.Tests;
@@ -77,7 +78,7 @@ public sealed class JsonSchemaParserTests
             }
             """);
         JsonSchemaNode parsed = JsonSchemaParser.Parse(doc.RootElement);
-        JsonSchemaNode resolved = JsonSchemaParser.Resolve(parsed);
+        JsonSchemaNode resolved = JsonSchemaRefResolver.Resolve(parsed);
         Assert.Null(resolved.Ref);
         Assert.Equal(JsonSchemaType.String, resolved.Type);
     }
@@ -100,7 +101,7 @@ public sealed class JsonSchemaParserTests
             """);
         JsonSchemaNode parsed = JsonSchemaParser.Parse(doc.RootElement);
         // Must not throw StackOverflowException or loop; just return a node
-        JsonSchemaNode resolved = JsonSchemaParser.Resolve(parsed);
+        JsonSchemaNode resolved = JsonSchemaRefResolver.Resolve(parsed);
         Assert.Equal(JsonSchemaType.Object, resolved.Type);
     }
 
