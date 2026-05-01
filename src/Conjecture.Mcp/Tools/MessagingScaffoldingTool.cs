@@ -238,7 +238,7 @@ internal static class MessagingScaffoldingTool
         AppendBodyTypeComment(sb, bodyType);
         sb.AppendLine("        await Property.ForAll(");
         sb.AppendLine(needsFixture ? "            fixture.Target," : "            bus,");
-        sb.AppendLine($"            Strategy.Messaging.Publish(\"{destination}\", Strategy.Bytes(0, 1024)),");
+        sb.AppendLine($"            Strategy.Messaging.Publish(\"{destination}\", Strategy.Arrays(Strategy.Integers<byte>(), 0, 1024).Select(b => (ReadOnlyMemory<byte>)b)),");
         sb.AppendLine("            async (target, sent) =>");
         sb.AppendLine("            {");
         sb.AppendLine("                await target.ExecuteAsync(sent, ct);");

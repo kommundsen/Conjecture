@@ -21,7 +21,7 @@ await using AzureServiceBusTarget target = AzureServiceBusTarget.Connect(
     "Endpoint=sb://my.servicebus.windows.net/;SharedAccessKeyName=…;SharedAccessKey=…");
 
 Strategy<MessageInteraction> publishes = Strategy.Messaging
-    .Publish("orders", Strategy.Bytes(0, 1024));
+    .Publish("orders", Strategy.Arrays(Strategy.Integers<byte>(), 0, 1024).Select(static b => (ReadOnlyMemory<byte>)b));
 
 await target.ExecuteAsync(publishes.Sample(), CancellationToken.None);
 

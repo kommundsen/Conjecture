@@ -132,7 +132,7 @@ public static class ProtobufStrategyExtensions
             FieldType.String =>
                 Strategy.Strings().Select(static v => JsonSerializer.SerializeToElement(v)),
             FieldType.Bytes =>
-                Strategy.Bytes(16).Select(static v => JsonSerializer.SerializeToElement(Convert.ToBase64String(v))),
+                Strategy.Arrays(Strategy.Integers<byte>(), 16, 16).Select(static v => JsonSerializer.SerializeToElement(Convert.ToBase64String(v))),
             FieldType.Enum =>
                 BuildEnumStrategy(field),
             FieldType.Message =>

@@ -198,7 +198,7 @@ internal static class StrategyTools
                 "Use `Strategy.Guids()` → `Strategy<Guid>`.",
 
             "byte[]" =>
-                "Use `Strategy.Bytes(size)` for a fixed-length byte array → `Strategy<byte[]>`.",
+                "Use `Strategy.Arrays(Strategy.Integers<byte>(), minSize, maxSize)` for a byte array → `Strategy<byte[]>`. Generic `Strategy.Arrays<T>(inner, minSize, maxSize)` works for any element type.",
 
             "Regex" =>
                 """
