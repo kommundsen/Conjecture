@@ -31,10 +31,10 @@ public class ShrinkQualityTests
         Assert.Equal(42UL, result.Counterexample![0].Value);
     }
 
-    [Theory]
-    [InlineData(1UL)]
-    [InlineData(7UL)]
-    [InlineData(42UL)]
+    [Property]
+    [Sample(1UL)]
+    [Sample(7UL)]
+    [Sample(42UL)]
     public async Task Integer_ShrinksToThreshold_AcrossSeeds(ulong seed)
     {
         ConjectureSettings settings = new() { MaxExamples = 100, Seed = seed };
