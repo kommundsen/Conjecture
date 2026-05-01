@@ -1,7 +1,7 @@
 // Copyright (c) 2026 Kim Ommundsen. Licensed under the MPL-2.0.
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
-using System.Text.RegularExpressions;
+using System.Collections.Generic;
 
 using Conjecture.Core;
 using Conjecture.Core.Internal;
@@ -10,22 +10,13 @@ namespace Conjecture.Core.Tests.Strategies;
 
 public class IdentifierStrategyTests
 {
-    private static ConjectureData MakeData(ulong seed = 42UL) =>
-        ConjectureData.ForGeneration(new SplittableRandom(seed));
-
     // --- Behaviour 1: all generated values match [a-z]+\d+ ---
 
     [Fact]
     public void Identifiers_AllValuesMatchPattern()
     {
         Strategy<string> strategy = Strategy.Identifiers();
-        ConjectureData data = MakeData();
-
-        for (int i = 0; i < 200; i++)
-        {
-            string value = strategy.Generate(data);
-            Assert.Matches("^[a-z]+[0-9]+$", value);
-        }
+        Assert.All(strategy.WithSeed(42UL).Sample(200), value => Assert.Matches("^[a-z]+[0-9]+$", value));
     }
 
     // --- Behaviour 2: prefix length bounded by minPrefixLength/maxPrefixLength ---
@@ -41,15 +32,12 @@ public class IdentifierStrategyTests
             maxPrefixLength: maxPrefixLength,
             minDigits: 1,
             maxDigits: 1);
-        ConjectureData data = MakeData(77UL);
 
-        for (int i = 0; i < 100; i++)
+        Assert.All(strategy.WithSeed(77UL).Sample(100), value =>
         {
-            string value = strategy.Generate(data);
-            // strip trailing digit(s) — here exactly 1 digit
             string prefix = value[..^1];
             Assert.InRange(prefix.Length, minPrefixLength, maxPrefixLength);
-        }
+        });
     }
 
     // --- Behaviour 3: digit count bounded by minDigits/maxDigits ---
@@ -65,15 +53,12 @@ public class IdentifierStrategyTests
             maxPrefixLength: 1,
             minDigits: minDigits,
             maxDigits: maxDigits);
-        ConjectureData data = MakeData(55UL);
 
-        for (int i = 0; i < 100; i++)
+        Assert.All(strategy.WithSeed(55UL).Sample(100), value =>
         {
-            string value = strategy.Generate(data);
-            // strip leading alpha — exactly 1 prefix char
             string digits = value[1..];
             Assert.InRange(digits.Length, minDigits, maxDigits);
-        }
+        });
     }
 
     // --- Behaviour 4: replay with all-minimum draws produces "a0" ---
