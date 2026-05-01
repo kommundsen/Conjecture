@@ -1,1 +1,3 @@
 #nullable enable
+*REMOVED*Conjecture.AspNetCore.EFCore.AspNetCoreDbTarget<TContext>.ExecuteAsync(Conjecture.Interactions.IInteraction! interaction, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<object?>!
+Conjecture.AspNetCore.EFCore.AspNetCoreDbTarget<TContext>.ExecuteAsync(Conjecture.Abstractions.Interactions.IInteraction! interaction, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<object?>!

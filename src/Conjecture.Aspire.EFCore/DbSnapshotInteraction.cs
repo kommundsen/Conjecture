@@ -8,6 +8,8 @@ using Conjecture.Interactions;
 
 using Microsoft.EntityFrameworkCore;
 
+using Conjecture.Abstractions.Interactions;
+
 namespace Conjecture.Aspire.EFCore;
 
 /// <summary>

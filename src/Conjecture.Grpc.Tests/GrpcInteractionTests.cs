@@ -9,6 +9,8 @@ using Conjecture.Interactions;
 
 using Grpc.Core;
 
+using Conjecture.Abstractions.Interactions;
+
 namespace Conjecture.Grpc.Tests;
 
 public class GrpcInteractionTests

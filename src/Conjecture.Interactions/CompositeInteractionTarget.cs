@@ -7,6 +7,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Conjecture.Abstractions.Interactions;
+
 namespace Conjecture.Interactions;
 
 /// <summary>Dispatches interactions to named targets based on <see cref="IAddressedInteraction.ResourceName"/>.</summary>

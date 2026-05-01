@@ -15,6 +15,8 @@ using Conjecture.Messaging;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
+using Conjecture.Abstractions.Interactions;
+
 namespace Conjecture.Aspire.EFCore.Tests;
 
 /// <summary>

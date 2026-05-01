@@ -22,6 +22,8 @@ using System.Threading.Tasks;
 
 using Conjecture.Interactions;
 
+using Conjecture.Abstractions.Interactions;
+
 namespace Conjecture.Aspire.Tests.Samples;
 
 public sealed class CompositeInteractionTargetSampleTests

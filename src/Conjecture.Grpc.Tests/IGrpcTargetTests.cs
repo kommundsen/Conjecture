@@ -6,6 +6,8 @@ using Conjecture.Interactions;
 
 using GrpcCore = global::Grpc.Core;
 
+using Conjecture.Abstractions.Interactions;
+
 namespace Conjecture.Grpc.Tests;
 
 public class IGrpcTargetTests

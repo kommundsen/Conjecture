@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Conjecture.Core;
 using Conjecture.Interactions;
 
+using Conjecture.Abstractions.Interactions;
+
 namespace Conjecture.Core.Tests;
 
 public sealed class PropertyForAllTests

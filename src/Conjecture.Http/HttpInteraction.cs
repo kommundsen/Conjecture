@@ -5,6 +5,8 @@ using System.Collections.Generic;
 
 using Conjecture.Interactions;
 
+using Conjecture.Abstractions.Interactions;
+
 namespace Conjecture.Http;
 
 /// <summary>An HTTP call addressed to a named resource.</summary>

@@ -6,6 +6,8 @@ using System.Collections.Generic;
 
 using Conjecture.Interactions;
 
+using Conjecture.Abstractions.Interactions;
+
 namespace Conjecture.Grpc;
 
 /// <summary>Immutable record covering all four gRPC call modes.</summary>
