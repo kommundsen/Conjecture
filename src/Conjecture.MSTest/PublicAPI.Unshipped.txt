@@ -1,3 +1,7 @@
 #nullable enable
 Conjecture.MSTest.PropertyAttribute.Database.get -> bool
 Conjecture.MSTest.PropertyAttribute.Database.set -> void
+Conjecture.MSTest.PropertyAttribute.ExportReproductionOnFailure.get -> bool
+Conjecture.MSTest.PropertyAttribute.ExportReproductionOnFailure.set -> void
+Conjecture.MSTest.PropertyAttribute.ReproductionOutputPath.get -> string!
+Conjecture.MSTest.PropertyAttribute.ReproductionOutputPath.set -> void
