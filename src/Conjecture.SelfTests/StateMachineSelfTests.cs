@@ -68,7 +68,7 @@ public class StateMachineSelfTests
 
     // ─── Strategy ─────────────────────────────────────────────────────────────
 
-    // Gen.Compose first draws a random step budget in [5, 20], then generates a
+    // Strategy.Compose first generates a random step budget in [5, 20], then generates a
     // machine run within that budget, so test inputs vary in length.
     private static Strategy<StateMachineRun<int>> MachineStrategy() =>
         Strategy.Compose(ctx =>

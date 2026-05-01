@@ -136,7 +136,7 @@ public static class Strategy
     /// <param name="maxDepth">Maximum recursion depth. Generated values have depth in [0, maxDepth]. Must be ≥ 0.</param>
     /// <returns>
     ///   A <see cref="Strategy{T}"/> whose generated values have depth at most <paramref name="maxDepth"/>.
-    ///   The depth draw is an IR integer, so the shrinker shrinks it toward 0, producing shallower structures
+    ///   The depth node is an IR integer, so the shrinker shrinks it toward 0, producing shallower structures
     ///   when shrinking a counterexample.
     /// </returns>
     /// <example>
@@ -165,7 +165,7 @@ public static class Strategy
     /// </typeparam>
     /// <typeparam name="TState">The type representing the system's state.</typeparam>
     /// <typeparam name="TCommand">The type representing a command that can be applied to the state.</typeparam>
-    /// <param name="maxSteps">Maximum number of commands to draw per run. Defaults to 50.</param>
+    /// <param name="maxSteps">Maximum number of commands to generate per run. Defaults to 50.</param>
     /// <returns>
     ///   A <see cref="Strategy{T}"/> that produces <see cref="StateMachineRun{TState}"/> values.
     ///   If <see cref="IStateMachine{TState, TCommand}.Invariant"/> throws during generation, the strategy
@@ -227,7 +227,7 @@ public static class Strategy
     public static Strategy<TimeOnly> TimeOnlyValues(TimeOnly min, TimeOnly max)
         => new TimeOnlyStrategy(min, max);
 
-    /// <summary>Returns a strategy that generates identifier strings of the form <c>[a-z]+\d+</c>. The alpha prefix is drawn via IR string nodes so <c>StringAwarePass</c> can shrink it toward 'a', and the digit suffix is drawn so <c>NumericAwareShrinkPass</c> can shrink it.</summary>
+    /// <summary>Returns a strategy that generates identifier strings of the form <c>[a-z]+\d+</c>. The alpha prefix is generated via IR string nodes so <c>StringAwarePass</c> can shrink it toward 'a', and the digit suffix is generated so <c>NumericAwareShrinkPass</c> can shrink it.</summary>
     public static Strategy<string> Identifiers(
         int minPrefixLength = 1,
         int maxPrefixLength = 6,
@@ -235,7 +235,7 @@ public static class Strategy
         int maxDigits = 4)
         => new IdentifierStrategy(minPrefixLength, maxPrefixLength, minDigits, maxDigits);
 
-    /// <summary>Returns a strategy that generates strings of the form <c>[prefix][digits][suffix]</c> where the digit part is drawn via IR string nodes so <c>NumericAwareShrinkPass</c> can shrink it.</summary>
+    /// <summary>Returns a strategy that generates strings of the form <c>[prefix][digits][suffix]</c> where the digit part is generated via IR string nodes so <c>NumericAwareShrinkPass</c> can shrink it.</summary>
     public static Strategy<string> NumericStrings(
         int minDigits = 1,
         int maxDigits = 6,
@@ -243,7 +243,7 @@ public static class Strategy
         string? suffix = null)
         => new NumericStringStrategy(minDigits, maxDigits, prefix, suffix);
 
-    /// <summary>Returns a strategy that generates version strings of the form <c>MAJOR.MINOR.PATCH</c> where each component is a numeric string drawn via IR string nodes so <c>NumericAwareShrinkPass</c> can shrink each segment independently.</summary>
+    /// <summary>Returns a strategy that generates version strings of the form <c>MAJOR.MINOR.PATCH</c> where each component is a numeric string generated via IR string nodes so <c>NumericAwareShrinkPass</c> can shrink each segment independently.</summary>
     public static Strategy<string> VersionStrings(
         int maxMajor = 9,
         int maxMinor = 9,

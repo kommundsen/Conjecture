@@ -17,7 +17,7 @@ internal sealed class VersionStringStrategy(int maxMajor, int maxMinor, int maxP
 
     private static string DrawComponent(ConjectureData data, int max)
     {
-        // Fixed-length single-digit draw so NumericAwareShrinkPass sees StringChar nodes
+        // Fixed-length single-digit generation so NumericAwareShrinkPass sees StringChar nodes
         // and can shrink each component toward '0' independently.
         data.NextStringLength(1UL, 1UL);
         char digit = (char)data.NextStringChar('0', (ulong)('0' + max));
