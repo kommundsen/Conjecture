@@ -17,28 +17,17 @@ public sealed class CON110Tests
 
         """;
 
-    // --- Fires on async Task<bool> [Property] method with no await ---
+    // --- async [Property] method with no await → CON110 ---
 
-    [Fact]
-    public async Task AsyncTaskBool_PropertyMethodNoAwait_EmitsCon110()
+    [Theory]
+    [InlineData("Task<bool>", "return x > 0;")]
+    [InlineData("Task", "")]
+    public async Task AsyncProperty_NoAwait_EmitsCon110(string returnType, string body)
     {
-        await VerifyAsync(Preamble + """
+        await VerifyAsync(Preamble + $$"""
             class Tests {
                 [Property]
-                public {|CON110:async|} Task<bool> Foo(int x) { return x > 0; }
-            }
-            """);
-    }
-
-    // --- Fires on async Task [Property] method with no await ---
-
-    [Fact]
-    public async Task AsyncTask_PropertyMethodNoAwait_EmitsCon110()
-    {
-        await VerifyAsync(Preamble + """
-            class Tests {
-                [Property]
-                public {|CON110:async|} Task Bar(int x) { }
+                public {|CON110:async|} {{returnType}} Foo(int x) { {{body}} }
             }
             """);
     }
@@ -92,70 +81,44 @@ public sealed class CON110Tests
 
     // --- Silent when async [Property] method contains at least one await ---
 
-    [Fact]
-    public async Task AsyncTask_PropertyMethodWithAwait_NoCon110()
+    [Theory]
+    [InlineData("{ await Task.Yield(); return x > 0; }")]
+    [InlineData("{ bool result = await Task.FromResult(x > 0); return result; }")]
+    public async Task AsyncTaskBool_PropertyMethod_WithAwait_NoCon110(string body)
     {
-        await VerifyAsync(Preamble + """
+        await VerifyAsync(Preamble + $$"""
             class Tests {
                 [Property]
-                public async Task<bool> Foo(int x) { await Task.Yield(); return x > 0; }
-            }
-            """);
-    }
-
-    [Fact]
-    public async Task AsyncTaskBool_PropertyMethodWithAwait_NoCon110()
-    {
-        await VerifyAsync(Preamble + """
-            class Tests {
-                [Property]
-                public async Task<bool> Foo(int x) { bool result = await Task.FromResult(x > 0); return result; }
+                public async Task<bool> Foo(int x) {{body}}
             }
             """);
     }
 
     // --- Silent for non-async [Property] methods ---
 
-    [Fact]
-    public async Task NonAsync_PropertyMethod_NoCon110()
+    [Theory]
+    [InlineData("bool", "x > 0")]
+    [InlineData("Task<bool>", "Task.FromResult(x > 0)")]
+    public async Task NonAsync_PropertyMethod_NoCon110(string returnType, string body)
     {
-        await VerifyAsync(Preamble + """
+        await VerifyAsync(Preamble + $$"""
             class Tests {
                 [Property]
-                public bool Foo(int x) => x > 0;
-            }
-            """);
-    }
-
-    [Fact]
-    public async Task NonAsyncTask_PropertyMethod_NoCon110()
-    {
-        await VerifyAsync(Preamble + """
-            class Tests {
-                [Property]
-                public Task<bool> Foo(int x) => Task.FromResult(x > 0);
+                public {{returnType}} Foo(int x) => {{body}};
             }
             """);
     }
 
     // --- Silent for async methods without [Property] ---
 
-    [Fact]
-    public async Task AsyncTaskNoAwait_NonPropertyMethod_NoCon110()
+    [Theory]
+    [InlineData("Task<bool> Foo(int x)", "{ return Task.FromResult(x > 0).Result; }")]
+    [InlineData("Task Bar()", "{ return; }")]
+    public async Task AsyncNonProperty_NoCon110(string signature, string body)
     {
-        await VerifyAsync(Preamble + """
+        await VerifyAsync(Preamble + $$"""
             class Tests {
-                public async Task<bool> Foo(int x) { return Task.FromResult(x > 0).Result; }
-            }
-            """);
-    }
-
-    [Fact]
-    public async Task AsyncTaskNoAwait_NonPropertyMethodVoid_NoCon110()
-    {
-        await VerifyAsync(Preamble + """
-            class Tests {
-                public async Task Bar() { return; }
+                public async {{signature}} {{body}}
             }
             """);
     }
