@@ -7,3 +7,6 @@ Conjecture.Abstractions.Testing.IPropertyTest.MaxStrategyRejections.get -> int
 Conjecture.Abstractions.Testing.IPropertyTest.Seed.get -> ulong
 Conjecture.Abstractions.Testing.IPropertyTest.Targeting.get -> bool
 Conjecture.Abstractions.Testing.IPropertyTest.TargetingProportion.get -> double
+Conjecture.Abstractions.Testing.IReproductionExport
+Conjecture.Abstractions.Testing.IReproductionExport.ExportReproductionOnFailure.get -> bool
+Conjecture.Abstractions.Testing.IReproductionExport.ReproductionOutputPath.get -> string!
