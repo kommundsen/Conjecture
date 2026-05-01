@@ -1,14 +1,12 @@
 // Copyright (c) 2026 Kim Ommundsen. Licensed under the MPL-2.0.
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
-using Conjecture.Messaging;
-
 using Conjecture.Abstractions.Interactions;
 
-namespace Conjecture.Aspire.EFCore;
+namespace Conjecture.Messaging;
 
-/// <summary>Wraps a <see cref="MessageInteraction"/> as an <see cref="IAddressedInteraction"/> with a given resource name.</summary>
-internal sealed class AddressedMessageInteraction(string resourceName, MessageInteraction inner)
+/// <summary>Wraps a <see cref="MessageInteraction"/> as an <see cref="IAddressedInteraction"/> addressed to a named resource.</summary>
+public sealed class AddressedMessageInteraction(string resourceName, MessageInteraction inner)
     : IAddressedInteraction
 {
     /// <inheritdoc/>

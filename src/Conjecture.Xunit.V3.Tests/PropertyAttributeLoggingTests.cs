@@ -31,14 +31,14 @@ public class PropertyAttributeLoggingTests(ITestOutputHelper output)
 #pragma warning restore IDE0060
 
     /// <summary>
-    /// Unit-level: TestOutputHelperLogger writes GenerationCompleted to the writeLine action.
+    /// Unit-level: TestOutputLogger writes GenerationCompleted to the writeLine action.
     /// Proves the logging bridge works when wired via ITestOutputHelper.WriteLine.
     /// </summary>
     [Fact]
-    public async Task TestRunner_WithTestOutputHelperLogger_LogsGenerationCompleted()
+    public async Task TestRunner_WithTestOutputLogger_LogsGenerationCompleted()
     {
         List<string> lines = [];
-        ILogger logger = TestOutputHelperLogger.FromWriteLine(lines.Add);
+        ILogger logger = TestOutputLogger.FromWriteLine(lines.Add);
         ConjectureSettings settings = new() { MaxExamples = 5, Seed = 1UL, Logger = logger };
 
         await TestRunner.Run(settings, _ => { });
@@ -57,7 +57,7 @@ public class PropertyAttributeLoggingTests(ITestOutputHelper output)
     [Fact]
     public async Task TestRunner_WithNullWriteLine_DoesNotThrow()
     {
-        ILogger logger = TestOutputHelperLogger.FromWriteLine(null);
+        ILogger logger = TestOutputLogger.FromWriteLine(null);
         ConjectureSettings settings = new() { MaxExamples = 5, Seed = 1UL, Logger = logger };
 
         await TestRunner.Run(settings, _ => { });

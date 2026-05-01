@@ -11,12 +11,12 @@ namespace Conjecture.Abstractions.Testing;
 
 /// <summary>An <see cref="ILogger"/> implementation that forwards messages to a test-framework write-line callback.</summary>
 [EditorBrowsable(EditorBrowsableState.Never)]
-public sealed class TestOutputHelperLogger(Action<string> writeLine, LogLevel minLevel = LogLevel.Information) : ILogger
+public sealed class TestOutputLogger(Action<string> writeLine, LogLevel minLevel = LogLevel.Information) : ILogger
 {
     /// <summary>Returns an <see cref="ILogger"/> that forwards to <paramref name="writeLine"/>, or a null logger when <paramref name="writeLine"/> is null.</summary>
     public static ILogger FromWriteLine(Action<string>? writeLine, LogLevel minLevel = LogLevel.Information)
     {
-        return writeLine is null ? NullLogger.Instance : new TestOutputHelperLogger(writeLine, minLevel);
+        return writeLine is null ? NullLogger.Instance : new TestOutputLogger(writeLine, minLevel);
     }
 
     /// <inheritdoc/>

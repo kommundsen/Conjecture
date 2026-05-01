@@ -51,7 +51,7 @@ internal sealed class PropertyTestCaseRunner : XunitTestCaseRunner
                 ? msg => direct.WriteLine(msg)
                 : null;
 
-        ILogger logger = TestOutputHelperLogger.FromWriteLine(writeLine);
+        ILogger logger = TestOutputLogger.FromWriteLine(writeLine);
         settings = new ConjectureSettings
         {
             MaxExamples = testCase.MaxExamples,
