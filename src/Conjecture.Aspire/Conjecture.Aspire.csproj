@@ -15,6 +15,7 @@
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting" />
     <PackageReference Include="Aspire.Hosting.Testing" />
+  <PackageReference Include="Grpc.AspNetCore" />
     <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Testing.Platform" />
   </ItemGroup>
