@@ -10,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 
 using Conjecture.Abstractions.Interactions;
 
+using Conjecture.Abstractions.Aspire;
+
 namespace Conjecture.Aspire.EFCore;
 
 /// <summary>
@@ -22,4 +24,4 @@ namespace Conjecture.Aspire.EFCore;
 public readonly record struct DbSnapshotInteraction(
     string ResourceName,
     string Label,
-    Func<DbContext, Task<object?>> Capture) : IAddressedInteraction, Conjecture.Aspire.ISnapshotLabel;
+    Func<DbContext, Task<object?>> Capture) : IAddressedInteraction, Conjecture.Abstractions.Aspire.ISnapshotLabel;

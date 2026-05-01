@@ -5,6 +5,8 @@ using System;
 
 using Conjecture.Aspire;
 
+using Conjecture.Abstractions.Aspire;
+
 namespace Conjecture.Aspire.EFCore;
 
 /// <summary>Extension methods on <see cref="IAspireAppFixture"/> for EF Core target registration.</summary>

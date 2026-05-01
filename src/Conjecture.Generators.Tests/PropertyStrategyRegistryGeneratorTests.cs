@@ -27,7 +27,7 @@ public sealed class PropertyStrategyRegistryGeneratorTests
         namespace Conjecture.Xunit
         {
             [System.AttributeUsage(System.AttributeTargets.Method)]
-            public sealed class PropertyAttribute : System.Attribute, global::Conjecture.Core.IPropertyTest
+            public sealed class PropertyAttribute : System.Attribute, global::Conjecture.Abstractions.Testing.IPropertyTest
             {
                 public int MaxExamples { get; set; }
                 public ulong Seed { get; set; }
@@ -206,6 +206,7 @@ public sealed class PropertyStrategyRegistryGeneratorTests
             MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
             MetadataReference.CreateFromFile(Path.Combine(runtimeDir, "System.Runtime.dll")),
             MetadataReference.CreateFromFile(typeof(Conjecture.Core.ArbitraryAttribute).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(Conjecture.Abstractions.Testing.IPropertyTest).Assembly.Location),
         ];
 
         if (includeTime)

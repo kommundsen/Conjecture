@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 using Conjecture.Core;
 
+using Conjecture.Abstractions.Aspire;
+
 namespace Conjecture.Aspire;
 
 /// <summary>Entry point for running Aspire stateful property tests.</summary>

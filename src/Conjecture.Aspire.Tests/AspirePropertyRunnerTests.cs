@@ -13,6 +13,8 @@ using Aspire.Hosting;
 using Conjecture.Aspire;
 using Conjecture.Core;
 
+using Conjecture.Abstractions.Aspire;
+
 namespace Conjecture.Aspire.Tests;
 
 public class AspirePropertyRunnerTests
