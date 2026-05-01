@@ -22,7 +22,7 @@ This guide maps Python Hypothesis concepts to their Conjecture equivalents. If y
 | `st.booleans()` | `Strategy.Booleans()` | |
 | `st.text()` | `Strategy.Strings()` | `.NET uses `string`, not `text` |
 | `st.text(min_size=1, max_size=50)` | `Strategy.Strings(minLength: 1, maxLength: 50)` | `size` → `length` |
-| `st.binary(min_size=n, max_size=n)` | `Strategy.Bytes(size)` | Fixed size only |
+| `st.binary(min_size=a, max_size=b)` | `Strategy.Arrays<byte>(Strategy.Integers<byte>(), a, b)` | Generic array factory, any element strategy |
 | `st.just(value)` | `Strategy.Just(value)` | |
 | `st.sampled_from([a, b, c])` | `Strategy.SampledFrom([a, b, c])` | Accepts `IReadOnlyList<T>` |
 | `st.from_type(MyEnum)` | `Strategy.Enums<MyEnum>()` | |
