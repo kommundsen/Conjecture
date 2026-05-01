@@ -1,90 +1,66 @@
 // Copyright (c) 2026 Kim Ommundsen. Licensed under the MPL-2.0.
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
+using System.Collections.Generic;
+using System.Linq;
+
 using Conjecture.Core;
-using Conjecture.Core.Internal;
 
 namespace Conjecture.Core.Tests.Strategies;
 
 public class StringStrategyTests
 {
-    private static ConjectureData MakeData(ulong seed = 42UL) =>
-        ConjectureData.ForGeneration(new SplittableRandom(seed));
-
     [Fact]
     public void Strings_ProducesString()
     {
-        var strategy = Strategy.Strings();
-        var value = strategy.Generate(MakeData());
-        Assert.IsType<string>(value);
+        Strategy<string> strategy = Strategy.Strings();
+        Assert.IsType<string>(strategy.Sample());
     }
 
     [Fact]
     public void Strings_DefaultCharset_IsPrintableAscii()
     {
-        var strategy = Strategy.Strings();
-        var data = MakeData();
-
-        for (var i = 0; i < 200; i++)
+        Strategy<string> strategy = Strategy.Strings();
+        Assert.All(strategy.WithSeed(42UL).Sample(200), s =>
         {
-            var s = strategy.Generate(data);
-            foreach (var c in s)
+            foreach (char c in s)
             {
                 Assert.InRange((int)c, 32, 126);
             }
-        }
+        });
     }
 
     [Fact]
     public void Strings_DeterministicWithSeed()
     {
-        var strategy = Strategy.Strings();
-
-        var results1 = Enumerable.Range(0, 20).Select(_ => strategy.Generate(MakeData(99UL))).ToList();
-        var results2 = Enumerable.Range(0, 20).Select(_ => strategy.Generate(MakeData(99UL))).ToList();
-
+        Strategy<string> strategy = Strategy.Strings();
+        IReadOnlyList<string> results1 = strategy.WithSeed(99UL).Sample(20);
+        IReadOnlyList<string> results2 = strategy.WithSeed(99UL).Sample(20);
         Assert.Equal(results1, results2);
     }
 
     [Fact]
     public void Strings_RespectsBoundsWhenMinAndMaxLengthSet()
     {
-        var strategy = Strategy.Strings(minLength: 5, maxLength: 10);
-        var data = MakeData();
-
-        for (var i = 0; i < 100; i++)
-        {
-            var s = strategy.Generate(data);
-            Assert.InRange(s.Length, 5, 10);
-        }
+        Strategy<string> strategy = Strategy.Strings(minLength: 5, maxLength: 10);
+        Assert.All(strategy.WithSeed(42UL).Sample(100), s => Assert.InRange(s.Length, 5, 10));
     }
 
     [Fact]
     public void Strings_MinLengthZero_CanProduceEmptyString()
     {
-        var strategy = Strategy.Strings(minLength: 0, maxLength: 5);
-        var sawEmpty = false;
-
-        for (var seed = 0UL; seed < 1000UL && !sawEmpty; seed++)
-        {
-            var s = strategy.Generate(MakeData(seed));
-            if (s.Length == 0)
-            {
-                sawEmpty = true;
-            }
-        }
-
-        Assert.True(sawEmpty, "Expected empty string to be generated with minLength=0");
+        Strategy<string> strategy = Strategy.Strings(minLength: 0, maxLength: 5);
+        IReadOnlyList<string> samples = strategy.WithSeed(0UL).Sample(1000);
+        Assert.Contains(samples, s => s.Length == 0);
     }
 
     [Fact]
     public void Text_IsAliasForStrings()
     {
-        var textStrategy = Strategy.Text();
-        var data = MakeData(77UL);
-        var s = textStrategy.Generate(data);
+        Strategy<string> textStrategy = Strategy.Text();
+        string s = textStrategy.WithSeed(77UL).Sample();
         Assert.IsType<string>(s);
-        foreach (var c in s)
+        foreach (char c in s)
         {
             Assert.InRange((int)c, 32, 126);
         }
