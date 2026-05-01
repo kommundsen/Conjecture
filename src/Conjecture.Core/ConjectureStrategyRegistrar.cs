@@ -2,6 +2,7 @@
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
 using System;
+using System.ComponentModel;
 
 using Conjecture.Core.Internal;
 
@@ -13,6 +14,7 @@ namespace Conjecture.Core;
 /// <see cref="Register(Func{Type, object?})"/> at startup, replacing the
 /// runtime-reflection path in <see cref="SharedParameterStrategyResolver"/>.
 /// </summary>
+[EditorBrowsable(EditorBrowsableState.Never)]
 public static class ConjectureStrategyRegistrar
 {
     private static Func<Type, ConjectureData, object?>? activeResolver;
