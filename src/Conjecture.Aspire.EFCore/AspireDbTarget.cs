@@ -10,7 +10,6 @@ using Aspire.Hosting;
 using Aspire.Hosting.Testing;
 
 using Conjecture.EFCore;
-using Conjecture.Interactions;
 
 using Microsoft.EntityFrameworkCore;
 

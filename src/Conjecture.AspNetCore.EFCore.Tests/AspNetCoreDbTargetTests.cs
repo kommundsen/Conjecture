@@ -5,7 +5,6 @@ using System;
 using System.Threading.Tasks;
 
 using Conjecture.EFCore;
-using Conjecture.Interactions;
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;

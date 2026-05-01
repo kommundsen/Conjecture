@@ -2,7 +2,6 @@
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
 using Conjecture.Grpc;
-using Conjecture.Interactions;
 
 using GrpcCore = global::Grpc.Core;
 

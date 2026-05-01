@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 using Conjecture.Core;
 using Conjecture.Http;
-using Conjecture.Interactions;
 using Conjecture.Messaging;
 
 using Microsoft.EntityFrameworkCore;

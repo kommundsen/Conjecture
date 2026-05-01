@@ -7,7 +7,6 @@ using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 
-using Conjecture.Interactions;
 
 using Conjecture.Abstractions.Interactions;
 

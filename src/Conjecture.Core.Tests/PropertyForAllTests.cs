@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Conjecture.Core;
-using Conjecture.Interactions;
 
 using Conjecture.Abstractions.Interactions;
 
