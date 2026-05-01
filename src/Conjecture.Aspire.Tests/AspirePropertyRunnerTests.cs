@@ -244,11 +244,15 @@ public class AspirePropertyRunnerTests
             return Task.CompletedTask;
         }
 
-        public override ValueTask DisposeAsync()
+        public override async ValueTask DisposeAsync()
         {
-            CreatedApp?.Dispose();
+            if (CreatedApp is not null)
+            {
+                await CreatedApp.DisposeAsync();
+            }
+
             AppDisposed = true;
-            return base.DisposeAsync();
+            await base.DisposeAsync();
         }
     }
 
@@ -344,7 +348,7 @@ public class AspirePropertyRunnerTests
     }
 
     /// <summary>Wraps <see cref="DistributedApplication"/> for dispose tracking in tests.</summary>
-    private sealed class FakeDistributedApplication : IDisposable
+    private sealed class FakeDistributedApplication : IAsyncDisposable
     {
         public bool Disposed { get; private set; }
         public DistributedApplication Instance { get; } = CreateApp();
@@ -357,10 +361,10 @@ public class AspirePropertyRunnerTests
             return builder.Build();
         }
 
-        public void Dispose()
+        public async ValueTask DisposeAsync()
         {
             Disposed = true;
-            Instance.DisposeAsync().AsTask().GetAwaiter().GetResult();
+            await Instance.DisposeAsync();
         }
     }
 }
