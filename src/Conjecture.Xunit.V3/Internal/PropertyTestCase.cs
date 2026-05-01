@@ -28,6 +28,8 @@ internal sealed class PropertyTestCase : XunitTestCase, ISelfExecutingXunitTestC
     internal int DeadlineMs { get; private set; }
     internal bool Targeting { get; private set; } = true;
     internal double TargetingProportion { get; private set; } = 0.5;
+    internal bool ExportReproductionOnFailure { get; private set; }
+    internal string ReproductionOutputPath { get; private set; } = ".conjecture/repros/";
 
     [Obsolete("For deserialization only", error: false)]
     public PropertyTestCase() { }
@@ -52,7 +54,9 @@ internal sealed class PropertyTestCase : XunitTestCase, ISelfExecutingXunitTestC
         int maxStrategyRejections,
         int deadlineMs,
         bool targeting,
-        double targetingProportion)
+        double targetingProportion,
+        bool exportReproductionOnFailure,
+        string reproductionOutputPath)
         : base(testMethod, testCaseDisplayName, uniqueID, @explicit, skipExceptions,
                skipReason, skipType, skipUnless, skipWhen, traits,
                testMethodArguments, sourceFilePath, sourceLineNumber, timeout: null)
@@ -64,6 +68,8 @@ internal sealed class PropertyTestCase : XunitTestCase, ISelfExecutingXunitTestC
         DeadlineMs = deadlineMs;
         Targeting = targeting;
         TargetingProportion = targetingProportion;
+        ExportReproductionOnFailure = exportReproductionOnFailure;
+        ReproductionOutputPath = reproductionOutputPath;
     }
 
     protected override void Serialize(IXunitSerializationInfo info)
@@ -76,6 +82,8 @@ internal sealed class PropertyTestCase : XunitTestCase, ISelfExecutingXunitTestC
         info.AddValue("DeadlineMs", DeadlineMs);
         info.AddValue("Targeting", Targeting);
         info.AddValue("TargetingProportion", TargetingProportion);
+        info.AddValue("ExportReproductionOnFailure", ExportReproductionOnFailure);
+        info.AddValue("ReproductionOutputPath", ReproductionOutputPath);
     }
 
     protected override void Deserialize(IXunitSerializationInfo info)
@@ -89,6 +97,8 @@ internal sealed class PropertyTestCase : XunitTestCase, ISelfExecutingXunitTestC
         DeadlineMs = info.GetValue<int>("DeadlineMs");
         Targeting = info.GetValue<bool>("Targeting");
         TargetingProportion = info.GetValue<double>("TargetingProportion");
+        ExportReproductionOnFailure = info.GetValue<bool>("ExportReproductionOnFailure");
+        ReproductionOutputPath = info.GetValue<string?>("ReproductionOutputPath") ?? ".conjecture/repros/";
     }
 
     [RequiresDynamicCode("xUnit test execution invokes test methods via reflection.")]
@@ -163,6 +173,8 @@ internal sealed class PropertyTestCase : XunitTestCase, ISelfExecutingXunitTestC
                 Targeting = Targeting,
                 TargetingProportion = TargetingProportion,
                 Logger = logger,
+                ExportReproductionOnFailure = ExportReproductionOnFailure,
+                ReproductionOutputPath = ReproductionOutputPath,
             };
 
             string dbPath = Path.Combine(settings.DatabasePath, "conjecture.db");
@@ -227,6 +239,32 @@ internal sealed class PropertyTestCase : XunitTestCase, ISelfExecutingXunitTestC
 
                 if (!result.Passed)
                 {
+                    if (settings.ExportReproductionOnFailure && result.Counterexample is not null)
+                    {
+                        try
+                        {
+                            ConjectureData replay = ConjectureData.ForRecord(result.Counterexample);
+                            object[] values = SharedParameterStrategyResolver.Resolve(methodParams, replay);
+                            IEnumerable<(string Name, object? Value, Type Type)> reproParams = methodParams.Zip(values,
+                                static (p, v) => (p.Name!, (object?)v, p.ParameterType));
+                            ReproContext context = new(
+                                TestMethod.TestClass.Class.Name,
+                                methodInfo.Name,
+                                TestCaseHelper.IsAsyncReturnType(methodInfo.ReturnType),
+                                reproParams,
+                                result.Seed!.Value,
+                                result.ExampleCount,
+                                result.ShrinkCount,
+                                Conjecture.Core.Internal.TestFramework.Xunit,
+                                DateTimeOffset.UtcNow);
+                            ReproFileBuilder.WriteToFile(context, settings.ReproductionOutputPath);
+                        }
+                        catch (Exception ex)
+                        {
+                            settings.Logger.LogError(ex, "Failed to write repro file");
+                        }
+                    }
+
                     failure = new Exception(TestCaseHelper.BuildFailureMessage(result, methodParams));
                 }
             }
