@@ -5,7 +5,6 @@ using System;
 using System.Linq;
 
 using Conjecture.EFCore;
-using Conjecture.Interactions;
 
 using Conjecture.Abstractions.Interactions;
 

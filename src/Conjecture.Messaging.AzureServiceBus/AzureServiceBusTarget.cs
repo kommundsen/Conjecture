@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 
 using Azure.Messaging.ServiceBus;
 
-using Conjecture.Interactions;
 using Conjecture.Messaging;
 
 using Conjecture.Abstractions.Interactions;

@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 using Conjecture.Aspire.EFCore;
 using Conjecture.EFCore;
-using Conjecture.Interactions;
 
 using Microsoft.EntityFrameworkCore;
 
