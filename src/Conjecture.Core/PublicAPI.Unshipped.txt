@@ -14,7 +14,6 @@ static Conjecture.Core.PartialConstructorContext.Current.get -> Conjecture.Core.
 static Conjecture.Core.PartialConstructorContext.Use(Conjecture.Core.IGenerationContext! ctx) -> System.IDisposable!
 Conjecture.Core.Strategy
 static Conjecture.Core.Strategy.Booleans() -> Conjecture.Core.Strategy<bool>!
-static Conjecture.Core.Strategy.Bytes(int size) -> Conjecture.Core.Strategy<byte[]!>!
 static Conjecture.Core.Strategy.Arrays<T>(Conjecture.Core.Strategy<T>! inner, int minSize = 0, int maxSize = 100) -> Conjecture.Core.Strategy<T[]!>!
 static Conjecture.Core.Strategy.Just<T>(T value) -> Conjecture.Core.Strategy<T>!
 static Conjecture.Core.Strategy.OneOf<T>(params Conjecture.Core.Strategy<T>![]! strategies) -> Conjecture.Core.Strategy<T>!
