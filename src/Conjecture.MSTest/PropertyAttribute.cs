@@ -21,7 +21,7 @@ namespace Conjecture.MSTest;
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
 public sealed class PropertyAttribute(
     [CallerFilePath] string sourceFile = "",
-    [CallerLineNumber] int sourceLine = -1) : TestMethodAttribute(sourceFile, sourceLine), IPropertyTest
+    [CallerLineNumber] int sourceLine = -1) : TestMethodAttribute(sourceFile, sourceLine), IPropertyTest, IReproductionExport
 {
 
     /// <summary>Maximum number of examples to generate. Defaults to 100.</summary>
@@ -44,6 +44,12 @@ public sealed class PropertyAttribute(
 
     /// <summary>Fraction of MaxExamples budget allocated to the targeting phase. Defaults to 0.5.</summary>
     public double TargetingProportion { get; set; } = 0.5;
+
+    /// <summary>Whether to export a reproduction file on test failure. Defaults to <see langword="false"/>.</summary>
+    public bool ExportReproductionOnFailure { get; set; } = false;
+
+    /// <summary>Output path for exported reproduction files. Defaults to <c>.conjecture/repros/</c>.</summary>
+    public string ReproductionOutputPath { get; set; } = ".conjecture/repros/";
 
     /// <inheritdoc/>
     [RequiresDynamicCode("Property test execution uses MakeGenericMethod for typed strategy dispatch.")]
@@ -109,9 +115,39 @@ public sealed class PropertyAttribute(
             result = TestRunResult.WithExtraExamples(result, explicitCount);
         }
 
-        return result.Passed
-            ? [new TestResult { Outcome = UnitTestOutcome.Passed }]
-            : [
+        if (result.Passed)
+        {
+            return [new TestResult { Outcome = UnitTestOutcome.Passed }];
+        }
+
+        if (settings.ExportReproductionOnFailure && result.Counterexample is not null)
+        {
+            try
+            {
+                ConjectureData replay = ConjectureData.ForRecord(result.Counterexample);
+                object[] values = SharedParameterStrategyResolver.Resolve(methodParams, replay);
+                IEnumerable<(string Name, object? Value, Type Type)> reproParams = methodParams.Zip(values,
+                    static (p, v) => (p.Name!, (object?)v, p.ParameterType));
+                ReproContext reproContext = new(
+                    methodInfo.DeclaringType?.Name ?? "UnknownClass",
+                    methodInfo.Name,
+                    TestCaseHelper.IsAsyncReturnType(methodInfo.ReturnType),
+                    reproParams,
+                    result.Seed!.Value,
+                    result.ExampleCount,
+                    result.ShrinkCount,
+                    Conjecture.Core.Internal.TestFramework.MSTest,
+                    DateTimeOffset.UtcNow);
+                ReproFileBuilder.WriteToFile(reproContext, settings.ReproductionOutputPath);
+            }
+            catch (Exception)
+            {
+                // Repro export must not propagate.
+            }
+        }
+
+        return
+        [
             new TestResult
             {
                 Outcome = UnitTestOutcome.Failed,
