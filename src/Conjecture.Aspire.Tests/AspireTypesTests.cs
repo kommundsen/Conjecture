@@ -2,58 +2,22 @@
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Aspire.Hosting;
 
 using Conjecture.Aspire;
 using Conjecture.Core;
+using Conjecture.Http;
 
 using Conjecture.Abstractions.Aspire;
+using Conjecture.Abstractions.Interactions;
 
 namespace Conjecture.Aspire.Tests;
 
 public class AspireTypesTests
 {
-    // ── Interaction ────────────────────────────────────────────────────────────
-
-    [Fact]
-    public void Interaction_IsValueType()
-    {
-        Assert.True(typeof(Interaction).IsValueType);
-    }
-
-    [Fact]
-    public void Interaction_StructuralEquality_SameValues_AreEqual()
-    {
-        Interaction a = new("svc", "GET", "/ping", null);
-        Interaction b = new("svc", "GET", "/ping", null);
-
-        Assert.Equal(a, b);
-    }
-
-    [Fact]
-    public void Interaction_StructuralEquality_DifferentValues_AreNotEqual()
-    {
-        Interaction a = new("svc", "GET", "/ping", null);
-        Interaction b = new("svc", "POST", "/ping", null);
-
-        Assert.NotEqual(a, b);
-    }
-
-    [Fact]
-    public void Interaction_Properties_RoundTrip()
-    {
-        object body = new();
-        Interaction interaction = new("order-service", "PUT", "/orders/1", body);
-
-        Assert.Equal("order-service", interaction.ResourceName);
-        Assert.Equal("PUT", interaction.Method);
-        Assert.Equal("/orders/1", interaction.Path);
-        Assert.Same(body, interaction.Body);
-    }
-
     // ── IAspireAppFixture defaults ─────────────────────────────────────────────
 
     [Fact]
@@ -80,12 +44,12 @@ public class AspireTypesTests
         Assert.Empty(fixture.HealthCheckedResources);
     }
 
-    // ── AspireStateMachine implements IStateMachine ────────────────────────────
+    // ── InteractionStateMachine implements IStateMachine ──────────────────────
 
     [Fact]
-    public void AspireStateMachine_ImplementsIStateMachine()
+    public void InteractionStateMachine_ImplementsIStateMachine()
     {
-        Assert.True(typeof(IStateMachine<string, Interaction>)
+        Assert.True(typeof(IStateMachine<string, IInteraction>)
             .IsAssignableFrom(typeof(StubStateMachine)));
     }
 
@@ -100,14 +64,14 @@ public class AspireTypesTests
             => throw new System.NotImplementedException();
     }
 
-    private sealed class StubStateMachine : AspireStateMachine<string>
+    private sealed class StubStateMachine : InteractionStateMachine<string>
     {
         public override string InitialState() => string.Empty;
 
-        public override IEnumerable<Strategy<Interaction>> Commands(string state)
+        public override IEnumerable<Strategy<IInteraction>> Commands(string state)
             => [];
 
-        public override string RunCommand(string state, Interaction cmd)
+        public override string RunCommand(string state, IInteraction interaction, IInteractionTarget target, CancellationToken ct)
             => state;
 
         public override void Invariant(string state) { }

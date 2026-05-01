@@ -16,6 +16,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Conjecture.Aspire\Conjecture.Aspire.csproj" />
+    <ProjectReference Include="..\Conjecture.Aspire.Http\Conjecture.Aspire.Http.csproj" />
+    <ProjectReference Include="..\Conjecture.Http\Conjecture.Http.csproj" />
     <ProjectReference Include="..\Conjecture.Interactions\Conjecture.Interactions.csproj" />
   </ItemGroup>
 
