@@ -6,7 +6,7 @@ module Conjecture.FSharp.Expecto
 open Expecto
 open Conjecture
 
-let property (name: string) (test: 'a -> 'r) : Test =
+let propertyWithRepro (name: string) (test: 'a -> 'r) (repro: ReproExport) : Test =
     testCase name (fun () ->
         let handleResult result =
             match result with
@@ -15,9 +15,12 @@ let property (name: string) (test: 'a -> 'r) : Test =
         let returnType = typeof<'r>
         if returnType = typeof<bool> then
             let boolTest = fun a -> test a |> box |> unbox<bool>
-            PropertyRunner.runBool (Gen.auto<'a> ()) boolTest |> Async.AwaitTask |> Async.RunSynchronously |> handleResult
+            PropertyRunner.runBoolWithRepro (Gen.auto<'a> ()) boolTest repro |> Async.AwaitTask |> Async.RunSynchronously |> handleResult
         elif returnType = typeof<unit> then
             let unitTest = test >> ignore
-            PropertyRunner.runUnit (Gen.auto<'a> ()) unitTest |> Async.AwaitTask |> Async.RunSynchronously |> handleResult
+            PropertyRunner.runUnitWithRepro (Gen.auto<'a> ()) unitTest repro |> Async.AwaitTask |> Async.RunSynchronously |> handleResult
         else
             failwithf "property: unsupported return type '%s'. Use 'a -> bool or 'a -> unit." typeof<'r>.Name)
+
+let property (name: string) (test: 'a -> 'r) : Test =
+    propertyWithRepro name test ReproExport.disabled
