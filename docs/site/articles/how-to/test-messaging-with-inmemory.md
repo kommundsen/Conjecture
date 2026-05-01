@@ -28,7 +28,7 @@ public class OrderConsumerProperties
         InMemoryMessageBusTarget bus = new();
 
         Strategy<MessageInteraction> publishStrategy =
-            Strategy.Messaging.Publish("orders", Strategy.Bytes(0, 1024));
+            Strategy.Messaging.Publish("orders", Strategy.Arrays<byte>(Strategy.Integers<byte>(), 0, 1024));
 
         await Property.ForAll(bus, publishStrategy, async (target, sent) =>
         {
@@ -56,7 +56,7 @@ public async Task RejectedMessage_IsAvailableAgain(CancellationToken ct)
 {
     InMemoryMessageBusTarget bus = new();
     Strategy<MessageInteraction> publishStrategy =
-        Strategy.Messaging.Publish("retries", Strategy.Bytes(0, 256));
+        Strategy.Messaging.Publish("retries", Strategy.Arrays<byte>(Strategy.Integers<byte>(), 0, 256));
 
     await Property.ForAll(bus, publishStrategy, async (target, sent) =>
     {
@@ -102,8 +102,8 @@ Two destinations on the same `InMemoryMessageBusTarget` are isolated — a publi
 public async Task RoutesByDestination(CancellationToken ct)
 {
     InMemoryMessageBusTarget bus = new();
-    Strategy<MessageInteraction> aStrategy = Strategy.Messaging.Publish("a", Strategy.Bytes(0, 64));
-    Strategy<MessageInteraction> bStrategy = Strategy.Messaging.Publish("b", Strategy.Bytes(0, 64));
+    Strategy<MessageInteraction> aStrategy = Strategy.Messaging.Publish("a", Strategy.Arrays<byte>(Strategy.Integers<byte>(), 0, 64));
+    Strategy<MessageInteraction> bStrategy = Strategy.Messaging.Publish("b", Strategy.Arrays<byte>(Strategy.Integers<byte>(), 0, 64));
 
     await Property.ForAll(bus, Strategy.Tuple(aStrategy, bStrategy), async (target, pair) =>
     {

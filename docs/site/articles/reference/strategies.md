@@ -62,17 +62,9 @@ Strategy<bool> Strategy.Booleans()
 
 Generates `true` and `false` with equal probability.
 
-### `Strategy.Bytes(int size)`
-
-```csharp
-Strategy<byte[]> Strategy.Bytes(int size)
-```
-
-Generates a `byte[]` of exactly `size` bytes. `size` must be ≥ 0.
-
 ## String strategies
 
-See [String strategies reference](string-strategies.md) for `Strings`, `Text`, `Identifiers`, `NumericStrings`, and `VersionStrings`.
+See [String strategies reference](string-strategies.md) for `Strings`, `Identifiers`, `NumericStrings`, and `VersionStrings`.
 
 ## Date and time strategies
 
