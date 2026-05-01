@@ -33,7 +33,7 @@ internal sealed class ReDoSHunterStrategy(
     private static Strategy<string>? BuildFallback(RegexNode root, DotNetRegex regex)
     {
         return !NestedQuantifierDetector.HasNestedQuantifiers(root)
-            ? new DelegatingStrategy<string>(Conjecture.Core.Strategy.Matching(regex), "redos:no-nested-quantifiers")
+            ? Conjecture.Core.Strategy.Matching(regex).WithLabel("redos:no-nested-quantifiers")
             : (Strategy<string>?)null;
     }
 
