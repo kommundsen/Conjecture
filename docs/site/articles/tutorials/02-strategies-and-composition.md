@@ -2,9 +2,9 @@
 
 In [Tutorial 1](01-your-first-property-test.md), Conjecture auto-resolved strategies from parameter types. This tutorial shows you how to use strategies explicitly and compose them.
 
-## The `Generate` Class
+## The `Strategy` Class
 
-`Generate` is a static factory class with methods for creating strategies:
+`Strategy` is a static factory class with methods for creating strategies:
 
 ```csharp
 using Conjecture.Core;
@@ -22,11 +22,11 @@ Strategy.Floats()
 
 // Other primitives
 Strategy.Booleans()
-Strategy.Bytes(16)                    // fixed-size byte array
 Strategy.Strings(minLength: 1, maxLength: 100)
 Strategy.Enums<DayOfWeek>()
 
 // Collections
+Strategy.Arrays<byte>(Strategy.Integers<byte>(), minSize: 16, maxSize: 16)  // fixed-size byte array
 Strategy.Lists(Strategy.Integers<int>(), minSize: 1, maxSize: 50)
 Strategy.Sets(Strategy.Strings())
 Strategy.Dictionaries(Strategy.Strings(), Strategy.Integers<int>())

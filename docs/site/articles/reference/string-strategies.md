@@ -37,14 +37,6 @@ Strategy.Strings(alphabet: "abcdefghijklmnopqrstuvwxyz")
 Strategy.Strings(minCodepoint: 0, maxCodepoint: 0x10FFFF)
 ```
 
-## `Strategy.Text`
-
-```csharp
-Strategy<string> Strategy.Text(int minLength = 0, int maxLength = 20)
-```
-
-Alias for `Strategy.Strings(minLength, maxLength)` with default codepoint range.
-
 ## `Strategy.Identifiers`
 
 ```csharp
