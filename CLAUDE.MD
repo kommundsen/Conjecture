@@ -75,9 +75,13 @@ Solution file: `src/Conjecture.slnx`
 | `src/Conjecture.Interactive/` | `src/Conjecture.Interactive.Tests/` |
 | `src/Conjecture.LinqPad/` | `src/Conjecture.LinqPad.Tests/` |
 | `src/Conjecture.TestingPlatform/` | `src/Conjecture.TestingPlatform.Tests/` |
+| `src/Conjecture.Core.Abstractions/` | `src/Conjecture.Core.Abstractions.Tests/` |
+| `src/Conjecture.Testing.Abstractions/` | `src/Conjecture.Testing.Abstractions.Tests/` |
 | `src/Conjecture.Interactions/` | `src/Conjecture.Interactions.Tests/` |
+| `src/Conjecture.Interactions.Abstractions/` | `src/Conjecture.Interactions.Abstractions.Tests/` |
 | `src/Conjecture.Http/` | `src/Conjecture.Http.Tests/` |
 | `src/Conjecture.JsonSchema/` | `src/Conjecture.JsonSchema.Tests/` |
+| `src/Conjecture.JsonSchema.Abstractions/` | `src/Conjecture.JsonSchema.Abstractions.Tests/` |
 | `src/Conjecture.OpenApi/` | `src/Conjecture.OpenApi.Tests/` |
 | `src/Conjecture.Protobuf/` | `src/Conjecture.Protobuf.Tests/` |
 | `src/Conjecture.Messaging/` | `src/Conjecture.Messaging.Tests/` |
@@ -85,6 +89,9 @@ Solution file: `src/Conjecture.slnx`
 | `src/Conjecture.Messaging.RabbitMq/` | `src/Conjecture.Messaging.RabbitMq.Tests/` |
 | `src/Conjecture.Grpc/` | `src/Conjecture.Grpc.Tests/` |
 | `src/Conjecture.AspNetCore/` | `src/Conjecture.AspNetCore.Tests/` |
+| `src/Conjecture.Aspire/` | `src/Conjecture.Aspire.Tests/` |
+| `src/Conjecture.Aspire.Abstractions/` | `src/Conjecture.Aspire.Abstractions.Tests/` |
+| `src/Conjecture.Aspire.Http/` | `src/Conjecture.Aspire.Http.Tests/` |
 | `src/Conjecture.Benchmarks/` | _(benchmark project, not a test project)_ |
 | `src/Conjecture.SelfTests/` | _(integration self-tests, no paired prod project)_ |
 
