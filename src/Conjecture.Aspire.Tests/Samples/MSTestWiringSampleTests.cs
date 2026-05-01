@@ -38,6 +38,9 @@ using Conjecture.Aspire;
 using Conjecture.Core;
 
 using Conjecture.Abstractions.Aspire;
+using Conjecture.Abstractions.Interactions;
+using Conjecture.Aspire.Http;
+using Conjecture.Http;
 
 namespace Conjecture.Aspire.Tests.Samples;
 
@@ -93,19 +96,19 @@ public sealed class MSTestWiringSampleTests
         SampleMSTestStateMachine machine = new();
         ConjectureSettings settings = new() { MaxExamples = 2, Seed = 1UL };
 
-        await AspireProperty.RunAsync(fixture, machine, settings, CancellationToken.None);
+        await AspireHttpProperty.RunAsync(fixture, machine, settings, CancellationToken.None);
     }
 
     // ── Stub state machine ────────────────────────────────────────────────────
 
-    private sealed class SampleMSTestStateMachine : AspireStateMachine<string>
+    private sealed class SampleMSTestStateMachine : InteractionStateMachine<string>
     {
         public override string InitialState() => string.Empty;
 
-        public override IEnumerable<Strategy<Interaction>> Commands(string state)
-            => [Strategy.Just(new Interaction("svc", "GET", "/health", null))];
+        public override IEnumerable<Strategy<IInteraction>> Commands(string state)
+            => [Strategy.Just<IInteraction>(new HttpInteraction("svc", "GET", "/health", null, null))];
 
-        public override string RunCommand(string state, Interaction cmd) => state;
+        public override string RunCommand(string state, IInteraction interaction, IInteractionTarget target, CancellationToken ct) => state;
 
         public override void Invariant(string state) { }
     }

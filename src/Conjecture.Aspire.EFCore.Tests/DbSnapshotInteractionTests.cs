@@ -4,7 +4,6 @@
 using System;
 using System.Threading.Tasks;
 
-using Conjecture.Aspire;
 using Conjecture.Aspire.EFCore;
 
 using Microsoft.Data.Sqlite;
@@ -12,10 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Conjecture.Aspire.EFCore.Tests;
 
-/// <summary>
-/// Tests for <see cref="DbSnapshotInteraction"/> and its dispatch through
-/// <see cref="AspireDbTarget{TContext}"/> and <see cref="InteractionTraceReporter"/>.
-/// </summary>
+/// <summary>Tests for <see cref="DbSnapshotInteraction"/> and its dispatch through <see cref="AspireDbTarget{TContext}"/>.</summary>
 public sealed class DbSnapshotInteractionTests : IAsyncLifetime
 {
     private SqliteConnection connection = null!;
@@ -104,28 +100,6 @@ public sealed class DbSnapshotInteractionTests : IAsyncLifetime
             await Assert.ThrowsAsync<InvalidOperationException>(
                 () => target.ExecuteAsync(snapshot, default));
         }
-    }
-
-    // -----------------------------------------------------------------------
-    // InteractionTraceReporter — records snapshot label and value
-    // -----------------------------------------------------------------------
-
-    [Fact]
-    public void InteractionTraceReporter_includes_snapshot_label_and_value_in_trace_output()
-    {
-        InteractionTraceReporter reporter = new();
-
-        DbSnapshotInteraction snapshot = new(
-            ResourceName: "snapshot-db",
-            Label: "row-count",
-            Capture: static ctx => Task.FromResult<object?>(42));
-
-        reporter.RecordSnapshot(snapshot, capturedValue: 42);
-
-        string report = reporter.FormatReport(app: null);
-
-        Assert.Contains("row-count", report, StringComparison.Ordinal);
-        Assert.Contains("42", report, StringComparison.Ordinal);
     }
 
     // -----------------------------------------------------------------------

@@ -12,8 +12,10 @@ using Aspire.Hosting;
 
 using Conjecture.Aspire;
 using Conjecture.Core;
+using Conjecture.Http;
 
 using Conjecture.Abstractions.Aspire;
+using Conjecture.Abstractions.Interactions;
 
 namespace Conjecture.Aspire.Tests;
 
@@ -28,7 +30,7 @@ public class AspirePropertyRunnerTests
         StubStateMachine machine = new();
         ConjectureSettings settings = new() { MaxExamples = 3, Seed = 1UL };
 
-        await AspirePropertyRunner.RunAsync(fixture, machine, settings, CancellationToken.None);
+        await AspirePropertyRunner.RunAsync(fixture, machine, static _ => new NoOpInteractionTarget(), settings, CancellationToken.None);
 
         Assert.Equal(1, fixture.StartAsyncCallCount);
     }
@@ -42,7 +44,7 @@ public class AspirePropertyRunnerTests
         ResetTrackingStateMachine machine = new();
         ConjectureSettings settings = new() { MaxExamples = 1, Seed = 1UL };
 
-        await AspirePropertyRunner.RunAsync(fixture, machine, settings, CancellationToken.None);
+        await AspirePropertyRunner.RunAsync(fixture, machine, static _ => new NoOpInteractionTarget(), settings, CancellationToken.None);
 
         Assert.Equal(0, machine.ResetCallsBeforeFirstExample);
     }
@@ -56,7 +58,7 @@ public class AspirePropertyRunnerTests
         StubStateMachine machine = new();
         ConjectureSettings settings = new() { MaxExamples = 4, Seed = 1UL };
 
-        await AspirePropertyRunner.RunAsync(fixture, machine, settings, CancellationToken.None);
+        await AspirePropertyRunner.RunAsync(fixture, machine, static _ => new NoOpInteractionTarget(), settings, CancellationToken.None);
 
         // n examples → n-1 resets
         Assert.Equal(3, fixture.ResetAsyncCallCount);
@@ -71,7 +73,7 @@ public class AspirePropertyRunnerTests
         StubStateMachine machine = new();
         ConjectureSettings settings = new() { MaxExamples = 1, Seed = 1UL };
 
-        await AspirePropertyRunner.RunAsync(fixture, machine, settings, CancellationToken.None);
+        await AspirePropertyRunner.RunAsync(fixture, machine, static _ => new NoOpInteractionTarget(), settings, CancellationToken.None);
 
         // Health check should happen once after start (before example 1) with no resets
         Assert.True(fixture.HealthCheckCallCount >= 1);
@@ -84,7 +86,7 @@ public class AspirePropertyRunnerTests
         StubStateMachine machine = new();
         ConjectureSettings settings = new() { MaxExamples = 3, Seed = 1UL };
 
-        await AspirePropertyRunner.RunAsync(fixture, machine, settings, CancellationToken.None);
+        await AspirePropertyRunner.RunAsync(fixture, machine, static _ => new NoOpInteractionTarget(), settings, CancellationToken.None);
 
         // 1 after start + 2 after resets = 3 health check rounds
         // each round checks 1 resource → 3 total health checks
@@ -105,7 +107,7 @@ public class AspirePropertyRunnerTests
         fixture.MaxRetryAttemptsOverride = maxRetries;
 
         // Should not throw — retries absorb the transient failures
-        await AspirePropertyRunner.RunAsync(fixture, machine, settings, CancellationToken.None);
+        await AspirePropertyRunner.RunAsync(fixture, machine, static _ => new NoOpInteractionTarget(), settings, CancellationToken.None);
 
         Assert.Equal(maxRetries, fixture.TransientExceptionsThrown);
     }
@@ -121,7 +123,7 @@ public class AspirePropertyRunnerTests
         ConjectureSettings settings = new() { MaxExamples = 1, Seed = 1UL };
         fixture.MaxRetryAttemptsOverride = maxRetries;
 
-        await AspirePropertyRunner.RunAsync(fixture, machine, settings, CancellationToken.None);
+        await AspirePropertyRunner.RunAsync(fixture, machine, static _ => new NoOpInteractionTarget(), settings, CancellationToken.None);
 
         Assert.Equal(maxRetries, fixture.TransientExceptionsThrown);
     }
@@ -138,7 +140,7 @@ public class AspirePropertyRunnerTests
         fixture.MaxRetryAttemptsOverride = maxRetries;
 
         await Assert.ThrowsAsync<HttpRequestException>(
-            async () => await AspirePropertyRunner.RunAsync(fixture, machine, settings, CancellationToken.None));
+            async () => await AspirePropertyRunner.RunAsync(fixture, machine, static _ => new NoOpInteractionTarget(), settings, CancellationToken.None));
     }
 
     // ── Non-transient exception is not retried ────────────────────────────────
@@ -151,7 +153,7 @@ public class AspirePropertyRunnerTests
         ConjectureSettings settings = new() { MaxExamples = 1, Seed = 1UL };
 
         await Assert.ThrowsAsync<InvalidOperationException>(
-            async () => await AspirePropertyRunner.RunAsync(fixture, machine, settings, CancellationToken.None));
+            async () => await AspirePropertyRunner.RunAsync(fixture, machine, static _ => new NoOpInteractionTarget(), settings, CancellationToken.None));
 
         Assert.Equal(1, fixture.ExceptionThrownCount);
     }
@@ -165,7 +167,7 @@ public class AspirePropertyRunnerTests
         StubStateMachine machine = new();
         ConjectureSettings settings = new() { MaxExamples = 2, Seed = 1UL };
 
-        await AspirePropertyRunner.RunAsync(fixture, machine, settings, CancellationToken.None);
+        await AspirePropertyRunner.RunAsync(fixture, machine, static _ => new NoOpInteractionTarget(), settings, CancellationToken.None);
 
         Assert.True(fixture.AppDisposed);
     }
@@ -178,26 +180,33 @@ public class AspirePropertyRunnerTests
         ConjectureSettings settings = new() { MaxExamples = 1, Seed = 1UL };
 
         await Assert.ThrowsAsync<InvalidOperationException>(
-            async () => await AspirePropertyRunner.RunAsync(fixture, machine, settings, CancellationToken.None));
+            async () => await AspirePropertyRunner.RunAsync(fixture, machine, static _ => new NoOpInteractionTarget(), settings, CancellationToken.None));
 
         Assert.True(fixture.AppDisposed);
     }
 
-    // ── App injected into machine before each example ─────────────────────────
+    // ── Target factory called once per example ────────────────────────────────
 
     [Fact]
-    public async Task RunAsync_BeforeEachExample_InjectsAppIntoStateMachine()
+    public async Task RunAsync_PerExample_CallsTargetFactoryOnce()
     {
         TrackingFixture fixture = new();
-        AppTrackingStateMachine machine = new();
+        StubStateMachine machine = new();
         ConjectureSettings settings = new() { MaxExamples = 3, Seed = 1UL };
+        int factoryCalls = 0;
 
-        await AspirePropertyRunner.RunAsync(fixture, machine, settings, CancellationToken.None);
+        await AspirePropertyRunner.RunAsync(fixture, machine, _ => { factoryCalls++; return new NoOpInteractionTarget(); }, settings, CancellationToken.None);
 
-        Assert.True(machine.AppSetCount >= 3, $"Expected App to be injected in all 3 examples, got count {machine.AppSetCount}");
+        Assert.Equal(3, factoryCalls);
     }
 
     // ── Stub types ────────────────────────────────────────────────────────────
+
+    private sealed class NoOpInteractionTarget : IInteractionTarget
+    {
+        public Task<object?> ExecuteAsync(IInteraction interaction, CancellationToken ct)
+            => Task.FromResult<object?>(null);
+    }
 
     private sealed class TrackingFixture(
         IEnumerable<string>? healthCheckedResources = null,
@@ -243,17 +252,17 @@ public class AspirePropertyRunnerTests
         }
     }
 
-    private sealed class ResetTrackingStateMachine : AspireStateMachine<string>
+    private sealed class ResetTrackingStateMachine : InteractionStateMachine<string>
     {
         private bool firstExampleSeen;
         public int ResetCallsBeforeFirstExample { get; private set; }
 
         public override string InitialState() => string.Empty;
 
-        public override IEnumerable<Strategy<Interaction>> Commands(string state)
-            => [Strategy.Just(new Interaction("svc", "GET", "/", null))];
+        public override IEnumerable<Strategy<IInteraction>> Commands(string state)
+            => [Strategy.Just<IInteraction>(new HttpInteraction("svc", "GET", "/", null, null))];
 
-        public override string RunCommand(string state, Interaction cmd)
+        public override string RunCommand(string state, IInteraction interaction, IInteractionTarget target, CancellationToken ct)
         {
             if (!firstExampleSeen)
             {
@@ -308,49 +317,28 @@ public class AspirePropertyRunnerTests
             => Task.CompletedTask;
     }
 
-    private sealed class ThrowingStateMachine : AspireStateMachine<string>
+    private sealed class ThrowingStateMachine : InteractionStateMachine<string>
     {
         public override string InitialState() => string.Empty;
 
-        public override IEnumerable<Strategy<Interaction>> Commands(string state)
-            => [Strategy.Just(new Interaction("svc", "GET", "/", null))];
+        public override IEnumerable<Strategy<IInteraction>> Commands(string state)
+            => [Strategy.Just<IInteraction>(new HttpInteraction("svc", "GET", "/", null, null))];
 
-        public override string RunCommand(string state, Interaction cmd)
+        public override string RunCommand(string state, IInteraction interaction, IInteractionTarget target, CancellationToken ct)
             => throw new InvalidOperationException("example failure");
 
         public override void Invariant(string state) { }
     }
 
-    private sealed class AppTrackingStateMachine : AspireStateMachine<string>
-    {
-        public int AppSetCount { get; private set; }
-
-        public override string InitialState() => string.Empty;
-
-        public override IEnumerable<Strategy<Interaction>> Commands(string state)
-            => [Strategy.Just(new Interaction("svc", "GET", "/", null))];
-
-        public override string RunCommand(string state, Interaction cmd)
-        {
-            if (App is not null)
-            {
-                AppSetCount++;
-            }
-
-            return state;
-        }
-
-        public override void Invariant(string state) { }
-    }
-
-    private sealed class StubStateMachine : AspireStateMachine<string>
+    private sealed class StubStateMachine : InteractionStateMachine<string>
     {
         public override string InitialState() => string.Empty;
 
-        public override IEnumerable<Strategy<Interaction>> Commands(string state)
-            => [Strategy.Just(new Interaction("svc", "GET", "/", null))];
+        public override IEnumerable<Strategy<IInteraction>> Commands(string state)
+            => [Strategy.Just<IInteraction>(new HttpInteraction("svc", "GET", "/", null, null))];
 
-        public override string RunCommand(string state, Interaction cmd) => state;
+        public override string RunCommand(string state, IInteraction interaction, IInteractionTarget target, CancellationToken ct)
+            => state;
 
         public override void Invariant(string state) { }
     }

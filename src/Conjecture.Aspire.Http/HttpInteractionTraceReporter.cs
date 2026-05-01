@@ -7,33 +7,24 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-using Aspire.Hosting;
+using Conjecture.Http;
 
-using Conjecture.Abstractions.Aspire;
+namespace Conjecture.Aspire.Http;
 
-namespace Conjecture.Aspire;
-
-/// <summary>Records interaction steps and snapshot observations for failure trace reports.</summary>
-internal sealed class InteractionTraceReporter
+/// <summary>Records HTTP interaction steps for failure trace reports.</summary>
+public sealed class HttpInteractionTraceReporter
 {
     private readonly List<RecordedStep> steps = [];
-    private readonly List<RecordedSnapshot> snapshots = [];
 
-    internal async Task Record(Interaction interaction, HttpResponseMessage response, TimeSpan elapsed)
+    /// <summary>Records a completed HTTP interaction step into the trace.</summary>
+    public async Task Record(HttpInteraction interaction, HttpResponseMessage response, TimeSpan elapsed)
     {
         string responseBody = await response.Content.ReadAsStringAsync();
         steps.Add(new(interaction, (int)response.StatusCode, response.ReasonPhrase ?? string.Empty, responseBody, elapsed));
     }
 
-    /// <summary>Records a snapshot observation into the trace.</summary>
-    internal void RecordSnapshot(object snapshot, object? capturedValue)
-    {
-        string label = snapshot is ISnapshotLabel labeled ? labeled.Label : snapshot.GetType().Name;
-        snapshots.Add(new(label, capturedValue));
-    }
-
-    /// <summary>Formats the accumulated trace as a human-readable report string.</summary>
-    internal string FormatReport(DistributedApplication? app)
+    /// <summary>Formats the accumulated HTTP interaction trace as a human-readable string.</summary>
+    public string FormatReport()
     {
         StringBuilder sb = new();
 
@@ -62,33 +53,13 @@ internal sealed class InteractionTraceReporter
             }
         }
 
-        if (snapshots.Count > 0)
-        {
-            sb.AppendLine();
-            sb.AppendLine("=== DB snapshots ===");
-            foreach (RecordedSnapshot snap in snapshots)
-            {
-                sb.AppendLine($"  [{snap.Label}] = {snap.Value}");
-            }
-        }
-
-        sb.AppendLine();
-        sb.AppendLine("=== Service logs ===");
-
-        if (app is null)
-        {
-            sb.AppendLine("(no application available)");
-        }
-
         return sb.ToString();
     }
 
     private readonly record struct RecordedStep(
-        Interaction Interaction,
+        HttpInteraction Interaction,
         int StatusCode,
         string ReasonPhrase,
         string ResponseBody,
         TimeSpan Elapsed);
-
-    private readonly record struct RecordedSnapshot(string Label, object? Value);
 }
