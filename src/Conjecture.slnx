@@ -68,6 +68,8 @@
   <Project Path="Conjecture.AspNetCore.EFCore.Tests/Conjecture.AspNetCore.EFCore.Tests.csproj" />
   <Project Path="Conjecture.Aspire/Conjecture.Aspire.csproj" />
   <Project Path="Conjecture.Aspire.Tests/Conjecture.Aspire.Tests.csproj" />
+  <Project Path="Conjecture.Aspire.Http/Conjecture.Aspire.Http.csproj" />
+  <Project Path="Conjecture.Aspire.Http.Tests/Conjecture.Aspire.Http.Tests.csproj" />
   <Project Path="Conjecture.EFCore/Conjecture.EFCore.csproj" />
   <Project Path="Conjecture.EFCore.Tests/Conjecture.EFCore.Tests.csproj" />
   <Project Path="Conjecture.Aspire.EFCore/Conjecture.Aspire.EFCore.csproj" />
