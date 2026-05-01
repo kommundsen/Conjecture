@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <IsPackable>false</IsPackable>
@@ -7,7 +7,7 @@
   <ItemGroup>
     <PackageReference Include="coverlet.collector" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.v3" />
     <PackageReference Include="xunit.runner.visualstudio" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
@@ -15,7 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Conjecture.EFCore\Conjecture.EFCore.csproj" />
     <ProjectReference Include="..\Conjecture.Interactions\Conjecture.Interactions.csproj" />
-    <ProjectReference Include="..\Conjecture.Xunit\Conjecture.Xunit.csproj" />
+    <ProjectReference Include="..\Conjecture.Xunit.V3\Conjecture.Xunit.V3.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Using Include="Xunit" />

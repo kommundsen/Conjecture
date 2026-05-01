@@ -23,7 +23,7 @@ public sealed class AspireDbTargetTests : IAsyncLifetime
 {
     private SqliteConnection connection = null!;
 
-    public async Task InitializeAsync()
+    public async ValueTask InitializeAsync()
     {
         // Keep a single open connection — SQLite :memory: databases live only as long as the connection.
         connection = new("DataSource=:memory:");
@@ -34,7 +34,7 @@ public sealed class AspireDbTargetTests : IAsyncLifetime
         await seed.Database.EnsureCreatedAsync();
     }
 
-    public async Task DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
         await connection.DisposeAsync();
     }
