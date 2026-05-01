@@ -72,4 +72,9 @@
   <Project Path="Conjecture.EFCore.Tests/Conjecture.EFCore.Tests.csproj" />
   <Project Path="Conjecture.Aspire.EFCore/Conjecture.Aspire.EFCore.csproj" />
   <Project Path="Conjecture.Aspire.EFCore.Tests/Conjecture.Aspire.EFCore.Tests.csproj" />
+  <Project Path="Conjecture.Core.Abstractions.Tests/Conjecture.Core.Abstractions.Tests.csproj" />
+  <Project Path="Conjecture.Testing.Abstractions.Tests/Conjecture.Testing.Abstractions.Tests.csproj" />
+  <Project Path="Conjecture.Interactions.Abstractions.Tests/Conjecture.Interactions.Abstractions.Tests.csproj" />
+  <Project Path="Conjecture.Aspire.Abstractions.Tests/Conjecture.Aspire.Abstractions.Tests.csproj" />
+  <Project Path="Conjecture.JsonSchema.Abstractions.Tests/Conjecture.JsonSchema.Abstractions.Tests.csproj" />
 </Solution>
