@@ -31,6 +31,8 @@ internal static class StrategyEmitter
         ["System.Int16"] = ("global::Conjecture.Core.Strategy.Integers<short>()", "short"),
         ["System.UInt16"] = ("global::Conjecture.Core.Strategy.Integers<ushort>()", "ushort"),
         ["System.SByte"] = ("global::Conjecture.Core.Strategy.Integers<sbyte>()", "sbyte"),
+        ["System.IntPtr"] = ("global::Conjecture.Core.Strategy.Integers<nint>()", "nint"),
+        ["System.UIntPtr"] = ("global::Conjecture.Core.Strategy.Integers<nuint>()", "nuint"),
     };
 
     internal static string Emit(TypeModel model)
