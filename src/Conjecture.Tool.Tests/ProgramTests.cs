@@ -59,13 +59,13 @@ public class ProgramTests
     [Fact]
     public async Task RunAsync_GenerateSameSeed_ProducesIdenticalStdout()
     {
-        static string CaptureOutput(string[] args)
+        static async Task<string> CaptureOutputAsync(string[] args)
         {
             using StringWriter writer = new();
             Console.SetOut(writer);
             try
             {
-                Program.RunAsync(args).GetAwaiter().GetResult();
+                await Program.RunAsync(args);
             }
             finally
             {
@@ -85,8 +85,8 @@ public class ProgramTests
             "--format", "json",
         ];
 
-        string first = CaptureOutput(sharedArgs);
-        string second = CaptureOutput(sharedArgs);
+        string first = await CaptureOutputAsync(sharedArgs);
+        string second = await CaptureOutputAsync(sharedArgs);
 
         Assert.Equal(first, second);
     }
