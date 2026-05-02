@@ -251,6 +251,14 @@ public static class Strategy
         int maxPatch = 9)
         => new VersionStringStrategy(maxMajor, maxMinor, maxPatch);
 
+    /// <summary>Returns a strategy that generates DNS-like host names: 1..<paramref name="maxLabels"/> labels of lowercase alphanumerics joined by '.', with a TLD-shaped final label (lowercase letters only, length >= 2).</summary>
+    public static Strategy<string> Hosts(int minLabels = 1, int maxLabels = 3)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThan(minLabels, 1);
+        ArgumentOutOfRangeException.ThrowIfLessThan(maxLabels, minLabels);
+        return new HostStrategy(minLabels, maxLabels);
+    }
+
     /// <summary>
     /// Creates a strategy that replays values from a fixed byte array (IR replay source).
     /// Useful for deterministic seed replay and round-trip testing.
