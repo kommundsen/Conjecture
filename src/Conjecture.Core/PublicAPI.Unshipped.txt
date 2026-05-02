@@ -38,6 +38,7 @@ static Conjecture.Core.Strategy.StateMachine<TMachine, TState, TCommand>(int max
 static Conjecture.Core.Strategy.Identifiers(int minPrefixLength = 1, int maxPrefixLength = 6, int minDigits = 1, int maxDigits = 4) -> Conjecture.Core.Strategy<string!>!
 static Conjecture.Core.Strategy.NumericStrings(int minDigits = 1, int maxDigits = 6, string? prefix = null, string? suffix = null) -> Conjecture.Core.Strategy<string!>!
 static Conjecture.Core.Strategy.VersionStrings(int maxMajor = 9, int maxMinor = 9, int maxPatch = 9) -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Core.Strategy.Hosts(int minLabels = 1, int maxLabels = 3) -> Conjecture.Core.Strategy<string!>!
 static Conjecture.Core.Strategy.DateOnlyValues() -> Conjecture.Core.Strategy<System.DateOnly>!
 static Conjecture.Core.Strategy.DateOnlyValues(System.DateOnly min, System.DateOnly max) -> Conjecture.Core.Strategy<System.DateOnly>!
 static Conjecture.Core.Strategy.DateTimeOffsets() -> Conjecture.Core.Strategy<System.DateTimeOffset>!
