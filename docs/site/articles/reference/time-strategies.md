@@ -242,3 +242,32 @@ Strategy<(DateTime Value, DateTimeKind Kind)> WithKinds()
 ```
 
 Pairs each generated `DateTime` with a randomly chosen `DateTimeKind` (`Utc`, `Local`, `Unspecified`), covering all three uniformly. Shrinks toward `Utc`.
+
+---
+
+## Culture and calendar strategies
+
+Filters over `CultureInfo.GetCultures(CultureTypes.SpecificCultures)` keyed on the culture's default `Calendar`. Built on top of the `Conjecture.Core` primitive [`Strategy.Cultures()`](strategies.md#strategycultures).
+
+### `Strategy.CulturesByCalendar<TCalendar>()`
+
+```csharp
+Strategy<CultureInfo> Strategy.CulturesByCalendar<TCalendar>() where TCalendar : Calendar
+```
+
+Samples specific cultures whose default calendar type is exactly `TCalendar`. Match is by reference-equal `Type` (`culture.Calendar.GetType() == typeof(TCalendar)`), not assignment-compatible — `CulturesByCalendar<EastAsianLunisolarCalendar>()` does not include cultures using `JapaneseLunisolarCalendar` or `ChineseLunisolarCalendar`. Compose with `Strategy.OneOf(...)` to cover a calendar hierarchy.
+
+The filtered set is computed once at static init and cached per `TCalendar`. Throws `InvalidOperationException` at construction when no specific culture on the current platform has `TCalendar` as its default.
+
+> [!NOTE]
+> Available cultures differ across operating systems. On Windows ICU, no specific culture defaults to `HijriCalendar` or `JapaneseCalendar`, so calls for those calendar types throw on Windows. Cross-platform tests should use `Strategy.CulturesNonGregorian()` or guard the call with a platform probe.
+
+### `Strategy.CulturesNonGregorian()`
+
+```csharp
+Strategy<CultureInfo> Strategy.CulturesNonGregorian()
+```
+
+Samples specific cultures whose default calendar is anything other than `GregorianCalendar`. Useful for surfacing calendar-specific edge cases (Hijri, Hebrew, Japanese-era, Persian, Thai-Buddhist) without naming the calendar type explicitly.
+
+The filtered set is computed once at static init. Throws `InvalidOperationException` at construction when no qualifying cultures are present on the current platform.
