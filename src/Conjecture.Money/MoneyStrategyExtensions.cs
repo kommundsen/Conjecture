@@ -1,6 +1,7 @@
 // Copyright (c) 2026 Kim Ommundsen. Licensed under the MPL-2.0.
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
+using System.Collections.Concurrent;
 using System.Globalization;
 
 using Conjecture.Money.Internal;
@@ -50,13 +51,32 @@ public static class MoneyStrategyExtensions
         {
             return Strategy.SampledFrom(CulturesWithCurrencyCache.Value);
         }
+
+        /// <summary>Returns a strategy that samples cultures whose <see cref="RegionInfo.ISOCurrencySymbol"/> equals <paramref name="currencyCode"/>. Shrinks toward the first matching culture (e.g. <c>en-US</c> for USD).</summary>
+        public static Strategy<CultureInfo> CulturesByCurrencyCode(string currencyCode)
+        {
+            if (!Iso4217Data.DecimalPlacesByCurrency.ContainsKey(currencyCode))
+            {
+                throw new ArgumentException($"Unknown ISO 4217 currency code: '{currencyCode}'.", nameof(currencyCode));
+            }
+
+            CultureInfo[] cultures = CulturesByCurrencyCodeCache.GetOrAdd(currencyCode, BuildCulturesByCurrencyCode);
+            return cultures.Length == 0
+                ? throw new ArgumentException($"No culture on this host uses currency '{currencyCode}'.", nameof(currencyCode))
+                : Strategy.SampledFrom(cultures);
+        }
     }
 
-    private static readonly Lazy<CultureInfo[]> CulturesWithCurrencyCache = new(static () => BuildCulturesWithCurrency());
+    private static readonly Lazy<(CultureInfo Culture, string CurrencyCode)[]> SpecificCulturesWithRegionsCache =
+        new(BuildSpecificCulturesWithRegions);
+
+    private static readonly Lazy<CultureInfo[]> CulturesWithCurrencyCache = new(BuildCulturesWithCurrency);
+
+    private static readonly ConcurrentDictionary<string, CultureInfo[]> CulturesByCurrencyCodeCache = new();
 
     private static CultureInfo[] BuildCulturesWithCurrency()
     {
-        CultureInfo[] specificCultures = CultureInfo.GetCultures(CultureTypes.SpecificCultures);
+        (CultureInfo Culture, string CurrencyCode)[] allCultures = SpecificCulturesWithRegionsCache.Value;
 
         CultureInfo? enUs = null;
         try
@@ -71,27 +91,105 @@ public static class MoneyStrategyExtensions
         CultureInfo shrinkTarget = enUs ?? CultureInfo.InvariantCulture;
 
         List<CultureInfo> result = [shrinkTarget];
+        foreach ((CultureInfo culture, string _) in allCultures)
+        {
+            if (culture.Name != shrinkTarget.Name)
+            {
+                result.Add(culture);
+            }
+        }
+
+        return [.. result];
+    }
+
+    private static (CultureInfo Culture, string CurrencyCode)[] BuildSpecificCulturesWithRegions()
+    {
+        CultureInfo[] specificCultures = CultureInfo.GetCultures(CultureTypes.SpecificCultures);
+        List<(CultureInfo Culture, string CurrencyCode)> result = new(specificCultures.Length);
+
         foreach (CultureInfo culture in specificCultures)
         {
-            if (culture.Name == shrinkTarget.Name)
-            {
-                continue;
-            }
-
             try
             {
                 RegionInfo region = new(culture.Name);
                 if (!string.IsNullOrEmpty(region.ISOCurrencySymbol))
                 {
-                    result.Add(culture);
+                    result.Add((culture, region.ISOCurrencySymbol));
                 }
             }
             catch (ArgumentException)
             {
-                // skip cultures that don't have a RegionInfo (includes CultureNotFoundException)
+                // skip cultures that don't have a valid RegionInfo
             }
         }
 
         return [.. result];
+    }
+
+    private static readonly Dictionary<string, string> PreferredCultureByCurrencyCode = new()
+    {
+        ["USD"] = "en-US",
+        ["GBP"] = "en-GB",
+        ["EUR"] = "de-DE",
+        ["JPY"] = "ja-JP",
+        ["CAD"] = "en-CA",
+        ["AUD"] = "en-AU",
+        ["CHF"] = "de-CH",
+        ["CNY"] = "zh-CN",
+        ["HKD"] = "zh-HK",
+        ["NZD"] = "en-NZ",
+        ["SEK"] = "sv-SE",
+        ["NOK"] = "nb-NO",
+        ["DKK"] = "da-DK",
+        ["MXN"] = "es-MX",
+        ["SGD"] = "zh-SG",
+        ["INR"] = "hi-IN",
+        ["BRL"] = "pt-BR",
+        ["ZAR"] = "af-ZA",
+        ["KRW"] = "ko-KR",
+        ["RUB"] = "ru-RU",
+    };
+
+    private static CultureInfo[] BuildCulturesByCurrencyCode(string currencyCode)
+    {
+        (CultureInfo Culture, string CurrencyCode)[] allCultures = SpecificCulturesWithRegionsCache.Value;
+        List<CultureInfo> matching = [];
+
+        foreach ((CultureInfo culture, string code) in allCultures)
+        {
+            if (code == currencyCode)
+            {
+                matching.Add(culture);
+            }
+        }
+
+        if (matching.Count == 0)
+        {
+            return [];
+        }
+
+        // Place preferred culture at index 0 for shrink direction
+        if (PreferredCultureByCurrencyCode.TryGetValue(currencyCode, out string? preferredName))
+        {
+            int preferredIndex = matching.FindIndex(c => c.Name == preferredName);
+            if (preferredIndex > 0)
+            {
+                CultureInfo preferred = matching[preferredIndex];
+                matching.RemoveAt(preferredIndex);
+                matching.Insert(0, preferred);
+            }
+            else if (preferredIndex < 0)
+            {
+                // Preferred not found — sort by name and use first
+                matching.Sort(static (a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
+            }
+        }
+        else
+        {
+            // No preferred culture for this code — sort by name and use first
+            matching.Sort(static (a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
+        }
+
+        return [.. matching];
     }
 }
