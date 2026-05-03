@@ -237,4 +237,32 @@ public class StrategyToolsTests
         string result = StrategyTools.SuggestForType("Version");
         Assert.Contains("Strategy<Version>", result);
     }
+
+    [Fact]
+    public void SuggestForKnownType_IPAddress_RecommendsIPAddressesFactory()
+    {
+        string result = StrategyTools.SuggestForType("IPAddress");
+        Assert.Contains("Strategy.IPAddresses()", result);
+    }
+
+    [Fact]
+    public void SuggestForKnownType_IPEndPoint_RecommendsIPEndPointsFactory()
+    {
+        string result = StrategyTools.SuggestForType("IPEndPoint");
+        Assert.Contains("Strategy.IPEndPoints()", result);
+    }
+
+    [Fact]
+    public void SuggestForKnownType_Uri_RecommendsUrisFactory()
+    {
+        string result = StrategyTools.SuggestForType("Uri");
+        Assert.Contains("Strategy.Uris()", result);
+    }
+
+    [Fact]
+    public void SuggestForKnownType_MailAddress_RecommendsEmailAddressesFactory()
+    {
+        string result = StrategyTools.SuggestForType("MailAddress");
+        Assert.Contains("Strategy.EmailAddresses()", result);
+    }
 }
