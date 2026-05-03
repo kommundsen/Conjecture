@@ -165,7 +165,6 @@ public class HalfStrategyTests
     public void ForHalf_ResolvesAndProducesValues()
     {
         Strategy<Half> strategy = Strategy.For<Half>();
-        ConjectureData data = MakeData();
 
         for (int i = 0; i < 50; i++)
         {
