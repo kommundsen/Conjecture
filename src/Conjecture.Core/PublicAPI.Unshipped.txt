@@ -65,6 +65,7 @@ Conjecture.Core.IPAddressKind.V4 = 1 -> Conjecture.Core.IPAddressKind
 Conjecture.Core.IPAddressKind.V6 = 2 -> Conjecture.Core.IPAddressKind
 static Conjecture.Core.Strategy.IPAddresses(Conjecture.Core.IPAddressKind kind = Conjecture.Core.IPAddressKind.Both) -> Conjecture.Core.Strategy<System.Net.IPAddress!>!
 static Conjecture.Core.Strategy.IPEndPoints(Conjecture.Core.Strategy<System.Net.IPAddress!>? addresses = null, Conjecture.Core.Strategy<int>? ports = null) -> Conjecture.Core.Strategy<System.Net.IPEndPoint!>!
+static Conjecture.Core.Strategy.Uris(System.UriKind kind = System.UriKind.Absolute, System.Collections.Generic.IReadOnlyList<string!>? schemes = null) -> Conjecture.Core.Strategy<System.Uri!>!
 static Conjecture.Core.Strategy.OneOf<T>(params System.ReadOnlySpan<Conjecture.Core.Strategy<T>!> strategies) -> Conjecture.Core.Strategy<T>!
 Conjecture.Core.SeededStrategy<T>
 Conjecture.Core.SeededStrategy<T>.SeededStrategy() -> void
