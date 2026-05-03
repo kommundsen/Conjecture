@@ -172,6 +172,10 @@ Resolves via [`Strategy.For<T>()`](generate-for.md) for `Version`, so `[Property
 
 For the string-shaped counterpart (e.g. `"1.2.3"`), see [`Strategy.VersionStrings()`](string-strategies.md).
 
+## Network and address-format strategies
+
+See [Network strategies reference](network-strategies.md) for `IPAddresses`, `IPEndPoints`, `Hosts`, `Uris`, `EmailAddresses`, `EmailAddressStrings`, and the `IPAddressKind` enum.
+
 ## Byte buffer strategies
 
 ### `Strategy.FromBytes<T>(ReadOnlySpan<byte> buffer)`

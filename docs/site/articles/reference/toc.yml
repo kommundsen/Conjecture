@@ -15,6 +15,8 @@ items:
     href: analyzers.md
   - name: Time strategies
     href: time-strategies.md
+  - name: Network strategies
+    href: network-strategies.md
   - name: Regex strategies
     href: regex-strategies.md
   - name: Money strategies

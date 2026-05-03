@@ -61,6 +61,8 @@ items:
     href: test-grpc-services.md
   - name: Property-test ASP.NET Core endpoints
     href: test-aspnetcore-endpoints.md
+  - name: Property-test network code
+    href: property-test-network-code.md
   - name: Wire AspNetCore into each test framework
     href: test-aspnetcore-framework-wiring.md
   - name: Generate data from a JSON Schema
