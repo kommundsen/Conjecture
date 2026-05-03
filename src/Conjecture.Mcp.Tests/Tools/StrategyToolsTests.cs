@@ -223,4 +223,18 @@ public class StrategyToolsTests
         string result = StrategyTools.SuggestForType("rounding");
         Assert.Contains("Strategy.RoundingModes()", result);
     }
+
+    [Fact]
+    public void SuggestForType_Version_ContainsVersionsFactory()
+    {
+        string result = StrategyTools.SuggestForType("Version");
+        Assert.Contains("Strategy.Versions()", result);
+    }
+
+    [Fact]
+    public void SuggestForType_Version_MentionsStrategyOfVersion()
+    {
+        string result = StrategyTools.SuggestForType("Version");
+        Assert.Contains("Strategy<Version>", result);
+    }
 }
