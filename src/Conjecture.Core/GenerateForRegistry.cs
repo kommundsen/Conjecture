@@ -38,6 +38,7 @@ public static class GenerateForRegistry
         ConcurrentDictionary<Type, Func<IStrategyProvider>> dict = new();
         dict[typeof(Version)] = static () => new VersionStrategyProvider();
         dict[typeof(Half)] = static () => new HalfStrategyProvider();
+        dict[typeof(Rune)] = static () => new RuneStrategyProvider();
         return dict;
     }
 
@@ -57,6 +58,11 @@ public static class GenerateForRegistry
     private sealed class HalfStrategyProvider : IStrategyProvider<Half>
     {
         public Strategy<Half> Create() => Strategy.Halves();
+    }
+
+    private sealed class RuneStrategyProvider : IStrategyProvider<Rune>
+    {
+        public Strategy<Rune> Create() => Strategy.Runes();
     }
 
     /// <summary>Registers an override-aware <see cref="IStrategyProvider"/> for <paramref name="type"/>. Called by source-generated module initializers.</summary>

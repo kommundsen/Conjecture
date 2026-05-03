@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
+using System.Text;
 
 namespace Conjecture.Core.Internal;
 
@@ -197,6 +198,7 @@ internal static class SharedParameterStrategyResolver
             _ when type == typeof(TimeSpan) => Strategy.TimeSpans().Generate(data),
             _ when type == typeof(DateOnly) => Strategy.DateOnlyValues().Generate(data),
             _ when type == typeof(TimeOnly) => Strategy.TimeOnlyValues().Generate(data),
+            _ when type == typeof(Rune) => Strategy.Runes().Generate(data),
             { IsEnum: true } => GenerateEnum(type, data),
             _ when Nullable.GetUnderlyingType(type) is { } u
                                              => data.NextInteger(0, 9) == 0 ? null! : GenerateValue(u, data),
