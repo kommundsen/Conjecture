@@ -55,6 +55,8 @@ static Conjecture.Core.Strategy.Decimals(decimal min, decimal max) -> Conjecture
 static Conjecture.Core.Strategy.DateTimes() -> Conjecture.Core.Strategy<System.DateTime>!
 static Conjecture.Core.Strategy.DateTimes(System.DateTime min, System.DateTime max) -> Conjecture.Core.Strategy<System.DateTime>!
 static Conjecture.Core.Strategy.Chars() -> Conjecture.Core.Strategy<char>!
+static Conjecture.Core.Strategy.Cultures() -> Conjecture.Core.Strategy<System.Globalization.CultureInfo!>!
+static Conjecture.Core.Strategy.Cultures(System.Globalization.CultureTypes types) -> Conjecture.Core.Strategy<System.Globalization.CultureInfo!>!
 static Conjecture.Core.Strategy.OneOf<T>(params System.ReadOnlySpan<Conjecture.Core.Strategy<T>!> strategies) -> Conjecture.Core.Strategy<T>!
 Conjecture.Core.SeededStrategy<T>
 Conjecture.Core.SeededStrategy<T>.SeededStrategy() -> void

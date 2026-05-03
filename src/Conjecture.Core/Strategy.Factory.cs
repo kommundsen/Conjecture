@@ -4,6 +4,8 @@
 // Derived from the Python Hypothesis library.
 // Original copyright: Copyright (c) 2013-present, David R. MacIver and contributors.
 
+using System.Collections.Concurrent;
+using System.Globalization;
 using System.Numerics;
 
 namespace Conjecture.Core;
@@ -288,5 +290,29 @@ public static class Strategy
         ForConfiguration<T> cfg = new();
         configure(cfg);
         return Compose<T>(ctx => ctx.Generate(GenerateForRegistry.ResolveWithOverrides(cfg)));
+    }
+
+    private static readonly ConcurrentDictionary<CultureTypes, CultureInfo[]> CulturesCache = new();
+
+    /// <summary>Returns a strategy that generates random <see cref="CultureInfo"/> values from all cultures, with <see cref="CultureInfo.InvariantCulture"/> at index 0 to guide shrinking.</summary>
+    public static Strategy<CultureInfo> Cultures()
+        => SampledFrom(CulturesCache.GetOrAdd(CultureTypes.AllCultures, static t => BuildCultures(t)));
+
+    /// <summary>Returns a strategy that generates random <see cref="CultureInfo"/> values matching <paramref name="types"/>, with <see cref="CultureInfo.InvariantCulture"/> at index 0 to guide shrinking.</summary>
+    public static Strategy<CultureInfo> Cultures(CultureTypes types)
+        => SampledFrom(CulturesCache.GetOrAdd(types, static t => BuildCultures(t)));
+
+    private static CultureInfo[] BuildCultures(CultureTypes types)
+    {
+        List<CultureInfo> result = [CultureInfo.InvariantCulture];
+        foreach (CultureInfo culture in CultureInfo.GetCultures(types))
+        {
+            if (culture.Name != CultureInfo.InvariantCulture.Name)
+            {
+                result.Add(culture);
+            }
+        }
+
+        return [.. result];
     }
 }
