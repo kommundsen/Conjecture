@@ -70,6 +70,7 @@ static Conjecture.Core.Strategy.EmailAddresses() -> Conjecture.Core.Strategy<Sys
 static Conjecture.Core.Strategy.EmailAddressStrings() -> Conjecture.Core.Strategy<string!>!
 static Conjecture.Core.Strategy.Halves() -> Conjecture.Core.Strategy<System.Half>!
 static Conjecture.Core.Strategy.Halves(System.Half min, System.Half max) -> Conjecture.Core.Strategy<System.Half>!
+static Conjecture.Core.Strategy.Integers(System.Numerics.BigInteger min, System.Numerics.BigInteger max) -> Conjecture.Core.Strategy<System.Numerics.BigInteger>!
 static Conjecture.Core.Strategy.OneOf<T>(params System.ReadOnlySpan<Conjecture.Core.Strategy<T>!> strategies) -> Conjecture.Core.Strategy<T>!
 Conjecture.Core.SeededStrategy<T>
 Conjecture.Core.SeededStrategy<T>.SeededStrategy() -> void
