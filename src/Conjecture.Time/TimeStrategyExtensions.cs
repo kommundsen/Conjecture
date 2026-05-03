@@ -1,6 +1,9 @@
 // Copyright (c) 2026 Kim Ommundsen. Licensed under the MPL-2.0.
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
+using System.Collections.Concurrent;
+using System.Globalization;
+
 using Conjecture.Core;
 
 using Microsoft.Extensions.Time.Testing;
@@ -12,6 +15,10 @@ public static class TimeStrategyExtensions
 {
     // UTC at index 0 so SampledFrom shrinks toward it; deduplicated in case GetSystemTimeZones already includes UTC.
     private static readonly TimeZoneInfo[] SystemTimeZones = BuildSystemTimeZones();
+
+    private static readonly ConcurrentDictionary<Type, CultureInfo[]> ByCalendarCache = new();
+
+    private static readonly CultureInfo[] NonGregorianCultures = BuildNonGregorianCultures();
 
     private static readonly TimeZoneInfo[] CrossPlatformZones = BuildCrossPlatformZones();
     private static readonly string[] IanaDstIds = BuildIanaDstIds();
@@ -171,6 +178,39 @@ public static class TimeStrategyExtensions
                 return new RecurringEventSample(windowStart, windowEnd, occurrences.AsReadOnly(), zone, nextOccurrence);
             });
         }
+
+        /// <summary>Returns a strategy that generates <see cref="CultureInfo"/> values whose default calendar is exactly <typeparamref name="TCalendar"/>.</summary>
+        public static Strategy<CultureInfo> CulturesByCalendar<TCalendar>() where TCalendar : Calendar
+        {
+            CultureInfo[] cultures = TimeStrategyExtensions.ByCalendarCache.GetOrAdd(
+                typeof(TCalendar),
+                static calendarType =>
+                {
+                    List<CultureInfo> result = [];
+                    foreach (CultureInfo culture in CultureInfo.GetCultures(CultureTypes.SpecificCultures))
+                    {
+                        if (culture.Calendar.GetType() == calendarType)
+                        {
+                            result.Add(culture);
+                        }
+                    }
+
+                    return [.. result];
+                });
+
+            return cultures.Length == 0
+                ? throw new InvalidOperationException(
+                    $"No specific cultures found whose default calendar is {typeof(TCalendar).Name}.")
+                : Strategy.SampledFrom(cultures);
+        }
+
+        /// <summary>Returns a strategy that generates <see cref="CultureInfo"/> values whose default calendar is not <see cref="GregorianCalendar"/>.</summary>
+        public static Strategy<CultureInfo> CulturesNonGregorian()
+        {
+            return TimeStrategyExtensions.NonGregorianCultures.Length == 0
+                ? throw new InvalidOperationException("No specific cultures found whose default calendar is non-Gregorian.")
+                : Strategy.SampledFrom(TimeStrategyExtensions.NonGregorianCultures);
+        }
     }
 
     private static string[] BuildIanaDstIds()
@@ -236,6 +276,20 @@ public static class TimeStrategyExtensions
                 result.Add(tz);
             }
         }
+        return [.. result];
+    }
+
+    private static CultureInfo[] BuildNonGregorianCultures()
+    {
+        List<CultureInfo> result = [];
+        foreach (CultureInfo culture in CultureInfo.GetCultures(CultureTypes.SpecificCultures))
+        {
+            if (culture.Calendar.GetType() != typeof(GregorianCalendar))
+            {
+                result.Add(culture);
+            }
+        }
+
         return [.. result];
     }
 }
