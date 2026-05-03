@@ -86,4 +86,85 @@ public class CultureCurrencyStrategyTests
             first.Select(static c => c.Name).ToList(),
             second.Select(static c => c.Name).ToList());
     }
+
+    [Fact]
+    public void CulturesByCurrencyCode_USD_All_Use_USD()
+    {
+        Strategy<CultureInfo> strategy = Strategy.CulturesByCurrencyCode("USD");
+        IReadOnlyList<CultureInfo> samples = strategy.WithSeed(10UL).Sample(100);
+
+        Assert.All(samples, culture =>
+        {
+            RegionInfo region = new(culture.Name);
+            Assert.Equal("USD", region.ISOCurrencySymbol);
+        });
+    }
+
+    [Fact]
+    public void CulturesByCurrencyCode_EUR_All_Use_EUR()
+    {
+        Strategy<CultureInfo> strategy = Strategy.CulturesByCurrencyCode("EUR");
+        IReadOnlyList<CultureInfo> samples = strategy.WithSeed(11UL).Sample(100);
+
+        Assert.All(samples, culture =>
+        {
+            RegionInfo region = new(culture.Name);
+            Assert.Equal("EUR", region.ISOCurrencySymbol);
+        });
+    }
+
+    [Fact]
+    public void CulturesByCurrencyCode_Unknown_Throws()
+    {
+        ArgumentException ex = Assert.Throws<ArgumentException>(() => Strategy.CulturesByCurrencyCode("ZZZ"));
+        Assert.Contains("ZZZ", ex.Message);
+    }
+
+    [Fact]
+    public void CulturesByCurrencyCode_LowerCase_ThrowsArgumentException()
+    {
+        // Case-sensitive to match Iso4217Data keys directly — "usd" is not a known code.
+        Assert.Throws<ArgumentException>(() => Strategy.CulturesByCurrencyCode("usd"));
+    }
+
+    [Fact]
+    public async Task CulturesByCurrencyCode_USD_ShrinksToEnUs()
+    {
+        Strategy<CultureInfo> strategy = Strategy.CulturesByCurrencyCode("USD");
+        ConjectureSettings settings = new() { MaxExamples = 200, Seed = 12UL };
+
+        TestRunResult result = await TestRunner.Run(settings, data =>
+        {
+            CultureInfo culture = strategy.Generate(data);
+            throw new Exception($"always fails: {culture.Name}");
+        });
+
+        Assert.False(result.Passed);
+        ConjectureData replay = ConjectureData.ForRecord(result.Counterexample!);
+        CultureInfo shrunk = strategy.Generate(replay);
+        Assert.Equal("en-US", shrunk.Name);
+    }
+
+    [Fact]
+    public async Task CulturesByCurrencyCode_USD_AmountRoundTripsViaToString()
+    {
+        Strategy<(decimal Amount, CultureInfo Culture)> strategy =
+            Strategy.Amounts("USD").Zip(Strategy.CulturesByCurrencyCode("USD"));
+        ConjectureSettings settings = new() { MaxExamples = 100, Seed = 13UL };
+
+        TestRunResult result = await TestRunner.Run(settings, data =>
+        {
+            (decimal amount, CultureInfo culture) = strategy.Generate(data);
+            decimal parsed = decimal.Parse(
+                amount.ToString("C", culture),
+                System.Globalization.NumberStyles.Currency,
+                culture);
+            if (parsed != amount)
+            {
+                throw new Exception($"Round-trip failed: {amount} -> '{amount.ToString("C", culture)}' -> {parsed} for culture '{culture.Name}'");
+            }
+        });
+
+        Assert.True(result.Passed);
+    }
 }
