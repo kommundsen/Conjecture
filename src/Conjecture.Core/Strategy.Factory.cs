@@ -359,6 +359,13 @@ public static class Strategy
         return Compose<T>(ctx => ctx.Generate(GenerateForRegistry.ResolveWithOverrides(cfg)));
     }
 
+    /// <summary>Returns a strategy that generates <see cref="Index"/> values whose <c>Value</c> falls in <c>[0, maxValue]</c>. Both from-start and from-end forms are produced; shrinks toward <c>(Index)0</c>.</summary>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="maxValue"/> is negative.</exception>
+    public static Strategy<Index> Indices(int maxValue = 100)
+        => maxValue < 0
+            ? throw new ArgumentOutOfRangeException(nameof(maxValue), maxValue, "maxValue must be non-negative.")
+            : Tuples(Integers<int>(0, maxValue), Booleans()).Select(static t => new Index(t.Item1, t.Item2));
+
     private static readonly ConcurrentDictionary<CultureTypes, CultureInfo[]> CulturesCache = new();
 
     /// <summary>Returns a strategy that generates random <see cref="CultureInfo"/> values from all cultures, with <see cref="CultureInfo.InvariantCulture"/> at index 0 to guide shrinking.</summary>
