@@ -178,6 +178,28 @@ Picks uniformly from `CultureInfo.GetCultures(types)`. Shrinks toward `CultureIn
 
 `Conjecture.Money` and `Conjecture.Time` build opinionated subsets (cultures with currency, cultures by calendar) on top of these primitives.
 
+## Index and Range strategies
+
+### `Strategy.Indices(int maxValue = 100)`
+
+```csharp
+Strategy<Index> Strategy.Indices(int maxValue = 100)
+```
+
+Generates `System.Index` values whose `Value` falls in `[0, maxValue]`. Both from-start and from-end forms are produced. All generated indices are valid for slice/range expressions on an array of length `maxValue`, but a from-start index with value `maxValue` is out of bounds for element access — use `maxValue - 1` as the upper bound if you need safe element indexing. The shrink target is `(Index)0` (from-start, value 0).
+
+A negative `maxValue` throws `ArgumentOutOfRangeException`.
+
+### `Strategy.Ranges(int maxValue = 100)`
+
+```csharp
+Strategy<Range> Strategy.Ranges(int maxValue = 100)
+```
+
+Generates `System.Range` values whose `Start` and `End` indices fall in `[0, maxValue]`. Mixed from-start/from-end combinations are valid (e.g. `1..^2`), and the generated range is always well-formed against an array of length `maxValue`. The shrink target is `0..0`.
+
+A negative `maxValue` throws `ArgumentOutOfRangeException`.
+
 ## Version strategies
 
 ### `Strategy.Versions(int maxMajor = 9, int maxMinor = 9, int maxBuild = 9, int maxRevision = 9)`
