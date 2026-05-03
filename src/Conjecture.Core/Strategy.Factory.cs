@@ -8,6 +8,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Numerics;
+using System.Text;
 
 namespace Conjecture.Core;
 
@@ -339,6 +340,12 @@ public static class Strategy
 
     /// <summary>Returns a strategy that generates RFC 5321-shaped email address strings.</summary>
     public static Strategy<string> EmailAddressStrings() => new EmailAddressStringStrategy();
+
+    /// <summary>Returns a strategy that generates random <see cref="Rune"/> values across the full Unicode scalar range (U+0000..U+10FFFF, excluding surrogates).</summary>
+    public static Strategy<Rune> Runes() => new RuneStrategy(new Rune(0), new Rune(0x10FFFF));
+
+    /// <summary>Returns a strategy that generates random <see cref="Rune"/> values in [<paramref name="min"/>, <paramref name="max"/>], excluding surrogates.</summary>
+    public static Strategy<Rune> Runes(Rune min, Rune max) => new RuneStrategy(min, max);
 
     /// <summary>Returns a strategy for <typeparamref name="T"/> using its registered <see cref="IStrategyProvider{T}"/>. The type must be decorated with <c>[Arbitrary]</c>.</summary>
     public static Strategy<T> For<T>() => GenerateForRegistry.Resolve<T>();

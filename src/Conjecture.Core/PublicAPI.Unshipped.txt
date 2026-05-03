@@ -58,6 +58,8 @@ static Conjecture.Core.Strategy.Decimals(decimal min, decimal max) -> Conjecture
 static Conjecture.Core.Strategy.DateTimes() -> Conjecture.Core.Strategy<System.DateTime>!
 static Conjecture.Core.Strategy.DateTimes(System.DateTime min, System.DateTime max) -> Conjecture.Core.Strategy<System.DateTime>!
 static Conjecture.Core.Strategy.Chars() -> Conjecture.Core.Strategy<char>!
+static Conjecture.Core.Strategy.Runes() -> Conjecture.Core.Strategy<System.Text.Rune>!
+static Conjecture.Core.Strategy.Runes(System.Text.Rune min, System.Text.Rune max) -> Conjecture.Core.Strategy<System.Text.Rune>!
 static Conjecture.Core.Strategy.Cultures() -> Conjecture.Core.Strategy<System.Globalization.CultureInfo!>!
 static Conjecture.Core.Strategy.Cultures(System.Globalization.CultureTypes types) -> Conjecture.Core.Strategy<System.Globalization.CultureInfo!>!
 Conjecture.Core.IPAddressKind
