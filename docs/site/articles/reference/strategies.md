@@ -134,6 +134,26 @@ Generates `TimeOnly` values in `[min, max]`.
 
 For boundary-focused extensions (`.NearMidnight()`, `.NearDstTransition()`, etc.) and `Strategy.TimeZones`/`Strategy.ClockSet` factory methods, see [Time strategies reference](time-strategies.md).
 
+## Globalization strategies
+
+### `Strategy.Cultures()`
+
+```csharp
+Strategy<CultureInfo> Strategy.Cultures()
+```
+
+Picks uniformly from `CultureInfo.GetCultures(CultureTypes.AllCultures)`. Shrinks toward `CultureInfo.InvariantCulture` (placed at index 0).
+
+### `Strategy.Cultures(CultureTypes types)`
+
+```csharp
+Strategy<CultureInfo> Strategy.Cultures(CultureTypes types)
+```
+
+Picks uniformly from `CultureInfo.GetCultures(types)`. Shrinks toward `CultureInfo.InvariantCulture` (placed at index 0).
+
+`Conjecture.Money` and `Conjecture.Time` build opinionated subsets (cultures with currency, cultures by calendar) on top of these primitives.
+
 ## Byte buffer strategies
 
 ### `Strategy.FromBytes<T>(ReadOnlySpan<byte> buffer)`
