@@ -296,6 +296,17 @@ internal static class StrategyTools
             // → Strategy<decimal> of valid currency amounts for the given currency code
             ```
 
+            For culture-dependent formatting and parsing, use `Strategy.CulturesWithCurrency()` or `Strategy.CulturesByCurrencyCode(string)`:
+            ```csharp
+            using Conjecture.Money;
+
+            Strategy.CulturesByCurrencyCode("USD")
+            // → Strategy<CultureInfo> samples cultures using USD; shrinks to en-US
+
+            Strategy.Amounts("USD").Combine(Strategy.CulturesByCurrencyCode("USD"))
+            // → Strategy<(decimal, CultureInfo)> for round-trip property tests
+            ```
+
             Add the NuGet package: `Conjecture.Money`
             """,
 
