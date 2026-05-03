@@ -16,6 +16,7 @@ internal sealed class UriStrategy : Strategy<Uri>
     private readonly Strategy<string> schemeStrategy;
     private readonly HostStrategy dnsHostStrategy;
     private readonly IPAddressStrategy ipHostStrategy;
+    private readonly IdentifierStrategy pathSegmentStrategy;
 
     internal UriStrategy(UriKind uriKind, IReadOnlyList<string> schemes)
     {
@@ -23,6 +24,7 @@ internal sealed class UriStrategy : Strategy<Uri>
         schemeStrategy = Strategy.SampledFrom(schemes);
         dnsHostStrategy = new(1, 3);
         ipHostStrategy = new(IPAddressKind.Both);
+        pathSegmentStrategy = new(1, 6, 1, 4);
     }
 
     internal override Uri Generate(ConjectureData data)
@@ -55,7 +57,7 @@ internal sealed class UriStrategy : Strategy<Uri>
         return sb.ToString();
     }
 
-    private static string BuildRelative(ConjectureData data)
+    private string BuildRelative(ConjectureData data)
     {
         StringBuilder sb = new();
         AppendPath(data, sb);
@@ -86,13 +88,13 @@ internal sealed class UriStrategy : Strategy<Uri>
         }
     }
 
-    private static void AppendPath(ConjectureData data, StringBuilder sb)
+    private void AppendPath(ConjectureData data, StringBuilder sb)
     {
         int segmentCount = (int)data.NextInteger(0UL, 3UL);
         for (int i = 0; i < segmentCount; i++)
         {
             sb.Append('/');
-            sb.Append(new IdentifierStrategy(1, 6, 1, 4).Generate(data));
+            sb.Append(pathSegmentStrategy.Generate(data));
         }
 
         if (segmentCount == 0)
