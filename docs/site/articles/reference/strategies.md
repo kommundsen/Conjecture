@@ -11,7 +11,7 @@ Strategy<T> Strategy.Integers<T>()
     where T : IBinaryInteger<T>
 ```
 
-Generates values across the full range of `T`. Works with `int`, `long`, `byte`, `short`, `uint`, `ulong`, `sbyte`, `ushort`, `nint`, `nuint`.
+Generates values across the full range of `T`. Works with `int`, `long`, `byte`, `short`, `uint`, `ulong`, `sbyte`, `ushort`, `nint`, `nuint`, `Int128`, and `UInt128`. `BigInteger` is not supported here because it has no `IMinMaxValue<>` bounds — use the ranged overload below.
 
 ### `Strategy.Integers<T>(T min, T max)`
 
@@ -21,6 +21,14 @@ Strategy<T> Strategy.Integers<T>(T min, T max)
 ```
 
 Generates values in `[min, max]` inclusive. `min` must be ≤ `max`.
+
+### `Strategy.Integers(BigInteger min, BigInteger max)`
+
+```csharp
+Strategy<BigInteger> Strategy.Integers(BigInteger min, BigInteger max)
+```
+
+Generates `BigInteger` values in `[min, max]` inclusive. Ranged-only — there is no parameterless `Integers<BigInteger>()` form because `BigInteger` is unbounded. Shrinks toward whichever bound is closest to zero (or zero when the range contains it).
 
 ### `Strategy.Doubles()`
 
@@ -53,6 +61,22 @@ Strategy<float> Strategy.Floats(float min, float max)
 ```
 
 Generates `float` values in `[min, max]`. Neither bound may be `NaN`.
+
+### `Strategy.Halves()`
+
+```csharp
+Strategy<Half> Strategy.Halves()
+```
+
+Generates any `Half` (16-bit IEEE 754 float), including `NaN`, `+Infinity`, `-Infinity`, and denormals.
+
+### `Strategy.Halves(Half min, Half max)`
+
+```csharp
+Strategy<Half> Strategy.Halves(Half min, Half max)
+```
+
+Generates `Half` values in `[min, max]`. Neither bound may be `NaN`.
 
 ### `Strategy.Booleans()`
 
