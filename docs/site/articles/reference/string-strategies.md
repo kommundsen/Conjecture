@@ -115,6 +115,22 @@ Strategy.VersionStrings(99, 99, 99)  // e.g. "12.0.47"
 
 Each component shrinks independently toward zero. Failing cases reduce to `"0.0.1"` or similar minimal forms.
 
+## `Strategy.Runes`
+
+```csharp
+Strategy<Rune> Strategy.Runes()
+Strategy<Rune> Strategy.Runes(Rune min, Rune max)
+```
+
+Generates `System.Text.Rune` values across the full Unicode scalar range (U+0000–U+10FFFF), excluding the UTF-16 surrogate range U+D800–U+DFFF (those are not valid scalars). The ranged overload accepts codepoint-inclusive bounds.
+
+```csharp
+Strategy.Runes()                                              // any scalar — covers BMP, supplementary planes, emoji
+Strategy.Runes(new Rune(0x1F600), new Rune(0x1F64F))          // emoticon block U+1F600..U+1F64F
+```
+
+Shrinks toward U+0000 (or `min` when 0 is not in range). Use this when a property test must exercise full Unicode behaviour — surrogate pairs, supplementary planes, emoji — instead of being constrained to ASCII or the BMP.
+
 ## Choosing the right strategy
 
 | Need | Strategy |
@@ -124,3 +140,4 @@ Each component shrinks independently toward zero. Failing cases reduce to `"0.0.
 | Code identifiers, variable names | `Strategy.Identifiers()` |
 | IDs, invoice numbers, codes | `Strategy.NumericStrings(prefix: "INV-")` |
 | Version fields, semver parsing | `Strategy.VersionStrings()` |
+| Single Unicode scalar (full range) | `Strategy.Runes()` |

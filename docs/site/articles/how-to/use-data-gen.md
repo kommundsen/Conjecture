@@ -84,6 +84,23 @@ JsonLinesOutputFormatter formatter = new();
 await formatter.WriteAsync(people, file, CancellationToken.None);
 ```
 
+## Generate full-Unicode text
+
+ASCII-only fixtures hide bugs that surface only with surrogate pairs, supplementary planes, or emoji. `Strategy.Runes()` covers every Unicode scalar (U+0000..U+10FFFF, surrogates excluded). Build strings from runes when you need true full-Unicode coverage:
+
+```csharp
+using System.Text;
+using Conjecture.Core;
+
+Strategy<string> unicodeText =
+    from runes in Strategy.Runes().Lists(minSize: 1, maxSize: 32)
+    select string.Concat(runes.Select(r => r.ToString()));
+
+List<string> samples = DataGen.Sample(unicodeText, count: 100);
+```
+
+Runes shrink toward U+0000, so failing cases collapse to the smallest reproducer.
+
 ## See also
 
 - [Tutorial 7: Data Generation](../tutorials/07-data-generation.md) — walkthrough with a complete example

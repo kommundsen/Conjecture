@@ -10,6 +10,15 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Version
 
 ### Added
 
+**Core** (`Conjecture.Core`)
+- `Strategy.Halves()` and `Strategy.Halves(Half min, Half max)` — generate `System.Half` (16-bit IEEE 754 float) across the full range or a bounded interval
+- `Strategy.Integers<T>()` now binds `System.Int128` and `System.UInt128` (via `IBinaryInteger<T>`); `IntegerStrategy<T>` arithmetic is generalised away from `ulong` truncation
+- `Strategy.Integers(BigInteger min, BigInteger max)` — ranged-only generator for `System.Numerics.BigInteger`; shrinks toward whichever bound is closest to zero
+- `Strategy.Runes()` and `Strategy.Runes(Rune min, Rune max)` — generate `System.Text.Rune` across the full Unicode scalar range (U+0000..U+10FFFF, excluding surrogates U+D800..U+DFFF)
+
+**Mcp** (`Conjecture.Mcp`)
+- `suggest-strategy` recognises `Half`, `Int128`, `UInt128`, `BigInteger`, and `Rune` and emits the matching factory snippet
+
 **Time** (`Conjecture.Time`)
 - `Strategy.CulturesByCalendar<TCalendar>()` — samples specific cultures whose default calendar type is exactly `TCalendar` (exact-type match, not assignment-compatible). Cached per calendar type. Throws `InvalidOperationException` when no qualifying culture is present on the platform (#625, #647)
 - `Strategy.CulturesNonGregorian()` — samples specific cultures whose default calendar is anything other than `GregorianCalendar`, surfacing Hijri / Hebrew / Japanese-era / Persian / Thai-Buddhist edge cases (#625, #647)
