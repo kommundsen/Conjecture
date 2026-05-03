@@ -31,12 +31,19 @@ public class CultureStrategyTests
     {
         Strategy<CultureInfo> strategy = Strategy.Cultures(CultureTypes.NeutralCultures);
         ConjectureData data = MakeData();
+        CultureInfo[] expected = CultureInfo.GetCultures(CultureTypes.NeutralCultures);
+        HashSet<string> expectedNames = [.. expected.Select(c => c.Name)];
 
         for (int i = 0; i < 200; i++)
         {
             CultureInfo value = strategy.Generate(data);
-            Assert.False(value.CultureTypes == CultureTypes.SpecificCultures,
-                $"Expected no specific-only cultures but got: {value.Name}");
+            if (value.Name == CultureInfo.InvariantCulture.Name)
+            {
+                continue;
+            }
+
+            Assert.True(expectedNames.Contains(value.Name),
+                $"Expected only neutral cultures but got: {value.Name}");
         }
     }
 
