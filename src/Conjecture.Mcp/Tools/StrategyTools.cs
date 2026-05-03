@@ -200,6 +200,63 @@ internal static class StrategyTools
             "Version" =>
                 "Use `Strategy.Versions()` → `Strategy<Version>`.",
 
+            "Half" =>
+                """
+            Use `Strategy.Halves()` for the full range, or `Strategy.Halves(min, max)` for bounded:
+            ```csharp
+            Strategy.Halves()
+            // → Strategy<Half>
+
+            Strategy.Halves(min, max)
+            // → Strategy<Half> within [min, max]
+            ```
+            """,
+
+            "Int128" =>
+                """
+            Use `Strategy.Integers<Int128>()` for the full range, or `Strategy.Integers<Int128>(min, max)` for bounded:
+            ```csharp
+            Strategy.Integers<Int128>()
+            // → Strategy<Int128>
+
+            Strategy.Integers<Int128>(min, max)
+            // → Strategy<Int128> within [min, max]
+            ```
+            """,
+
+            "UInt128" =>
+                """
+            Use `Strategy.Integers<UInt128>()` for the full range, or `Strategy.Integers<UInt128>(min, max)` for bounded:
+            ```csharp
+            Strategy.Integers<UInt128>()
+            // → Strategy<UInt128>
+
+            Strategy.Integers<UInt128>(min, max)
+            // → Strategy<UInt128> within [min, max]
+            ```
+            """,
+
+            "BigInteger" =>
+                """
+            Use `Strategy.Integers(min, max)` for a ranged `BigInteger` strategy. `BigInteger` is ranged-only — a parameterless form is not available because the range is unbounded.
+            ```csharp
+            Strategy.Integers(min: new BigInteger(0), max: new BigInteger(1_000_000))
+            // → Strategy<BigInteger> within [min, max]
+            ```
+            """,
+
+            "Rune" =>
+                """
+            Use `Strategy.Runes()` for the full Unicode scalar range, or `Strategy.Runes(min, max)` for bounded:
+            ```csharp
+            Strategy.Runes()
+            // → Strategy<Rune>
+
+            Strategy.Runes(min, max)
+            // → Strategy<Rune> within [min, max]
+            ```
+            """,
+
             "byte[]" =>
                 "Use `Strategy.Arrays(Strategy.Integers<byte>(), minSize, maxSize)` for a byte array → `Strategy<byte[]>`. Generic `Strategy.Arrays<T>(inner, minSize, maxSize)` works for any element type.",
 
