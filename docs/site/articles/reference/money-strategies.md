@@ -57,6 +57,32 @@ Samples uniformly from all `System.MidpointRounding` enum values:
 - `ToZero`
 - `TowardZero`
 
+## `Strategy.CulturesWithCurrency()`
+
+```csharp
+Strategy<CultureInfo> Strategy.CulturesWithCurrency()
+```
+
+Generates `CultureInfo` instances that have a non-null, non-empty `NumberFormat.CurrencySymbol`. Samples from the cultures installed on the current .NET runtime; the set is host-dependent — different runtimes and operating systems ship different culture sets.
+
+> [!NOTE]
+> **Host-dependent.** The cultures available at runtime vary between .NET versions, operating systems, and ICU data versions. A property that passes on one machine may generate a different sample space on another. Pin the ICU data version in CI if you need full reproducibility.
+
+Shrinks toward the first culture in the sorted enumeration.
+
+## `Strategy.CulturesByCurrencyCode(string currencyCode)`
+
+```csharp
+Strategy<CultureInfo> Strategy.CulturesByCurrencyCode(string currencyCode)
+```
+
+Generates `CultureInfo` instances whose `NumberFormat.CurrencySymbol` matches the symbol for the given ISO 4217 `currencyCode`. Useful for round-tripping `decimal.ToString("C", culture)` ↔ `decimal.Parse`.
+
+> [!NOTE]
+> **Host-dependent.** The cultures available at runtime vary between .NET versions, operating systems, and ICU data versions. A property that passes on one machine may generate a different sample space on another.
+
+Throws `ArgumentException` if `currencyCode` is not an active ISO 4217 code or if no cultures on the current host match the currency.
+
 ## ISO 4217 snapshot
 
 The embedded snapshot covers 141 active codes as of 2026:

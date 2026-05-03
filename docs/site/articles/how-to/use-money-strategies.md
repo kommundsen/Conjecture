@@ -76,6 +76,33 @@ public bool Allocator_SumsToOriginalAmount()
 }
 ```
 
+## Round-tripping currency formatting
+
+Use `Strategy.Amounts` together with `Strategy.CulturesByCurrencyCode` to property-test that `decimal.ToString("C", culture)` round-trips through `decimal.Parse`:
+
+```csharp
+using System.Globalization;
+using Conjecture.Core;
+using Conjecture.Money;
+
+[Property]
+public bool CurrencyFormatting_RoundTrips()
+{
+    // Arrange
+    decimal amount = DataGen.SampleOne(Strategy.Amounts("USD"));
+    CultureInfo culture = DataGen.SampleOne(Strategy.CulturesByCurrencyCode("USD"));
+
+    // Act
+    string formatted = amount.ToString("C", culture);
+    decimal parsed = decimal.Parse(formatted, NumberStyles.Currency, culture);
+
+    // Assert — parsing the formatted string must recover the original amount
+    return parsed == amount;
+}
+```
+
+`Strategy.CulturesByCurrencyCode("USD")` samples from the set of `CultureInfo` instances on the current host whose currency symbol matches USD. This exercises locale-specific formatting differences — separator characters, negative-value patterns, symbol placement — that a single hard-coded culture would miss.
+
 ## See also
 
 - [Reference: Money strategies](../reference/money-strategies.md) — full API surface

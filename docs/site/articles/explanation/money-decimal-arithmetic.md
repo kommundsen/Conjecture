@@ -45,6 +45,14 @@ The shrink pass sees the `long` draw and reduces it toward `0` by the standard i
 
 The practical result: a counterexample generated at `9843.27m` will shrink toward `0.00m`, passing through values like `4921.63m`, `2460.81m`, `1230.40m`, … until the smallest failing value is found. The shrunk counterexample is always a valid representable USD amount with exactly 2 decimal places.
 
+## Why surfacing the cultural axis matters
+
+`decimal` arithmetic is exact, but presentation is not. The string `"$1,234.56"` (en-US) and `"1.234,56 $"` (some European locales) represent the same decimal value but require different parse logic. A test that only checks arithmetic without exercising the cultural formatting layer will miss bugs in any code path that calls `ToString("C", ...)` or `decimal.Parse(...)`.
+
+`Strategy.CulturesWithCurrency()` generates `CultureInfo` instances that have a currency symbol, spanning the diversity of negative-value patterns (parentheses vs. minus sign), decimal separators (`.` vs. `,`), and symbol placement (prefix vs. suffix). `Strategy.CulturesByCurrencyCode("USD")` narrows that set to cultures that format USD specifically.
+
+Combining an amount strategy with a culture strategy lets a single property exercise both the arithmetic and the formatting/parsing contract in one run. See [How to test monetary and decimal arithmetic](../how-to/use-money-strategies.md#round-tripping-currency-formatting) for the end-to-end snippet.
+
 ## See also
 
 - [Reference: Money strategies](../reference/money-strategies.md)
