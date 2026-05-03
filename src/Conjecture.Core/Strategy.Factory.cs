@@ -83,6 +83,12 @@ public static class Strategy
     /// <summary>Returns a strategy that generates random <see cref="float"/> values in [<paramref name="min"/>, <paramref name="max"/>].</summary>
     public static Strategy<float> Floats(float min, float max) => new FloatingPointStrategy<float>(min, max);
 
+    /// <summary>Returns a strategy that generates random <see cref="Half"/> values across the full range.</summary>
+    public static Strategy<Half> Halves() => new FloatingPointStrategy<Half>();
+
+    /// <summary>Returns a strategy that generates random <see cref="Half"/> values in [<paramref name="min"/>, <paramref name="max"/>].</summary>
+    public static Strategy<Half> Halves(Half min, Half max) => new FloatingPointStrategy<Half>(min, max);
+
     /// <summary>Returns a strategy that generates random strings. When <paramref name="alphabet"/> is provided it takes precedence and <paramref name="minCodepoint"/>/<paramref name="maxCodepoint"/> are ignored.</summary>
     public static Strategy<string> Strings(int minLength = 0, int maxLength = 20, int minCodepoint = 32, int maxCodepoint = 126, string? alphabet = null)
         => alphabet is not null

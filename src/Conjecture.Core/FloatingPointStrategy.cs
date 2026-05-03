@@ -41,6 +41,18 @@ internal sealed class FloatingPointStrategy<T> : Strategy<T>
         Unsafe.BitCast<float, uint>(float.Epsilon),
     ];
 
+    private static readonly ushort[] HalfSpecialBits =
+    [
+        BitConverter.HalfToUInt16Bits(Half.NaN),
+        BitConverter.HalfToUInt16Bits(Half.PositiveInfinity),
+        BitConverter.HalfToUInt16Bits(Half.NegativeInfinity),
+        BitConverter.HalfToUInt16Bits((Half)0),
+        BitConverter.HalfToUInt16Bits(-(Half)0),
+        BitConverter.HalfToUInt16Bits(Half.MaxValue),
+        BitConverter.HalfToUInt16Bits(Half.MinValue),
+        BitConverter.HalfToUInt16Bits(Half.Epsilon),
+    ];
+
     private readonly bool bounded;
     private readonly T min;
     private readonly T range;
@@ -64,14 +76,25 @@ internal sealed class FloatingPointStrategy<T> : Strategy<T>
     {
         if (bounded)
         {
-            ulong raw = Unsafe.SizeOf<T>() == sizeof(double)
-                ? data.NextFloat64(0UL, ulong.MaxValue)
-                : data.NextFloat32(0UL, uint.MaxValue);
-            var t = T.CreateSaturating(raw) / MaxUlong;
-            return min + range * t;
+            if (Unsafe.SizeOf<T>() == sizeof(double))
+            {
+                ulong raw = data.NextFloat64(0UL, ulong.MaxValue);
+                T t = T.CreateSaturating(raw) / MaxUlong;
+                return min + range * t;
+            }
+            if (Unsafe.SizeOf<T>() == sizeof(float))
+            {
+                ulong raw = data.NextFloat32(0UL, uint.MaxValue);
+                T t = T.CreateSaturating(raw) / MaxUlong;
+                return min + range * t;
+            }
+            // Half (2 bytes): normalize via double to preserve precision across the small range.
+            ulong rawHalf = data.NextInteger(0UL, ushort.MaxValue);
+            T tHalf = T.CreateSaturating(rawHalf / (double)ushort.MaxValue);
+            return min + range * tHalf;
         }
 
-        var bias = data.NextInteger(0UL, 63UL);
+        ulong bias = data.NextInteger(0UL, 63UL);
         return DrawUnbounded(data, useSpecial: bias == 0);
     }
 
@@ -79,17 +102,24 @@ internal sealed class FloatingPointStrategy<T> : Strategy<T>
     {
         if (Unsafe.SizeOf<T>() == sizeof(double))
         {
-            var bits = useSpecial
+            ulong bits = useSpecial
                 ? DoubleSpecialBits[(int)data.NextInteger(0UL, (ulong)(DoubleSpecialBits.Length - 1))]
                 : data.NextFloat64(0UL, ulong.MaxValue);
             return Unsafe.BitCast<ulong, T>(bits);
         }
         if (Unsafe.SizeOf<T>() == sizeof(float))
         {
-            var bits = useSpecial
+            uint bits = useSpecial
                 ? FloatSpecialBits[(int)data.NextInteger(0UL, (ulong)(FloatSpecialBits.Length - 1))]
                 : (uint)data.NextFloat32(0UL, uint.MaxValue);
             return Unsafe.BitCast<uint, T>(bits);
+        }
+        if (Unsafe.SizeOf<T>() == sizeof(ushort))
+        {
+            ushort bits = useSpecial
+                ? HalfSpecialBits[(int)data.NextInteger(0UL, (ulong)(HalfSpecialBits.Length - 1))]
+                : (ushort)data.NextInteger(0UL, ushort.MaxValue);
+            return Unsafe.BitCast<ushort, T>(bits);
         }
         throw new NotSupportedException($"FloatingPointStrategy does not support {typeof(T).Name} (size={Unsafe.SizeOf<T>()}).");
     }

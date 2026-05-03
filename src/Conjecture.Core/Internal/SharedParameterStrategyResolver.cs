@@ -188,6 +188,7 @@ internal static class SharedParameterStrategyResolver
             _ when type == typeof(string) => Strategy.Strings().Generate(data),
             _ when type == typeof(float) => Strategy.Floats().Generate(data),
             _ when type == typeof(double) => Strategy.Doubles().Generate(data),
+            _ when type == typeof(Half) => Strategy.Halves().Generate(data),
             _ when type == typeof(List<int>) => Strategy.Lists(Strategy.Integers<int>()).Generate(data),
             _ when type == typeof(byte[]) => Strategy.Arrays(Strategy.Integers<byte>(), 0, 32).Generate(data),
             _ when type == typeof(int[]) => Strategy.Arrays(Strategy.Integers<int>(), 0, 32).Generate(data),

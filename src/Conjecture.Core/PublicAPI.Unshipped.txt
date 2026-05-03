@@ -68,6 +68,8 @@ static Conjecture.Core.Strategy.IPEndPoints(Conjecture.Core.Strategy<System.Net.
 static Conjecture.Core.Strategy.Uris(System.UriKind kind = System.UriKind.Absolute, System.Collections.Generic.IReadOnlyList<string!>? schemes = null) -> Conjecture.Core.Strategy<System.Uri!>!
 static Conjecture.Core.Strategy.EmailAddresses() -> Conjecture.Core.Strategy<System.Net.Mail.MailAddress!>!
 static Conjecture.Core.Strategy.EmailAddressStrings() -> Conjecture.Core.Strategy<string!>!
+static Conjecture.Core.Strategy.Halves() -> Conjecture.Core.Strategy<System.Half>!
+static Conjecture.Core.Strategy.Halves(System.Half min, System.Half max) -> Conjecture.Core.Strategy<System.Half>!
 static Conjecture.Core.Strategy.OneOf<T>(params System.ReadOnlySpan<Conjecture.Core.Strategy<T>!> strategies) -> Conjecture.Core.Strategy<T>!
 Conjecture.Core.SeededStrategy<T>
 Conjecture.Core.SeededStrategy<T>.SeededStrategy() -> void
