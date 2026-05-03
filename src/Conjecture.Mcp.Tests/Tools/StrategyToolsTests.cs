@@ -201,6 +201,20 @@ public class StrategyToolsTests
     }
 
     [Fact]
+    public void SuggestStrategy_Currency_MentionsCulturesWithCurrency()
+    {
+        string result = StrategyTools.SuggestForType("currency");
+        Assert.Contains("CulturesWithCurrency", result);
+    }
+
+    [Fact]
+    public void SuggestStrategy_Currency_MentionsCulturesByCurrencyCode()
+    {
+        string result = StrategyTools.SuggestForType("currency");
+        Assert.Contains("CulturesByCurrencyCode", result);
+    }
+
+    [Fact]
     public void SuggestForType_MidpointRounding_ContainsRoundingModes()
     {
         string result = StrategyTools.SuggestForType("MidpointRounding");
