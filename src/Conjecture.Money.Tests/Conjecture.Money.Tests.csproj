@@ -11,6 +11,7 @@
     <PackageReference Include="xunit.runner.visualstudio" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Conjecture.Core\Conjecture.Core.csproj" />
     <ProjectReference Include="..\Conjecture.Money\Conjecture.Money.csproj" />
     <ProjectReference Include="..\Conjecture.Xunit.V3\Conjecture.Xunit.V3.csproj" />
   </ItemGroup>
