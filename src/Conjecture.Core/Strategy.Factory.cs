@@ -306,6 +306,14 @@ public static class Strategy
             ? throw new ArgumentException("At least one IPAddressKind flag must be set.", nameof(kind))
             : new IPAddressStrategy(kind);
 
+    /// <summary>Returns a strategy that generates <see cref="System.Net.IPEndPoint"/> values composed from <paramref name="addresses"/> and <paramref name="ports"/>.</summary>
+    /// <param name="addresses">Address strategy; defaults to <c>IPAddresses(IPAddressKind.Both)</c>.</param>
+    /// <param name="ports">Port strategy; defaults to <c>Integers&lt;int&gt;(0, 65535)</c>.</param>
+    public static Strategy<System.Net.IPEndPoint> IPEndPoints(Strategy<System.Net.IPAddress>? addresses = null, Strategy<int>? ports = null)
+        => new IPEndPointStrategy(
+            addresses ?? IPAddresses(),
+            ports ?? Integers<int>(0, 65535));
+
     /// <summary>Returns a strategy for <typeparamref name="T"/> using its registered <see cref="IStrategyProvider{T}"/>. The type must be decorated with <c>[Arbitrary]</c>.</summary>
     public static Strategy<T> For<T>() => GenerateForRegistry.Resolve<T>();
 
