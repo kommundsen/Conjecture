@@ -203,6 +203,18 @@ internal static class StrategyTools
             "byte[]" =>
                 "Use `Strategy.Arrays(Strategy.Integers<byte>(), minSize, maxSize)` for a byte array → `Strategy<byte[]>`. Generic `Strategy.Arrays<T>(inner, minSize, maxSize)` works for any element type.",
 
+            "IPAddress" =>
+                "Use `Strategy.IPAddresses()` → `Strategy<IPAddress>` (V4/V6/Both via IPAddressKind).",
+
+            "IPEndPoint" =>
+                "Use `Strategy.IPEndPoints()` → `Strategy<IPEndPoint>` (composable address + port strategies).",
+
+            "MailAddress" =>
+                "Use `Strategy.EmailAddresses()` → `Strategy<MailAddress>` (or `Strategy.EmailAddressStrings()` for the string form).",
+
+            "Uri" =>
+                "Use `Strategy.Uris()` → `Strategy<Uri>` (UriKind, optional schemes).",
+
             "Regex" =>
                 """
             Use `Strategy.Matching(pattern)` or `Strategy.NotMatching(pattern)` from the `Conjecture.Regex` package:
