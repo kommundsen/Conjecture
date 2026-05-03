@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Text;
 
 using Conjecture.Core.Internal;
 
@@ -36,12 +37,8 @@ public static class GenerateForRegistry
     {
         ConcurrentDictionary<Type, Func<IStrategyProvider>> dict = new();
         dict[typeof(Version)] = static () => new VersionStrategyProvider();
+        dict[typeof(Half)] = static () => new HalfStrategyProvider();
         return dict;
-    }
-
-    private sealed class VersionStrategyProvider : IStrategyProvider<Version>
-    {
-        public Strategy<Version> Create() => Strategy.Versions();
     }
 
     static GenerateForRegistry()
@@ -50,6 +47,16 @@ public static class GenerateForRegistry
         IPEndPointStrategyRegistration.Register();
         UriStrategyRegistration.Register();
         MailAddressStrategyRegistration.Register();
+    }
+
+    private sealed class VersionStrategyProvider : IStrategyProvider<Version>
+    {
+        public Strategy<Version> Create() => Strategy.Versions();
+    }
+
+    private sealed class HalfStrategyProvider : IStrategyProvider<Half>
+    {
+        public Strategy<Half> Create() => Strategy.Halves();
     }
 
     /// <summary>Registers an override-aware <see cref="IStrategyProvider"/> for <paramref name="type"/>. Called by source-generated module initializers.</summary>
