@@ -11,3 +11,4 @@ static Conjecture.Core.MoneyStrategyExtensions.extension(Conjecture.Core.Strateg
 static Conjecture.Core.MoneyStrategyExtensions.extension(Conjecture.Core.Strategy!).Iso4217Codes() -> Conjecture.Core.Strategy<string!>!
 static Conjecture.Core.MoneyStrategyExtensions.extension(Conjecture.Core.Strategy!).Amounts(string! currencyCode, decimal min = 0, decimal max = 10000) -> Conjecture.Core.Strategy<decimal>!
 static Conjecture.Core.MoneyStrategyExtensions.extension(Conjecture.Core.Strategy!).RoundingModes() -> Conjecture.Core.Strategy<System.MidpointRounding>!
+static Conjecture.Core.MoneyStrategyExtensions.extension(Conjecture.Core.Strategy!).CulturesWithCurrency() -> Conjecture.Core.Strategy<System.Globalization.CultureInfo!>!
