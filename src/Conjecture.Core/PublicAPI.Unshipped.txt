@@ -9,6 +9,7 @@ Conjecture.Core.IGenerationContext
 Conjecture.Core.IGenerationContext.Assume(bool condition) -> void
 Conjecture.Core.IGenerationContext.Generate<T>(Conjecture.Core.Strategy<T>! strategy) -> T
 Conjecture.Core.IGenerationContext.Target(double observation, string! label = "default") -> void
+Conjecture.Core.IPAddressKind.Both = Conjecture.Core.IPAddressKind.V4 | Conjecture.Core.IPAddressKind.V6 -> Conjecture.Core.IPAddressKind
 static Conjecture.Core.Strategy.Compose<T>(System.Func<Conjecture.Core.IGenerationContext!, T>! body) -> Conjecture.Core.Strategy<T>!
 static Conjecture.Core.PartialConstructorContext.Current.get -> Conjecture.Core.IGenerationContext!
 static Conjecture.Core.PartialConstructorContext.Use(Conjecture.Core.IGenerationContext! ctx) -> System.IDisposable!
@@ -59,6 +60,10 @@ static Conjecture.Core.Strategy.DateTimes(System.DateTime min, System.DateTime m
 static Conjecture.Core.Strategy.Chars() -> Conjecture.Core.Strategy<char>!
 static Conjecture.Core.Strategy.Cultures() -> Conjecture.Core.Strategy<System.Globalization.CultureInfo!>!
 static Conjecture.Core.Strategy.Cultures(System.Globalization.CultureTypes types) -> Conjecture.Core.Strategy<System.Globalization.CultureInfo!>!
+Conjecture.Core.IPAddressKind
+Conjecture.Core.IPAddressKind.V4 = 1 -> Conjecture.Core.IPAddressKind
+Conjecture.Core.IPAddressKind.V6 = 2 -> Conjecture.Core.IPAddressKind
+static Conjecture.Core.Strategy.IPAddresses(Conjecture.Core.IPAddressKind kind = Conjecture.Core.IPAddressKind.Both) -> Conjecture.Core.Strategy<System.Net.IPAddress!>!
 static Conjecture.Core.Strategy.OneOf<T>(params System.ReadOnlySpan<Conjecture.Core.Strategy<T>!> strategies) -> Conjecture.Core.Strategy<T>!
 Conjecture.Core.SeededStrategy<T>
 Conjecture.Core.SeededStrategy<T>.SeededStrategy() -> void

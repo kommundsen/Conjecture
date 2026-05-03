@@ -44,6 +44,11 @@ public static class GenerateForRegistry
         public Strategy<Version> Create() => Strategy.Versions();
     }
 
+    static GenerateForRegistry()
+    {
+        IPAddressStrategyRegistration.Register();
+    }
+
     /// <summary>Registers an override-aware <see cref="IStrategyProvider"/> for <paramref name="type"/>. Called by source-generated module initializers.</summary>
     public static void RegisterOverride(Type type, Func<object, object> factory)
     {
