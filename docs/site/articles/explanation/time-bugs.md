@@ -51,6 +51,22 @@ In distributed systems, each node's `DateTimeOffset.UtcNow` is not identical. NT
 
 These bugs are untestable with `DateTime.UtcNow` because the test process has a single clock. `Strategy.ClockSet(nodeCount, maxSkew)` generates a cluster of `FakeTimeProvider` instances with bounded pairwise skew, and `Strategy.ClockWithAdvances(advanceCount, maxJump, allowBackward: true)` generates adversarial clock sequences including backward jumps.
 
+## Non-Gregorian calendars expose hidden assumptions
+
+Almost every Gregorian-tested time invariant has a sibling that breaks under another calendar. The mismatch is rarely in `DateTime` itself — `DateTime` is a tick count, calendar-agnostic — but in code that *interprets* a `DateTime` against a culture: localized parsing, month or year arithmetic, era boundaries, and supported-range limits.
+
+Five families surface most of the bugs:
+
+- **Hijri / Umm al-Qura**: ~354-day year, lunar months. Month indices roll faster than callers expect; date arithmetic that assumes 12 months ≈ 365 days drifts by ~11 days per Gregorian year.
+- **Hebrew**: leap years insert a 13th month (Adar II); month numbering is non-monotonic across leap and common years.
+- **Japanese-era**: era boundaries (Reiwa starting 2019-05-01, Heisei ending 2019-04-30) split the year. `culture.Calendar.GetYear` returns era-relative year, so `1` recurs every era change.
+- **Persian (Solar Hijri)**: 365- or 366-day year aligned to the equinox, not to January 1; `MinSupportedDateTime` is `0622-03-22`.
+- **Thai-Buddhist**: same month and day structure as Gregorian, but year offset by +543. Code that displays the year through the culture and re-parses with `InvariantCulture` round-trips to the wrong year.
+
+The most direct demonstration is month arithmetic. `DateTime.AddMonths(d, 1)` adds a Gregorian month regardless of culture. `culture.Calendar.AddMonths(d, 1)` adds a calendar month — for `HijriCalendar` that may be 29 or 30 days, for `HebrewCalendar` it depends on the Adar II insertion. Worse, calling `Calendar.AddMonths` on a `DateTime` outside `MinSupportedDateTime`/`MaxSupportedDateTime` throws `ArgumentOutOfRangeException` — so generic time-handling code that worked for `GregorianCalendar` (range 0001-01-01..9999-12-31) suddenly throws for arbitrary inputs under Persian (`0622-03-22..`) or Hijri (`0622-07-18..`).
+
+`Strategy.CulturesNonGregorian()` and `Strategy.CulturesByCalendar<TCalendar>()` make these calendars first-class inputs. Compose them with `Strategy.DateTimes()` and assert the property in two passes — once asserting the call succeeds within `MinSupportedDateTime..MaxSupportedDateTime`, and once asserting Gregorian-only equivalence (`culture.Calendar.AddMonths(d, n)` ticks-equal `d.AddMonths(n)`) holds **only** when `culture.Calendar.GetType() == typeof(GregorianCalendar)`. Inverting the property — assuming agreement holds for everyone — is what creates the original bug.
+
 ## Historical note on scope
 
 Conjecture's time strategies target the BCL types: `DateTimeOffset`, `DateOnly`, `TimeOnly`, `TimeZoneInfo`, `DateTimeKind`. Historical timezone data (pre-1970 DST rule changes, the 1883 US railroad standardisation, the 2011 Samoa date line change) is not in scope — the strategies use the current OS tzdata, which does not include historical adjustments. For historically accurate coverage, use the future NodaTime adapter.

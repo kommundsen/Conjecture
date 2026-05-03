@@ -8,6 +8,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Version
 
 ## [Unreleased]
 
+### Added
+
+**Time** (`Conjecture.Time`)
+- `Strategy.CulturesByCalendar<TCalendar>()` — samples specific cultures whose default calendar type is exactly `TCalendar` (exact-type match, not assignment-compatible). Cached per calendar type. Throws `InvalidOperationException` when no qualifying culture is present on the platform (#625, #647)
+- `Strategy.CulturesNonGregorian()` — samples specific cultures whose default calendar is anything other than `GregorianCalendar`, surfacing Hijri / Hebrew / Japanese-era / Persian / Thai-Buddhist edge cases (#625, #647)
+
 ---
 
 ## [0.27.1] — 2026-04-28
