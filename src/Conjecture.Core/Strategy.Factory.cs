@@ -5,6 +5,7 @@
 // Original copyright: Copyright (c) 2013-present, David R. MacIver and contributors.
 
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Numerics;
 
@@ -313,6 +314,15 @@ public static class Strategy
         => new IPEndPointStrategy(
             addresses ?? IPAddresses(),
             ports ?? Integers<int>(0, 65535));
+
+    /// <summary>Returns a strategy that generates <see cref="Uri"/> values of the requested <paramref name="kind"/>, optionally restricted to <paramref name="schemes"/>.</summary>
+    public static Strategy<Uri> Uris(UriKind kind = UriKind.Absolute, IReadOnlyList<string>? schemes = null)
+    {
+        IReadOnlyList<string> resolvedSchemes = schemes ?? ["http", "https"];
+        return resolvedSchemes.Count == 0
+            ? throw new ArgumentException("At least one scheme is required.", nameof(schemes))
+            : new UriStrategy(kind, resolvedSchemes);
+    }
 
     /// <summary>Returns a strategy for <typeparamref name="T"/> using its registered <see cref="IStrategyProvider{T}"/>. The type must be decorated with <c>[Arbitrary]</c>.</summary>
     public static Strategy<T> For<T>() => GenerateForRegistry.Resolve<T>();
