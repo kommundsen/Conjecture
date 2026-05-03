@@ -263,6 +263,16 @@ public static class Strategy
     /// <summary>Returns a strategy that generates random <see cref="Guid"/> values.</summary>
     public static Strategy<Guid> Guids() => new GuidStrategy();
 
+    /// <summary>Returns a strategy that generates <see cref="Version"/> values with components in the configured ranges. Components default to a small range so shrinking converges quickly.</summary>
+    public static Strategy<Version> Versions(int maxMajor = 9, int maxMinor = 9, int maxBuild = 9, int maxRevision = 9)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(maxMajor);
+        ArgumentOutOfRangeException.ThrowIfNegative(maxMinor);
+        ArgumentOutOfRangeException.ThrowIfNegative(maxBuild);
+        ArgumentOutOfRangeException.ThrowIfNegative(maxRevision);
+        return new VersionStrategy(maxMajor, maxMinor, maxBuild, maxRevision);
+    }
+
     /// <summary>Returns a strategy that generates random <see cref="decimal"/> values.</summary>
     public static Strategy<decimal> Decimals() => new DecimalStrategy();
 

@@ -18,12 +18,31 @@ namespace Conjecture.Core;
 [EditorBrowsable(EditorBrowsableState.Never)]
 public static class GenerateForRegistry
 {
-    private static readonly ConcurrentDictionary<Type, Func<IStrategyProvider>> Providers = new();
+    private static readonly ConcurrentDictionary<Type, Func<IStrategyProvider>> Providers = InitProviders();
 
     private static readonly ConcurrentDictionary<Type, Func<object, object>> OverrideProviders = new();
 
     // Parallel dictionary holding AOT-safe boxed strategies for use via ResolveBoxed.
     private static readonly ConcurrentDictionary<Type, Strategy<object?>> BoxedStrategies = new();
+
+    /// <summary>
+    /// Registers built-in primitive types whose factory has no required arguments so
+    /// <see cref="Strategy.For{T}()"/> works out of the box for those types without requiring
+    /// <c>[Arbitrary]</c> decoration or source-generator output.
+    /// Only types with fully-defaulted factory signatures (e.g. <see cref="Version"/>) belong here;
+    /// types like <see cref="Guid"/> that have no strategy overload are intentionally excluded.
+    /// </summary>
+    private static ConcurrentDictionary<Type, Func<IStrategyProvider>> InitProviders()
+    {
+        ConcurrentDictionary<Type, Func<IStrategyProvider>> dict = new();
+        dict[typeof(Version)] = static () => new VersionStrategyProvider();
+        return dict;
+    }
+
+    private sealed class VersionStrategyProvider : IStrategyProvider<Version>
+    {
+        public Strategy<Version> Create() => Strategy.Versions();
+    }
 
     /// <summary>Registers an override-aware <see cref="IStrategyProvider"/> for <paramref name="type"/>. Called by source-generated module initializers.</summary>
     public static void RegisterOverride(Type type, Func<object, object> factory)
