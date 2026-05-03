@@ -33,6 +33,8 @@
 | `Strategy.DateOnlyValues(min, max)` | `Strategy<DateOnly>` | Bounded range |
 | `Strategy.TimeOnlyValues()` | `Strategy<TimeOnly>` | Full range |
 | `Strategy.TimeOnlyValues(min, max)` | `Strategy<TimeOnly>` | Bounded range |
+| `Strategy.Indices(int maxValue)` | `Strategy<Index>` | Forward and from-end indices valid for a collection of `maxValue` length |
+| `Strategy.Ranges(int maxValue)` | `Strategy<Range>` | Ranges valid for a collection of `maxValue` length |
 | `Strategy.Identifiers(minPrefixLength, maxPrefixLength, minDigits, maxDigits)` | `Strategy<string>` | Identifier strings (`[a-z]+\d+`); all params optional |
 | `Strategy.NumericStrings(minDigits, maxDigits, prefix, suffix)` | `Strategy<string>` | Numeric strings with optional prefix/suffix |
 | `Strategy.VersionStrings(maxMajor, maxMinor, maxPatch)` | `Strategy<string>` | Version strings (`MAJOR.MINOR.PATCH`) |

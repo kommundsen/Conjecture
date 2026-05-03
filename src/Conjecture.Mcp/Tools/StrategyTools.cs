@@ -13,7 +13,8 @@ internal static class StrategyTools
     [McpServerTool(Name = "suggest-strategy")]
     [Description(
         "Suggests the Conjecture Strategy.* strategy to use for a given C# type or description. " +
-        "Handles primitives (int, bool, string, float, double, byte[]), date/time types " +
+        "Handles primitives (int, bool, string, float, double, byte[]), index/range types " +
+        "(Index, Range), date/time types " +
         "(DateTimeOffset, TimeSpan, DateOnly, TimeOnly), collections " +
         "(List<T>, IReadOnlySet<T>, IReadOnlyDictionary<K,V>), nullable types, value " +
         "tuples, enums, and custom types. Also handles regex-constrained strings via the " +
@@ -133,6 +134,24 @@ internal static class StrategyTools
             ```
 
             Add the NuGet package: `Conjecture.Time`
+            """,
+
+            "Index" =>
+                """
+            Use `Strategy.Indices(maxValue)` to generate `System.Index` values (both forward and from-end) within a given length:
+            ```csharp
+            Strategy.Indices(maxValue: 10)
+            // → Strategy<Index> of indices valid for a collection of length 10
+            ```
+            """,
+
+            "Range" =>
+                """
+            Use `Strategy.Ranges(maxValue)` to generate `System.Range` values within a given length:
+            ```csharp
+            Strategy.Ranges(maxValue: 10)
+            // → Strategy<Range> of ranges valid for a collection of length 10
+            ```
             """,
 
             "DateTime" =>
