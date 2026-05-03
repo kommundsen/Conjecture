@@ -106,4 +106,14 @@ public class IntegerStrategy_Int128Tests
         Int128 shrunk = strategy.Generate(replay);
         Assert.Equal(min, shrunk);
     }
+
+    [Fact]
+    public void For_Int128_ResolvesAndProducesValuesAcrossFullRange()
+    {
+        Strategy<Int128> strategy = Strategy.For<Int128>();
+        IReadOnlyList<Int128> samples = strategy.WithSeed(7UL).Sample(200);
+        Assert.All(samples, v => Assert.InRange(v, Int128.MinValue, Int128.MaxValue));
+        Assert.Contains(samples, v => v < 0);
+        Assert.Contains(samples, v => v > 0);
+    }
 }

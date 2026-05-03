@@ -39,6 +39,8 @@ public static class GenerateForRegistry
         dict[typeof(Version)] = static () => new VersionStrategyProvider();
         dict[typeof(Half)] = static () => new HalfStrategyProvider();
         dict[typeof(Rune)] = static () => new RuneStrategyProvider();
+        dict[typeof(Int128)] = static () => new Int128StrategyProvider();
+        dict[typeof(UInt128)] = static () => new UInt128StrategyProvider();
         return dict;
     }
 
@@ -63,6 +65,16 @@ public static class GenerateForRegistry
     private sealed class RuneStrategyProvider : IStrategyProvider<Rune>
     {
         public Strategy<Rune> Create() => Strategy.Runes();
+    }
+
+    private sealed class Int128StrategyProvider : IStrategyProvider<Int128>
+    {
+        public Strategy<Int128> Create() => Strategy.Integers<Int128>();
+    }
+
+    private sealed class UInt128StrategyProvider : IStrategyProvider<UInt128>
+    {
+        public Strategy<UInt128> Create() => Strategy.Integers<UInt128>();
     }
 
     /// <summary>Registers an override-aware <see cref="IStrategyProvider"/> for <paramref name="type"/>. Called by source-generated module initializers.</summary>
