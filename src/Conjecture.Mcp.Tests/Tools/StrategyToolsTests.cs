@@ -358,4 +358,18 @@ public class StrategyToolsTests
         string result = StrategyTools.SuggestForType("Rune");
         Assert.Contains("Strategy.Runes(min, max)", result);
     }
+
+    [Fact]
+    public void SuggestStrategy_Index_ReturnsIndicesGuidance()
+    {
+        string result = StrategyTools.SuggestStrategy(typeName: "Index");
+        Assert.Contains("Strategy.Indices(", result);
+    }
+
+    [Fact]
+    public void SuggestStrategy_Range_ReturnsRangesGuidance()
+    {
+        string result = StrategyTools.SuggestStrategy(typeName: "Range");
+        Assert.Contains("Strategy.Ranges(", result);
+    }
 }
