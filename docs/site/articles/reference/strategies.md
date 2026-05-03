@@ -154,6 +154,24 @@ Picks uniformly from `CultureInfo.GetCultures(types)`. Shrinks toward `CultureIn
 
 `Conjecture.Money` and `Conjecture.Time` build opinionated subsets (cultures with currency, cultures by calendar) on top of these primitives.
 
+## Version strategies
+
+### `Strategy.Versions(int maxMajor = 9, int maxMinor = 9, int maxBuild = 9, int maxRevision = 9)`
+
+```csharp
+Strategy<Version> Strategy.Versions(int maxMajor = 9, int maxMinor = 9, int maxBuild = 9, int maxRevision = 9)
+```
+
+Generates `System.Version` values whose `Major`, `Minor`, `Build`, and `Revision` components fall within `[0, maxMajor]`, `[0, maxMinor]`, `[0, maxBuild]`, and `[0, maxRevision]` respectively. Each component is drawn from `Strategy.Integers<int>(0, max*)` and the four values are projected into `new Version(major, minor, build, revision)`.
+
+The shrink target is `new Version(0, 0, 0, 0)` — when a property fails, the shrinker drives every component down to zero. The defaults keep components small so shrinking converges quickly; raise them when your property depends on larger version numbers.
+
+A negative value for any `max*` argument throws `ArgumentOutOfRangeException`.
+
+Resolves via [`Strategy.For<T>()`](generate-for.md) for `Version`, so `[Property]` parameters typed as `System.Version` work without an explicit factory call.
+
+For the string-shaped counterpart (e.g. `"1.2.3"`), see [`Strategy.VersionStrings()`](string-strategies.md).
+
 ## Byte buffer strategies
 
 ### `Strategy.FromBytes<T>(ReadOnlySpan<byte> buffer)`
