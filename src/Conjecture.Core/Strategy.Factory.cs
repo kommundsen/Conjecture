@@ -366,6 +366,22 @@ public static class Strategy
             ? throw new ArgumentOutOfRangeException(nameof(maxValue), maxValue, "maxValue must be non-negative.")
             : Tuples(Integers<int>(0, maxValue), Booleans()).Select(static t => new Index(t.Item1, t.Item2));
 
+    /// <summary>Returns a strategy that generates <see cref="Range"/> values whose <c>Start</c> and <c>End</c> indices fall in <c>[0, maxValue]</c>. Mixed from-start/from-end forms are produced. The generated range is well-formed against an array of length <paramref name="maxValue"/>; shrinks toward <c>0..0</c>.</summary>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="maxValue"/> is negative.</exception>
+    public static Strategy<Range> Ranges(int maxValue = 100)
+        => maxValue < 0
+            ? throw new ArgumentOutOfRangeException(nameof(maxValue), maxValue, "maxValue must be non-negative.")
+            : Tuples(Integers<int>(0, maxValue), Integers<int>(0, maxValue), Integers<int>(0, 1), Integers<int>(0, 1)).Select(t =>
+            {
+                int startPos = t.Item1 <= t.Item2 ? t.Item1 : t.Item2;
+                int endPos = t.Item1 <= t.Item2 ? t.Item2 : t.Item1;
+                bool startFromEnd = t.Item3 == 1;
+                bool endFromEnd = t.Item4 == 1;
+                Index start = startFromEnd ? new Index(maxValue - startPos, true) : new Index(startPos, false);
+                Index end = endFromEnd ? new Index(maxValue - endPos, true) : new Index(endPos, false);
+                return new Range(start, end);
+            });
+
     private static readonly ConcurrentDictionary<CultureTypes, CultureInfo[]> CulturesCache = new();
 
     /// <summary>Returns a strategy that generates random <see cref="CultureInfo"/> values from all cultures, with <see cref="CultureInfo.InvariantCulture"/> at index 0 to guide shrinking.</summary>

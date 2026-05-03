@@ -70,6 +70,7 @@ static Conjecture.Core.Strategy.IPEndPoints(Conjecture.Core.Strategy<System.Net.
 static Conjecture.Core.Strategy.Uris(System.UriKind kind = System.UriKind.Absolute, System.Collections.Generic.IReadOnlyList<string!>? schemes = null) -> Conjecture.Core.Strategy<System.Uri!>!
 static Conjecture.Core.Strategy.EmailAddresses() -> Conjecture.Core.Strategy<System.Net.Mail.MailAddress!>!
 static Conjecture.Core.Strategy.Indices(int maxValue = 100) -> Conjecture.Core.Strategy<System.Index>!
+static Conjecture.Core.Strategy.Ranges(int maxValue = 100) -> Conjecture.Core.Strategy<System.Range>!
 static Conjecture.Core.Strategy.EmailAddressStrings() -> Conjecture.Core.Strategy<string!>!
 static Conjecture.Core.Strategy.Halves() -> Conjecture.Core.Strategy<System.Half>!
 static Conjecture.Core.Strategy.Halves(System.Half min, System.Half max) -> Conjecture.Core.Strategy<System.Half>!
