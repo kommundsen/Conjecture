@@ -279,4 +279,83 @@ public class StrategyToolsTests
         string result = StrategyTools.SuggestForType("MailAddress");
         Assert.Contains("Strategy.EmailAddresses()", result);
     }
+
+    [Fact]
+    public void SuggestForType_Half_ContainsHalfValuesFactory()
+    {
+        string result = StrategyTools.SuggestForType("Half");
+        Assert.Contains("Strategy.Halves()", result);
+    }
+
+    [Fact]
+    public void SuggestForType_Half_ContainsRangedForm()
+    {
+        string result = StrategyTools.SuggestForType("Half");
+        Assert.Contains("Strategy.Halves(min, max)", result);
+    }
+
+    [Fact]
+    public void SuggestForType_Int128_ContainsIntegersInt128Factory()
+    {
+        string result = StrategyTools.SuggestForType("Int128");
+        Assert.Contains("Strategy.Integers<Int128>()", result);
+    }
+
+    [Fact]
+    public void SuggestForType_Int128_ContainsRangedForm()
+    {
+        string result = StrategyTools.SuggestForType("Int128");
+        Assert.Contains("Strategy.Integers<Int128>(", result);
+    }
+
+    [Fact]
+    public void SuggestForType_UInt128_ContainsIntegersUInt128Factory()
+    {
+        string result = StrategyTools.SuggestForType("UInt128");
+        Assert.Contains("Strategy.Integers<UInt128>()", result);
+    }
+
+    [Fact]
+    public void SuggestForType_UInt128_ContainsRangedForm()
+    {
+        string result = StrategyTools.SuggestForType("UInt128");
+        Assert.Contains("Strategy.Integers<UInt128>(", result);
+    }
+
+    [Fact]
+    public void SuggestForType_BigInteger_ContainsBigIntegerRangedFactory()
+    {
+        string result = StrategyTools.SuggestForType("BigInteger");
+        Assert.Contains("Strategy.Integers(", result);
+    }
+
+    [Fact]
+    public void SuggestForType_BigInteger_MentionsRangedOnlyConstraint()
+    {
+        string result = StrategyTools.SuggestForType("BigInteger");
+        Assert.True(
+            result.Contains("ranged") || result.Contains("min") && result.Contains("max"),
+            $"Expected ranged-only caveat in: {result}");
+    }
+
+    [Fact]
+    public void SuggestForType_BigInteger_DoesNotMentionParameterlessFactory()
+    {
+        string result = StrategyTools.SuggestForType("BigInteger");
+        Assert.DoesNotContain("Strategy.Integers()", result);
+    }
+
+    [Fact]
+    public void SuggestForType_Rune_ContainsRunesFactory()
+    {
+        string result = StrategyTools.SuggestForType("Rune");
+        Assert.Contains("Strategy.Runes()", result);
+    }
+
+    [Fact]
+    public void SuggestForType_Rune_ContainsRangedForm()
+    {
+        string result = StrategyTools.SuggestForType("Rune");
+        Assert.Contains("Strategy.Runes(min, max)", result);
+    }
 }
