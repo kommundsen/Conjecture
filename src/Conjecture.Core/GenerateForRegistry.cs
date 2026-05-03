@@ -47,6 +47,7 @@ public static class GenerateForRegistry
     static GenerateForRegistry()
     {
         IPAddressStrategyRegistration.Register();
+        IPEndPointStrategyRegistration.Register();
     }
 
     /// <summary>Registers an override-aware <see cref="IStrategyProvider"/> for <paramref name="type"/>. Called by source-generated module initializers.</summary>
