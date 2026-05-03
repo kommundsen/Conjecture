@@ -324,6 +324,12 @@ public static class Strategy
             : new UriStrategy(kind, resolvedSchemes);
     }
 
+    /// <summary>Returns a strategy that generates <see cref="System.Net.Mail.MailAddress"/> values with locally-generated user and host parts.</summary>
+    public static Strategy<System.Net.Mail.MailAddress> EmailAddresses() => new MailAddressStrategy();
+
+    /// <summary>Returns a strategy that generates RFC 5321-shaped email address strings.</summary>
+    public static Strategy<string> EmailAddressStrings() => new EmailAddressStringStrategy();
+
     /// <summary>Returns a strategy for <typeparamref name="T"/> using its registered <see cref="IStrategyProvider{T}"/>. The type must be decorated with <c>[Arbitrary]</c>.</summary>
     public static Strategy<T> For<T>() => GenerateForRegistry.Resolve<T>();
 
