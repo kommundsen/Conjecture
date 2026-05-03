@@ -298,6 +298,14 @@ public static class Strategy
     /// <summary>Returns a strategy that generates random <see cref="char"/> values across the full Unicode range.</summary>
     public static Strategy<char> Chars() => new CharStrategy();
 
+    /// <summary>Returns a strategy that generates <see cref="System.Net.IPAddress"/> values for the specified address family.</summary>
+    /// <param name="kind">Which address families to generate. Must not be zero.</param>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="kind"/> has no flags set.</exception>
+    public static Strategy<System.Net.IPAddress> IPAddresses(IPAddressKind kind = IPAddressKind.Both)
+        => kind == 0
+            ? throw new ArgumentException("At least one IPAddressKind flag must be set.", nameof(kind))
+            : new IPAddressStrategy(kind);
+
     /// <summary>Returns a strategy for <typeparamref name="T"/> using its registered <see cref="IStrategyProvider{T}"/>. The type must be decorated with <c>[Arbitrary]</c>.</summary>
     public static Strategy<T> For<T>() => GenerateForRegistry.Resolve<T>();
 
