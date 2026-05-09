@@ -61,7 +61,28 @@ In a GitHub Actions workflow:
     path: artifacts/repros/
 ```
 
+## MTP adapter: TRX artifact and post-run summary
+
+When using the `Conjecture.TestingPlatform` (MTP) adapter, you do not need to remember `ReproductionOutputPath` to locate exported repros on CI. The adapter automatically attaches the repro file to the failed test node as a TRX artifact and prints its path in the post-run summary.
+
+Run with `--report-trx` to see the attachment in the TRX output:
+
+```bash
+dotnet test --report-trx
+```
+
+After the run completes, the post-run summary lists each exported file:
+
+```text
+Failed  MyTests.My_property
+  Counterexample: value = 1000
+  Repro exported: artifacts/repros/MyTests.My_property__seed_0xDEADBEEF.repro
+```
+
+The file path is also embedded in the TRX under `<ResultFiles>` for the failed test node, so CI systems that parse TRX reports (Azure DevOps, GitHub Actions with a TRX reporter) pick it up automatically — no separate upload step required.
+
 ## See also
 
 - [Reference: Settings](../reference/settings.md) — `ExportReproductionOnFailure`, `ReproductionOutputPath`
 - [How to reproduce a failure](reproduce-a-failure.md) — pin a seed to replay a failure
+- [How to use the MTP adapter](use-mtp-adapter.md) — full MTP setup and CLI options
