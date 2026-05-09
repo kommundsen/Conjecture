@@ -1,7 +1,1 @@
 #nullable enable
-*REMOVED*Conjecture.Http.HttpGenerateExtensions
-*REMOVED*Conjecture.Http.HttpGenerateExtensions.extension(Conjecture.Core.Strategy!)
-*REMOVED*static Conjecture.Http.HttpGenerateExtensions.extension(Conjecture.Core.Strategy!).Http(string! resourceName) -> Conjecture.Http.HttpStrategyBuilder!
-Conjecture.Http.HttpStrategyExtensions
-Conjecture.Http.HttpStrategyExtensions.extension(Conjecture.Core.Strategy!)
-static Conjecture.Http.HttpStrategyExtensions.extension(Conjecture.Core.Strategy!).Http(string! resourceName) -> Conjecture.Http.HttpStrategyBuilder!

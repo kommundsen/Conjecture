@@ -1,3 +1,1 @@
 #nullable enable
-Conjecture.Abstractions.Strategies.IStrategyFormatter<T>
-Conjecture.Abstractions.Strategies.IStrategyFormatter<T>.Format(T value) -> string!

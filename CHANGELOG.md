@@ -8,20 +8,87 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Version
 
 ## [Unreleased]
 
+---
+
+## [0.28.0] — 2026-05-09
+
 ### Added
 
 **Core** (`Conjecture.Core`)
-- `Strategy.Halves()` and `Strategy.Halves(Half min, Half max)` — generate `System.Half` (16-bit IEEE 754 float) across the full range or a bounded interval
-- `Strategy.Integers<T>()` now binds `System.Int128` and `System.UInt128` (via `IBinaryInteger<T>`); `IntegerStrategy<T>` arithmetic is generalised away from `ulong` truncation
-- `Strategy.Integers(BigInteger min, BigInteger max)` — ranged-only generator for `System.Numerics.BigInteger`; shrinks toward whichever bound is closest to zero
-- `Strategy.Runes()` and `Strategy.Runes(Rune min, Rune max)` — generate `System.Text.Rune` across the full Unicode scalar range (U+0000..U+10FFFF, excluding surrogates U+D800..U+DFFF)
+- `Strategy.Indices(int maxValue)` and `Strategy.Ranges(int maxValue)` — generate `System.Index` and `System.Range` values bounded by `maxValue`
+- `Strategy.Halves()` and `Strategy.Halves(Half min, Half max)` — generate `System.Half` (16-bit IEEE 754 float)
+- `Strategy.Integers(BigInteger min, BigInteger max)` — ranged generator for `System.Numerics.BigInteger`; shrinks toward whichever bound is closest to zero
+- `Strategy.Runes()` and `Strategy.Runes(Rune min, Rune max)` — generate `System.Text.Rune` across the full Unicode scalar range
+- `Strategy.IPAddresses(IPAddressKind)`, `Strategy.IPEndPoints()`, `Strategy.Uris()`, `Strategy.EmailAddresses()`, `Strategy.EmailAddressStrings()` — network and email address strategies
+- `Strategy.Compose<T>(Func<IGenerationContext, T>)` — compose a strategy from multiple child draws; `IGenerationContext` and `PartialConstructorContext` expose `Generate<T>`, `Assume`, and `Target`
+- `SeededStrategy<T>` record and `StrategySamplingExtensions` — `.Sample()`, `.Sample(count)`, `.Stream()`, `.Stream(count)`, and `.WithSeed(seed)` extension methods on any `Strategy<T>`
+- `SampleAttribute`, `StrategyRangeAttribute`, `StrategyStringLengthAttribute`, `StrategyRegexAttribute`, `StrategyMaxDepthAttribute` — data-annotation attributes for property customisation
+- `FromMethodAttribute` — replaces `FromFactoryAttribute` (removed) to reference a factory method by name
+- `ConjectureSettings.Database`, `.ExportReproductionOnFailure`, `.ReproductionOutputPath` — opt-in database caching and failure-reproduction export settings
+- `IPAddressKind` enum (`V4`, `V6`, `Both`)
+
+**Core.Abstractions** (`Conjecture.Core.Abstractions`) — new package
+- `IStrategyFormatter<T>` — moved from `Conjecture.Core`; decoupled formatter contract
+
+**Testing.Abstractions** (`Conjecture.Testing.Abstractions`) — new package
+- `IPropertyTest` — moved from `Conjecture.Core`; decoupled property-test attribute contract including new `Database` member
+- `IReproductionExport` — moved from `Conjecture.Core`; contract for `ExportReproductionOnFailure` and `ReproductionOutputPath`
+- `TestOutputLogger` — `ILogger` implementation wrapping any `Action<string>` write-line delegate, with `FromWriteLine` factory
+
+**Interactions.Abstractions** (`Conjecture.Interactions.Abstractions`) — new package
+- `IInteraction`, `IAddressedInteraction`, `IInteractionTarget`, `InteractionStateMachine<TState>` — decoupled interaction contracts (previously lived in `Conjecture.Interactions`)
+
+**JsonSchema.Abstractions** (`Conjecture.JsonSchema.Abstractions`) — new package
+- `JsonSchemaNode` record, `JsonSchemaType` enum, `JsonSchemaParser` — decoupled JSON Schema IR; allows downstream packages to depend on the schema model without pulling in the generator
+
+**Aspire.Abstractions** (`Conjecture.Aspire.Abstractions`) — new package
+- `IAspireAppFixture` — moved from `Conjecture.Aspire`; decoupled fixture contract with `StartAsync`, `ResetAsync`, `WaitForHealthyAsync`, `DisposeAsync`, `HealthCheckedResources`, `MaxRetryAttempts`, `RetryDelay`
+- `ISnapshotLabel` — marker interface for snapshot label types
+
+**Aspire.Http** (`Conjecture.Aspire.Http`) — new package
+- `AspireHttpProperty.RunAsync` — property runner combining an `IAspireAppFixture` with an `InteractionStateMachine<TState>` over HTTP
+- `DistributedApplicationHttpTarget` — `IInteractionTarget` backed by a `DistributedApplication`, resolving `HttpClient` per resource name
+- `HttpInteractionTraceReporter` — records HTTP interactions and formats a trace report
+
+**Aspire** (`Conjecture.Aspire`)
+- `AspireProperty.RunAsync` — new overload accepting a generic `InteractionStateMachine<TState>` and a `targetFactory`, superseding the old `AspireStateMachine<TState>` overload
+- `AppLogTailFormatter.Format(DistributedApplication?)` — static helper formatting the tail of the distributed application log for failure output
+
+**Aspire.EFCore** (`Conjecture.Aspire.EFCore`)
+- `SnapshotTraceReporter` — records per-step snapshots and formats a structured report via `RecordSnapshot` / `FormatReport`
 
 **Mcp** (`Conjecture.Mcp`)
-- `suggest-strategy` recognises `Half`, `Int128`, `UInt128`, `BigInteger`, and `Rune` and emits the matching factory snippet
+- `suggest-strategy` recognises `Index`, `Range`, `Half`, `Int128`, `UInt128`, `BigInteger`, and `Rune`
+
+**Test frameworks** (Xunit, Xunit.V3, NUnit, MSTest, TestingPlatform)
+- `PropertyAttribute.Database`, `.ExportReproductionOnFailure`, `.ReproductionOutputPath` — new settings properties on all test framework `PropertyAttribute` types
 
 **Time** (`Conjecture.Time`)
-- `Strategy.CulturesByCalendar<TCalendar>()` — samples specific cultures whose default calendar type is exactly `TCalendar` (exact-type match, not assignment-compatible). Cached per calendar type. Throws `InvalidOperationException` when no qualifying culture is present on the platform (#625, #647)
-- `Strategy.CulturesNonGregorian()` — samples specific cultures whose default calendar is anything other than `GregorianCalendar`, surfacing Hijri / Hebrew / Japanese-era / Persian / Thai-Buddhist edge cases (#625, #647)
+- `Strategy.CulturesByCalendar<TCalendar>()` — cultures whose default calendar is exactly `TCalendar`
+- `Strategy.CulturesNonGregorian()` — non-Gregorian cultures (Hijri, Hebrew, Japanese-era, Persian, Thai-Buddhist)
+
+### Changed
+
+**Interactions** (`Conjecture.Interactions`)
+- `CompositeInteractionTarget` and `Property.ForAll` overloads now accept `Conjecture.Abstractions.Interactions` types instead of the old concrete types in `Conjecture.Interactions`
+
+**Grpc** (`Conjecture.Grpc`), **Http** (`Conjecture.Http`), **Messaging** (`Conjecture.Messaging`), **JsonSchema** (`Conjecture.JsonSchema`), **OpenApi** (`Conjecture.OpenApi`), **Protobuf** (`Conjecture.Protobuf`), **EFCore** (`Conjecture.EFCore`), **Money** (`Conjecture.Money`), **Time** (`Conjecture.Time`), **Regex** (`Conjecture.Regex`)
+- Extension entry-point classes renamed from `Generate`-prefixed to `Strategy`-suffixed convention (e.g. `HttpGenerateExtensions` → `HttpStrategyExtensions`, `GenerateGrpc` → `GrpcStrategyExtensions`). New companion builder/accessor types introduced: `MessagingStrategies`, `DbStrategies`, `DbInteractionSequenceBuilder`
+
+**Money** (`Conjecture.Money`)
+- `MoneyStrategyExtensions` (née `MoneyGenerateExtensions`) adds `CulturesWithCurrency()` and `CulturesByCurrencyCode(string)` — filter cultures by associated ISO 4217 currency
+
+### Removed
+
+**Core** (`Conjecture.Core`)
+- `FromFactoryAttribute` — use `FromMethodAttribute` instead
+- `IPropertyTest`, `IReproductionExport`, `IStrategyFormatter<T>` — moved to `Conjecture.Testing.Abstractions` / `Conjecture.Core.Abstractions`
+
+**Interactions** (`Conjecture.Interactions`)
+- `IInteraction`, `IAddressedInteraction`, `IInteractionTarget`, `InteractionStateMachine<TState>` — moved to `Conjecture.Interactions.Abstractions`
+
+**Aspire** (`Conjecture.Aspire`)
+- `IAspireAppFixture`, `AspireStateMachine<TState>`, `Interaction` — moved to `Conjecture.Aspire.Abstractions`; `AspireStateMachine` superseded by the generic `InteractionStateMachine<TState>`
 
 ---
 

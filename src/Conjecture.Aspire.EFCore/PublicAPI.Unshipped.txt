@@ -1,17 +1,1 @@
 #nullable enable
-*REMOVED*Conjecture.Aspire.EFCore.AspireDbTarget<TContext>.ExecuteAsync(Conjecture.Interactions.IInteraction! interaction, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<object?>!
-Conjecture.Aspire.EFCore.AspireDbTarget<TContext>.ExecuteAsync(Conjecture.Abstractions.Interactions.IInteraction! interaction, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<object?>!
-*REMOVED*Conjecture.Aspire.EFCore.AspireEFCoreInvariants.AspireEFCoreInvariants(Conjecture.Interactions.IInteractionTarget! writer, Conjecture.EFCore.IDbTarget! db) -> void
-Conjecture.Aspire.EFCore.AspireEFCoreInvariants.AspireEFCoreInvariants(Conjecture.Abstractions.Interactions.IInteractionTarget! writer, Conjecture.EFCore.IDbTarget! db) -> void
-*REMOVED*Conjecture.Aspire.EFCore.AspireEFCoreInvariants.AssertIdempotentAsync(Conjecture.Interactions.IInteraction! operation, System.Func<Microsoft.EntityFrameworkCore.DbContext!, System.Threading.Tasks.Task<int>!>! rowCount, System.TimeSpan eventualTimeout, System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
-Conjecture.Aspire.EFCore.AspireEFCoreInvariants.AssertIdempotentAsync(Conjecture.Abstractions.Interactions.IInteraction! operation, System.Func<Microsoft.EntityFrameworkCore.DbContext!, System.Threading.Tasks.Task<int>!>! rowCount, System.TimeSpan eventualTimeout, System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
-*REMOVED*Conjecture.Aspire.EFCore.AspireEFCoreInvariants.AssertNoPartialWritesOnErrorAsync(Conjecture.Interactions.IInteraction! operation, System.Func<Microsoft.EntityFrameworkCore.DbContext!, System.Threading.Tasks.Task<int>!>! rowCount, System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
-Conjecture.Aspire.EFCore.AspireEFCoreInvariants.AssertNoPartialWritesOnErrorAsync(Conjecture.Abstractions.Interactions.IInteraction! operation, System.Func<Microsoft.EntityFrameworkCore.DbContext!, System.Threading.Tasks.Task<int>!>! rowCount, System.Threading.CancellationToken ct = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
-*REMOVED*Conjecture.Aspire.EFCore.AspireInteractionSequenceBuilder.Build(int minSize = 1, int maxSize = 20) -> Conjecture.Core.Strategy<System.Collections.Generic.IReadOnlyList<Conjecture.Interactions.IAddressedInteraction!>!>!
-Conjecture.Aspire.EFCore.AspireInteractionSequenceBuilder.Build(int minSize = 1, int maxSize = 20) -> Conjecture.Core.Strategy<System.Collections.Generic.IReadOnlyList<Conjecture.Abstractions.Interactions.IAddressedInteraction!>!>!
-*REMOVED*static Conjecture.Aspire.EFCore.AspireDbFixtureExtensions.CreateDbRegistry(this Conjecture.Aspire.IAspireAppFixture! fixture) -> Conjecture.Aspire.EFCore.AspireDbTargetRegistry!
-static Conjecture.Aspire.EFCore.AspireDbFixtureExtensions.CreateDbRegistry(this Conjecture.Abstractions.Aspire.IAspireAppFixture! fixture) -> Conjecture.Aspire.EFCore.AspireDbTargetRegistry!
-Conjecture.Aspire.EFCore.SnapshotTraceReporter
-Conjecture.Aspire.EFCore.SnapshotTraceReporter.SnapshotTraceReporter() -> void
-Conjecture.Aspire.EFCore.SnapshotTraceReporter.FormatReport() -> string!
-Conjecture.Aspire.EFCore.SnapshotTraceReporter.RecordSnapshot(object! snapshot, object? capturedValue) -> void
