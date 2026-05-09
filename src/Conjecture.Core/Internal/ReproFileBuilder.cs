@@ -104,7 +104,7 @@ internal static class ReproFileBuilder
         sb.AppendLine(GetTestAttribute(framework));
     }
 
-    internal static void WriteToFile(ReproContext context, string outputPath)
+    internal static string? WriteToFile(ReproContext context, string outputPath)
     {
         try
         {
@@ -114,12 +114,15 @@ internal static class ReproFileBuilder
             string fullPath = Path.Combine(outputPath, fileName);
             string content = Build(context);
             File.WriteAllText(fullPath, content);
+            return fullPath;
         }
         catch (IOException)
         {
+            return null;
         }
         catch (UnauthorizedAccessException)
         {
+            return null;
         }
     }
 

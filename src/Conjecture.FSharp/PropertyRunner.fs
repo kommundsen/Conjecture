@@ -53,7 +53,7 @@ module PropertyRunner =
                         shrinkCount,
                         TestFramework.Xunit,
                         DateTimeOffset.UtcNow)
-                ReproFileBuilder.WriteToFile(context, repro.OutputPath)
+                ReproFileBuilder.WriteToFile(context, repro.OutputPath) |> ignore
             with _ -> ()
 
     /// Runs a bool-returning property with optional repro export. <c>false</c> is treated as a test failure.
