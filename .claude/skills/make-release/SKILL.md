@@ -58,10 +58,17 @@ dotnet test src/
 
 ### 5. Run benchmarks (sanity check — not a hard gate)
 
+Benchmarks take 30+ minutes. Run them in the background and poll for progress.
+
+**5a. Start benchmarks in the background** using `run_in_background: true`:
+
 ```bash
 cd src/Conjecture.Benchmarks && dotnet run -c Release -- --filter "*" --job short
 ```
 
+**5b. Poll with Monitor every 30 seconds** — pass the background command's output path to Monitor and report progress to the user each time a new benchmark completes (look for lines like `| Method |` table rows or `// * Summary *` in the output). Keep reporting until the process finishes.
+
+**5c. Once complete:**
 - Summarise results: ops/sec and allocated bytes per operation for each benchmark.
 - Flag any benchmark generating < 100k ops/sec or allocating > 1 KB/op as worth reviewing.
 - Tell the user the results and ask whether to continue if anything looks regressed.
