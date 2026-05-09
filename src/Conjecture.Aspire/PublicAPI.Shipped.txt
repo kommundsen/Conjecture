@@ -4,8 +4,8 @@ Conjecture.Aspire.AspireSessionLifetimeHandler
 Conjecture.Aspire.AspireSessionLifetimeHandler.Description.get -> string!
 Conjecture.Aspire.AspireSessionLifetimeHandler.DisplayName.get -> string!
 Conjecture.Aspire.AspireSessionLifetimeHandler.IsEnabledAsync() -> System.Threading.Tasks.Task<bool>!
-Conjecture.Aspire.AspireSessionLifetimeHandler.OnTestSessionFinishingAsync(Microsoft.Testing.Platform.TestHost.SessionUid sessionUid, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task!
-Conjecture.Aspire.AspireSessionLifetimeHandler.OnTestSessionStartingAsync(Microsoft.Testing.Platform.TestHost.SessionUid sessionUid, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task!
+Conjecture.Aspire.AspireSessionLifetimeHandler.OnTestSessionFinishingAsync(Microsoft.Testing.Platform.Services.ITestSessionContext! context) -> System.Threading.Tasks.Task!
+Conjecture.Aspire.AspireSessionLifetimeHandler.OnTestSessionStartingAsync(Microsoft.Testing.Platform.Services.ITestSessionContext! context) -> System.Threading.Tasks.Task!
 Conjecture.Aspire.AspireSessionLifetimeHandler.Uid.get -> string!
 Conjecture.Aspire.AspireSessionLifetimeHandler.Version.get -> string!
 Conjecture.Aspire.AspireSessionLifetimeHandler.AspireSessionLifetimeHandler(Conjecture.Abstractions.Aspire.IAspireAppFixture! fixture) -> void

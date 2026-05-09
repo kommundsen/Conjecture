@@ -13,6 +13,9 @@
           Condition="'$(IsTestProject)' == 'true'">
     <PropertyGroup>
       <GenerateTestingPlatformEntryPoint>false</GenerateTestingPlatformEntryPoint>
+      <!-- MTP 2.x blocks VSTest on .NET 10+; opt-in test projects that use this package
+           via project reference into the new dotnet test integration instead. -->
+      <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
     </PropertyGroup>
   </Target>
 </Project>
