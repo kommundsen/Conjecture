@@ -51,14 +51,16 @@ internal sealed class MtpLogger : ILogger
         }
 
         string message = formatter(state, exception);
+        IProperty property = level is LogLevel.Error or LogLevel.Critical
+            ? new StandardErrorProperty(message + Environment.NewLine)
+            : new StandardOutputProperty($"[{level}] {message}{Environment.NewLine}");
         _ = bus.PublishAsync(producer!, new TestNodeUpdateMessage(
             session,
             new TestNode
             {
                 Uid = nodeUid,
                 DisplayName = string.Empty,
-                Properties = new PropertyBag(
-                    new TestMetadataProperty($"conjecture.log.{level}", message))
+                Properties = new PropertyBag(property)
             }));
     }
 }
