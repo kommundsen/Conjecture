@@ -1,7 +1,1 @@
 #nullable enable
-Conjecture.Xunit.V3.PropertyAttribute.Database.get -> bool
-Conjecture.Xunit.V3.PropertyAttribute.Database.set -> void
-Conjecture.Xunit.V3.PropertyAttribute.ExportReproductionOnFailure.get -> bool
-Conjecture.Xunit.V3.PropertyAttribute.ExportReproductionOnFailure.set -> void
-Conjecture.Xunit.V3.PropertyAttribute.ReproductionOutputPath.get -> string!
-Conjecture.Xunit.V3.PropertyAttribute.ReproductionOutputPath.set -> void

@@ -1,18 +1,1 @@
 #nullable enable
-Conjecture.Abstractions.Testing.IPropertyTest
-Conjecture.Abstractions.Testing.IPropertyTest.Database.get -> bool
-Conjecture.Abstractions.Testing.IPropertyTest.DeadlineMs.get -> int
-Conjecture.Abstractions.Testing.IPropertyTest.MaxExamples.get -> int
-Conjecture.Abstractions.Testing.IPropertyTest.MaxStrategyRejections.get -> int
-Conjecture.Abstractions.Testing.IPropertyTest.Seed.get -> ulong
-Conjecture.Abstractions.Testing.IPropertyTest.Targeting.get -> bool
-Conjecture.Abstractions.Testing.IPropertyTest.TargetingProportion.get -> double
-Conjecture.Abstractions.Testing.IReproductionExport
-Conjecture.Abstractions.Testing.IReproductionExport.ExportReproductionOnFailure.get -> bool
-Conjecture.Abstractions.Testing.IReproductionExport.ReproductionOutputPath.get -> string!
-Conjecture.Abstractions.Testing.TestOutputLogger
-Conjecture.Abstractions.Testing.TestOutputLogger.TestOutputLogger(System.Action<string!>! writeLine, Microsoft.Extensions.Logging.LogLevel minLevel = Microsoft.Extensions.Logging.LogLevel.Information) -> void
-Conjecture.Abstractions.Testing.TestOutputLogger.IsEnabled(Microsoft.Extensions.Logging.LogLevel logLevel) -> bool
-Conjecture.Abstractions.Testing.TestOutputLogger.Log<TState>(Microsoft.Extensions.Logging.LogLevel logLevel, Microsoft.Extensions.Logging.EventId eventId, TState state, System.Exception? exception, System.Func<TState, System.Exception?, string!>! formatter) -> void
-Conjecture.Abstractions.Testing.TestOutputLogger.BeginScope<TState>(TState state) -> System.IDisposable!
-static Conjecture.Abstractions.Testing.TestOutputLogger.FromWriteLine(System.Action<string!>? writeLine, Microsoft.Extensions.Logging.LogLevel minLevel = Microsoft.Extensions.Logging.LogLevel.Information) -> Microsoft.Extensions.Logging.ILogger!

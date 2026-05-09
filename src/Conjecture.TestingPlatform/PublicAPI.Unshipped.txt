@@ -1,7 +1,1 @@
 #nullable enable
-Conjecture.TestingPlatform.PropertyAttribute.Database.get -> bool
-Conjecture.TestingPlatform.PropertyAttribute.Database.set -> void
-Conjecture.TestingPlatform.PropertyAttribute.ExportReproductionOnFailure.get -> bool
-Conjecture.TestingPlatform.PropertyAttribute.ExportReproductionOnFailure.set -> void
-Conjecture.TestingPlatform.PropertyAttribute.ReproductionOutputPath.get -> string!
-Conjecture.TestingPlatform.PropertyAttribute.ReproductionOutputPath.set -> void

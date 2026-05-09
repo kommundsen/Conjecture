@@ -1,1 +1,61 @@
 #nullable enable
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.JsonSchemaNode(Conjecture.Abstractions.JsonSchema.JsonSchemaType Type, System.Collections.Generic.IReadOnlyList<Conjecture.Abstractions.JsonSchema.JsonSchemaNode!>? OneOf, System.Collections.Generic.IReadOnlyList<Conjecture.Abstractions.JsonSchema.JsonSchemaNode!>? AnyOf, System.Collections.Generic.IReadOnlyList<Conjecture.Abstractions.JsonSchema.JsonSchemaNode!>? AllOf, System.Collections.Generic.IReadOnlyDictionary<string!, Conjecture.Abstractions.JsonSchema.JsonSchemaNode!>? Properties, System.Collections.Generic.IReadOnlyList<string!>? Required, Conjecture.Abstractions.JsonSchema.JsonSchemaNode? Items, int? MinItems, int? MaxItems, long? Minimum, long? Maximum, double? MinimumDouble, double? MaximumDouble, bool ExclusiveMinimum, bool ExclusiveMaximum, int? MinLength, int? MaxLength, string? Pattern, System.Collections.Generic.IReadOnlyList<System.Text.Json.JsonElement>? Enum, System.Text.Json.JsonElement? Const, string? Ref, string? Format) -> void
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.AllOf.get -> System.Collections.Generic.IReadOnlyList<Conjecture.Abstractions.JsonSchema.JsonSchemaNode!>?
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.AllOf.init -> void
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.AnyOf.get -> System.Collections.Generic.IReadOnlyList<Conjecture.Abstractions.JsonSchema.JsonSchemaNode!>?
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.AnyOf.init -> void
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.Const.get -> System.Text.Json.JsonElement?
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.Const.init -> void
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.Defs.get -> System.Collections.Generic.IReadOnlyDictionary<string!, Conjecture.Abstractions.JsonSchema.JsonSchemaNode!>?
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.Defs.init -> void
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.Enum.get -> System.Collections.Generic.IReadOnlyList<System.Text.Json.JsonElement>?
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.Enum.init -> void
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.ExclusiveMaximum.get -> bool
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.ExclusiveMaximum.init -> void
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.ExclusiveMinimum.get -> bool
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.ExclusiveMinimum.init -> void
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.Format.get -> string?
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.Format.init -> void
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.Items.get -> Conjecture.Abstractions.JsonSchema.JsonSchemaNode?
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.Items.init -> void
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.MaxItems.get -> int?
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.MaxItems.init -> void
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.MaxLength.get -> int?
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.MaxLength.init -> void
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.Maximum.get -> long?
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.Maximum.init -> void
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.MaximumDouble.get -> double?
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.MaximumDouble.init -> void
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.MinItems.get -> int?
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.MinItems.init -> void
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.MinLength.get -> int?
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.MinLength.init -> void
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.Minimum.get -> long?
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.Minimum.init -> void
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.MinimumDouble.get -> double?
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.MinimumDouble.init -> void
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.OneOf.get -> System.Collections.Generic.IReadOnlyList<Conjecture.Abstractions.JsonSchema.JsonSchemaNode!>?
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.OneOf.init -> void
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.Pattern.get -> string?
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.Pattern.init -> void
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.Properties.get -> System.Collections.Generic.IReadOnlyDictionary<string!, Conjecture.Abstractions.JsonSchema.JsonSchemaNode!>?
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.Properties.init -> void
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.Ref.get -> string?
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.Ref.init -> void
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.Required.get -> System.Collections.Generic.IReadOnlyList<string!>?
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.Required.init -> void
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.Type.get -> Conjecture.Abstractions.JsonSchema.JsonSchemaType
+Conjecture.Abstractions.JsonSchema.JsonSchemaNode.Type.init -> void
+Conjecture.Abstractions.JsonSchema.JsonSchemaParser
+static Conjecture.Abstractions.JsonSchema.JsonSchemaParser.Parse(System.Text.Json.JsonElement root) -> Conjecture.Abstractions.JsonSchema.JsonSchemaNode!
+Conjecture.Abstractions.JsonSchema.JsonSchemaType
+Conjecture.Abstractions.JsonSchema.JsonSchemaType.None = 0 -> Conjecture.Abstractions.JsonSchema.JsonSchemaType
+Conjecture.Abstractions.JsonSchema.JsonSchemaType.Null = 1 -> Conjecture.Abstractions.JsonSchema.JsonSchemaType
+Conjecture.Abstractions.JsonSchema.JsonSchemaType.Boolean = 2 -> Conjecture.Abstractions.JsonSchema.JsonSchemaType
+Conjecture.Abstractions.JsonSchema.JsonSchemaType.Integer = 3 -> Conjecture.Abstractions.JsonSchema.JsonSchemaType
+Conjecture.Abstractions.JsonSchema.JsonSchemaType.Number = 4 -> Conjecture.Abstractions.JsonSchema.JsonSchemaType
+Conjecture.Abstractions.JsonSchema.JsonSchemaType.String = 5 -> Conjecture.Abstractions.JsonSchema.JsonSchemaType
+Conjecture.Abstractions.JsonSchema.JsonSchemaType.Array = 6 -> Conjecture.Abstractions.JsonSchema.JsonSchemaType
+Conjecture.Abstractions.JsonSchema.JsonSchemaType.Object = 7 -> Conjecture.Abstractions.JsonSchema.JsonSchemaType
+Conjecture.Abstractions.JsonSchema.JsonSchemaType.Any = 8 -> Conjecture.Abstractions.JsonSchema.JsonSchemaType

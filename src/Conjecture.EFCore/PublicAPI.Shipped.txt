@@ -6,10 +6,6 @@ Conjecture.EFCore.EntityStrategyBuilder.WithoutNavigation<TEntity>(System.Linq.E
 Conjecture.EFCore.EntityStrategyBuilder.Build<TEntity>() -> Conjecture.Core.Strategy<TEntity!>!
 Conjecture.EFCore.PropertyStrategyBuilder
 static Conjecture.EFCore.PropertyStrategyBuilder.Build(Microsoft.EntityFrameworkCore.Metadata.IProperty! property) -> Conjecture.Core.Strategy<object?>!
-Conjecture.EFCore.EFCoreGenerateExtensions
-Conjecture.EFCore.EFCoreGenerateExtensions.extension(Conjecture.Core.Strategy!)
-static Conjecture.EFCore.EFCoreGenerateExtensions.extension(Conjecture.Core.Strategy!).Entity<T>(Microsoft.EntityFrameworkCore.DbContext! context, int maxDepth = 2) -> Conjecture.Core.Strategy<T!>!
-static Conjecture.EFCore.EFCoreGenerateExtensions.extension(Conjecture.Core.Strategy!).Entity<T>(System.Func<Microsoft.EntityFrameworkCore.DbContext!>! contextFactory, int maxDepth = 2) -> Conjecture.Core.Strategy<T!>!
 Conjecture.EFCore.RoundtripAssertionException
 Conjecture.EFCore.RoundtripAssertionException.RoundtripAssertionException(string! message) -> void
 Conjecture.EFCore.RoundtripAsserter
@@ -48,23 +44,12 @@ Conjecture.EFCore.InMemoryDbTarget.InMemoryDbTarget(string! resourceName, System
 Conjecture.EFCore.InMemoryDbTarget.ResourceName.get -> string!
 Conjecture.EFCore.InMemoryDbTarget.ResolveContext(string! resourceName) -> Microsoft.EntityFrameworkCore.DbContext!
 Conjecture.EFCore.InMemoryDbTarget.ResetAsync(string! resourceName, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
-Conjecture.EFCore.InMemoryDbTarget.ExecuteAsync(Conjecture.Interactions.IInteraction! interaction, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<object?>!
 Conjecture.EFCore.SqliteDbTarget
 Conjecture.EFCore.SqliteDbTarget.SqliteDbTarget(string! resourceName, System.Func<Microsoft.EntityFrameworkCore.DbContext!>! contextFactory) -> void
 Conjecture.EFCore.SqliteDbTarget.ResourceName.get -> string!
 Conjecture.EFCore.SqliteDbTarget.ResolveContext(string! resourceName) -> Microsoft.EntityFrameworkCore.DbContext!
 Conjecture.EFCore.SqliteDbTarget.ResetAsync(string! resourceName, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
-Conjecture.EFCore.SqliteDbTarget.ExecuteAsync(Conjecture.Interactions.IInteraction! interaction, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<object?>!
 Conjecture.EFCore.SqliteDbTarget.DisposeAsync() -> System.Threading.Tasks.ValueTask
-Conjecture.EFCore.GenerateDbBlock
-Conjecture.EFCore.GenerateDbBlock.Add<T>(string! resourceName, Microsoft.EntityFrameworkCore.Metadata.IModel! model, int maxDepth = 2) -> Conjecture.Core.Strategy<Conjecture.EFCore.DbInteraction!>!
-Conjecture.EFCore.GenerateDbBlock.Update<T>(string! resourceName, Microsoft.EntityFrameworkCore.Metadata.IModel! model, int maxDepth = 2) -> Conjecture.Core.Strategy<Conjecture.EFCore.DbInteraction!>!
-Conjecture.EFCore.GenerateDbBlock.Remove<T>(string! resourceName, Microsoft.EntityFrameworkCore.Metadata.IModel! model) -> Conjecture.Core.Strategy<Conjecture.EFCore.DbInteraction!>!
-Conjecture.EFCore.GenerateDbBlock.SaveChanges(string! resourceName) -> Conjecture.Core.Strategy<Conjecture.EFCore.DbInteraction!>!
-Conjecture.EFCore.GenerateDbBlock.Sequence(string! resourceName, Microsoft.EntityFrameworkCore.Metadata.IModel! model, int min = 1, int max = 5) -> Conjecture.Core.Strategy<System.Collections.Generic.IReadOnlyList<Conjecture.EFCore.DbInteraction!>!>!
-Conjecture.EFCore.DbGenerateExtensions
-Conjecture.EFCore.DbGenerateExtensions.extension(Conjecture.Core.Strategy!)
-static Conjecture.EFCore.DbGenerateExtensions.extension(Conjecture.Core.Strategy!).Db.get -> Conjecture.EFCore.GenerateDbBlock!
 Conjecture.EFCore.DbInvariantException
 Conjecture.EFCore.DbInvariantException.DbInvariantException(string! message) -> void
 Conjecture.EFCore.DbInvariantException.DbInvariantException(string! message, System.Exception! innerException) -> void
@@ -89,3 +74,19 @@ static Conjecture.EFCore.EntitySnapshotter.CaptureAsync(Conjecture.EFCore.IDbTar
 static Conjecture.EFCore.EntitySnapshotter.Diff(Conjecture.EFCore.EntitySnapshot! before, Conjecture.EFCore.EntitySnapshot! after) -> Conjecture.EFCore.EntitySnapshotDiff!
 Conjecture.EFCore.IDbTargetExtensions
 static Conjecture.EFCore.IDbTargetExtensions.Resolve<TContext>(this Conjecture.EFCore.IDbTarget! target) -> TContext!
+Conjecture.EFCore.DbStrategyExtensions
+Conjecture.EFCore.DbStrategyExtensions.extension(Conjecture.Core.Strategy!)
+static Conjecture.EFCore.DbStrategyExtensions.extension(Conjecture.Core.Strategy!).Entity<T>(Microsoft.EntityFrameworkCore.DbContext! context, int maxDepth = 2) -> Conjecture.Core.Strategy<T!>!
+static Conjecture.EFCore.DbStrategyExtensions.extension(Conjecture.Core.Strategy!).Entity<T>(System.Func<Microsoft.EntityFrameworkCore.DbContext!>! contextFactory, int maxDepth = 2) -> Conjecture.Core.Strategy<T!>!
+static Conjecture.EFCore.DbStrategyExtensions.extension(Conjecture.Core.Strategy!).Db.get -> Conjecture.EFCore.DbStrategies!
+Conjecture.EFCore.DbStrategies
+Conjecture.EFCore.DbStrategies.Add<T>(string! resourceName, Microsoft.EntityFrameworkCore.Metadata.IModel! model, int maxDepth = 2) -> Conjecture.Core.Strategy<Conjecture.EFCore.DbInteraction!>!
+Conjecture.EFCore.DbStrategies.Update<T>(string! resourceName, Microsoft.EntityFrameworkCore.Metadata.IModel! model, int maxDepth = 2) -> Conjecture.Core.Strategy<Conjecture.EFCore.DbInteraction!>!
+Conjecture.EFCore.DbStrategies.Remove<T>(string! resourceName, Microsoft.EntityFrameworkCore.Metadata.IModel! model) -> Conjecture.Core.Strategy<Conjecture.EFCore.DbInteraction!>!
+Conjecture.EFCore.DbStrategies.SaveChanges(string! resourceName) -> Conjecture.Core.Strategy<Conjecture.EFCore.DbInteraction!>!
+Conjecture.EFCore.DbStrategies.Sequence(string! resourceName, Microsoft.EntityFrameworkCore.Metadata.IModel! model) -> Conjecture.EFCore.DbInteractionSequenceBuilder!
+Conjecture.EFCore.DbInteractionSequenceBuilder
+Conjecture.EFCore.DbInteractionSequenceBuilder.WithLength(int min, int max) -> Conjecture.EFCore.DbInteractionSequenceBuilder!
+Conjecture.EFCore.DbInteractionSequenceBuilder.Build() -> Conjecture.Core.Strategy<System.Collections.Generic.IReadOnlyList<Conjecture.EFCore.DbInteraction!>!>!
+Conjecture.EFCore.InMemoryDbTarget.ExecuteAsync(Conjecture.Abstractions.Interactions.IInteraction! interaction, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<object?>!
+Conjecture.EFCore.SqliteDbTarget.ExecuteAsync(Conjecture.Abstractions.Interactions.IInteraction! interaction, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<object?>!

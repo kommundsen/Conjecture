@@ -1,12 +1,1 @@
 #nullable enable
-Conjecture.Abstractions.Interactions.IInteraction
-Conjecture.Abstractions.Interactions.IAddressedInteraction
-Conjecture.Abstractions.Interactions.IAddressedInteraction.ResourceName.get -> string!
-Conjecture.Abstractions.Interactions.IInteractionTarget
-Conjecture.Abstractions.Interactions.IInteractionTarget.ExecuteAsync(Conjecture.Abstractions.Interactions.IInteraction! interaction, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<object?>!
-Conjecture.Abstractions.Interactions.InteractionStateMachine<TState>
-Conjecture.Abstractions.Interactions.InteractionStateMachine<TState>.InteractionStateMachine() -> void
-abstract Conjecture.Abstractions.Interactions.InteractionStateMachine<TState>.Commands(TState state) -> System.Collections.Generic.IEnumerable<Conjecture.Core.Strategy<Conjecture.Abstractions.Interactions.IInteraction!>!>!
-abstract Conjecture.Abstractions.Interactions.InteractionStateMachine<TState>.InitialState() -> TState
-abstract Conjecture.Abstractions.Interactions.InteractionStateMachine<TState>.Invariant(TState state) -> void
-abstract Conjecture.Abstractions.Interactions.InteractionStateMachine<TState>.RunCommand(TState state, Conjecture.Abstractions.Interactions.IInteraction! interaction, Conjecture.Abstractions.Interactions.IInteractionTarget! target, System.Threading.CancellationToken ct) -> System.Threading.Tasks.ValueTask<TState>

@@ -1,10 +1,1 @@
 #nullable enable
-Conjecture.Aspire.Http.AspireHttpProperty
-static Conjecture.Aspire.Http.AspireHttpProperty.RunAsync<TState>(Conjecture.Abstractions.Aspire.IAspireAppFixture! fixture, Conjecture.Abstractions.Interactions.InteractionStateMachine<TState>! machine, Conjecture.Core.ConjectureSettings! settings, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task!
-Conjecture.Aspire.Http.DistributedApplicationHttpTarget
-Conjecture.Aspire.Http.DistributedApplicationHttpTarget.DistributedApplicationHttpTarget(Aspire.Hosting.DistributedApplication! app) -> void
-Conjecture.Aspire.Http.DistributedApplicationHttpTarget.ResolveClient(string! resourceName) -> System.Net.Http.HttpClient!
-Conjecture.Aspire.Http.HttpInteractionTraceReporter
-Conjecture.Aspire.Http.HttpInteractionTraceReporter.HttpInteractionTraceReporter() -> void
-Conjecture.Aspire.Http.HttpInteractionTraceReporter.FormatReport() -> string!
-Conjecture.Aspire.Http.HttpInteractionTraceReporter.Record(Conjecture.Http.HttpInteraction interaction, System.Net.Http.HttpResponseMessage! response, System.TimeSpan elapsed) -> System.Threading.Tasks.Task!

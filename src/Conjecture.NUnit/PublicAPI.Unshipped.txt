@@ -1,7 +1,1 @@
 #nullable enable
-Conjecture.NUnit.PropertyAttribute.Database.get -> bool
-Conjecture.NUnit.PropertyAttribute.Database.set -> void
-Conjecture.NUnit.PropertyAttribute.ExportReproductionOnFailure.get -> bool
-Conjecture.NUnit.PropertyAttribute.ExportReproductionOnFailure.set -> void
-Conjecture.NUnit.PropertyAttribute.ReproductionOutputPath.get -> string!
-Conjecture.NUnit.PropertyAttribute.ReproductionOutputPath.set -> void

@@ -1,11 +1,1 @@
 #nullable enable
-*REMOVED*Conjecture.OpenApi.OpenApiGenerate
-*REMOVED*Conjecture.OpenApi.OpenApiGenerate.extension(Conjecture.Core.Strategy!)
-*REMOVED*static Conjecture.OpenApi.OpenApiGenerate.extension(Conjecture.Core.Strategy!).FromOpenApi(string! filePath) -> System.Threading.Tasks.Task<Conjecture.OpenApi.OpenApiDocument!>!
-*REMOVED*static Conjecture.OpenApi.OpenApiGenerate.extension(Conjecture.Core.Strategy!).FromOpenApi(System.IO.FileInfo! file) -> System.Threading.Tasks.Task<Conjecture.OpenApi.OpenApiDocument!>!
-*REMOVED*static Conjecture.OpenApi.OpenApiGenerate.extension(Conjecture.Core.Strategy!).FromOpenApi(System.Uri! url) -> System.Threading.Tasks.Task<Conjecture.OpenApi.OpenApiDocument!>!
-Conjecture.OpenApi.OpenApiStrategyExtensions
-Conjecture.OpenApi.OpenApiStrategyExtensions.extension(Conjecture.Core.Strategy!)
-static Conjecture.OpenApi.OpenApiStrategyExtensions.extension(Conjecture.Core.Strategy!).FromOpenApi(string! filePath) -> System.Threading.Tasks.Task<Conjecture.OpenApi.OpenApiDocument!>!
-static Conjecture.OpenApi.OpenApiStrategyExtensions.extension(Conjecture.Core.Strategy!).FromOpenApi(System.IO.FileInfo! file) -> System.Threading.Tasks.Task<Conjecture.OpenApi.OpenApiDocument!>!
-static Conjecture.OpenApi.OpenApiStrategyExtensions.extension(Conjecture.Core.Strategy!).FromOpenApi(System.Uri! url) -> System.Threading.Tasks.Task<Conjecture.OpenApi.OpenApiDocument!>!
