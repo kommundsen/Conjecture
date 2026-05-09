@@ -125,6 +125,14 @@ dotnet test --report-trx
 
 Failed test nodes include the Conjecture counterexample, so the TRX captures the minimal failing input alongside the failure message.
 
+Conjecture log output is routed through stdout and stderr, so it integrates with the `--show-stdout` and `--show-stderr` flags added in MTP 2.2.1:
+
+```bash
+dotnet test --show-stdout --show-stderr
+```
+
+Routing follows log level: **Error** and **Critical** messages go to stderr; **Information** and **Warning** messages go to stdout. Pass both flags together to see the full Conjecture output inline with the test results.
+
 ## Next
 
 - [Tutorial 5: Framework Adapters](../tutorials/05-framework-adapters.md) — side-by-side comparison of all adapters
