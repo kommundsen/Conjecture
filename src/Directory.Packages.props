@@ -102,6 +102,6 @@
 
     <!-- Aspire -->
     <PackageVersion Include="Aspire.Hosting" Version="13.3.0" />
-    <PackageVersion Include="Aspire.Hosting.Testing" Version="13.2.4" />
+    <PackageVersion Include="Aspire.Hosting.Testing" Version="13.3.0" />
   </ItemGroup>
 </Project>
