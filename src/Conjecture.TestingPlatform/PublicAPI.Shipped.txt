@@ -17,3 +17,9 @@ Conjecture.TestingPlatform.ConjectureTestingPlatformExtensions
 Conjecture.TestingPlatform.ConjectureTestingPlatformExtensions.extension(Microsoft.Testing.Platform.Builder.ITestApplicationBuilder!)
 Conjecture.TestingPlatform.ConjectureTestingPlatformExtensions.extension(Microsoft.Testing.Platform.Builder.ITestApplicationBuilder!).RegisterConjectureFramework() -> Microsoft.Testing.Platform.Builder.ITestApplicationBuilder!
 static Conjecture.TestingPlatform.ConjectureTestingPlatformExtensions.AddExtensions(Microsoft.Testing.Platform.Builder.ITestApplicationBuilder! builder, string![]! args) -> void
+Conjecture.TestingPlatform.PropertyAttribute.Database.get -> bool
+Conjecture.TestingPlatform.PropertyAttribute.Database.set -> void
+Conjecture.TestingPlatform.PropertyAttribute.ExportReproductionOnFailure.get -> bool
+Conjecture.TestingPlatform.PropertyAttribute.ExportReproductionOnFailure.set -> void
+Conjecture.TestingPlatform.PropertyAttribute.ReproductionOutputPath.get -> string!
+Conjecture.TestingPlatform.PropertyAttribute.ReproductionOutputPath.set -> void
