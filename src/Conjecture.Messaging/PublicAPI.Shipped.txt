@@ -17,14 +17,18 @@ Conjecture.Messaging.IMessageBusTarget.AcknowledgeAsync(Conjecture.Messaging.Mes
 Conjecture.Messaging.IMessageBusTarget.RejectAsync(Conjecture.Messaging.MessageInteraction! message, bool requeue, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task!
 Conjecture.Messaging.InMemoryMessageBusTarget
 Conjecture.Messaging.InMemoryMessageBusTarget.InMemoryMessageBusTarget() -> void
-Conjecture.Messaging.InMemoryMessageBusTarget.ExecuteAsync(Conjecture.Interactions.IInteraction! interaction, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<object?>!
 Conjecture.Messaging.InMemoryMessageBusTarget.ReceiveAsync(string! destination, System.TimeSpan timeout, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<Conjecture.Messaging.MessageInteraction?>!
 Conjecture.Messaging.InMemoryMessageBusTarget.AcknowledgeAsync(Conjecture.Messaging.MessageInteraction! message, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task!
 Conjecture.Messaging.InMemoryMessageBusTarget.RejectAsync(Conjecture.Messaging.MessageInteraction! message, bool requeue, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task!
-Conjecture.Messaging.MessagingGenerateBuilder
-Conjecture.Messaging.MessagingGenerateBuilder.Consume(string! destination) -> Conjecture.Core.Strategy<Conjecture.Messaging.MessageInteraction!>!
-Conjecture.Messaging.MessagingGenerateBuilder.Publish(string! destination, Conjecture.Core.Strategy<System.ReadOnlyMemory<byte>>! bodyStrategy) -> Conjecture.Core.Strategy<Conjecture.Messaging.MessageInteraction!>!
-Conjecture.Messaging.MessagingGenerateBuilder.Publish(string! destination, Conjecture.Core.Strategy<System.ReadOnlyMemory<byte>>! bodyStrategy, Conjecture.Core.Strategy<System.Collections.Generic.IReadOnlyDictionary<string!, string!>!>! headersStrategy, Conjecture.Core.Strategy<string?>? correlationIdStrategy = null) -> Conjecture.Core.Strategy<Conjecture.Messaging.MessageInteraction!>!
-Conjecture.Messaging.MessagingGenerateExtensions
-Conjecture.Messaging.MessagingGenerateExtensions.extension(Conjecture.Core.Strategy!)
-static Conjecture.Messaging.MessagingGenerateExtensions.extension(Conjecture.Core.Strategy!).Messaging.get -> Conjecture.Messaging.MessagingGenerateBuilder!
+Conjecture.Messaging.AddressedMessageInteraction
+Conjecture.Messaging.AddressedMessageInteraction.AddressedMessageInteraction(string! resourceName, Conjecture.Messaging.MessageInteraction! inner) -> void
+Conjecture.Messaging.AddressedMessageInteraction.Inner.get -> Conjecture.Messaging.MessageInteraction!
+Conjecture.Messaging.AddressedMessageInteraction.ResourceName.get -> string!
+Conjecture.Messaging.MessagingStrategyExtensions
+Conjecture.Messaging.MessagingStrategyExtensions.extension(Conjecture.Core.Strategy!)
+static Conjecture.Messaging.MessagingStrategyExtensions.extension(Conjecture.Core.Strategy!).Messaging.get -> Conjecture.Messaging.MessagingStrategies!
+Conjecture.Messaging.MessagingStrategies
+Conjecture.Messaging.MessagingStrategies.Consume(string! destination) -> Conjecture.Core.Strategy<Conjecture.Messaging.MessageInteraction!>!
+Conjecture.Messaging.MessagingStrategies.Publish(string! destination, Conjecture.Core.Strategy<System.ReadOnlyMemory<byte>>! bodyStrategy) -> Conjecture.Core.Strategy<Conjecture.Messaging.MessageInteraction!>!
+Conjecture.Messaging.MessagingStrategies.Publish(string! destination, Conjecture.Core.Strategy<System.ReadOnlyMemory<byte>>! bodyStrategy, Conjecture.Core.Strategy<System.Collections.Generic.IReadOnlyDictionary<string!, string!>!>! headersStrategy, Conjecture.Core.Strategy<string?>? correlationIdStrategy = null) -> Conjecture.Core.Strategy<Conjecture.Messaging.MessageInteraction!>!
+Conjecture.Messaging.InMemoryMessageBusTarget.ExecuteAsync(Conjecture.Abstractions.Interactions.IInteraction! interaction, System.Threading.CancellationToken ct) -> System.Threading.Tasks.Task<object?>!

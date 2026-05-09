@@ -32,10 +32,10 @@ Conjecture.Http.HttpStrategyBuilder.WithHeaders(System.Collections.Generic.IRead
 Conjecture.Http.HttpStrategyBuilder.WithResource(string! name) -> Conjecture.Http.HttpStrategyBuilder!
 Conjecture.Http.HttpStrategyBuilder.WithBodyStrategy(Conjecture.Core.Strategy<object?>! bodyStrategy) -> Conjecture.Http.HttpStrategyBuilder!
 Conjecture.Http.HttpStrategyBuilder.Build() -> Conjecture.Core.Strategy<Conjecture.Http.HttpInteraction>!
-Conjecture.Http.HttpGenerateExtensions
-Conjecture.Http.HttpGenerateExtensions.extension(Conjecture.Core.Strategy!)
-static Conjecture.Http.HttpGenerateExtensions.extension(Conjecture.Core.Strategy!).Http(string! resourceName) -> Conjecture.Http.HttpStrategyBuilder!
 Conjecture.Http.HostHttpTarget
 Conjecture.Http.HostHttpTarget.HostHttpTarget(Microsoft.Extensions.Hosting.IHost! host, System.Net.Http.HttpClient! client) -> void
 Conjecture.Http.HostHttpTarget.ResolveClient(string! resourceName) -> System.Net.Http.HttpClient!
 Conjecture.Http.HostHttpTarget.DisposeAsync() -> System.Threading.Tasks.ValueTask
+Conjecture.Http.HttpStrategyExtensions
+Conjecture.Http.HttpStrategyExtensions.extension(Conjecture.Core.Strategy!)
+static Conjecture.Http.HttpStrategyExtensions.extension(Conjecture.Core.Strategy!).Http(string! resourceName) -> Conjecture.Http.HttpStrategyBuilder!

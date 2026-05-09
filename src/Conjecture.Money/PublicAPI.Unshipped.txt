@@ -1,15 +1,1 @@
 #nullable enable
-*REMOVED*Conjecture.Core.MoneyGenerateExtensions
-*REMOVED*Conjecture.Core.MoneyGenerateExtensions.extension(Conjecture.Core.Strategy!)
-*REMOVED*static Conjecture.Core.MoneyGenerateExtensions.extension(Conjecture.Core.Strategy!).Decimal(decimal min, decimal max, int? scale = null) -> Conjecture.Core.Strategy<decimal>!
-*REMOVED*static Conjecture.Core.MoneyGenerateExtensions.extension(Conjecture.Core.Strategy!).Iso4217Codes() -> Conjecture.Core.Strategy<string!>!
-*REMOVED*static Conjecture.Core.MoneyGenerateExtensions.extension(Conjecture.Core.Strategy!).Amounts(string! currencyCode, decimal min = 0, decimal max = 10000) -> Conjecture.Core.Strategy<decimal>!
-*REMOVED*static Conjecture.Core.MoneyGenerateExtensions.extension(Conjecture.Core.Strategy!).RoundingModes() -> Conjecture.Core.Strategy<System.MidpointRounding>!
-Conjecture.Core.MoneyStrategyExtensions
-Conjecture.Core.MoneyStrategyExtensions.extension(Conjecture.Core.Strategy!)
-static Conjecture.Core.MoneyStrategyExtensions.extension(Conjecture.Core.Strategy!).Decimal(decimal min, decimal max, int? scale = null) -> Conjecture.Core.Strategy<decimal>!
-static Conjecture.Core.MoneyStrategyExtensions.extension(Conjecture.Core.Strategy!).Iso4217Codes() -> Conjecture.Core.Strategy<string!>!
-static Conjecture.Core.MoneyStrategyExtensions.extension(Conjecture.Core.Strategy!).Amounts(string! currencyCode, decimal min = 0, decimal max = 10000) -> Conjecture.Core.Strategy<decimal>!
-static Conjecture.Core.MoneyStrategyExtensions.extension(Conjecture.Core.Strategy!).RoundingModes() -> Conjecture.Core.Strategy<System.MidpointRounding>!
-static Conjecture.Core.MoneyStrategyExtensions.extension(Conjecture.Core.Strategy!).CulturesWithCurrency() -> Conjecture.Core.Strategy<System.Globalization.CultureInfo!>!
-static Conjecture.Core.MoneyStrategyExtensions.extension(Conjecture.Core.Strategy!).CulturesByCurrencyCode(string! currencyCode) -> Conjecture.Core.Strategy<System.Globalization.CultureInfo!>!

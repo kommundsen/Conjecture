@@ -13,3 +13,9 @@ Conjecture.Xunit.V3.PropertyAttribute.Targeting.get -> bool
 Conjecture.Xunit.V3.PropertyAttribute.Targeting.set -> void
 Conjecture.Xunit.V3.PropertyAttribute.TargetingProportion.get -> double
 Conjecture.Xunit.V3.PropertyAttribute.TargetingProportion.set -> void
+Conjecture.Xunit.V3.PropertyAttribute.Database.get -> bool
+Conjecture.Xunit.V3.PropertyAttribute.Database.set -> void
+Conjecture.Xunit.V3.PropertyAttribute.ExportReproductionOnFailure.get -> bool
+Conjecture.Xunit.V3.PropertyAttribute.ExportReproductionOnFailure.set -> void
+Conjecture.Xunit.V3.PropertyAttribute.ReproductionOutputPath.get -> string!
+Conjecture.Xunit.V3.PropertyAttribute.ReproductionOutputPath.set -> void
