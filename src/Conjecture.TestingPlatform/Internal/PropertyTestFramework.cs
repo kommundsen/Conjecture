@@ -273,7 +273,7 @@ internal sealed class PropertyTestFramework : ITestFramework, IDataProducer
                     object[] values = SharedParameterStrategyResolver.Resolve(parameters, replay);
                     IEnumerable<(string Name, object? Value, Type Type)> reproParams = parameters.Zip(values,
                         static (p, v) => (p.Name!, (object?)v, p.ParameterType));
-                    ReproContext context = new(
+                    ReproContext reproContext = new(
                         method.DeclaringType?.Name ?? "UnknownClass",
                         method.Name,
                         TestCaseHelper.IsAsyncReturnType(method.ReturnType),
@@ -283,7 +283,14 @@ internal sealed class PropertyTestFramework : ITestFramework, IDataProducer
                         result.ShrinkCount,
                         Conjecture.Core.Internal.TestFramework.Xunit,
                         DateTimeOffset.UtcNow);
-                    ReproFileBuilder.WriteToFile(context, settings.ReproductionOutputPath);
+                    string? reproFilePath = ReproFileBuilder.WriteToFile(reproContext, settings.ReproductionOutputPath);
+                    if (reproFilePath is not null)
+                    {
+                        resultNode.Properties.Add(new FileArtifactProperty(
+                            new FileInfo(reproFilePath),
+                            "Conjecture repro",
+                            $"C# snippet to reproduce the minimal failing example (seed {result.Seed})."));
+                    }
                 }
                 catch (Exception)
                 {

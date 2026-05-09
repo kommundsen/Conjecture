@@ -139,6 +139,116 @@ public class PropertyTestFrameworkTests
         Assert.Contains(updates, static u => u.TestNode.Properties.Any<PassedTestNodeStateProperty>());
     }
 
+    // ---- Behaviour 8: failure with ExportReproductionOnFailure → FileArtifactProperty on failure node ----
+
+    [Fact]
+    public async Task RunAsync_FailingPropertyWithExportReproductionOnFailure_AddsFileArtifactProperty()
+    {
+        string outputDir = ReproExportEnabledFixtureMethods.ReproOutputPath;
+        if (Directory.Exists(outputDir))
+        {
+            Directory.Delete(outputDir, true);
+        }
+
+        Directory.CreateDirectory(outputDir);
+        try
+        {
+            PropertyTestFramework framework = CreateFramework(typeof(ReproExportEnabledFixtureMethods));
+            CapturingMessageBus bus = new();
+            SessionUid session = new("test-session-repro");
+
+            await framework.RunAsync(bus, session);
+
+            List<TestNodeUpdateMessage> updates = bus.Updates
+                .Where(static u => NodeUidFor(u) == ReproExportEnabledFixtureMethods.AlwaysFailsUid)
+                .ToList();
+
+            TestNode failureNode = updates
+                .First(static u => u.TestNode.Properties.Any<FailedTestNodeStateProperty>())
+                .TestNode;
+
+            FileArtifactProperty? artifact = failureNode.Properties.SingleOrDefault<FileArtifactProperty>();
+            Assert.NotNull(artifact);
+            Assert.True(File.Exists(artifact.FileInfo.FullName));
+        }
+        finally
+        {
+            if (Directory.Exists(outputDir))
+            {
+                Directory.Delete(outputDir, true);
+            }
+        }
+    }
+
+    // ---- Behaviour 9: failure without ExportReproductionOnFailure → no FileArtifactProperty ----
+
+    [Fact]
+    public async Task RunAsync_FailingPropertyWithoutExportReproductionOnFailure_AddsNoFileArtifactProperty()
+    {
+        PropertyTestFramework framework = CreateFramework(typeof(ReproExportDisabledFixtureMethods));
+        CapturingMessageBus bus = new();
+        SessionUid session = new("test-session-no-repro");
+
+        await framework.RunAsync(bus, session);
+
+        List<TestNodeUpdateMessage> updates = bus.Updates
+            .Where(static u => NodeUidFor(u) == ReproExportDisabledFixtureMethods.AlwaysFailsUid)
+            .ToList();
+
+        TestNode failureNode = updates
+            .First(static u => u.TestNode.Properties.Any<FailedTestNodeStateProperty>())
+            .TestNode;
+
+        FileArtifactProperty? artifact = failureNode.Properties.SingleOrDefault<FileArtifactProperty>();
+        Assert.Null(artifact);
+    }
+
+    // ---- Behaviour 10: repro write failure → failure node published, no FileArtifactProperty, no throw ----
+
+    [Fact]
+    public async Task RunAsync_ReproWriteFailure_PublishesFailureNodeWithoutFileArtifactPropertyAndDoesNotThrow()
+    {
+        // The fixture's ReproductionOutputPath is a file that already exists,
+        // causing Directory.CreateDirectory to fail inside ReproFileBuilder.WriteToFile.
+        string blockerFile = ReproExportBlockedFixtureMethods.ReproOutputPath;
+        string? parentDir = Path.GetDirectoryName(blockerFile);
+        if (parentDir is not null)
+        {
+            Directory.CreateDirectory(parentDir);
+        }
+
+        File.WriteAllText(blockerFile, "blocker");
+        try
+        {
+            PropertyTestFramework framework = CreateFramework(typeof(ReproExportBlockedFixtureMethods));
+            CapturingMessageBus bus = new();
+            SessionUid session = new("test-session-repro-fail");
+
+            Exception? thrown = await Record.ExceptionAsync(async () =>
+                await framework.RunAsync(bus, session));
+
+            Assert.Null(thrown);
+
+            List<TestNodeUpdateMessage> updates = bus.Updates
+                .Where(static u => NodeUidFor(u) == ReproExportBlockedFixtureMethods.AlwaysFailsUid)
+                .ToList();
+
+            TestNode failureNode = updates
+                .First(static u => u.TestNode.Properties.Any<FailedTestNodeStateProperty>())
+                .TestNode;
+
+            FileArtifactProperty? artifact = failureNode.Properties.SingleOrDefault<FileArtifactProperty>();
+            Assert.Null(artifact);
+        }
+        finally
+        {
+            if (File.Exists(blockerFile))
+            {
+                File.Delete(blockerFile);
+            }
+        }
+    }
+
     private static string NodeUidFor(TestNodeUpdateMessage message)
     {
         return message.TestNode.Uid.Value;
@@ -231,5 +341,70 @@ internal static class ParameterisedTestMethods
 #pragma warning disable IDE0060
     [Conjecture.TestingPlatform.PropertyAttribute(MaxExamples = 10)]
     public static void IntProperty(int x) { }
+#pragma warning restore IDE0060
+}
+
+// Fixture: failing property with ExportReproductionOnFailure enabled.
+// ReproOutputPath is a const so it can be used in the attribute and from tests.
+internal static class ReproExportEnabledFixtureMethods
+{
+    internal const string ReproOutputPath = "obj/test-repro-export-enabled/";
+
+    internal static readonly string AlwaysFailsUid =
+        Conjecture.Core.Internal.TestCaseHelper.ComputeTestId(
+            typeof(ReproExportEnabledFixtureMethods).GetMethod(nameof(AlwaysFails))!);
+
+#pragma warning disable IDE0060
+    [Conjecture.TestingPlatform.PropertyAttribute(
+        MaxExamples = 10,
+        Seed = 1UL,
+        ExportReproductionOnFailure = true,
+        ReproductionOutputPath = ReproOutputPath)]
+    public static void AlwaysFails(int x)
+    {
+        throw new InvalidOperationException("always fails for repro export test");
+    }
+#pragma warning restore IDE0060
+}
+
+// Fixture: failing property with ExportReproductionOnFailure disabled (default).
+internal static class ReproExportDisabledFixtureMethods
+{
+    internal static readonly string AlwaysFailsUid =
+        Conjecture.Core.Internal.TestCaseHelper.ComputeTestId(
+            typeof(ReproExportDisabledFixtureMethods).GetMethod(nameof(AlwaysFails))!);
+
+#pragma warning disable IDE0060
+    [Conjecture.TestingPlatform.PropertyAttribute(
+        MaxExamples = 10,
+        Seed = 1UL,
+        ExportReproductionOnFailure = false)]
+    public static void AlwaysFails(int x)
+    {
+        throw new InvalidOperationException("always fails for no-repro test");
+    }
+#pragma warning restore IDE0060
+}
+
+// Fixture: failing property whose ReproductionOutputPath is intentionally set to a file path
+// (not a directory) so that the write will fail, exercising the swallow-on-failure branch.
+internal static class ReproExportBlockedFixtureMethods
+{
+    internal const string ReproOutputPath = "obj/test-repro-blocked-sentinel.txt";
+
+    internal static readonly string AlwaysFailsUid =
+        Conjecture.Core.Internal.TestCaseHelper.ComputeTestId(
+            typeof(ReproExportBlockedFixtureMethods).GetMethod(nameof(AlwaysFails))!);
+
+#pragma warning disable IDE0060
+    [Conjecture.TestingPlatform.PropertyAttribute(
+        MaxExamples = 10,
+        Seed = 1UL,
+        ExportReproductionOnFailure = true,
+        ReproductionOutputPath = ReproOutputPath)]
+    public static void AlwaysFails(int x)
+    {
+        throw new InvalidOperationException("always fails for blocked-write test");
+    }
 #pragma warning restore IDE0060
 }
