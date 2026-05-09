@@ -17,10 +17,10 @@ namespace Conjecture.TestingPlatform.Tests.Internal;
 
 public class MtpLoggerTests
 {
-    // ── Log produces TestMetadataProperty ────────────────────────────────────
+    // ── Log_Information_Publishes_StandardOutputProperty_With_Level_Prefix ───
 
     [Fact]
-    public void Log_InformationLevel_PublishesTestMetadataPropertyWithExpectedKey()
+    public void Log_Information_Publishes_StandardOutputProperty_With_Level_Prefix()
     {
         CapturingMessageBus bus = new();
         TestNodeUid nodeUid = new("test-node");
@@ -30,39 +30,67 @@ public class MtpLoggerTests
         logger.Log(LogLevel.Information, default, "hello", null, static (s, _) => s);
 
         TestNodeUpdateMessage message = Assert.Single(bus.Updates);
-        TestMetadataProperty? property = message.TestNode.Properties
-            .SingleOrDefault<TestMetadataProperty>();
+        StandardOutputProperty? property = message.TestNode.Properties
+            .SingleOrDefault<StandardOutputProperty>();
         Assert.NotNull(property);
-        Assert.Equal($"conjecture.log.{LogLevel.Information}", property.Key);
-        Assert.Equal("hello", property.Value);
+        Assert.StartsWith("[Information] ", property.StandardOutput);
+        Assert.EndsWith(Environment.NewLine, property.StandardOutput);
+        Assert.Contains("hello", property.StandardOutput);
     }
 
+    // ── Log_Error_Publishes_StandardErrorProperty ─────────────────────────────
+
     [Fact]
-    public void Log_WarningLevel_PublishesTestMetadataPropertyWithWarningKey()
+    public void Log_Error_Publishes_StandardErrorProperty()
     {
         CapturingMessageBus bus = new();
         TestNodeUid nodeUid = new("test-node");
         SessionUid session = new("test-session");
         MtpLogger logger = new(bus, nodeUid, session);
 
-        logger.Log(LogLevel.Warning, default, "watch out", null, static (s, _) => s);
+        logger.Log(LogLevel.Error, default, "bad thing", null, static (s, _) => s);
 
         TestNodeUpdateMessage message = Assert.Single(bus.Updates);
-        TestMetadataProperty? property = message.TestNode.Properties
-            .SingleOrDefault<TestMetadataProperty>();
+        StandardErrorProperty? property = message.TestNode.Properties
+            .SingleOrDefault<StandardErrorProperty>();
         Assert.NotNull(property);
-        Assert.Equal($"conjecture.log.{LogLevel.Warning}", property.Key);
+        Assert.Contains("bad thing", property.StandardError);
+        Assert.Null(message.TestNode.Properties.SingleOrDefault<StandardOutputProperty>());
     }
 
+    // ── Log_Critical_Routed_To_StandardError ─────────────────────────────────
+
     [Fact]
-    public void Log_BelowInformationLevel_DoesNotPublish()
+    public void Log_Critical_Routed_To_StandardError()
     {
         CapturingMessageBus bus = new();
         TestNodeUid nodeUid = new("test-node");
         SessionUid session = new("test-session");
         MtpLogger logger = new(bus, nodeUid, session);
 
-        logger.Log(LogLevel.Debug, default, "verbose", null, static (s, _) => s);
+        logger.Log(LogLevel.Critical, default, "fatal", null, static (s, _) => s);
+
+        TestNodeUpdateMessage message = Assert.Single(bus.Updates);
+        StandardErrorProperty? property = message.TestNode.Properties
+            .SingleOrDefault<StandardErrorProperty>();
+        Assert.NotNull(property);
+        Assert.Contains("fatal", property.StandardError);
+        Assert.Null(message.TestNode.Properties.SingleOrDefault<StandardOutputProperty>());
+    }
+
+    // ── Log_Below_Information_Threshold_Publishes_Nothing ────────────────────
+
+    [Theory]
+    [InlineData(LogLevel.Trace)]
+    [InlineData(LogLevel.Debug)]
+    public void Log_Below_Information_Threshold_Publishes_Nothing(LogLevel level)
+    {
+        CapturingMessageBus bus = new();
+        TestNodeUid nodeUid = new("test-node");
+        SessionUid session = new("test-session");
+        MtpLogger logger = new(bus, nodeUid, session);
+
+        logger.Log(level, default, "verbose", null, static (s, _) => s);
 
         Assert.Empty(bus.Updates);
     }
