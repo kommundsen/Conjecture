@@ -58,9 +58,7 @@ internal sealed class MtpLogger : ILogger
                 Uid = nodeUid,
                 DisplayName = string.Empty,
                 Properties = new PropertyBag(
-#pragma warning disable CS0618 // KeyValuePairStringProperty is obsolete
-                    new KeyValuePairStringProperty($"conjecture.log.{level}", message))
-#pragma warning restore CS0618
+                    new TestMetadataProperty($"conjecture.log.{level}", message))
             }));
     }
 }

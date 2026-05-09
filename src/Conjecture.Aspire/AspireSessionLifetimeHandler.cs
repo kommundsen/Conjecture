@@ -2,21 +2,20 @@
 // See LICENSE.txt in the project root or https://mozilla.org/MPL/2.0/
 
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
+
+using Conjecture.Abstractions.Aspire;
 
 using Microsoft.Testing.Platform.Extensions;
 using Microsoft.Testing.Platform.Extensions.TestHost;
-using Microsoft.Testing.Platform.TestHost;
-
-using Conjecture.Abstractions.Aspire;
+using Microsoft.Testing.Platform.Services;
 
 namespace Conjecture.Aspire;
 
 /// <summary>
 /// Manages the lifetime of an <see cref="IAspireAppFixture"/> within a
 /// Microsoft.Testing.Platform test session. Register via
-/// <c>builder.TestHost.AddTestSessionLifetimeHandle(_ =&gt; new AspireSessionLifetimeHandler(fixture))</c>.
+/// <c>builder.TestHost.AddTestSessionLifetimeHandler(_ =&gt; new AspireSessionLifetimeHandler(fixture))</c>.
 /// </summary>
 public sealed class AspireSessionLifetimeHandler(IAspireAppFixture fixture)
     : ITestSessionLifetimeHandler
@@ -42,10 +41,10 @@ public sealed class AspireSessionLifetimeHandler(IAspireAppFixture fixture)
     public Task<bool> IsEnabledAsync() => Task.FromResult(true);
 
     /// <inheritdoc />
-    public Task OnTestSessionStartingAsync(SessionUid sessionUid, CancellationToken cancellationToken) =>
-        Fixture.StartAsync(cancellationToken);
+    public Task OnTestSessionStartingAsync(ITestSessionContext context) =>
+        Fixture.StartAsync(context.CancellationToken);
 
     /// <inheritdoc />
-    public Task OnTestSessionFinishingAsync(SessionUid sessionUid, CancellationToken cancellationToken) =>
+    public Task OnTestSessionFinishingAsync(ITestSessionContext context) =>
         Fixture.DisposeAsync().AsTask();
 }

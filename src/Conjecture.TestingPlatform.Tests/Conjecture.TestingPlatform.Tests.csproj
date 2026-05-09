@@ -4,6 +4,11 @@
     <TargetFramework>net10.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <!-- MTP 2.x blocks VSTest on .NET 10+ when IsTestingPlatformApplication=true.
+         This project uses xUnit and must not be treated as an MTP application,
+         even though it references Conjecture.TestingPlatform (which carries the
+         Conjecture.TestingPlatform.props that sets IsTestingPlatformApplication=true). -->
+    <IsTestingPlatformApplication>false</IsTestingPlatformApplication>
   </PropertyGroup>
 
   <ItemGroup>

@@ -23,12 +23,11 @@ using System.Threading.Tasks;
 
 using Aspire.Hosting;
 
-using Conjecture.Aspire;
-using Conjecture.Core;
-
 using Conjecture.Abstractions.Aspire;
 using Conjecture.Abstractions.Interactions;
+using Conjecture.Aspire;
 using Conjecture.Aspire.Http;
+using Conjecture.Core;
 using Conjecture.Http;
 
 namespace Conjecture.Aspire.Tests.Samples;
@@ -95,6 +94,31 @@ public sealed class TestingPlatformWiringSampleTests
                 .IsAssignableFrom(typeof(AspireSessionLifetimeHandler)));
     }
 
+    [Fact]
+    public async Task OnTestSessionStartingAsync_WithStubContext_CallsFixtureStartAsyncWithContextCancellationToken()
+    {
+        TrackingFixture fixture = new();
+        AspireSessionLifetimeHandler handler = new(fixture);
+        CancellationToken expected = new CancellationTokenSource().Token;
+        StubTestSessionContext context = new(expected);
+
+        await handler.OnTestSessionStartingAsync(context);
+
+        Assert.Equal(expected, fixture.StartCalledWithToken);
+    }
+
+    [Fact]
+    public async Task OnTestSessionFinishingAsync_WithStubContext_DisposesFixture()
+    {
+        TrackingFixture fixture = new();
+        AspireSessionLifetimeHandler handler = new(fixture);
+        StubTestSessionContext context = new(CancellationToken.None);
+
+        await handler.OnTestSessionFinishingAsync(context);
+
+        Assert.True(fixture.Disposed);
+    }
+
     // ── Public runner API wires session-scoped fixture into the state machine ──
 
     [Fact]
@@ -119,5 +143,34 @@ public sealed class TestingPlatformWiringSampleTests
         public override ValueTask<string> RunCommand(string state, IInteraction interaction, IInteractionTarget target, CancellationToken ct) => ValueTask.FromResult<string>(state);
 
         public override void Invariant(string state) { }
+    }
+
+    private sealed class TrackingFixture : IAspireAppFixture
+    {
+        public CancellationToken StartCalledWithToken { get; private set; }
+        public bool Disposed { get; private set; }
+
+        public override Task<DistributedApplication> StartAsync(CancellationToken cancellationToken = default)
+        {
+            StartCalledWithToken = cancellationToken;
+            IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder([]);
+            return Task.FromResult(builder.Build());
+        }
+
+        public override Task ResetAsync(DistributedApplication app, CancellationToken cancellationToken = default)
+            => Task.CompletedTask;
+
+        public override ValueTask DisposeAsync()
+        {
+            Disposed = true;
+            return ValueTask.CompletedTask;
+        }
+    }
+
+    private sealed class StubTestSessionContext(CancellationToken cancellationToken)
+        : Microsoft.Testing.Platform.Services.ITestSessionContext
+    {
+        public Microsoft.Testing.Platform.TestHost.SessionUid SessionUid { get; } = new("stub-session");
+        public CancellationToken CancellationToken { get; } = cancellationToken;
     }
 }
