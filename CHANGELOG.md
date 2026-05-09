@@ -10,6 +10,22 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Version
 
 ---
 
+## [0.29.0] — 2026-05-09
+
+### Changed
+
+**TestingPlatform** (`Conjecture.TestingPlatform`)
+- `MtpLogger` output now routed via `StandardOutputProperty` and `StandardErrorProperty` — stdout and stderr are captured separately and surfaced in MTP-compatible runners
+- Failure repro file attached as `FileArtifactProperty` — `.trx`-style repro artifact is surfaced directly in test results
+- Bumped `Microsoft.Testing.Platform` to 2.2.2 (v2 breaking-change adaptations included)
+
+### Dependencies
+
+- `Aspire.Hosting.Testing` 13.2.4 → 13.3.0
+- `Microsoft.SourceLink.GitHub` 10.0.201 → 10.0.203
+
+---
+
 ## [0.28.0] — 2026-05-09
 
 ### Added
