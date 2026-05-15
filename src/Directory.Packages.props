@@ -83,7 +83,7 @@
     <PackageVersion Include="Google.Protobuf" Version="3.34.1" />
 
     <!-- F# -->
-    <PackageVersion Include="FSharp.Core" Version="10.1.203" />
+    <PackageVersion Include="FSharp.Core" Version="10.1.300" />
     <PackageVersion Include="Expecto" Version="10.2.3" />
 
     <!-- Azure Service Bus -->
