@@ -101,7 +101,7 @@
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.7" />
 
     <!-- Aspire -->
-    <PackageVersion Include="Aspire.Hosting" Version="13.3.0" />
-    <PackageVersion Include="Aspire.Hosting.Testing" Version="13.3.0" />
+    <PackageVersion Include="Aspire.Hosting" Version="13.3.2" />
+    <PackageVersion Include="Aspire.Hosting.Testing" Version="13.3.2" />
   </ItemGroup>
 </Project>
